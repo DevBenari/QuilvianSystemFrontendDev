@@ -1,11 +1,12 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import Sidebar from "@/components/features/sidebar/sidebar";
+import HomeDashboard from "@/components/view/home";
+
 
 export default function Home() {
   return (
     <div className={styles.page}>
-      <p>Hallo</p>
+      <HomeDashboard />
     </div>
   );
 }

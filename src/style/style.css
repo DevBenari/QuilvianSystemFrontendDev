@@ -724,6 +724,7 @@ a:hover {
 
 .iq-sidebar #sidebar-scrollbar {
   margin-top: 15px;
+
 }
 
 /*---------------------------------------------------------------------
@@ -733,6 +734,7 @@ a:hover {
 /* Form */
 #sidebar-scrollbar {
   height: 100vh;
+  scrollbar-width: none;
 }
 
 .scroll-content div.p-3 {

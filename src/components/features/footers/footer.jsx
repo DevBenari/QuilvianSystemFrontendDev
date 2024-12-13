@@ -1,10 +1,6 @@
 import Link from 'next/link';
 import React,{Fragment,memo} from 'react'
 
-// react-router
-
-
-// react-bootstrap
 import {Row, Col, Container} from 'react-bootstrap'
 
 const Footer = memo(() => {
