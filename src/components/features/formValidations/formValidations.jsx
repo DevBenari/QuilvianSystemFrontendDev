@@ -1,3 +1,4 @@
+'use client'
 import React, { Fragment, useState } from "react";
 import {
   Button,
@@ -9,9 +10,20 @@ import {
   FormSelect,
   Row,
 } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 
+const FormValidations = () => {
+    const methods = useForm({
+        defaultValues:{
+            firstName: '',
+            lastName: '',
+            username: '',
+            email: '',
+            password: '',
+            confirmPassword: ''
+        }
+    })
 
-export default function formValidations({title, desc}) {
   return (
     <div>
         <div className="iq-card">
@@ -22,8 +34,8 @@ export default function formValidations({title, desc}) {
             </div>
             <div className="iq-card-body">
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vulputate, ex ac venenatis mollis, diam nibh finibus leo</p>
-                <Form className="needs-validation" noValidate validated={validated1}
-                onClick={handleSubmit1}>
+                <Form className="needs-validation" noValidate
+                >
                     <Row>
                         <Col md='6' className="mb-3 position-relative">
                             <FormLabel className="mb-0" htmlFor="validationTooltip01">First name</FormLabel>
@@ -53,7 +65,7 @@ export default function formValidations({title, desc}) {
                             <FormLabel className="mb-0" htmlFor="validationTooltip03">City</FormLabel>
                             <FormControl type="text" className="form-control" id="validationTooltip03" required />
                             <div className="invalid-tooltip">
-                            Please provide a valid city.
+                                Please provide a valid city.
                             </div>
                         </Col>
                         <Col md='6' className="mb-3 position-relative">
@@ -70,7 +82,7 @@ export default function formValidations({title, desc}) {
                             <FormLabel className="mb-0" htmlFor="validationTooltip05">Zip</FormLabel>
                             <FormControl type="text" className="form-control" id="validationTooltip05" required />
                             <div className="invalid-tooltip">
-                            Please provide a valid zip.
+                                Please provide a valid zip.
                             </div>
                         </Col>
                     </Row>
@@ -81,3 +93,5 @@ export default function formValidations({title, desc}) {
     </div>
   )
 }
+
+export default FormValidations

@@ -6,7 +6,6 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 import useCachedPathname from '@/lib/hooks/useCachePathname'
 
 const SideBarMenu = memo((props) => {
-
     let location = useCachedPathname();
     return (
         <Fragment>

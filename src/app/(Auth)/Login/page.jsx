@@ -2,10 +2,23 @@
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap'
+import { useForm, FormProvider } from 'react-hook-form'
+import TextField from '@/components/ui/text-field'
 
 const LoginPage = () => {
+    const methods = useForm({
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+        mode: 'onSubmit',
+    })
+
+    const onSubmit = (data) => {
+        console.log(data)
+    }
     return (
-        <Fragment>
+        <FormProvider {...methods}>
             <section className="sign-in-page">
                 <Container className="sign-in-page-bg mb-md-5 mb-3 p-0">
                     <Row className="row no-gutters">
@@ -19,23 +32,57 @@ const LoginPage = () => {
                                 {/* <h1 className="mb-0">Sign in</h1>
                                 <p>Enter your email address and password to access admin panel.</p> */}
                                 <Image src='/Images/logo_mmc.png' className='img-fluid mt-5' alt='logo-MMC' />
-                                <Form className="mt-4">
-                                    <Form.Group className='form-group'>
-                                        <Form.Label htmlFor="exampleInputEmail1" className="mb-2">Email address</Form.Label>
-                                        <Form.Control type="email" className="form-control mb-0" id="exampleInputEmail1" placeholder="Enter email" />
-                                    </Form.Group>
-                                    <div className="d-flex justify-content-between my-2">
-                                        <Form.Label htmlFor="exampleInputPassword1" className='mb-0'>Password</Form.Label>
-                                        <Link href="/recover-password" className="float-end">Forgot password?</Link>
+                                <Form className="mt-4" onSubmit={methods.handleSubmit(onSubmit)}>
+                                <TextField
+                                    label="Email address"
+                                    name="email"
+                                    type="email"
+                                    placeholder="Enter email"
+                                    className="form-control mb-0"
+                                    rules={{
+                                    required: 'Email is required',
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                        message: 'Invalid email format',
+                                    },
+                                    }}
+                                />
+
+                                {/* Password Field */}
+                                <TextField
+                                    label="Password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="Password"
+                                    className="form-control mb-0"
+                                    rules={{
+                                    required: 'Password is required',
+                                    minLength: {
+                                        value: 6,
+                                        message: 'Password must be at least 6 characters long',
+                                    },
+                                    }}
+                                />
+
+                                {/* Remember Me Checkbox */}
+                                <div className="d-flex w-100 justify-content-between align-items-center mt-3 w-100">
+                                    <div className="custom-control custom-checkbox d-inline-block mt-2 pt-1">
+                                    <Form.Check.Input
+                                        type="checkbox"
+                                        className="custom-control-input"
+                                        id="customCheck1"
+                                    />
+                                    <Form.Label
+                                        className="custom-control-label"
+                                        htmlFor="customCheck1"
+                                    >
+                                        Remember Me
+                                    </Form.Label>
                                     </div>
-                                    <Form.Control type="password" className="form-control mb-0" id="exampleInputPassword1" placeholder="Password" />
-                                    <div className="d-flex w-100 justify-content-between  align-items-center mt-3 w-100">
-                                        <div className="custom-control custom-checkbox d-inline-block mt-2 pt-1">
-                                            <Form.Check.Input type="checkbox" className="custom-control-input" id="customCheck1" />
-                                            <Form.Label className="custom-control-label" htmlFor="customCheck1">Remember Me</Form.Label>
-                                        </div>
-                                        <Button type="submit" className="btn btn-primary float-end">Sign in</Button>
-                                    </div>
+                                    <Button type="submit" className="btn btn-primary float-end">
+                                    Sign in
+                                    </Button>
+                                </div>
                                     <div className="sign-info">
                                         <span className="dark-color d-inline-block line-height-2">Dont have an account? <Link href="/sign-up">Sign up</Link></span>
                                         <ul className="iq-social-media">
@@ -50,7 +97,7 @@ const LoginPage = () => {
                     </Row>
                 </Container>
             </section>    
-        </Fragment>
+        </FormProvider>
     )
 }
 

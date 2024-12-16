@@ -17,6 +17,7 @@ import SideBarWrapper from '@/components/features/sidebar/sidebar-wrapper'
 import NavbarsWrapper from '@/components/features/navbars/navbars-wrapper'
 import FooterWrapper from '@/components/features/footers/footer-wrapper'
 import Sidebar from '@/components/features/sidebar/sidebar'
+import ContentPage from '@/components/ui/content-page'
 // import "choices.js/public/assets/styles/choices.min.css";
 // import "flatpickr/dist/flatpickr.css";
 
@@ -34,13 +35,13 @@ export default function RootLayout({ children }) {
         <ScrollLayout>
           <Fragment>
             <SideBarWrapper>
-              <div id="content-page" className="content-page">
-                  <NavbarsWrapper />
-                    <Container fluid>
-                      {children}
-                    </Container>
-                    <FooterWrapper />
-                </div>
+              <ContentPage>
+                <NavbarsWrapper />
+                      <Container fluid>
+                        {children}
+                      </Container>
+                      <FooterWrapper />  
+              </ContentPage>          
             </SideBarWrapper>
           </Fragment>
         </ScrollLayout>

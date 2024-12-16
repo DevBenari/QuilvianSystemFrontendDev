@@ -1,6 +1,6 @@
 'use client'
 import React, { Fragment } from 'react'
-import { Col, Dropdown, Row, Table, Image } from "react-bootstrap";
+import { Col, Dropdown, Row, Table, Image, Tabs, Tab } from "react-bootstrap";
 import Chart from 'react-apexcharts'
 
 import Image1 from "../../../assets/Images/page-img/37.png"
@@ -194,52 +194,59 @@ export default function HomeDashboard() {
                                     <div className="d-flex align-items-center justify-content-between">
                                        <p className="mb-0">Advice! Connect your Apple Watch for better results.</p>
                                        <div className="rounded-4 iq-card-icon bg-white">
-                                          <Image src={Image1} className="Image-fluid" alt="icon" />
+                                          <Image src={"/Images/icon-dashboard.png"} className="Image-fluid" alt="icon" />
                                        </div>
                                     </div>
                                  </div>
                               </div>
                               <div className="iq-card">
                                  <div className="iq-header-title">
-                                    <h4 className="card-title text-primary">Popular Training</h4>
+                                    <h4 className="card-title text-primary">Detail Pages</h4>
+                                    <p>Oct 17, 2021</p>
                                  </div>
-                                 <div className="iq-card-body ps-0 pe-0 pb-0">
-                                    <Row>
-                                       <Col md='4'>
-                                          <div className="training-block d-flex align-items-center">
-                                             <div className="rounded-circle iq-card-icon iq-bg-primary">
-                                                <Image src={Image2} className="Image-fluid" alt="icon" />
-                                             </div>
-                                             <div className="ms-3">
-                                                <h5 className="">Power Training</h5>
-                                                <p className="mb-0">395 kcal / h</p>
-                                             </div>
-                                          </div>
-                                       </Col>
-                                       <Col md='4' >
-                                          <div className="training-block d-flex align-items-center">
-                                             <div className="rounded-circle iq-card-icon iq-bg-primary">
-                                                <Image src={Image3} className="Image-fluid" alt="icon" />
-                                             </div>
-                                             <div className="ms-3">
-                                                <h5 className="">Yoga Training</h5>
-                                                <p className="mb-0">395 kcal / h</p>
-                                             </div>
-                                          </div>
-                                       </Col>
-                                       <Col md='4'>
-                                          <div className="training-block d-flex align-items-center">
-                                             <div className="rounded-circle iq-card-icon iq-bg-primary">
-                                                <Image src={Image4} className="Image-fluid" alt="icon" />
-                                             </div>
-                                             <div className="ms-3">
-                                                <h5 className="">Stretching</h5>
-                                                <p className="mb-0">395 kcal / h</p>
-                                             </div>
-                                          </div>
-                                       </Col>
-                                    </Row>
-                                 </div>
+                                 <Tabs 
+                                    defaultActiveKey={"Dokter"}
+                                    id="uncontrolled-tab-example"
+                                    className="mb-3"
+                                 >
+                                 <Tab eventKey="home" title="Home">
+                                 <Table striped="columns">
+                                    <thead>
+                                    <tr>
+                                       <th>#</th>
+                                       <th>First Name</th>
+                                       <th>Last Name</th>
+                                       <th>Username</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                       <td>1</td>
+                                       <td>Mark</td>
+                                       <td>Otto</td>
+                                       <td>@mdo</td>
+                                    </tr>
+                                    <tr>
+                                       <td>2</td>
+                                       <td>Jacob</td>
+                                       <td>Thornton</td>
+                                       <td>@fat</td>
+                                    </tr>
+                                    <tr>
+                                       <td>3</td>
+                                       <td colSpan={2}>Larry the Bird</td>
+                                       <td>@twitter</td>
+                                    </tr>
+                                    </tbody>
+                                 </Table>
+                                    </Tab>
+                                    <Tab eventKey="profile" title="Profile">
+                                    Tab content for Profile
+                                    </Tab>
+                                    <Tab eventKey="contact" title="Contact" disabled>
+                                    Tab content for Contact
+                                    </Tab>
+                                 </Tabs>
                               </div>
                            </Col>
                            <Col lg='8'>
@@ -247,6 +254,7 @@ export default function HomeDashboard() {
                                  <div className="iq-card-header d-flex justify-content-between p-0 bg-white">
                                     <div className="iq-header-title">
                                        <h4 className="card-title text-primary">Activity Statistic</h4>
+                                       
                                     </div>
                                  </div>
                                  <div className="iq-card-body p-0">

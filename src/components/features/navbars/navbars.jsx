@@ -11,7 +11,6 @@ import user3 from "@/assets/images/user/03.jpg";
 import user4 from "@/assets/images/user/04.jpg";
 import user5 from "@/assets/images/user/05.jpg";
 
-
 const Navbars = memo(() => {
     const [isFixed, setIsFixed] = useState(false);
 

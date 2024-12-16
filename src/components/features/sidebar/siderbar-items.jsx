@@ -28,7 +28,7 @@ import {
                     </li>
                     <SidebarMenu
                         isTag="true"
-                        pathname="/pendaftaran-pasien"
+                        pathname="/pendaftaran"
                         title="pendaftaran"
                     >
                         <i className="ri-briefcase-4-fill"></i>
