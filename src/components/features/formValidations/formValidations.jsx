@@ -10,7 +10,7 @@ import {
   FormSelect,
   Row,
 } from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form"; 
 
 const FormValidations = () => {
     const methods = useForm({
@@ -34,8 +34,7 @@ const FormValidations = () => {
             </div>
             <div className="iq-card-body">
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vulputate, ex ac venenatis mollis, diam nibh finibus leo</p>
-                <Form className="needs-validation" noValidate
-                >
+                <Form className="needs-validation" >
                     <Row>
                         <Col md='6' className="mb-3 position-relative">
                             <FormLabel className="mb-0" htmlFor="validationTooltip01">First name</FormLabel>

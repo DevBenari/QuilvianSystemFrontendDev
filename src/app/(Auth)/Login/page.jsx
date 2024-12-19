@@ -4,18 +4,35 @@ import React, { Fragment } from 'react'
 import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap'
 import { useForm, FormProvider } from 'react-hook-form'
 import TextField from '@/components/ui/text-field'
+import { useDispatch } from 'react-redux'
+import { LoginUser } from '@/lib/state/slice/LoginSlice'
 
 const LoginPage = () => {
+
+    const dispatch = useDispatch();
+
+    const handleLogin = (values) => {
+        dispatch(LoginUser(values))
+        .then((result) => {
+            if(result.payload){
+                console.log(result.payload)
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+    }
+
     const methods = useForm({
         defaultValues: {
-            email: '',
+            username: '',
             password: '',
         },
         mode: 'onSubmit',
     })
 
     const onSubmit = (data) => {
-        console.log(data)
+        handleLogin(data)
     }
     return (
         <FormProvider {...methods}>
@@ -34,16 +51,16 @@ const LoginPage = () => {
                                 <Image src='/Images/logo_mmc.png' className='img-fluid mt-5' alt='logo-MMC' />
                                 <Form className="mt-4" onSubmit={methods.handleSubmit(onSubmit)}>
                                 <TextField
-                                    label="Email address"
-                                    name="email"
-                                    type="email"
-                                    placeholder="Enter email"
+                                    label="Username"
+                                    name="username"
+                                    type="text"
+                                    placeholder="Enter username"
                                     className="form-control mb-0"
                                     rules={{
-                                    required: 'Email is required',
+                                    required: 'username is required',
                                     pattern: {
-                                        value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                        message: 'Invalid email format',
+                                        value:2,
+                                        message: 'Invalid username format',
                                     },
                                     }}
                                 />
@@ -67,20 +84,20 @@ const LoginPage = () => {
                                 {/* Remember Me Checkbox */}
                                 <div className="d-flex w-100 justify-content-between align-items-center mt-3 w-100">
                                     <div className="custom-control custom-checkbox d-inline-block mt-2 pt-1">
-                                    <Form.Check.Input
-                                        type="checkbox"
-                                        className="custom-control-input"
-                                        id="customCheck1"
-                                    />
-                                    <Form.Label
-                                        className="custom-control-label"
-                                        htmlFor="customCheck1"
-                                    >
-                                        Remember Me
-                                    </Form.Label>
+                                        <Form.Check.Input
+                                            type="checkbox"
+                                            className="custom-control-input"
+                                            id="customCheck1"
+                                        />
+                                        <Form.Label
+                                            className="custom-control-label"
+                                            htmlFor="customCheck1"
+                                        >
+                                            Remember Me
+                                        </Form.Label>
                                     </div>
                                     <Button type="submit" className="btn btn-primary float-end">
-                                    Sign in
+                                        Sign in
                                     </Button>
                                 </div>
                                     <div className="sign-info">

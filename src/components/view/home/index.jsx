@@ -241,10 +241,10 @@ export default function HomeDashboard() {
                                  </Table>
                                     </Tab>
                                     <Tab eventKey="profile" title="Profile">
-                                    Tab content for Profile
+                                       Tab content for Profile
                                     </Tab>
                                     <Tab eventKey="contact" title="Contact" disabled>
-                                    Tab content for Contact
+                                       Tab content for Contact
                                     </Tab>
                                  </Tabs>
                               </div>

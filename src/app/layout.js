@@ -37,10 +37,10 @@ export default function RootLayout({ children }) {
             <SideBarWrapper>
               <ContentPage>
                 <NavbarsWrapper />
-                      <Container fluid>
-                        {children}
-                      </Container>
-                      <FooterWrapper />  
+                    <Container fluid>
+                      {children}
+                    </Container>
+                    <FooterWrapper />  
               </ContentPage>          
             </SideBarWrapper>
           </Fragment>

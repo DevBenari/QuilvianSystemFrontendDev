@@ -1,6 +1,8 @@
 'use client';
 // components/ScrollLayout.js
 import { useEffect } from 'react';
+import store from '@/lib/state/store';
+import { Provider } from 'react-redux';
 
 export default function ScrollLayout({ children }) {
   useEffect(() => {
@@ -8,5 +10,11 @@ export default function ScrollLayout({ children }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  return <>{children}</>;
+  return (
+    <>
+      <Provider store={store} >
+        {children}
+      </Provider>
+    </>
+  )
 }

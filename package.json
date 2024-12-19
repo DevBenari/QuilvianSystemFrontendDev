@@ -22,6 +22,7 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^2.4.0",
+    "@remixicon/react": "^4.5.0",
     "animate.css": "^4.1.1",
     "apexcharts": "^4.1.0",
     "axios": "^1.7.9",

@@ -29,7 +29,7 @@ import {
                     <SidebarMenu
                         isTag="true"
                         pathname="/pendaftaran"
-                        title="pendaftaran"
+                        title="Pendaftaran"
                     >
                         <i className="ri-briefcase-4-fill"></i>
                     </SidebarMenu>
