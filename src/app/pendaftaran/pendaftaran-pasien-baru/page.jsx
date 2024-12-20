@@ -1,19 +1,20 @@
 'use client'
 import TextField from "@/components/ui/text-field";
-import React from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import {
     Col,
     Form,
     Row,
   } from "react-bootstrap";
-import { FormProvider, useForm } from "react-hook-form";;
+import { FormProvider, set, useForm } from "react-hook-form";;
 import RadioInput from "@/components/ui/radio-input";
 import SelectField from "@/components/ui/select-field";
 import DateInput from "@/components/ui/date-input";
 import TextArea from "@/components/ui/textArea-field";
+import dataWilayah from "@/utils/config";
 const PendaftaranPasienBaru = () => {
     const methods = useForm({
-        defaultValues:{
+        defaultValues: {
             title: '',
             no_rm: '',
             no_ktp: '',
@@ -25,15 +26,54 @@ const PendaftaranPasienBaru = () => {
             statusPasien: '',
             suku: '',
             agama: '',
-            kewaranegaraan: '',
+            kewarganegaraan: '',
             negara: '',
-            
         },
         mode: 'onSubmit'
-    })
+    });
+
+    const { setValue, watch } = methods;
+    const title = watch('title');
+    const kewarganegaraan = watch('kewarganegaraan');
+    const negara = watch('negara');
+
+    useEffect(() => {
+        // Hanya memanggil setValue jika nilai title berubah
+        if (title === 'Mr' || title === 'Tn' || title === 'Ms') {
+            setValue('jenisKelamin', 'Laki-Laki');
+        } else if (title === 'Mrs' || title === 'Miss' || title === 'Ny' || title === 'Nn') {
+            setValue('jenisKelamin', 'Perempuan');
+        } else {
+            setValue('jenisKelamin', '');
+        }
+    }, [title, setValue]);
+
+    useEffect(() => {
+        // Mengoptimalkan pemanggilan setValue berdasarkan kewarganegaraan dan negara
+        if (kewarganegaraan === 'WNI' && negara !== 'Indonesia') {
+            setValue('negara', 'Indonesia');
+        } else if (kewarganegaraan === 'WNA' && negara !== negara) {
+            setValue('negara', negara);
+        }
+    }, [kewarganegaraan, negara, setValue]);
+
+    const [selectedProvinsi, setSelectedProvinsi] = useState("");
+    const [filteredKabupaten, setFilteredKabupaten] = useState([]);
+    const [filteredKecamatan, setFilteredKecamatan] = useState([]);
+
+    // Gunakan useCallback untuk mencegah pembuatan ulang fungsi handleProvinsiChange
+    const handleProvinsiChange = useCallback((provinsi) => {
+        setSelectedProvinsi(provinsi);
+
+        // Filter kabupaten berdasarkan provinsi
+        const selected = dataWilayah.find((item) => item.provinsi === provinsi);
+        setFilteredKabupaten(selected ? selected.kabupaten : []);
+        const selectedKabupaten = selected.kabupaten.find((item) => item.nama === selected.kabupaten.nama);
+        setFilteredKecamatan(selectedKabupaten ? selectedKabupaten.kecamatan : []);
+    }, []);
 
     const onSubmit = (data) => {
-        console.log(data)
+        console.log(data);
     }
     return (
         <FormProvider {...methods} >
@@ -242,27 +282,28 @@ const PendaftaranPasienBaru = () => {
                                                 className="d-flex gap-5 "
                                             />
                                         </div>
-                                        <Col lg="6" >
-                                            <SelectField 
-                                                name="namaNegara"
-                                                label="Negara"
-                                                options={[
-                                                    {label: "Indonesia", value: "indonesia"},
-                                                    {label: "Amerika ", value: "amerika"},
-                                                    {label: "Papua Nuginie", value: "papuaNuginie"},
-                                                    {label: "Nigeria", value: "nigeria"},
-                                                    {label: "Mesir", value: "mesir"},
-                                                    {label: "Selandia Baru", value: "selandiaBaru"},
-                                                    {label: "Thailand", value: "thailand"},
-                                                ]}
-                                                placeholder="Pilih Negara"
-                                                rules={{ required: 'Negara is required' }}
-                                                className="mb-3"
-                                            />
-                                        </Col>
+                                        {kewarganegaraan === 'WNA' && (
+                                            <Col lg="6">
+                                                <SelectField
+                                                    name="negara"
+                                                    label="Negara"
+                                                    options={[
+                                                        { label: 'Amerika', value: 'amerika' },
+                                                        { label: 'Papua Nugini', value: 'papuaNugini' },
+                                                        { label: 'Nigeria', value: 'nigeria' },
+                                                        { label: 'Mesir', value: 'mesir' },
+                                                        { label: 'Selandia Baru', value: 'selandiaBaru' },
+                                                        { label: 'Thailand', value: 'thailand' },
+                                                    ]}
+                                                    placeholder="Pilih Negara"
+                                                    rules={{ required: 'Negara is required' }}
+                                                    className="mb-3"
+                                                />
+                                            </Col>
+                                        )}
                                     </Col>
 
-                                    <Col lg="12" className="my-3">
+                                    <Col lg="12" >
                                         <Col lg="6">
                                             <SelectField 
                                                 name="namaPendidikanTerakhir"
@@ -280,17 +321,66 @@ const PendaftaranPasienBaru = () => {
                                             />
                                         </Col>
                                     </Col>
-                                    <Col lg="12" className="my-3">
-                                        <Col lg="6">
-                                        <TextArea
-                                            label="Alamat Domisili"
-                                            name="alamatDomisili"
-                                            placeholder="Masukkan alamat Domisili Pasien..."
-                                            rules={{ required: 'alamat Domisili Pasien harus diisi' }}
-                                            rows={5}
-                                        />
-                                        </Col>
+                                    <Col lg="12" >
+                                        <Row>
+                                            <Col lg="6">
+                                                <TextArea
+                                                    label="Alamat Domisili"
+                                                    name="alamatDomisili"
+                                                    placeholder="Masukkan alamat Domisili Pasien..."
+                                                    rules={{ required: 'alamat Domisili Pasien harus diisi' }}
+                                                    rows={5}
+                                                />
+                                            </Col>
+                                            <Col lg="6">
+                                                <TextArea
+                                                    label="Informasi Alamat *"
+                                                    name="informasiAlamat"
+                                                    placeholder="Masukkan Informasi Alamat Pasien..."
+                                                    rules={{ required: 'Informasi Alamat Pasien harus diisi' }}
+                                                    rows={5}
+                                                />
+                                            </Col>
+                                        </Row>
                                     </Col>
+                                    <Col lg="6">
+                                        <SelectField 
+                                            name="provinsi"
+                                            label="Provinsi"
+                                            options={dataWilayah.map((items) => ({ label: items.provinsi, value: items.provinsi }))}
+                                            placeholder="Pilih Provinsi"
+                                            rules={{ required: 'Provinsi is required' }}
+                                            className="mb-3"
+                                            onChange={(e) => handleProvinsiChange(e.target.value)}
+                                        />
+                                    </Col>
+                                    <Col lg="6">
+                                        <SelectField 
+                                            name="kabupaten"
+                                            label="Kabupaten"
+                                            options={filteredKabupaten.map((item) => ({
+                                                label: item.nama,
+                                                value: item.nama,
+                                              }))}
+                                            placeholder="Pilih Kabupaten"
+                                            rules={{ required: 'Kabupaten is required' }}
+                                            className="mb-3"
+                                        />
+                                    </Col>
+                                    <Col lg="6">
+                                        <SelectField 
+                                            name="kecamatan"
+                                            label="Kecamatan"
+                                            options={filteredKecamatan.map((item) => ({
+                                                label: item.nama,
+                                                value: item.nama,
+                                              }))}
+                                            placeholder="Pilih Kecamatan"
+                                            rules={{ required: 'Kecamatan is required' }}
+                                            className="mb-3"
+                                        />
+                                    </Col>
+
                                     
                                 </Row>
                             </div>

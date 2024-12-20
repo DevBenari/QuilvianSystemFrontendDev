@@ -7,7 +7,7 @@ const SelectField = ({ name, label, options, rules, placeholder, className, ...p
     const {control} = useFormContext();
     const {field, fieldState:{error}} = useController({name, control,rules});
     return (
-        <Form.Group >
+        <Form.Group className={className}>
             {label && <Form.Label>{label}</Form.Label>}
         <FormSelect {...field} {...props} isInvalid={!!error} className={className}>
             <option value="">{placeholder || 'Select an option'}</option>
