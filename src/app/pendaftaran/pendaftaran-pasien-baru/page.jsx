@@ -6,12 +6,13 @@ import {
     Form,
     Row,
   } from "react-bootstrap";
-import { FormProvider, set, useForm } from "react-hook-form";;
+import { FormProvider, useForm } from "react-hook-form";;
 import RadioInput from "@/components/ui/radio-input";
 import SelectField from "@/components/ui/select-field";
 import DateInput from "@/components/ui/date-input";
 import TextArea from "@/components/ui/textArea-field";
 import dataWilayah from "@/utils/config";
+import UploadPhotoField from "@/components/ui/uploadPhoto-field";
 const PendaftaranPasienBaru = () => {
     const methods = useForm({
         defaultValues: {
@@ -28,6 +29,16 @@ const PendaftaranPasienBaru = () => {
             agama: '',
             kewarganegaraan: '',
             negara: '',
+            pasien_provinsi: '',
+            pasien_kabupaten: '',
+            pasien_kecamatan: '',
+            pasien_kelurahan: '',
+            // Data keluarga
+            keluarga_provinsi: '',
+            keluarga_kabupaten: '',
+            keluarga_kecamatan: '',
+            keluarga_kelurahan: '',
+            photoPasien: '',
         },
         mode: 'onSubmit'
     });
@@ -57,20 +68,53 @@ const PendaftaranPasienBaru = () => {
         }
     }, [kewarganegaraan, negara, setValue]);
 
-    const [selectedProvinsi, setSelectedProvinsi] = useState("");
-    const [filteredKabupaten, setFilteredKabupaten] = useState([]);
-    const [filteredKecamatan, setFilteredKecamatan] = useState([]);
+    const [pasienSelectedProvinsi, setPasienSelectedProvinsi] = useState("");
+    const [pasienFilteredKabupaten, setPasienFilteredKabupaten] = useState([]);
+    const [pasienFilteredKecamatan, setPasienFilteredKecamatan] = useState([]);
+    const [pasienFilteredKelurahan, setPasienFilteredKelurahan] = useState([]);
+
+    const [keluargaSelectedProvinsi, setKeluargaSelectedProvinsi] = useState("");
+    const [keluargaFilteredKabupaten, setKeluargaFilteredKabupaten] = useState([]);
+    const [keluargaFilteredKecamatan, setKeluargaFilteredKecamatan] = useState([]);
+    const [keluargaFilteredKelurahan, setKeluargaFilteredKelurahan] = useState([]);
+
 
     // Gunakan useCallback untuk mencegah pembuatan ulang fungsi handleProvinsiChange
-    const handleProvinsiChange = useCallback((provinsi) => {
-        setSelectedProvinsi(provinsi);
+   const handleChange = useCallback((type, field, value) => {
+    if (type === "pasien") {
+        if (field === "provinsi") {
+            setPasienSelectedProvinsi(value);
+            const selected = dataWilayah.find((item) => item.provinsi === value);
+            setPasienFilteredKabupaten(selected ? selected.kabupaten : []);
+            setValue("pasien_provinsi", value);
+        } else if (field === "kabupaten") {
+            const selectedKabupaten = pasienFilteredKabupaten.find((item) => item.nama === value);
+            setPasienFilteredKecamatan(selectedKabupaten ? selectedKabupaten.kecamatan : []);
+            setValue("pasien_kabupaten", value);
+        } else if (field === "kecamatan") {
+            const selectedKecamatan = pasienFilteredKecamatan.find((item) => item.nama === value);
+            setPasienFilteredKelurahan(selectedKecamatan ? selectedKecamatan.kelurahan : []);
+            setValue("pasien_kecamatan", value);
+        }
+    } else if (type === "keluarga") {
+        if (field === "provinsi") {
+            setKeluargaSelectedProvinsi(value);
+            const selected = dataWilayah.find((item) => item.provinsi === value);
+            setKeluargaFilteredKabupaten(selected ? selected.kabupaten : []);
+            setValue("keluarga_provinsi", value);
+        } else if (field === "kabupaten") {
+            const selectedKabupaten = keluargaFilteredKabupaten.find((item) => item.nama === value);
+            setKeluargaFilteredKecamatan(selectedKabupaten ? selectedKabupaten.kecamatan : []);
+            setValue("keluarga_kabupaten", value);
+        } else if (field === "kecamatan") {
+            const selectedKecamatan = keluargaFilteredKecamatan.find((item) => item.nama === value);
+            setKeluargaFilteredKelurahan(selectedKecamatan ? selectedKecamatan.kelurahan : []);
+            setValue("keluarga_kecamatan", value);
+        }
+    }
+}, [ pasienFilteredKabupaten, pasienFilteredKecamatan, keluargaFilteredKabupaten, keluargaFilteredKecamatan,setValue]);
 
-        // Filter kabupaten berdasarkan provinsi
-        const selected = dataWilayah.find((item) => item.provinsi === provinsi);
-        setFilteredKabupaten(selected ? selected.kabupaten : []);
-        const selectedKabupaten = selected.kabupaten.find((item) => item.nama === selected.kabupaten.nama);
-        setFilteredKecamatan(selectedKabupaten ? selectedKabupaten.kecamatan : []);
-    }, []);
+    
 
     const onSubmit = (data) => {
         console.log(data);
@@ -81,7 +125,7 @@ const PendaftaranPasienBaru = () => {
                 <div className="iq-card">
                     <div className="iq-card-header d-flex justify-content-between">
                         <div className="iq-header-title">
-                            <h4 className="card-title tracking-wide"> Form Pendaftaran Identitas Pasien Baru</h4>
+                            <h3 className="card-title tracking-wide"> Form Pendaftaran Identitas Pasien Baru</h3>
                         </div>
                     </div>
                     <div className="card-body">
@@ -101,7 +145,7 @@ const PendaftaranPasienBaru = () => {
                             </div>
                             <div className="iq-card-header m-1">
                                 <div className="iq-header-title">
-                                    <h5 className="card-title my-2 "> Identitas Pasien</h5>
+                                    <h4 className="card-title my-2 "> Identitas Pasien *</h4>
                                 </div>
                                 <Row>
                                     <Col lg="12" className="my-3 ">
@@ -193,11 +237,11 @@ const PendaftaranPasienBaru = () => {
                                             placeholder="Enter Nama Lengkap Sendiri"
                                             className="form-control mb-0"
                                             rules={{
-                                            required: 'Nama Lengkap Sendiri is required',
-                                            pattern: {
-                                                value:2,
-                                                message: 'Invalid Nama Lengkap Sendiri',
-                                            },
+                                                required: 'Nama Lengkap Sendiri is required',
+                                                pattern: {
+                                                    value:2,
+                                                    message: 'Invalid Nama Lengkap Sendiri',
+                                                },
                                             }}
                                         />
                                     </Col>
@@ -345,44 +389,383 @@ const PendaftaranPasienBaru = () => {
                                     </Col>
                                     <Col lg="6">
                                         <SelectField 
-                                            name="provinsi"
-                                            label="Provinsi"
-                                            options={dataWilayah.map((items) => ({ label: items.provinsi, value: items.provinsi }))}
+                                            name="pasien_provinsi"
+                                            label="Provinsi Pasien"
+                                            options={dataWilayah.map((item) => ({ 
+                                                label: item.provinsi, 
+                                                value: item.provinsi 
+                                            }))}
                                             placeholder="Pilih Provinsi"
-                                            rules={{ required: 'Provinsi is required' }}
+                                            rules={{ required: 'Provinsi pasien harus diisi' }}
                                             className="mb-3"
-                                            onChange={(e) => handleProvinsiChange(e.target.value)}
+                                            onChange={(e) => handleChange("pasien", "provinsi", e.target.value)}
                                         />
                                     </Col>
                                     <Col lg="6">
                                         <SelectField 
-                                            name="kabupaten"
+                                            name="pasien_kabupaten"
                                             label="Kabupaten"
-                                            options={filteredKabupaten.map((item) => ({
+                                            options={pasienFilteredKabupaten.map((item) => ({
                                                 label: item.nama,
                                                 value: item.nama,
                                               }))}
                                             placeholder="Pilih Kabupaten"
                                             rules={{ required: 'Kabupaten is required' }}
                                             className="mb-3"
+                                            onChange={(e) => handleChange("pasien", "kabupaten", e.target.value)}
+                                        />
+                                    </Col>
+                                    <Col lg="6">
+                                        <SelectField
+                                            name="pasien_kecamatan"
+                                            label="Kecamatan"
+                                            options={pasienFilteredKecamatan.map((item) => ({
+                                                label: item.nama,
+                                                value: item.nama,
+                                            }))}
+                                            placeholder="Pilih Kecamatan"
+                                            rules={{ required: 'Kecamatan is required' }}
+                                            className="mb-3"
+                                            onChange={(e) => handleChange("pasien", "kecamatan", e.target.value)} 
                                         />
                                     </Col>
                                     <Col lg="6">
                                         <SelectField 
-                                            name="kecamatan"
-                                            label="Kecamatan"
-                                            options={filteredKecamatan.map((item) => ({
-                                                label: item.nama,
-                                                value: item.nama,
+                                            name="pasien_kelurahan"
+                                            label="Kelurahan"
+                                            options={pasienFilteredKelurahan.map((item) => ({
+                                                label: item,
+                                                value: item,
                                               }))}
-                                            placeholder="Pilih Kecamatan"
-                                            rules={{ required: 'Kecamatan is required' }}
+                                            placeholder="Pilih Kelurahan"
+                                            rules={{ required: 'Kelurahan is required' }}
                                             className="mb-3"
                                         />
                                     </Col>
-
-                                    
+                                    <Col lg="12" >
+                                        <Col lg="3">
+                                              <TextField 
+                                                 label="Kode Pos :"
+                                                 name="kodePos"
+                                                 type="text"
+                                                 placeholder="Enter Kode Pos..."
+                                                 className="form-control mb-0"
+                                                 rules={{
+                                                 required: 'Kode Pos is required',
+                                                 }}
+                                              />
+                                        </Col>
+                                    </Col>
+                                    <Col lg="6">
+                                        <TextField 
+                                            label="No Telp :"
+                                            name="noTelp"
+                                            type="text"
+                                            placeholder="Enter your no Telp..."
+                                            className="form-control mb-0"
+                                            rules={{
+                                                required: 'No Telp is required',
+                                            }}
+                                        />
+                                    </Col>
+                                    <Col lg="6">
+                                        <TextField 
+                                            label="No Hp :"
+                                            name="noHp"
+                                            type="text"
+                                            placeholder="Enter your no Hp..."
+                                            className="form-control mb-0"
+                                            rules={{
+                                                required: 'No Hp is required',
+                                            }}
+                                        />
+                                    </Col>
+                                    <Col lg="6">
+                                        <TextField 
+                                            label="Email :"
+                                            name="email"
+                                            type="email"
+                                            placeholder="Enter email Pasien..."
+                                            className="form-control mb-0"
+                                            rules={{
+                                                required: 'Email is required',
+                                            }}
+                                        />
+                                    </Col>
+                                    <Col lg="6">
+                                        <SelectField 
+                                            name="pekerjaan"
+                                            label="Pekerjaan"
+                                            options={[
+                                                {label: "Anggota DPR", value: "Anggota DPR"},
+                                                {label: "Anggota DPRD", value: "Anggota DPRD"},
+                                                {label: "BIARAWAN/TI", value: "BIARAWAN/TI"},
+                                                {label: "BUMN", value: "BUMN"},
+                                                {label: "BURUH", value: "BURUH"},
+                                                {label: "DOKTER", value: "DOKTER"},
+                                                {label: "GURU / DOSEN", value: "GURU / DOSEN"},
+                                                {label: "MAHASISWA", value: "MAHASISWA"},
+                                            ]}
+                                            placeholder="Pilih Pekerjaan"
+                                            rules={{ required: 'Pekerjaan is required' }}
+                                            className="mb-3"
+                                        />
+                                    </Col>
+                                    <Col lg="6">
+                                        <TextField 
+                                             label="Nama Kantor :"
+                                             name="kantor"
+                                             type="text"
+                                             placeholder="Enter kantor Pasien..."
+                                             className="form-control mb-0"
+                                             rules={{
+                                                 required: 'kantor is required',
+                                             }}
+                                        />
+                                    </Col>
+                                    <Col lg="6">
+                                        <TextField 
+                                             label="Nomor Telepon Kantor :"
+                                             name="kantor"
+                                             type="text"
+                                             placeholder="Enter nomor telepon kantor Pasien..."
+                                             className="form-control mb-0"
+                                             rules={{
+                                                 required: 'nomor telepon kantor is required',
+                                             }}
+                                        />
+                                    </Col>
+                                    <Col lg="12">
+                                        <Col lg="6" >
+                                            <TextArea
+                                                label="Alamat Kantor Pasien :"
+                                                name="alamatKantor"
+                                                placeholder="Masukkan Alamat Kantor Pasien..."
+                                                rules={{ required: 'Alamat Kantor Pasien harus diisi' }}
+                                                rows={5}
+                                            />
+                                        </Col>
+                                    </Col>
                                 </Row>
+                            </div>
+                            <div className="iq-card-header m-1">
+                                <div className="iq-header-title"> 
+                                    <h4 className="card-title my-2 "> Keterangan Kesehatan *</h4>
+                                </div>
+                                <Col lg="2" className="my-3" >
+                                    <TextField 
+                                        label="Golongan Darah :"
+                                        name="golonganDarah"
+                                        type="text"
+                                        placeholder="Enter Golongan Darah..."
+                                        className="form-control mb-0"
+                                        rules={{
+                                            required: 'Golongan Darah is required',
+                                        }}
+                                    />
+                                </Col>
+                                <Col lg="6" className="my-3" >
+                                    <TextArea
+                                        label="Alergi :"
+                                        name="alergi"
+                                        placeholder="Enter riwayat alergi Pasien..."
+                                        rules={{ required: 'data riwayat alergi pasien harus diisi' }}
+                                        rows={5}
+                                    />
+                                </Col>
+                            </div>
+                            <div className="iq-card-header m-1">
+                                <div className="iq-header-title"> 
+                                    <h4 className="card-title my-2 "> Keterangan Keluarga *</h4>
+                                </div>
+                                <Col lg="6"  >
+                                    <TextField 
+                                        label="Keluarga Terdekat yang dapat dihubungi :"
+                                        name="keluargaTerdekat"
+                                        type="text"
+                                        placeholder="Enter Keluarga Terdekat..."
+                                        className="form-control mb-0"
+                                        rules={{
+                                            required: 'Keluarga Terdekat is required',
+                                        }}
+                                    />
+                                </Col>
+                                <Col lg="6"  >
+                                    <SelectField 
+                                        name="hubunganKeluarga"
+                                        label="Hubungan Keluarga * : "
+                                        options={[
+                                            {label: "Kandung", value: "Kandung"},
+                                            {label: "Ipar ", value: "Ipar"},
+                                            {label: "Paman", value: "Paman"},
+                                            {label: "Lainnya", value: "Lainnya"},
+                                        ]}
+                                        placeholder="Pilih Hubungan Keluarga"
+                                        rules={{ required: 'Hubungan Keluarga" is required' }}
+                                        className="mb-3"
+                                    />
+                                </Col>
+                                <Col lg="6"  >
+                                    <TextField 
+                                        label="Karyawan Rumah Sakit :"
+                                        name="karyawanRumahSakit"
+                                        type="text"
+                                        placeholder="Enter Karyawan Rumah Sakit..."
+                                        className="form-control mb-0"
+                                        rules={{
+                                            required: 'Karyawan Rumah Sakit is required',
+                                        }}
+                                    />
+                                </Col>
+                                <Col lg="6">
+                                    <TextArea
+                                        label="Alamat Keluarga / Domisili Sekarang :*"
+                                        name="alamatKeluargaDomisili"
+                                        placeholder="Masukkan alamatKeluarga Domisili Saat ini..."
+                                        rules={{ required: 'alamat Keluarga Domisili harus diisi' }}
+                                        rows={5}
+                                    />
+                                </Col>
+                                <Col lg="12" >
+                                    <Row>
+                                        <Col lg="6" >
+                                            <SelectField 
+                                                name="keluarga_provinsi"
+                                                label="Provinsi"
+                                                options={dataWilayah.map((item) => ({ label: item.provinsi, value: item.provinsi }))}
+                                                placeholder="Pilih Provinsi"
+                                                rules={{ required: 'Provinsi is required' }}
+                                                className="mb-3"
+                                                onChange={(e) => handleChange("keluarga", "provinsi", e.target.value)}
+                                            />
+                                        </Col>
+                                        <Col lg="6">
+                                            <SelectField 
+                                                name="keluarga_kabupaten"
+                                                label="Kabupaten"
+                                                options={keluargaFilteredKabupaten.map((item) => ({
+                                                    label: item.nama,
+                                                    value: item.nama,
+                                                }))}
+                                                placeholder="Pilih Kabupaten"
+                                                rules={{ required: 'Kabupaten is required' }}
+                                                className="mb-3"
+                                                onChange={(e) => handleChange("keluarga", "kabupaten", e.target.value)}
+                                            />
+                                        </Col>
+                                        <Col lg="6">
+                                            <SelectField 
+                                                name="keluarga_kecamatan"
+                                                label="Kecamatan"
+                                                options={keluargaFilteredKecamatan.map((item) => ({
+                                                    label: item.nama,
+                                                    value: item.nama,
+                                                }))}
+                                                placeholder="Pilih Kecamatan"
+                                                rules={{ required: 'Kecamatan is required' }}
+                                                className="mb-3"
+                                                onChange={(e) => handleChange("keluarga", "kecamatan", e.target.value)}
+                                            />
+                                        </Col>
+                                        <Col lg="6">
+                                            <SelectField 
+                                                name="keluarga_kelurahan"
+                                                label="Kelurahan"
+                                                options={keluargaFilteredKelurahan.map((item) => ({
+                                                    label: item,
+                                                    value: item,
+                                                }))}
+                                                placeholder="Pilih Kelurahan"
+                                                rules={{ required: 'Kelurahan is required' }}
+                                                className="mb-3"
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col lg="12" >
+                                    <Row>
+                                        <Col lg="6">
+                                            <TextField 
+                                                label="No Telp :"
+                                                name="noTelp"
+                                                type="text"
+                                                placeholder="Enter your no Telp..."
+                                                className="form-control mb-0"
+                                                rules={{
+                                                    required: 'No Telp is required',
+                                                }}
+                                            />
+                                        </Col>
+                                        <Col lg="6">
+                                            <TextField 
+                                                label="No Hp :"
+                                                name="noHp"
+                                                type="text"
+                                                placeholder="Enter your no Hp..."
+                                                className="form-control mb-0"
+                                                rules={{
+                                                    required: 'No Hp is required',
+                                                }}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col lg="6">
+                                    <TextField 
+                                        label="Nama Ayah :"
+                                        name="ayah"
+                                        type="text"
+                                        placeholder="Enter your ayah..."
+                                        className="form-control mb-0"
+                                        rules={{
+                                            required: 'Ayah is required',
+                                        }}
+                                    />
+                                </Col>
+                                <Col lg="6">
+                                    <TextField 
+                                        label="Nama Ibu :"
+                                        name="Ibu"
+                                        type="text"
+                                        placeholder="Enter your Ibu..."
+                                        className="form-control mb-0"
+                                        rules={{
+                                            required: 'Ibu is required',
+                                        }}
+                                    />
+                                </Col>
+                                <Col lg="6">
+                                    <TextField 
+                                        label="Nama Sutri :"
+                                        name="Sutri"
+                                        type="text"
+                                        placeholder="Enter your Sutri..."
+                                        className="form-control mb-0"
+                                        rules={{
+                                            required: 'Sutri is required',
+                                        }}
+                                    />
+                                </Col>
+                                <Col lg="6">
+                                    <TextField 
+                                        label="No KTP / Passport Sutri :"
+                                        name="indentitasSutri"
+                                        type="text"
+                                        placeholder="Enter your No KTP / Passport Sutri..."
+                                        className="form-control mb-0"
+                                        rules={{
+                                            required: 'No KTP / Passport Sutri is required',
+                                        }}
+                                    />
+                                </Col>
+                                <Col lg="6">
+                                    <UploadPhotoField
+                                        name="fotoPasien"
+                                        label="Upload Photo"
+                                        rules={{ required: 'This field is required' }} // Optional validation rules
+                                    />
+                                </Col>
+                                
                             </div>
                         </Form>
                     </div>
