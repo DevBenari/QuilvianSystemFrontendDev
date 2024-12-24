@@ -32,7 +32,7 @@ const UploadPhotoField = ({ label, name, rules, ...props }) => {
   return (
     <Form.Group className="mb-3">
       {/* Label Input */}
-      {label && <Form.Label>{label}</Form.Label>}
+      {label && <Form.Label className='m-2'>{label}</Form.Label>}
 
       {/* Controller for Uploading Photo */}
       <Controller
@@ -50,7 +50,7 @@ const UploadPhotoField = ({ label, name, rules, ...props }) => {
                   onChange={handleFileChange}
                   {...field} // Bind form field to input
                 />
-                <button type="button" onClick={() => setIsWebcamActive(true)}>
+                <button className='btn btn-success' type="button" onClick={() => setIsWebcamActive(true)}>
                   Capture from Webcam
                 </button>
               </>

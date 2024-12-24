@@ -7,7 +7,7 @@ const CustomToggle = React.forwardRef(({children, variant, onClick}, ref) => {
     // const ref = useRef(null)
     return (
         <Link 
-            href={"/#"}
+            href={""}
             ref={ref}
             onClick={(event) => {
                 event.preventDefault();

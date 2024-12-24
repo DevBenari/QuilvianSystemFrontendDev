@@ -12,23 +12,23 @@ import user4 from "@/assets/images/user/04.jpg";
 import user5 from "@/assets/images/user/05.jpg";
 
 const Navbars = memo(() => {
-    const [isFixed, setIsFixed] = useState(false);
+    // const [isFixed, setIsFixed] = useState(false);
 
-    useEffect(() => {
-        const handleScroll = () => {
-          if (window.scrollY >= 75) {
-            setIsFixed(true);
-          } else {
-            setIsFixed(false);
-          }
-        };
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //       if (window.scrollY >= 75) {
+    //         setIsFixed(true);
+    //       } else {
+    //         setIsFixed(false);
+    //       }
+    //     };
     
-        window.addEventListener("scroll", handleScroll);
+    //     window.addEventListener("scroll", handleScroll);
     
-        return () => {
-          window.removeEventListener("scroll", handleScroll);
-        };
-      }, []);
+    //     return () => {
+    //       window.removeEventListener("scroll", handleScroll);
+    //     };
+    //   }, []);
 
     const [isClicked, setIsClicked] = useState(false);
     const minisidebar = () => {
@@ -37,8 +37,8 @@ const Navbars = memo(() => {
     };
     return (
         <Fragment>
-        <div className={`iq-top-navbar ${isFixed ? "fixed-header" : ""}`}>
-            <div className="iq-navbar-custom">
+        <div className={`iq-top-navbar fixed-header `}>
+            <div className="iq-navbar-custom ">
             
             <Navbar expand="lg" variant="light" className="p-0">
                 <div className="iq-search-bar">

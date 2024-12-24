@@ -1,7 +1,7 @@
 import styles from '../page.module.css'
 const PendaftaranLayout = ({children}) => {
     return (
-        <div className={styles.page}>
+        <div >
             {children}
         </div>
     )

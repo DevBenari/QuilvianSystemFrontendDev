@@ -1,12 +1,14 @@
-import FormValidations from "@/components/features/formValidations/formValidations"
+
+import TopNav from "@/components/features/navbars/top-nav"
 import DashboardPendaftaran from "@/components/view/pendaftaran-pasien/dashboard-pendaftaran"
 import React, { Fragment } from "react"
-import { FormProvider } from "react-hook-form"
+
 
 
 const PendaftaranPasien = () => {
     return (
         <Fragment>
+            <TopNav />
             <DashboardPendaftaran />
         </Fragment>
     )
