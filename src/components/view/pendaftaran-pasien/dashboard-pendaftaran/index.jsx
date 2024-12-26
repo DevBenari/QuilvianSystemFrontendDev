@@ -1,6 +1,7 @@
 'use client'
 import DateInput from "@/components/ui/date-input"
 import TextField from "@/components/ui/text-field"
+import { dataPasien } from "@/utils/config"
 
 import axios from "axios"
 import Link from "next/link"
@@ -31,6 +32,40 @@ const DashboardPendaftaran = memo(() => {
 
     // }
 
+    const [filters, setFilters] = useState({
+        noRekamMedis: "",
+        nama: "",
+        noTelp: "",
+    });
+    const [filteredPatients, setFilteredPatients] = useState(dataPasien);
+
+    // Fungsi untuk mengupdate filter
+    const handleFilterChange = (key, value) => {
+        const newFilters = { ...filters, [key]: value };
+        setFilters(newFilters);
+        applyFilters(newFilters);
+    };
+
+    // Fungsi untuk memfilter data pasien
+    const applyFilters = (filters) => {
+        const filtered = dataPasien.filter((patient) => {
+            const matchNoRekamMedis = filters.noRekamMedis
+                ? patient.noRekamMedis?.toLowerCase().includes(filters.noRekamMedis.toLowerCase())
+                : true;
+            const matchNama = filters.nama
+                ? patient.nama?.toLowerCase().includes(filters.nama.toLowerCase())
+                : true;
+            const matchNoTelp = filters.noTelp
+                ? patient.noTelp?.toLowerCase().includes(filters.noTelp.toLowerCase())
+                : true;
+    
+            return matchNoRekamMedis && matchNama && matchNoTelp;
+        });
+        setFilteredPatients(filtered);
+    };
+    
+
+
     return (
         <FormProvider {...methods}>
             <Col lg="12" className="mt-5">
@@ -38,40 +73,40 @@ const DashboardPendaftaran = memo(() => {
                     <Col xs="6" lg="3">
                         <TextField 
                             label="No Rekam Medis :"
-                            name="nomerRekamMedis"
+                            name="noRekamMedis"
                             type="text"
                             placeholder="Enter your No Rekam Medis..."
                             className="form-control mb-0"
                             rules={{
                                 required: 'No Rekam Medis is required',
                             }}
-                            onChange={(e) => console.log(e.target.value)}
+                            onChange={(e) => handleFilterChange("noRekamMedis", e.target.value)}
                         />
                     </Col>
                     <Col xs="6" lg="3">
                         <TextField 
                             label="Nama :"
-                            name="namaPasien"
+                            name="nama"
                             type="text"
                             placeholder="Enter your Nama Pasien..."
                             className="form-control mb-0"
                             rules={{
                                 required: 'Nama Pasien is required',
                             }}
-                            onChange={(e) => console.log(e.target.value)}
+                            onChange={(e) => handleFilterChange("nama", e.target.value)}
                         />
                     </Col>
                     <Col xs="6" lg="3">
                         <TextField 
                             label="No Telp :"
-                            name="nomerRekamMedis"
+                            name="noTelp"
                             type="text"
                             placeholder="Enter your No Rekam Medis..."
                             className="form-control mb-0"
                             rules={{
                                 required: 'No Rekam Medis is required',
                             }}
-                            onChange={(e) => console.log(e.target.value)}
+                            onChange={(e) => handleFilterChange("noTelp", e.target.value)}
                         />
                     </Col>
                     <Col xs="6" lg="3">
@@ -90,7 +125,7 @@ const DashboardPendaftaran = memo(() => {
                         <div className="iq-card">
                             <div className="iq-card-header d-flex justify-content-between">
                                 <div className="iq-header-title">
-                                    <h4 className="card-title">Editable Table</h4>
+                                    <h4 className="card-title font-widest">Tabel Registrasi Pasien</h4>
                                 </div>
                                 </div>
                                 <div className="iq-card-body">
@@ -104,76 +139,36 @@ const DashboardPendaftaran = memo(() => {
                                         <Table className="text-center" bordered striped>
                                             <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Age</th>
-                                                <th>Company Name</th>
-                                                <th>Country</th>
-                                                <th>City</th>
-                                                <th>Sort</th>
-                                                <th>Remove</th>
+                                                <th>ID</th>
+                                                <th>No Rekam Medis</th>
+                                                <th>Nama</th>
+                                                <th>Jenis Kelamin</th>
+                                                <th>Tanggal Lahir</th>
+                                                <th>Umur</th>
+                                                <th>No Telp</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td contenteditable="true">Gio Metric</td>
-                                                <td contenteditable="true">25</td>
-                                                <td contenteditable="true">Deepends</td>
-                                                <td contenteditable="true">Spain</td>
-                                                <td contenteditable="true">Madrid</td>
-                                                <td>
-                                                    <span className="table-up me-1"><Link href={"/"} className="indigo-text"><i className="fa fa-long-arrow-up" aria-hidden="true"></i></Link></span>
-                                                    <span className="table-down"><Link href={"/"} className="indigo-text"><i className="fa fa-long-arrow-down" aria-hidden="true"></i></Link></span>
-                                                </td>
-                                                <td>
+                                                {filteredPatients.map((item, index) => (
+                                                    <tr key={index}>
+                                                        <td>{item.id}</td>
+                                                        <td>{item.noRekamMedis}</td>
+                                                        <td>{item.nama}</td>
+                                                        <td>{item.jenisKelamin}</td>
+                                                        <td>{item.tglLahir}</td>
+                                                        <td>{item.umur}</td>
+                                                        <td>{item.noTelp}</td>
+                                                        <td>
+                                                            <span className="table-remove"><button type="button"
+                                                                className="btn iq-bg-danger btn-rounded btn-sm my-0">Remove</button></span>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                {/* <td>
                                                     <span className="table-remove"><button type="button"
                                                         className="btn iq-bg-danger btn-rounded btn-sm my-0">Remove</button></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td contenteditable="true">Manny Petty</td>
-                                                <td contenteditable="true">45</td>
-                                                <td contenteditable="true">Insectus</td>
-                                                <td contenteditable="true">France</td>
-                                                <td contenteditable="true">San Francisco</td>
-                                                <td>
-                                                    <span className="table-up me-1"><Link href={"/"} className="indigo-text"><i className="fa fa-long-arrow-up" aria-hidden="true"></i></Link></span>
-                                                    <span className="table-down"><Link href={"/"} className="indigo-text"><i className="fa fa-long-arrow-down" aria-hidden="true"></i></Link></span>
-                                                </td>
-                                                <td>
-                                                    <span className="table-remove"><button type="button"
-                                                        className="btn iq-bg-danger btn-rounded btn-sm my-0">Remove</button></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td contenteditable="true">Lucy Tania</td>
-                                                <td contenteditable="true">26</td>
-                                                <td contenteditable="true">Isotronic</td>
-                                                <td contenteditable="true">Germany</td>
-                                                <td contenteditable="true">Frankfurt am Main</td>
-                                                <td>
-                                                    <span className="table-up me-1"><Link href={"/"} className="indigo-text"><i className="fa fa-long-arrow-up" aria-hidden="true"></i></Link></span>
-                                                    <span className="table-down"><Link href={"/"} className="indigo-text"><i className="fa fa-long-arrow-down" aria-hidden="true"></i></Link></span>
-                                                </td>
-                                                <td>
-                                                    <span className="table-remove"><button type="button"
-                                                        className="btn iq-bg-danger btn-rounded btn-sm my-0">Remove</button></span>
-                                                </td>
-                                            </tr>
-                                            <tr className="hide">
-                                                <td contenteditable="true">Anna Mull</td>
-                                                <td contenteditable="true">35</td>
-                                                <td contenteditable="true">Portica</td>
-                                                <td contenteditable="true">USA</td>
-                                                <td contenteditable="true">Oregon</td>
-                                                <td>
-                                                    <span className="table-up me-1"><Link href={"/"} className="indigo-text"><i className="fa fa-long-arrow-up" aria-hidden="true"></i></Link></span>
-                                                    <span className="table-down"><Link href={"/"} className="indigo-text"><i className="fa fa-long-arrow-down" aria-hidden="true"></i></Link></span>
-                                                </td>
-                                                <td>
-                                                    <span className="table-remove"><button type="button"
-                                                        className="btn iq-bg-danger btn-rounded btn-sm my-0">Remove</button></span>
-                                                </td>
-                                            </tr>
+                                                </td> */}
                                             </tbody>
                                         </Table>
                                     </div>
