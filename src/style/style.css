@@ -465,6 +465,18 @@ a:hover {
   width: 180px;
 }
 
+.iq-card-pasien-name {
+  border: 1px solid #eef0f4;
+  padding: 5px 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+  -moz-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+  box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+} 
+
+/* p{
+  margin: 0;
+} */
 
 /*---------------------------------------------------------------------
                              Badge Img Tag

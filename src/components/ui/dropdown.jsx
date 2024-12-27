@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useRef, useState } from "react";
 
 
-const CustomToggle = React.forwardRef(({children, className, href}, ref) => {
+const CustomToggle = React.forwardRef(({children, variant, href}, ref) => {
     // const ref = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
     const handleClick = (event) => {
@@ -16,7 +16,7 @@ const CustomToggle = React.forwardRef(({children, className, href}, ref) => {
             href={`${href}`}
             ref={ref}
             passHref
-            className={className}
+            className={variant}
         >
             {children}
         </Link>

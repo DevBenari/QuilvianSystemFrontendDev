@@ -74,42 +74,97 @@ export const dataPasien = [
 
 
 // menuData.js
-export const menuPendaftaran = [
-    {
-      title: "Pendaftaran",
-      subItems: [
-        { title: "Pasien Baru", href: "/pendaftaran/pendaftaran-pasien-baru" },
-        { title: "Pasien Bayi", href: "/pendaftaran/pendaftaran-pasien-bayi" },
-        { title: "Pasien Luar Laboratorium", href: "/pendaftaran/pasien-luar-laboratorium" },
-        { title: "Pasien Luar Radiologi", href: "/pendaftaran/pasien-luar-radiologi" },
-        { title: "Pasien Luar Rehabilitasi", href: "/pendaftaran/pasien-luar-rehabilitasi" },
-        { title: "Pasien Luar Medical Check Up", href: "/pendaftaran/pasien-luar-medical-check-up" },
-        { title: "Pasien Luar Fasilitas", href: "/pendaftaran/pasien-luar-fasilitas" },
-        { title: "Pasien Luar Ambulance", href: "/pendaftaran/pasien-luar-ambulance" },
-        { title: "Keanggotaan", href: "/pendaftaran/keanggotaan" },
-        // Tambahkan item lainnya sesuai kebutuhan
-      ],
-    },
-    {
-      title: "Perjanjian",
-      subItems: [
-        { title: "Data Pasien Perjanjian", href: "/perjanjian/data-pasien" },
-        { title: "Pasien Perjanjian ODC", href: "/perjanjian/odc" },
-        { title: "Pasien Perjanjian Rawat Jalan", href: "/perjanjian/rawat-jalan" },
-        { title: "Pasien Perjanjian Rawat Inap", href: "/perjanjian/rawat-inap" },
-        { title: "Pasien Perjanjian Radiologi", href: "/perjanjian/radiologi" },
-        { title: "Pasien Perjanjian MCU", href: "/perjanjian/MCU" },
-        { title: "Pasien Perjanjian Operasi", href: "/perjanjian/Operasi" },
-        // Tambahkan item lainnya sesuai kebutuhan
-      ],
-    },
-    // Tambahkan menu lainnya sesuai kebutuhan
-    {
+// export const menuPendaftaran = [
+//     {
+//       title: "Pendaftaran",
+//       subItems: [
+//         { title: "Pasien Baru", href: "/pendaftaran/pendaftaran-pasien-baru" },
+//         { title: "Pasien Bayi", href: "/pendaftaran/pendaftaran-pasien-bayi" },
+//         { title: "Pasien Luar Laboratorium", href: "/pendaftaran/pasien-luar-laboratorium" },
+//         { title: "Pasien Luar Radiologi", href: "/pendaftaran/pasien-luar-radiologi" },
+//         { title: "Pasien Luar Rehabilitasi", href: "/pendaftaran/pasien-luar-rehabilitasi" },
+//         { title: "Pasien Luar Medical Check Up", href: "/pendaftaran/pasien-luar-medical-check-up" },
+//         { title: "Pasien Luar Fasilitas", href: "/pendaftaran/pasien-luar-fasilitas" },
+//         { title: "Pasien Luar Ambulance", href: "/pendaftaran/pasien-luar-ambulance" },
+//         { title: "Keanggotaan", href: "/pendaftaran/keanggotaan" },
+//         // Tambahkan item lainnya sesuai kebutuhan
+//       ],
+//     },
+//     {
+//       title: "Perjanjian",
+//       subItems: [
+//         { title: "Data Pasien Perjanjian", href: "/perjanjian/data-pasien" },
+//         { title: "Pasien Perjanjian ODC", href: "/perjanjian/odc" },
+//         { title: "Pasien Perjanjian Rawat Jalan", href: "/perjanjian/rawat-jalan" },
+//         { title: "Pasien Perjanjian Rawat Inap", href: "/perjanjian/rawat-inap" },
+//         { title: "Pasien Perjanjian Radiologi", href: "/perjanjian/radiologi" },
+//         { title: "Pasien Perjanjian MCU", href: "/perjanjian/MCU" },
+//         { title: "Pasien Perjanjian Operasi", href: "/perjanjian/Operasi" },
+//         // Tambahkan item lainnya sesuai kebutuhan
+//       ],
+//     },
+//     // Tambahkan menu lainnya sesuai kebutuhan
+//     {
+//         title: "Antrian",
+//         subItems: [
+//             { title: "Pengaturan Antrian", href: "/Antrian/pengaturan-antrian" },
+//             { title: "Display Antrian", href: "/Antrian/display-antrian" },
+//         ]
+//     }
+//   ];
+
+  // config.js
+export const menus = {
+    pendaftaran: [
+      {
+        title: "Pendaftaran",
+        subItems: [
+            { title: "Pasien Baru", href: "/pendaftaran/pendaftaran-pasien-baru" },
+            { title: "Pasien Bayi", href: "/pendaftaran/pendaftaran-pasien-bayi" },
+            { title: "Pasien Luar Laboratorium", href: "/pendaftaran/pasien-luar-laboratorium" },
+            { title: "Pasien Luar Radiologi", href: "/pendaftaran/pasien-luar-radiologi" },
+            { title: "Pasien Luar Rehabilitasi", href: "/pendaftaran/pasien-luar-rehabilitasi" },
+            { title: "Pasien Luar Medical Check Up", href: "/pendaftaran/pasien-luar-medical-check-up" },
+            { title: "Pasien Luar Fasilitas", href: "/pendaftaran/pasien-luar-fasilitas" },
+            { title: "Pasien Luar Ambulance", href: "/pendaftaran/pasien-luar-ambulance" },
+            { title: "Keanggotaan", href: "/pendaftaran/keanggotaan" },
+        ],
+      },
+      {
+        title: "Perjanjian",
+        subItems: [
+            { title: "Data Pasien Perjanjian", href: "/perjanjian/data-pasien" },
+            { title: "Pasien Perjanjian ODC", href: "/perjanjian/odc" },
+            { title: "Pasien Perjanjian Rawat Jalan", href: "/perjanjian/rawat-jalan" },
+            { title: "Pasien Perjanjian Rawat Inap", href: "/perjanjian/rawat-inap" },
+            { title: "Pasien Perjanjian Radiologi", href: "/perjanjian/radiologi" },
+            { title: "Pasien Perjanjian MCU", href: "/perjanjian/MCU" },
+            { title: "Pasien Perjanjian Operasi", href: "/perjanjian/Operasi" },
+        ],
+      },
+      {
         title: "Antrian",
         subItems: [
             { title: "Pengaturan Antrian", href: "/Antrian/pengaturan-antrian" },
             { title: "Display Antrian", href: "/Antrian/display-antrian" },
         ]
-    }
-  ];
+      },
+    ],
+    dokter: [
+      {
+        title: "Jadwal Dokter",
+        subItems: [
+          { title: "Lihat Jadwal", href: "/dokter/jadwal" },
+          { title: "Tambah Jadwal", href: "/dokter/tambah-jadwal" },
+        ],
+      },
+      {
+        title: "Dokter Pasien",
+        subItems: [
+          { title: "Pasien Dokter", href: "/dokter/pasien" },
+        ],
+      },
+    ],
+  };
+  
   
