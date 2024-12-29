@@ -2426,6 +2426,10 @@ table.table-box-shadow th {
   width: 300px;
 }
 
+.textField {
+  margin-top: 33px;
+}
+
 .iq-email-search .search-link {
   position: absolute;
   top: 0;

@@ -1,23 +1,33 @@
 'use client'
+import DateInput from "@/components/ui/date-input"
+import TextField from "@/components/ui/text-field"
+import TimeField from "@/components/ui/time-input"
 import { Col, Image, Row, Tab, Nav, Table } from "react-bootstrap"
+import { FormProvider, useForm } from "react-hook-form"
 
 const DokterPage = () => {
+    const methods = useForm({
+        defaultValues: {
+            tekananDarah:'',
+        },
+        mode: 'onSubmit'
+    });
     return (
-        <div className="mt-3">
+        <FormProvider {...methods} className="mt-3">
             <Row>
                 <Col md="3">
                     <div className="iq-card py-2 my-2">
                         <div className="iq-card-header">
                             <Col md="12" className="my-3 " >
                                 <Row>
-                                    <Col xs="4">
+                                    {/* <Col xs="4">
                                         <Image
                                             src="/Images/jamal.jpg"
                                             className="img-fluid rounded w-100 h-100"
                                             alt="user"
                                         />
-                                    </Col>
-                                    <Col xs="8">
+                                    </Col> */}
+                                    <Col xs="12">
                                         <div className="d-flex flex-column gap-2">
                                             <p className="font-size-24 text-black" >Rizki Gunawan Adiputro, spB,dr. <span> (09:00 - 12:00)</span> </p>
                                             <button className="btn btn-primary">mulai</button>
@@ -51,27 +61,27 @@ const DokterPage = () => {
                         </Col>
                     </div>
                 </Col>
-                <Col md="9" className="my-2 iq-card p-3">
+                <Col md="9" className="my-2 iq-card py-3">
                     <div className="iq-card-header">
                         <Col md="12" >
                             <Row>
-                                <Col md="6">
+                                <Col md="5">
                                     <div >
                                         <h5>nama pasien </h5>
                                         <p>Perempuan 16 Apr 1970 (54 Thn 8 Bln 2 Hr)</p>
                                         <button className="btn btn-primary mb-2">History resume</button>
                                     </div>
                                 </Col>
-                                <Col md="6">
+                                <Col md="7">
                                     <Row>
-                                        <Col md="6">
+                                        <Col md="7">
                                             <div>
                                                 <p className="m-0">Waktu Registrasi : 27/12/2024 08:00:00</p>
                                                 <p className="m-0">Waktu Panggil       : 27/12/2024 08:00:00</p>
                                                 <p className="m-0">Selisih Waktu       : 00:00</p>
                                             </div>
                                         </Col>
-                                        <Col md="6">
+                                        <Col md="5">
                                             <div>
                                                 <p className="m-0">Penjamin    : Umum</p>
                                                 <p className="m-0">Alergi      : Disangkal</p>
@@ -85,7 +95,7 @@ const DokterPage = () => {
                     <Col md="12" className="iq-card-header p-2">
                     <div >
                         <Tab.Container defaultActiveKey={"pills-home-fill"}>
-                            <div className="iq-card-header d-flex justify-content-between">
+                            <div className=" d-flex justify-content-between">
                             {/* <div className="iq-header-title">
                                 <h4 className="card-title">Tabs Fill and justify</h4>
                             </div> */}
@@ -226,7 +236,7 @@ const DokterPage = () => {
                                     >
                                         <div>
                                             <Col xs="12" className="iq-card">
-                                                <div >
+                                                <div>
                                                     <h5 className="mb-3">Histori Vital sign</h5>
                                                     <div className="table-responsive-md w-100">
                                                         <Table className="text-center" bordered striped>
@@ -240,13 +250,133 @@ const DokterPage = () => {
                                                             </thead>
                                                             <tbody>                                    
                                                                 <tr >
-                                                                                                            
-                                                                                                                
+                                                                    <td>22-12-2024</td>
+                                                                    <td>08-00-7563</td>
+                                                                    <td>Umum</td>
+                                                                    <td>Dr. Abdul</td>                                           
+                                                                </tr>
+                                                                <tr >
+                                                                    <td>22-12-2024</td>
+                                                                    <td>08-00-7563</td>
+                                                                    <td>Umum</td>
+                                                                    <td>Dr. Abdul</td>                                           
+                                                                </tr>
+                                                                <tr >
+                                                                    <td>22-12-2024</td>
+                                                                    <td>08-00-7563</td>
+                                                                    <td>Umum</td>
+                                                                    <td>Dr. Abdul</td>                                           
                                                                 </tr>
                                                                                                     
                                                             </tbody>
                                                         </Table>
                                                     </div>
+                                                </div>
+                                            </Col>
+                                            <Col xs="12" className="iq-card">
+                                                <div className="iq-card-header">
+                                                    <h5>Tanggal Pengkajian *</h5>
+                                                    <Col xs="12" className="mb-3">
+                                                        <Row>
+                                                            <Col md="6">
+                                                                <div className="mt-3">
+                                                                    <DateInput
+                                                                        name="tanggalPengkajian"
+                                                                        label=""
+                                                                        placeholder={'Enter Tanggal Penkajian'}
+                                                                        rules={{ required: 'Tanggal Penkajian harus diisi' }} // Aturan validasi
+                                                                    />
+                                                                </div>
+                                                            </Col>
+                                                            <Col md="6">
+                                                                <div className="mt-3">
+                                                                    <TimeField 
+                                                                        name="waktuPengkajian"
+                                                                        label=""
+                                                                        placeholder={'Enter Waktu Penkajian'}
+                                                                        rules={{ required: 'Waktu Penkajian harus diisi' }} // Aturan validasi   
+                                                                    />
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                </div>
+                                            </Col>
+                                            <Col xs="12" className="iq-card-header">
+                                                <div>
+                                                    <h5 className="mb-3">Vital Sign *</h5>
+                                                    <Col Col md="7">
+                                                        <Row>
+                                                            <Col xs="5" className="mb-3">
+                                                                <TextField 
+                                                                    name="tekananDarah"
+                                                                    label="TD :  *   "
+                                                                    placeholder={'Enter TD'}
+                                                                    rules={{ required: 'Tekanan Darah harus diisi' }} // Aturan validasi
+                                                                />
+                                                            </Col>
+                                                            <Col xs="auto" className="d-flex align-items-center">
+                                                                <span>/</span>
+                                                            </Col>
+                                                            <Col xs="3" >
+                                                                <TextField 
+                                                                    name="tekananDarahBawah"
+                                                                    className="textField"
+                                                                    label=""
+                                                                    rules={{ required: 'Tekanan Darah harus diisi' }} // Aturan validasi
+                                                                />
+                                                            </Col>
+                                                            <Col xs="auto" className="d-flex align-items-center">
+                                                                 <span>mmHg</span>
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            name="Hr"
+                                                            label="HR :  *"
+                                                            placeholder={'Enter HR'}
+                                                            rules={{ required: 'HR harus diisi' }} 
+                                                        />
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            name="tinggiBadan"
+                                                            label="TB :  *"
+                                                            placeholder={'Enter TB'}
+                                                            rules={{ required: 'TB harus diisi' }} 
+                                                        />
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            name="BeratBadan"
+                                                            label="BB :  *"
+                                                            placeholder={'Enter BB'}
+                                                            rules={{ required: 'BB harus diisi' }} 
+                                                        />
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            name="rr"
+                                                            label="RR :  *"
+                                                            placeholder={'Enter RR'}
+                                                            rules={{ required: 'RR harus diisi' }} 
+                                                        />
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            name="suhu"
+                                                            label="suhu *C :  *"
+                                                            placeholder={'Enter suhu C'}
+                                                            rules={{ required: 'suhu *C harus diisi' }} 
+                                                        />
+                                                    </Col>
+                                                </div>
+                                            </Col>
+                                            <Col xs="12" className="iq-card-header">
+                                                <div>
+                                                    <h5 className="mb-3">Grafik</h5>
+                                                    
                                                 </div>
                                             </Col>
                                         </div>
@@ -258,7 +388,7 @@ const DokterPage = () => {
                     </Col>
                 </Col>
             </Row>
-        </div>
+        </FormProvider>
     )
 }
 
