@@ -35,7 +35,7 @@ import {
                     </SidebarMenu>
                     <SidebarMenu
                         isTag="true"
-                        pathname="/Dokter"
+                        pathname="/dokter"
                         title="Dokter"
                     >
                         <i className="ri-briefcase-4-fill"></i>

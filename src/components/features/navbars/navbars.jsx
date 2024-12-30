@@ -5,11 +5,11 @@ import CustomToggle from "@/components/ui/dropdown";
 import FullScreen from "@/components/ui/fullscreen";
 import Link from "next/link";
 
-import user1 from "@/assets/images/user/1.jpg";
-import user2 from "@/assets/images/user/02.jpg";
-import user3 from "@/assets/images/user/03.jpg";
-import user4 from "@/assets/images/user/04.jpg";
-import user5 from "@/assets/images/user/05.jpg";
+// import user1 from "@/assets/images/user/1.jpg";
+// import user2 from "@/assets/images/user/02.jpg";
+// import user3 from "@/assets/images/user/03.jpg";
+// import user4 from "@/assets/images/user/04.jpg";
+// import user5 from "@/assets/images/user/05.jpg";
 
 const Navbars = memo(() => {
     // const [isFixed, setIsFixed] = useState(false);
@@ -80,14 +80,14 @@ const Navbars = memo(() => {
                 >
                     <ul className="navbar-nav ml-auto navbar-list">
                     {/* <li className="nav-item iq-full-screen"> */}
-                    <div href={"/#"} className="iq-waves-effect" id="btnFullscreen">
+                    <div className="iq-waves-effect" id="btnFullscreen">
                         <FullScreen />
                     </div>
                     {/* </li> */}
                     <Dropdown as="li" className="nav-item">
                     <Dropdown.Toggle
                         as={CustomToggle}
-                        className="search-toggle iq-waves-effect"
+                        // className="search-toggle iq-waves-effect"
                     >
                         <i className="ri-notification-3-fill"></i>
                         <span className="bg-danger dots"></span>
@@ -106,11 +106,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user1}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">Emma Watson Bini</h6>
@@ -124,11 +124,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user2}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">New customer is join</h6>
@@ -142,11 +142,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user3}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">Two customer is left</h6>
@@ -160,11 +160,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user4}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">New Mail from Fenny</h6>
@@ -201,11 +201,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user1}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">Bini Emma Watson</h6>
@@ -218,11 +218,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user2}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">Lorem Ipsum Watson</h6>
@@ -235,11 +235,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user3}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">Why do we use it?</h6>
@@ -252,11 +252,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user4}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">Variations Passages</h6>
@@ -269,11 +269,11 @@ const Navbars = memo(() => {
                             <Dropdown.Item  className="iq-sub-card">
                             <div className="media align-items-center d-flex">
                                 <div className="">
-                                <Image
+                                {/* <Image
                                     className="avatar-40 rounded"
                                     src={user5}
                                     alt=""
-                                />
+                                /> */}
                                 </div>
                                 <div className="media-body ms-3">
                                 <h6 className="mb-0 ">Lorem Ipsum generators</h6>

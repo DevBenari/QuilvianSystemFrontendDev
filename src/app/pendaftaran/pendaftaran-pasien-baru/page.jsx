@@ -11,7 +11,7 @@ import RadioInput from "@/components/ui/radio-input";
 import SelectField from "@/components/ui/select-field";
 import DateInput from "@/components/ui/date-input";
 import TextArea from "@/components/ui/textArea-field";
-import dataWilayah from "@/utils/config";
+import {dataWilayah} from "@/utils/config";
 import UploadPhotoField from "@/components/ui/uploadPhoto-field";
 const PendaftaranPasienBaru = () => {
     const methods = useForm({

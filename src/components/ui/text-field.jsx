@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 import { useFormContext, Controller } from "react-hook-form";
 
 
-const TextField = ({label, name, type, placeholder, rules, ...props }) => {
+const TextField = ({label, name, type, className,placeholder, rules, ...props }) => {
     const {control, formState: {errors}} = useFormContext();
     return (
         <Form.Group className="mb-3">
@@ -20,6 +20,7 @@ const TextField = ({label, name, type, placeholder, rules, ...props }) => {
             <Form.Control
               {...field}
               type={type}
+              className={className}
               placeholder={placeholder}
               isInvalid={!!errors[name]}
               {...props}

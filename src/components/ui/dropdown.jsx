@@ -1,18 +1,21 @@
 'use client'
 import Link from "next/link";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 
-const CustomToggle = React.forwardRef(({children, variant, onClick}, ref) => {
+const CustomToggle = React.forwardRef(({children, variant, href}, ref) => {
     // const ref = useRef(null)
+    const [isOpen, setIsOpen] = useState(false)
+    const handleClick = (event) => {
+        event.preventDefault();
+        setIsOpen(!isOpen);
+        onClick(event);
+    }
     return (
         <Link 
-            href={""}
+            href={`${href}`}
             ref={ref}
-            onClick={(event) => {
-                event.preventDefault();
-                onClick(event);
-            }}
+            passHref
             className={variant}
         >
             {children}
