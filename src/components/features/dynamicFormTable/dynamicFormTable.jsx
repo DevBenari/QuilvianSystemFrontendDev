@@ -141,6 +141,14 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     return field.hide;
   };
 
+  // const { watch, setValue } = methods; // Ambil `watch` dari `useForm`
+
+  // const handleRadioChangee = (value) => {
+  //   setValue("LuarRs", value); // Set nilai `LuarRs`
+  // };
+
+  // Pantau ni
+
   return (
     <FormProvider {...methods}>
       <Col lg="12">
@@ -187,9 +195,6 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
                   </Row>
                 </div>
               ))}
-              <Button type="submit" className="btn btn-primary mx-3 my-3">
-                Submit
-              </Button>
             </Form>
           </div>
         </div>

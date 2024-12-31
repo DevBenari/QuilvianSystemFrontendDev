@@ -6,7 +6,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import DateInput from "@/components/ui/date-input";
 import TextField from "@/components/ui/text-field";
 
-const DataTable = ({
+const DataTableAnggota = ({
   headers,
   formFields,
   data,
@@ -73,27 +73,32 @@ const DataTable = ({
                 <div className="iq-header-title">
                   <h4 className="card-title">{title}</h4>
                 </div>
+                <div id="table" className="table-editable">
+                  {onAdd && (
+                    <Button
+                      size="sm"
+                      variant=""
+                      className="btn btn-sm iq-bg-success"
+                      onClick={() => onAdd()}
+                    >
+                      <i className="ri-add-fill">
+                        <span className="ps-1">Add New</span>
+                      </i>
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <div className="iq-card-body">
                 <div id="table" className="table-editable">
-                  {onAdd && (
-                    <span className="table-add float-end mb-3 me-2">
-                      <Button
-                        size="sm"
-                        variant=""
-                        className="btn btn-sm iq-bg-success"
-                        onClick={() => onAdd()}
-                      >
-                        <i className="ri-add-fill">
-                          <span className="ps-1">Add New</span>
-                        </i>
-                      </Button>
-                    </span>
-                  )}
-
                   <div className="table-responsive-md w-100">
-                    <Table className="text-center" bordered striped>
+                    <Table
+                      className="text-center"
+                      responsive
+                      striped
+                      bordered
+                      hover
+                    >
                       <thead>
                         <tr>
                           {headers.map((header, index) => (
@@ -207,4 +212,4 @@ const DataTable = ({
   );
 };
 
-export default DataTable;
+export default DataTableAnggota;

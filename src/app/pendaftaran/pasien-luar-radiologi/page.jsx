@@ -59,9 +59,7 @@ export default function PendaftaranPasienLab() {
         setPasienSelectedProvinsi(value);
 
         // Filter data kabupaten berdasarkan provinsi
-        const selectedProvinsi = dataWilayah.find(
-          (item) => item.provinsi === value
-        );
+
         setPasienFilteredKabupaten(
           selectedProvinsi ? selectedProvinsi.kabupaten : []
         );
@@ -102,7 +100,7 @@ export default function PendaftaranPasienLab() {
         setValue("pasien_kelurahan", value);
       }
     },
-    [dataWilayah, pasienFilteredKabupaten, pasienFilteredKecamatan, setValue]
+    [pasienFilteredKabupaten, pasienFilteredKecamatan, setValue]
   );
 
   // provinsi
@@ -205,21 +203,17 @@ export default function PendaftaranPasienLab() {
         },
         {
           type: "text",
-          id: "nomorTlpn",
-          label: "Nomor Telepon",
-          name: "nomorTlpn",
-          placeholder: "Nomor Telepon",
-          rules: { required: "Nomor Telepon is required" },
-          colSize: 6,
-        },
-
-        {
-          type: "email",
           id: "email",
           label: "Email",
           name: "email",
           placeholder: "Email",
-          rules: { required: "Email is required" },
+          rules: {
+            required: "Email is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Masukkan email yang valid",
+            },
+          },
           colSize: 6,
         },
         {
@@ -345,7 +339,6 @@ export default function PendaftaranPasienLab() {
                   <RadioInput
                     name="konsul"
                     options={[{ label: "Konsul", value: "konsul" }]}
-                    rules={{ required: "konsul is required" }}
                     className="d-flex gap-5 mt-2"
                     onChange={() => handleRadioChange("konsul")}
                   />
@@ -359,7 +352,6 @@ export default function PendaftaranPasienLab() {
                       { label: "Dr. C", value: "dr_c" },
                     ]}
                     placeholder="Pilih Dokter"
-                    rules={{ required: "Pilih Dokter is required" }}
                     className="mb-3"
                     onChange={(e) => handleSelectChange("konsul")}
                     disabled={selectedOption && selectedOption !== "konsul"}
@@ -371,7 +363,6 @@ export default function PendaftaranPasienLab() {
                   <RadioInput
                     name="LuarRs"
                     options={[{ label: "Luar Rs", value: "LuarRs" }]}
-                    rules={{ required: "Luar Rs is required" }}
                     className="d-flex gap-5 mt-2"
                     onChange={() => handleRadioChange("LuarRs")}
                   />
@@ -388,7 +379,6 @@ export default function PendaftaranPasienLab() {
                       { label: "Keluarga", value: "keluarga" },
                     ]}
                     placeholder="Tipe RSU/RS/RB"
-                    rules={{ required: "Tipe RSU/RS/RB is required" }}
                     className="mb-3"
                     onChange={(e) => handleSelectChange("LuarRs")}
                     disabled={selectedOption && selectedOption !== "LuarRs"}
@@ -402,9 +392,6 @@ export default function PendaftaranPasienLab() {
                       type="text"
                       placeholder="Enter Nama "
                       className="form-control mb-0"
-                      rules={{
-                        required: "Nama is required",
-                      }}
                     />
                   </Col>
                   <Col lg="6">
@@ -414,9 +401,6 @@ export default function PendaftaranPasienLab() {
                       type="text"
                       placeholder="Enter nomor telepon Luar Rs "
                       className="form-control mb-0"
-                      rules={{
-                        required: "nomor telepon Luar Rs is required",
-                      }}
                     />
                   </Col>
                   <Col lg="6">
@@ -426,9 +410,6 @@ export default function PendaftaranPasienLab() {
                       type="text"
                       placeholder="Enter Alamat "
                       className="form-control mb-0"
-                      rules={{
-                        required: "Alamat is required",
-                      }}
                     />
                   </Col>
                 </Row>
@@ -443,9 +424,6 @@ export default function PendaftaranPasienLab() {
                         value: "atasPermintaanSendiri",
                       },
                     ]}
-                    rules={{
-                      required: "Atas Permintaan Sendiri is required",
-                    }}
                     className="d-flex gap-5 mt-2 mb-3"
                     onChange={() => handleRadioChange("atasPermintaanSendiri")}
                   />

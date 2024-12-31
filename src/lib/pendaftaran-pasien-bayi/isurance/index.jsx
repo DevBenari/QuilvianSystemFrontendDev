@@ -2,7 +2,7 @@ import axios from "axios";
 import { getHeaders } from "../../headers/headers";
 import { useEffect, useState } from "react";
 
-export const useBayi = () => {
+export const useIsurance = () => {
   const [isurance, setIsurance] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

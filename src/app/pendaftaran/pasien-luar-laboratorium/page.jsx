@@ -104,7 +104,7 @@ export default function PendaftaranPasienLab() {
         setValue("pasien_kelurahan", value);
       }
     },
-    [dataWilayah, pasienFilteredKabupaten, pasienFilteredKecamatan, setValue]
+    [pasienFilteredKabupaten, pasienFilteredKecamatan, setValue]
   );
 
   //  function promo
@@ -212,12 +212,18 @@ export default function PendaftaranPasienLab() {
         },
 
         {
-          type: "email",
+          type: "text",
           id: "email",
           label: "Email",
           name: "email",
           placeholder: "Email",
-          rules: { required: "Email is required" },
+          rules: {
+            required: "Email is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Masukkan email yang valid",
+            },
+          },
           colSize: 6,
         },
         {
@@ -343,7 +349,6 @@ export default function PendaftaranPasienLab() {
                   <RadioInput
                     name="konsul"
                     options={[{ label: "Konsul", value: "konsul" }]}
-                    rules={{ required: "konsul is required" }}
                     className="d-flex gap-5 mt-2"
                     onChange={() => handleRadioChange("konsul")}
                   />

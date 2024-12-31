@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getHeaders } from "@/lib/headers/headers";
 
-export const deleteBayi = async (id) => {
+export const deleteIsurance = async (id) => {
   try {
     const response = await axios.delete(
       `http://160.20.104.177:4141/api/Insurance/insurance/${id}`,
