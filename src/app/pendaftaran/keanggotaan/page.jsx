@@ -5,15 +5,12 @@ import DataTableAnggota from "@/components/features/viewDataTables/dataTable";
 
 import { useAnggota } from "@/lib/hooks/keanggotaan";
 import { deleteAnggota } from "@/lib/hooks/keanggotaan/delete";
-import { getAnggotaId } from "@/lib/hooks/keanggotaan/getbyid";
 import { useRouter } from "next/navigation";
 
-import { Fragment, useEffect } from "react";
-import { useState } from "react";
-import { Button } from "react-bootstrap";
+import { Fragment, useEffect, useState } from "react";
+
 export const PendaftaranKeanggotaan = () => {
   const router = useRouter();
-
   const { anggota, loading, error } = useAnggota();
   const [AnggotaState, setAnggotaState] = useState([]);
 
@@ -23,108 +20,57 @@ export const PendaftaranKeanggotaan = () => {
     }
   }, [anggota]);
 
-  const handleAdd = () => {
-    router.push("/pendaftaran/");
+  const resetAnggotaState = () => setAnggotaState(anggota);
+
+  const handleSearchByNameOrCode = (value) => {
+    if (!value.trim()) {
+      resetAnggotaState();
+      return;
+    }
+
+    const searchValue = value.trim().toLowerCase();
+
+    const filteredAnggota = anggota.filter((anggota) => {
+      const nama = String(anggota.namaMember || "").toLowerCase();
+      const kode = String(anggota.kodeMember || "");
+      return nama.includes(searchValue) || kode.includes(searchValue);
+    });
+
+    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
   };
 
-  const handleEdit = (id) => {
-    router.push(`/pendaftaran`); // Include the id in the query parameter
+  const handleSearch = (key, value) => {
+    if (!value.trim()) {
+      resetAnggotaState();
+      return;
+    }
+
+    const filteredAnggota = anggota.filter((anggota) => {
+      if (key === "tanggalStart") {
+        const anggotaDate = new Date(anggota[key]).toISOString().split("T")[0];
+        const searchDate = new Date(value).toISOString().split("T")[0];
+        return anggotaDate === searchDate;
+      }
+
+      const fieldValue = String(anggota[key] || "").toLowerCase();
+      const searchValue = value.trim().toLowerCase();
+      return fieldValue.includes(searchValue);
+    });
+
+    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
   };
 
+  const handleAdd = () => router.push("/pendaftaran/");
+  const handleEdit = (id) => router.push(`/pendaftaran/${id}`);
   const handleDelete = async (id) => {
     try {
-      const response = await deleteAnggota(id);
-      alert(" deleted successfully!");
+      await deleteAnggota(id);
+      alert("Anggota deleted successfully!");
       window.location.reload();
     } catch (error) {
       console.error(error);
-      alert("Failed ");
+      alert("Failed to delete anggota.");
     }
-  };
-
-  const handleSearchByName = (searchValue) => {
-    if (!searchValue.trim()) {
-      setAnggotaState(anggota); // Reset to initial Anggota if search term is empty
-      return;
-    }
-
-    const filteredAnggota = anggota.filter((anggota) =>
-      anggota.namaMember
-        .toLowerCase()
-        .includes(searchValue.trim().toLowerCase())
-    );
-
-    if (filteredAnggota.length > 0) {
-      setAnggotaState(filteredAnggota); // Update AnggotaState with the filtered Anggota
-    } else {
-      // alert("No promo found with the given name.");
-      setAnggotaState([]); // Clear AnggotaState if no result found
-    }
-  };
-
-  const handleSearchByNoRekamMedis = (searchValue) => {
-    if (!searchValue.trim()) {
-      setAnggotaState(anggota); // Reset to initial state
-      return;
-    }
-
-    const filteredAnggota = anggota.filter((anggota) =>
-      anggota.nomorRm?.toLowerCase().includes(searchValue.trim().toLowerCase())
-    );
-
-    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
-  };
-
-  const handleSearchByJenis = (jenis) => {
-    if (!jenis) {
-      setAnggotaState(anggota); // Reset to initial state
-      return;
-    }
-
-    const filteredAnggota = anggota.filter(
-      (anggota) => anggota.jenis === jenis
-    );
-
-    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
-  };
-
-  const handleSearchByAgent = (agent) => {
-    if (!agent) {
-      setAnggotaState(anggota); // Reset to initial state
-      return;
-    }
-
-    const filteredAnggota = anggota.filter(
-      (anggota) => anggota.agent === agent
-    );
-
-    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
-  };
-
-  const handleSearchByStatus = (status) => {
-    if (!status) {
-      setAnggotaState(anggota); // Reset to initial state
-      return;
-    }
-
-    const filteredAnggota = anggota.filter(
-      (anggota) => anggota.status === status // Anggota status berdasarkan api yang di index
-    );
-
-    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
-  };
-
-  const handleSearchByTanggal = (tanggalStart) => {
-    if (!tanggalStart) {
-      setAnggotaState(anggota); // Reset to initial state
-      return;
-    }
-
-    const filteredAnggota = anggota.filter(
-      (anggota) => new Date(anggota.tanggalStart) === new Date(tanggalStart) // Anggota date berdasarkan api yang di index
-    );
-
-    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
   };
 
   const headers = [
@@ -137,23 +83,21 @@ export const PendaftaranKeanggotaan = () => {
     "JENIS",
     "SALDO AWAL",
     "SISA DEPOSIT BY BULAN",
-    "SISA DEPOSIT ",
+    "SISA DEPOSIT",
     "AGENT",
     "STATUS",
   ];
-
-  // jika ingin dipakai api ini diaktifkan
 
   const formFields = [
     {
       fields: [
         {
           type: "text",
-          id: "namaMember",
-          label: "Nama/kode",
-          name: "namaMember",
-          placeholder: "Nama/kode",
-          onChange: (e) => handleSearchByName(e.target.value),
+          id: "namaKode",
+          label: "Nama/Kode",
+          name: "namaKode",
+          placeholder: "Cari berdasarkan Nama atau Kode",
+          onChange: (e) => handleSearchByNameOrCode(e.target.value),
           colSize: 6,
         },
         {
@@ -162,7 +106,7 @@ export const PendaftaranKeanggotaan = () => {
           label: "No Rekam Medis",
           name: "nomorRm",
           placeholder: "No Rekam Medis",
-          onChange: (e) => handleSearchByNoRekamMedis(e.target.value),
+          onChange: (e) => handleSearch("nomorRm", e.target.value),
           colSize: 6,
         },
         {
@@ -176,7 +120,7 @@ export const PendaftaranKeanggotaan = () => {
             { label: "VIP BKM Tanpa UP", value: "VIP_BKM_Tanpa_UP" },
             { label: "Telemedicine", value: "telemedicine" },
           ],
-          onChange: (e) => handleSearchByJenis(e.target.value),
+          onChange: (e) => handleSearch("jenis", e.target.value),
           colSize: 6,
         },
         {
@@ -185,7 +129,7 @@ export const PendaftaranKeanggotaan = () => {
           label: "Agent",
           name: "agent",
           options: [{ label: "non-agent", value: "non-agent" }],
-          onChange: (e) => handleSearchByAgent(e.target.value),
+          onChange: (e) => handleSearch("agent", e.target.value),
           colSize: 6,
         },
         {
@@ -197,16 +141,16 @@ export const PendaftaranKeanggotaan = () => {
             { label: "Aktif", value: "aktif" },
             { label: "Non-aktif", value: "non-aktif" },
           ],
-          onChange: (e) => handleSearchByStatus(e.target.value),
+          onChange: (e) => handleSearch("status", e.target.value),
           colSize: 6,
         },
         {
           type: "date",
           id: "tanggalStart",
-          label: "TanggalStart ",
-          name: "tanggal",
+          label: "Tanggal Start",
+          name: "tanggalStart",
           colSize: 6,
-          onChange: (e) => handleSearchByTanggal(e.target.value),
+          onChange: (e) => handleSearch("tanggalStart", e.target.value),
         },
       ],
     },
@@ -216,7 +160,7 @@ export const PendaftaranKeanggotaan = () => {
     no: index + 1,
     id: anggota.anggotaId,
     kodeMember: anggota.kodeMember,
-    namaMember: anggota.kodeMember,
+    namaMember: anggota.namaMember,
     nomorRm: anggota.nomorRm,
     tanggalStart: anggota.tanggalStart,
     tanggalExpired: anggota.tanggalExpired,

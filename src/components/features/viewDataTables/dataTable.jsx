@@ -30,7 +30,7 @@ const DataTableAnggota = ({
 
   return (
     <FormProvider {...methods}>
-      <Container fluid className="">
+      <Container fluid>
         {/* Search Fields */}
         <Row className="">
           {(Array.isArray(formFields) ? formFields : []).map((field, index) => {
@@ -117,11 +117,9 @@ const DataTableAnggota = ({
                               {Object.entries(row)
                                 .filter(([key]) => key !== id) // Exclude "promoId" or specified id
                                 .map(([key, value], colIndex) => (
-                                  <td contentEditable="true" key={colIndex}>
-                                    {value || "-"}
-                                  </td>
+                                  <td key={colIndex}>{value || "-"}</td>
                                 ))}
-                              <td>
+                              {/* <td>
                                 <span className="table-up me-1">
                                   <Link href={"/"} className="indigo-text">
                                     <i
@@ -138,7 +136,7 @@ const DataTableAnggota = ({
                                     ></i>
                                   </Link>
                                 </span>
-                              </td>
+                              </td> */}
                               {actions &&
                                 (actions.edit ||
                                   actions.delete ||
