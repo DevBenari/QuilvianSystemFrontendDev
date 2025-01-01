@@ -3,9 +3,9 @@
 import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
 import DataTableAnggota from "@/components/features/viewDataTables/dataTable";
 
-import { useIsurance } from "@/lib/pendaftaran-pasien-bayi/isurance";
-import { deleteIsurance } from "@/lib/pendaftaran-pasien-bayi/isurance/delete";
-import { getIsuranceId } from "@/lib/pendaftaran-pasien-bayi/isurance/getbyid";
+import { useAnggota } from "@/lib/hooks/keanggotaan";
+import { deleteAnggota } from "@/lib/hooks/keanggotaan/delete";
+import { getAnggotaId } from "@/lib/hooks/keanggotaan/getbyid";
 import { useRouter } from "next/navigation";
 
 import { Fragment, useEffect } from "react";
@@ -14,14 +14,14 @@ import { Button } from "react-bootstrap";
 export const PendaftaranKeanggotaan = () => {
   const router = useRouter();
 
-  const { isurance, loading, error } = useIsurance();
-  const [IsuranceState, setIsuranceState] = useState([]);
+  const { anggota, loading, error } = useAnggota();
+  const [AnggotaState, setAnggotaState] = useState([]);
 
   useEffect(() => {
-    if (isurance) {
-      setIsuranceState(isurance);
+    if (anggota) {
+      setAnggotaState(anggota);
     }
-  }, [isurance]);
+  }, [anggota]);
 
   const handleAdd = () => {
     router.push("/pendaftaran/");
@@ -33,7 +33,7 @@ export const PendaftaranKeanggotaan = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await deleteIsurance(id);
+      const response = await deleteAnggota(id);
       alert(" deleted successfully!");
       window.location.reload();
     } catch (error) {
@@ -44,89 +44,87 @@ export const PendaftaranKeanggotaan = () => {
 
   const handleSearchByName = (searchValue) => {
     if (!searchValue.trim()) {
-      setIsuranceState(isurance); // Reset to initial isurance if search term is empty
+      setAnggotaState(anggota); // Reset to initial Anggota if search term is empty
       return;
     }
 
-    const filteredisurance = isurance.filter((isurance) =>
-      isurance.namaPerusahaan
+    const filteredAnggota = anggota.filter((anggota) =>
+      anggota.namaMember
         .toLowerCase()
         .includes(searchValue.trim().toLowerCase())
     );
 
-    if (filteredisurance.length > 0) {
-      setIsuranceState(filteredisurance); // Update isuranceState with the filtered isurance
+    if (filteredAnggota.length > 0) {
+      setAnggotaState(filteredAnggota); // Update AnggotaState with the filtered Anggota
     } else {
       // alert("No promo found with the given name.");
-      setIsuranceState([]); // Clear isuranceState if no result found
+      setAnggotaState([]); // Clear AnggotaState if no result found
     }
   };
 
   const handleSearchByNoRekamMedis = (searchValue) => {
     if (!searchValue.trim()) {
-      setIsuranceState(isurance); // Reset to initial state
+      setAnggotaState(anggota); // Reset to initial state
       return;
     }
 
-    const filteredisurance = isurance.filter((isurance) =>
-      isurance.noRekamMedis
-        ?.toLowerCase()
-        .includes(searchValue.trim().toLowerCase())
+    const filteredAnggota = anggota.filter((anggota) =>
+      anggota.nomorRm?.toLowerCase().includes(searchValue.trim().toLowerCase())
     );
 
-    setIsuranceState(filteredisurance.length > 0 ? filteredisurance : []);
+    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
   };
 
   const handleSearchByJenis = (jenis) => {
     if (!jenis) {
-      setIsuranceState(isurance); // Reset to initial state
+      setAnggotaState(anggota); // Reset to initial state
       return;
     }
 
-    const filteredisurance = isurance.filter(
-      (isurance) => isurance.jenisKerjasama === jenis
+    const filteredAnggota = anggota.filter(
+      (anggota) => anggota.jenis === jenis
     );
 
-    setIsuranceState(filteredisurance.length > 0 ? filteredisurance : []);
+    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
   };
 
   const handleSearchByAgent = (agent) => {
     if (!agent) {
-      setIsuranceState(isurance); // Reset to initial state
+      setAnggotaState(anggota); // Reset to initial state
       return;
     }
 
-    const filteredisurance = isurance.filter(
-      (isurance) => isurance.agent === agent
+    const filteredAnggota = anggota.filter(
+      (anggota) => anggota.agent === agent
     );
 
-    setIsuranceState(filteredisurance.length > 0 ? filteredisurance : []);
+    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
   };
 
   const handleSearchByStatus = (status) => {
     if (!status) {
-      setIsuranceState(isurance); // Reset to initial state
+      setAnggotaState(anggota); // Reset to initial state
       return;
     }
 
-    const filteredisurance = isurance.filter(
-      (isurance) => isurance.status === status // isurance status berdasarkan api yang di index
+    const filteredAnggota = anggota.filter(
+      (anggota) => anggota.status === status // Anggota status berdasarkan api yang di index
     );
 
-    setIsuranceState(filteredisurance.length > 0 ? filteredisurance : []);
+    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
   };
 
-  const handleSearchByTanggal = (tanggal) => {
-    if (!tanggal) {
-      setIsuranceState(isurance); // Reset to initial state
+  const handleSearchByTanggal = (tanggalStart) => {
+    if (!tanggalStart) {
+      setAnggotaState(anggota); // Reset to initial state
       return;
     }
 
-    const filteredisurance = isurance.filter(
-      (isurance) => new Date(isurance.tanggal) === new Date(tanggal) // isurance date berdasarkan api yang di index
+    const filteredAnggota = anggota.filter(
+      (anggota) => new Date(anggota.tanggalStart) === new Date(tanggalStart) // Anggota date berdasarkan api yang di index
     );
 
-    setIsuranceState(filteredisurance.length > 0 ? filteredisurance : []);
+    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
   };
 
   const headers = [
@@ -137,13 +135,10 @@ export const PendaftaranKeanggotaan = () => {
     "TANGGAL START",
     "TANGGAL EXPIRED",
     "JENIS",
-    "KODE MEMBER UTAMA",
-    "NAMA MEMBER UTAMA",
-    "HUBUNNGAN",
     "SALDO AWAL",
     "SISA DEPOSIT BY BULAN",
     "SISA DEPOSIT ",
-    "KODE AGEN",
+    "AGENT",
     "STATUS",
   ];
 
@@ -154,18 +149,18 @@ export const PendaftaranKeanggotaan = () => {
       fields: [
         {
           type: "text",
-          id: "nama",
+          id: "namaMember",
           label: "Nama/kode",
-          name: "nama",
+          name: "namaMember",
           placeholder: "Nama/kode",
           onChange: (e) => handleSearchByName(e.target.value),
           colSize: 6,
         },
         {
           type: "text",
-          id: "noRekamMedis",
+          id: "nomorRm",
           label: "No Rekam Medis",
-          name: "noRekamMedis",
+          name: "nomorRm",
           placeholder: "No Rekam Medis",
           onChange: (e) => handleSearchByNoRekamMedis(e.target.value),
           colSize: 6,
@@ -186,9 +181,9 @@ export const PendaftaranKeanggotaan = () => {
         },
         {
           type: "select",
-          id: "Agent",
+          id: "agent",
           label: "Agent",
-          name: "Agent",
+          name: "agent",
           options: [{ label: "non-agent", value: "non-agent" }],
           onChange: (e) => handleSearchByAgent(e.target.value),
           colSize: 6,
@@ -207,8 +202,8 @@ export const PendaftaranKeanggotaan = () => {
         },
         {
           type: "date",
-          id: "tanggal",
-          label: "Tanggal ",
+          id: "tanggalStart",
+          label: "TanggalStart ",
           name: "tanggal",
           colSize: 6,
           onChange: (e) => handleSearchByTanggal(e.target.value),
@@ -217,22 +212,20 @@ export const PendaftaranKeanggotaan = () => {
     },
   ];
 
-  const members = IsuranceState.map((isurance, index) => ({
+  const members = AnggotaState.map((anggota, index) => ({
     no: index + 1,
-    id: isurance.insuranceId,
-    kelas: isurance.jenisKerjasama || "-",
-    ruang: isurance.namaCabang || "-",
-    nama: isurance.namaPerusahaan || "-",
-    dokter: isurance.akunBankAtasNama || "-",
-    pasien: isurance.akunBankAtasNama || "-",
-    aaaa: isurance.akunBankAtasNama || "-",
-    bbbb: isurance.akunBankAtasNama || "-",
-    cccc: isurance.akunBankAtasNama || "-",
-    dddd: isurance.akunBankAtasNama || "-",
-    zzzz: isurance.akunBankAtasNama || "-",
-    eeee: isurance.akunBankAtasNama || "-",
-    uuuu: isurance.akunBankAtasNama || "-",
-    pppp: isurance.akunBankAtasNama || "-",
+    id: anggota.anggotaId,
+    kodeMember: anggota.kodeMember,
+    namaMember: anggota.kodeMember,
+    nomorRm: anggota.nomorRm,
+    tanggalStart: anggota.tanggalStart,
+    tanggalExpired: anggota.tanggalExpired,
+    jenis: anggota.jenis,
+    saldoAwal: anggota.saldoAwal,
+    sisaDepositByBulan: anggota.sisaDepositByBulan,
+    sisaDeposit: anggota.sisaDeposit,
+    agent: anggota.agent,
+    status: anggota.status,
   }));
 
   return (

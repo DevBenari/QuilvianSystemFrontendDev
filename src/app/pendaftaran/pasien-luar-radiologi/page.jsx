@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useKecamatans } from "@/lib/hooks/kecamatan/index";
 import { getById } from "@/lib/hooks/province/getProvinceId";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Container, Button } from "react-bootstrap";
+import { Row, Col, Container, Button, Table } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import RadioInput from "@/components/ui/radio-input";
 import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hook
@@ -22,25 +22,25 @@ export default function PendaftaranPasienLab() {
   const datas = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
-  const [province, setProvince] = useState("");
-  const changeProvince = (val) => {
-    setProvince("");
-    kecamatans.forEach((kecamatan) => {
-      if (kecamatan.subDistrictId === val) {
-        // let province = getById(kecamatan.provinceId);
-        // setProvince(province.namaProvinsi);
-        setProvince(kecamatan.provinceId);
-      }
-    });
-  };
-  const [selectedOption, setSelectedOption] = useState(null);
+  // const [province, setProvince] = useState("");
+  // const changeProvince = (val) => {
+  //   setProvince("");
+  //   kecamatans.forEach((kecamatan) => {
+  //     if (kecamatan.subDistrictId === val) {
+  //       // let province = getById(kecamatan.provinceId);
+  //       // setProvince(province.namaProvinsi);
+  //       setProvince(kecamatan.provinceId);
+  //     }
+  //   });
+  // };
+  const [handleSelectedOption, setHandleSelectedOption] = useState(null);
 
   const handleRadioChange = (value) => {
-    setSelectedOption(value);
+    setHandleSelectedOption(value);
   };
 
   const handleSelectChange = (value) => {
-    setSelectedOption(value);
+    setHandleSelectedOption(value);
   };
 
   // fungsi provinsi
@@ -141,6 +141,102 @@ export default function PendaftaranPasienLab() {
     namaPromo: promo.namaPromo || "-",
     keterangan: promo.keterangan || "-",
   }));
+
+  // inside field datatable function
+  const [data, setData] = useState([]);
+  const [selectedOptionsTindakan, setSelectedOptionsTindakan] = useState([]); // Initially, no rows in the table
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const openPopup = () => {
+    const selectedOptionsString = JSON.stringify(selectedOptionsTindakan);
+    window.open(
+      `/pendaftaran/pasien-luar-radiologi/partial?selectedOptions=${encodeURIComponent(
+        selectedOptionsString
+      )}`,
+      "LabPopup",
+      "width=600,height=400,scrollbars=yes"
+    );
+
+    window.onPopupSave = (selectedOptions) => {
+      setSelectedOptionsTindakan((prevSelected) => {
+        // Find unchecked options (previously selected but now unchecked)
+        const uncheckedOptions = prevSelected.filter(
+          (option) => !selectedOptions.includes(option)
+        );
+
+        // Handle row deletion for unchecked options
+        uncheckedOptions.forEach((option) => {
+          handleRowDelete(option); // Call the delete function for each unchecked option
+        });
+
+        // Filter out options already in prevSelected
+        const newOptions = selectedOptions.filter(
+          (option) => !prevSelected.includes(option)
+        );
+
+        // Return updated options with new selections added
+        return [
+          ...prevSelected.filter((option) => selectedOptions.includes(option)),
+          ...newOptions,
+        ];
+      });
+
+      // Update data state with new options
+      const updatedData = selectedOptions
+        .filter((option) => !data.some((item) => item.lab === option)) // Avoid duplicates in data
+        .map((option) => ({
+          lab: option,
+          jumlah: 1,
+        }));
+
+      setData((prevData) => [...prevData, ...updatedData]);
+    };
+  };
+
+  // Handle row deletion
+  const handleRowDelete = (option) => {
+    // Remove the row from the data array
+    const updatedData = data.filter((row) => row.lab !== option);
+    setData(updatedData);
+
+    // Update selected options to remove the unchecked option
+    setSelectedOptionsTindakan((prevSelected) =>
+      prevSelected.filter((item) => item !== option)
+    );
+  };
+
+  // Handle checkbox change in modal
+  const handleCheckboxChange = (option) => {
+    setSelectedOptions((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option)
+        : [...prev, option]
+    );
+  };
+  // Update "Jumlah" column
+  const handleJumlahChange = (index, value) => {
+    const updatedData = data.map((row, rowIndex) =>
+      rowIndex === index ? { ...row, jumlah: value } : row
+    );
+    setData(updatedData);
+  };
+
+  // Delete a row
+  const handleDeleteRow = (index) => {
+    // Remove the row from data
+    const updatedData = data.filter((_, rowIndex) => rowIndex !== index);
+    // Get the lab value of the row being deleted
+    const deletedLab = data[index].lab;
+    // Remove the corresponding option from selectedOptions
+    const updatedSelectedOptions = selectedOptions.filter(
+      (option) => option !== deletedLab
+    );
+    // Update the states
+    setData(updatedData);
+    setSelectedOptions(updatedSelectedOptions);
+    // Debugging logs
+    console.log("Updated Data:", data);
+  };
+
   const formFields = [
     {
       fields: [
@@ -354,7 +450,9 @@ export default function PendaftaranPasienLab() {
                     placeholder="Pilih Dokter"
                     className="mb-3"
                     onChange={(e) => handleSelectChange("konsul")}
-                    disabled={selectedOption && selectedOption !== "konsul"}
+                    disabled={
+                      handleSelectedOption && handleSelectedOption !== "konsul"
+                    }
                   />
                 </Col>
               </Row>
@@ -381,10 +479,12 @@ export default function PendaftaranPasienLab() {
                     placeholder="Tipe RSU/RS/RB"
                     className="mb-3"
                     onChange={(e) => handleSelectChange("LuarRs")}
-                    disabled={selectedOption && selectedOption !== "LuarRs"}
+                    disabled={
+                      handleSelectedOption && handleSelectedOption !== "LuarRs"
+                    }
                   />
                 </Col>
-                <Row hidden={selectedOption !== "LuarRs"}>
+                <Row hidden={handleSelectedOption !== "LuarRs"}>
                   <Col lg="6">
                     <TextField
                       label="Nama : "
@@ -567,39 +667,66 @@ export default function PendaftaranPasienLab() {
         },
         {
           type: "custom",
-          id: "setRadiologi",
-          label: "setRadiologi Table",
+          id: "promoData",
+          label: "Promo Data Table",
           customRender: () => (
             <Container fluid>
-              <Row>
-                {/* <Col xs="12" lg="6">
-                  <TextField
-                    label="Cari Nama Pemeriksa:"
-                    name="searchPromo"
-                    type="text"
-                    placeholder="Cari Nama Pemeriksa by name..."
-                    onChange={(e) => handleSearchByName(e.target.value)}
-                  />
-                </Col> */}
-                <Col lg="12" className="d-flex justify-content-center">
-                  <Button className="btn btn-primary">
-                    Set Pemeriksaan Radiologi
-                  </Button>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs="12">
-                  {loading && <div>Loading promos...</div>}
-                  {error && <div className="text-danger">{error}</div>}
-                  {!loading && !error && (
-                    <DataTable
-                      headers={promoHeaders}
-                      data={promoMembers}
-                      id="id"
-                    />
-                  )}
-                </Col>
-              </Row>
+              <div className="table-responsive-md w-100">
+                <Row className="justify-content-center py-4">
+                  <button
+                    type="button"
+                    className="btn iq-bg-danger btn-rounded btn-sm my-0 col-3"
+                    onClick={openPopup}
+                  >
+                    Tindakan
+                  </button>
+                </Row>
+
+                <Table className="text-center" bordered striped>
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Pemeriksaan Lab</th>
+                      <th>Jumlah</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.length > 0 ? (
+                      data.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          <td>{rowIndex + 1}</td>
+                          <td>{row.lab || "-"}</td>
+                          <td>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={row.jumlah}
+                              onChange={(e) =>
+                                handleJumlahChange(rowIndex, e.target.value)
+                              }
+                            />
+                          </td>
+                          <td>
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleDeleteRow(rowIndex)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="text-center">
+                          No data available
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
             </Container>
           ),
           colSize: 12,

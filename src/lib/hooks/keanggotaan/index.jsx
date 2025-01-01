@@ -2,31 +2,31 @@ import axios from "axios";
 import { getHeaders } from "../../headers/headers";
 import { useEffect, useState } from "react";
 
-export const useIsurance = () => {
-  const [isurance, setIsurance] = useState([]);
+export const useAnggota = () => {
+  const [anggota, setAnggota] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const getIsurance = async () => {
+    const getAnggota = async () => {
       setLoading(true); // Set loading to true when fetching starts
       try {
         const response = await axios.get(
-          `http://160.20.104.177:4141/api/Insurance/insurance`,
+          `https://67417a07e4647499008dcdb4.mockapi.io/keanggotaan`,
           {
             headers: getHeaders(),
           }
         );
-        setIsurance(response.data); // Update state with the fetched data
+        setAnggota(response.data); // Update state with the fetched data
       } catch (err) {
-        setError("Gagal memuat daftar isurance."); // Corrected error message
+        setError("Gagal memuat daftar Anggota."); // Corrected error message
       } finally {
         setLoading(false); // Ensure loading state is updated
       }
     };
 
-    getIsurance();
+    getAnggota();
   }, []); // Empty dependency array ensures this effect runs only once on mount
 
-  return { isurance, loading, error };
+  return { anggota, loading, error };
 };
