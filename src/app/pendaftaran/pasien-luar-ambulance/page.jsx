@@ -198,7 +198,7 @@ export default function PendaftaranFasilitas() {
           colSize: 6,
         },
         {
-          type: "text",
+          type: "email",
           id: "email",
           label: "Email",
           name: "email",

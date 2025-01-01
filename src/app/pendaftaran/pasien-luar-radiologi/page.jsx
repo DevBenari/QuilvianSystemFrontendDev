@@ -202,7 +202,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "text",
+          type: "email",
           id: "email",
           label: "Email",
           name: "email",

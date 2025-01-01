@@ -212,7 +212,7 @@ export default function PendaftaranPasienLab() {
         },
 
         {
-          type: "text",
+          type: "email",
           id: "email",
           label: "Email",
           name: "email",

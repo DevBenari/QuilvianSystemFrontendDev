@@ -197,7 +197,7 @@ export default function PendaftaranRehabilitasiMedik() {
         },
 
         {
-          type: "text",
+          type: "email",
           id: "email",
           label: "Email",
           name: "email",

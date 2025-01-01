@@ -18,7 +18,7 @@ import DistanceField from "@/components/ui/distance-filed";
 const DynamicForm = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
     text: TextField,
-    email: (props) => <TextField {...props} type="email" />,
+    email: TextField,
     select: SelectField,
     radio: RadioInput,
     date: DateInput,
@@ -59,6 +59,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
       name,
       label,
       placeholder,
+      type,
       rules,
       className = "mb-3",
       readOnly = false,
@@ -85,6 +86,16 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
       ...(onChange ? { onChange } : {}),
       ...(onClick ? { onClick } : {}),
     };
+
+    if (type === "email") {
+      return (
+        <TextField
+          key={id}
+          {...commonProps}
+          type="email" // Ensure the type is set to "email"
+        />
+      );
+    }
 
     // Remove any props that are not necessary for the DOM, like `hide`
     const sanitizedProps = { ...commonProps, ...otherProps };
