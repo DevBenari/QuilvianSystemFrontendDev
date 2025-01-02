@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Table, Button, Container, Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 
-const DataTable = ({ headers, data, onAdd, onSearch, actions, id }) => {
+const DataTableBayi = ({ headers, data, onAdd, onSearch, actions, id }) => {
   const methods = useForm();
 
   const [filters, setFilters] = useState({
@@ -205,4 +205,4 @@ const DataTable = ({ headers, data, onAdd, onSearch, actions, id }) => {
   );
 };
 
-export default DataTable;
+export default DataTableBayi;

@@ -12,7 +12,7 @@ import TextField from "@/components/ui/text-field";
 import RadioInput from "@/components/ui/radio-input";
 import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hook
 import SelectField from "@/components/ui/select-field";
-import DataTable from "@/components/features/viewDataTables/dataTable";
+import DataTable from "@/components/view/anggota/dataTable";
 import dataWilayah from "@/utils/dataWilayah";
 
 export default function PendaftaranRehabilitasiMedik() {

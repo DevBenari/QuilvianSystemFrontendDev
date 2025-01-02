@@ -1,7 +1,7 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
-import DataTableAnggota from "@/components/features/viewDataTables/dataTable";
+import DataTableAnggota from "@/components/view/anggota/dataTable";
 
 import { useAnggota } from "@/lib/hooks/keanggotaan";
 import { deleteAnggota } from "@/lib/hooks/keanggotaan/delete";
