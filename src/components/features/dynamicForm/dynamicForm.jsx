@@ -69,6 +69,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
       onClick,
       options,
       rows,
+      date,
       customRender,
       ...otherProps // Capture all other props
     } = field;

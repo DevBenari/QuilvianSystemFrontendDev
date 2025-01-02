@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getHeaders } from "../../headers/headers";
 import { useEffect, useState } from "react";
 
 export const useAnggota = () => {
@@ -12,10 +11,7 @@ export const useAnggota = () => {
       setLoading(true); // Set loading to true when fetching starts
       try {
         const response = await axios.get(
-          `https://67417a07e4647499008dcdb4.mockapi.io/keanggotaan`,
-          {
-            headers: getHeaders(),
-          }
+          `https://67417a07e4647499008dcdb4.mockapi.io/keanggotaan`
         );
         setAnggota(response.data); // Update state with the fetched data
       } catch (err) {

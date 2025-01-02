@@ -2,7 +2,7 @@
 import FormValidations from "@/components/features/formValidations/formValidations";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import React, { Fragment, useState, useEffect, useCallback } from "react";
-import { addPromo } from "@/lib/hooks/promo/add";
+import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useKecamatans } from "@/lib/hooks/kecamatan/index";
 import { getById } from "@/lib/hooks/province/getProvinceId";

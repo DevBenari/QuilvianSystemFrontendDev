@@ -1,13 +1,10 @@
 import axios from "axios";
-import { getHeaders } from "@/lib/headers/headers";
-export const addPromo = async (promoData) => {
+
+export const addAnggota = async (anggotaData) => {
   try {
     const response = await axios.post(
-      "http://160.20.104.177:4141/api/Promo/promo",
-      promoData,
-      {
-        headers: getHeaders(),
-      }
+      "https://67417a07e4647499008dcdb4.mockapi.io/keanggotaan/",
+      anggotaData
     );
     return response.data; // Return the response data
   } catch (error) {

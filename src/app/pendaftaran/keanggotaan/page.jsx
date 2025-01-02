@@ -16,28 +16,31 @@ export const PendaftaranKeanggotaan = () => {
 
   useEffect(() => {
     if (anggota) {
+      console.log("Anggota Data:", anggota);
+      anggota.forEach((item) => {
+        console.log("Tanggal Start:", item.tanggalStart);
+      });
       setAnggotaState(anggota);
     }
   }, [anggota]);
-
   const resetAnggotaState = () => setAnggotaState(anggota);
 
-  const handleSearchByNameOrCode = (value) => {
-    if (!value.trim()) {
-      resetAnggotaState();
-      return;
-    }
+  // const handleSearchByNameOrCode = (value) => {
+  //   if (!value.trim()) {
+  //     resetAnggotaState();
+  //     return;
+  //   }
 
-    const searchValue = value.trim().toLowerCase();
+  //   const searchValue = value.trim().toLowerCase();
 
-    const filteredAnggota = anggota.filter((anggota) => {
-      const nama = String(anggota.namaMember || "").toLowerCase();
-      const kode = String(anggota.kodeMember || "");
-      return nama.includes(searchValue) || kode.includes(searchValue);
-    });
+  //   const filteredAnggota = anggota.filter((anggota) => {
+  //     const nama = String(anggota.nama || "").toLowerCase();
+  //     const kode = String(anggota.kodeMember || "");
+  //     return nama.startsWith(searchValue) || kode.startsWith(searchValue);
+  //   });
 
-    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
-  };
+  //   setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
+  // };
 
   const handleSearch = (key, value) => {
     if (!value.trim()) {
@@ -51,16 +54,16 @@ export const PendaftaranKeanggotaan = () => {
         const searchDate = new Date(value).toISOString().split("T")[0];
         return anggotaDate === searchDate;
       }
-
       const fieldValue = String(anggota[key] || "").toLowerCase();
       const searchValue = value.trim().toLowerCase();
       return fieldValue.includes(searchValue);
     });
 
     setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
+    console.log(filteredAnggota);
   };
 
-  const handleAdd = () => router.push("/pendaftaran/");
+  const handleAdd = () => router.push("/pendaftaran/keanggotaan/addAnggota");
   const handleEdit = (id) => router.push(`/pendaftaran/${id}`);
   const handleDelete = async (id) => {
     try {
@@ -73,31 +76,16 @@ export const PendaftaranKeanggotaan = () => {
     }
   };
 
-  const headers = [
-    "NO",
-    "KODE MEMBER",
-    "NAMA MEMBER",
-    "NO RM",
-    "TANGGAL START",
-    "TANGGAL EXPIRED",
-    "JENIS",
-    "SALDO AWAL",
-    "SISA DEPOSIT BY BULAN",
-    "SISA DEPOSIT",
-    "AGENT",
-    "STATUS",
-  ];
-
   const formFields = [
     {
       fields: [
         {
           type: "text",
-          id: "namaKode",
-          label: "Nama/Kode",
-          name: "namaKode",
+          id: "nama",
+          label: "nama",
+          name: "nama",
           placeholder: "Cari berdasarkan Nama atau Kode",
-          onChange: (e) => handleSearchByNameOrCode(e.target.value),
+          onChange: (e) => handleSearch("nama", e.target.value),
           colSize: 6,
         },
         {
@@ -115,21 +103,12 @@ export const PendaftaranKeanggotaan = () => {
           label: "Jenis",
           name: "jenis",
           options: [
-            { label: "VIP Member dengan UP", value: "VIP_Member_dengan_UP" },
-            { label: "VIP Member B", value: "VIP_Member_B" },
-            { label: "VIP BKM Tanpa UP", value: "VIP_BKM_Tanpa_UP" },
-            { label: "Telemedicine", value: "telemedicine" },
+            { label: "VIP Member dengan UP", value: "VIP Member dengan UP" },
+            { label: "VIP Member B", value: "VIP Member B" },
+            { label: "VIP BKM Tanpa UP", value: "VIP BKM Tanpa UP" },
+            { label: "Telemedicine", value: "Telemedicine" },
           ],
           onChange: (e) => handleSearch("jenis", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "select",
-          id: "agent",
-          label: "Agent",
-          name: "agent",
-          options: [{ label: "non-agent", value: "non-agent" }],
-          onChange: (e) => handleSearch("agent", e.target.value),
           colSize: 6,
         },
         {
@@ -138,40 +117,35 @@ export const PendaftaranKeanggotaan = () => {
           label: "Status",
           name: "status",
           options: [
-            { label: "Aktif", value: "aktif" },
+            { label: "aktif", value: "aktif" },
             { label: "Non-aktif", value: "non-aktif" },
           ],
           onChange: (e) => handleSearch("status", e.target.value),
           colSize: 6,
         },
-        {
-          type: "date",
-          id: "tanggalStart",
-          label: "Tanggal Start",
-          name: "tanggalStart",
-          colSize: 6,
-          onChange: (e) => handleSearch("tanggalStart", e.target.value),
-        },
+
+        // {
+        //   type: "date",
+        //   id: "tanggalStart",
+        //   label: "Tanggal Start",
+        //   name: "tanggalStart",
+        //   colSize: 6,
+        //   onChange: (e) => handleSearch("tanggalStart", e.target.value),
+        // },
       ],
     },
   ];
 
+  const headers = ["NO", "NAMA", "NO RM", "TANGGAL START", "JENIS", "STATUS"];
+
   const members = AnggotaState.map((anggota, index) => ({
-    no: index + 1,
-    id: anggota.anggotaId,
-    kodeMember: anggota.kodeMember,
-    namaMember: anggota.namaMember,
-    nomorRm: anggota.nomorRm,
-    tanggalStart: anggota.tanggalStart,
-    tanggalExpired: anggota.tanggalExpired,
+    no: index + 1, // NO
+    nama: anggota.nama, // NAMA
+    nomorRm: anggota.nomorRm, // NO RMAL START
+    tanggalStart: anggota.tanggalStart, // TANGGS
     jenis: anggota.jenis,
-    saldoAwal: anggota.saldoAwal,
-    sisaDepositByBulan: anggota.sisaDepositByBulan,
-    sisaDeposit: anggota.sisaDeposit,
-    agent: anggota.agent,
     status: anggota.status,
   }));
-
   return (
     <Fragment>
       <DynamicForm title="Pendaftaran Keanggotaan" formConfig={formFields} />
