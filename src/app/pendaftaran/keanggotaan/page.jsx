@@ -146,6 +146,7 @@ export const PendaftaranKeanggotaan = () => {
     jenis: anggota.jenis,
     status: anggota.status,
   }));
+
   return (
     <Fragment>
       <DynamicForm title="Pendaftaran Keanggotaan" formConfig={formFields} />

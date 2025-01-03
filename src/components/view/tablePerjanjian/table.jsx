@@ -110,7 +110,7 @@ const DataTablePerjanjian = ({
                               actions.detail) && <th>Actions</th>}
                         </tr>
                       </thead>
-                      {/* <tbody>
+                      <tbody>
                         {data.length > 0 ? (
                           data.map((row, rowIndex) => (
                             <tr key={rowIndex}>
@@ -179,7 +179,7 @@ const DataTablePerjanjian = ({
                             </td>
                           </tr>
                         )}
-                      </tbody> */}
+                      </tbody>
                     </Table>
                   </div>
                 </div>

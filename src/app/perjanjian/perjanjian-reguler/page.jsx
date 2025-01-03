@@ -4,9 +4,32 @@ import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable
 import DataTablePerjanjian from "@/components/view/tablePerjanjian/table";
 import React, { memo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { Button } from "react-bootstrap";
+import { useRouter } from "next/navigation";
+import useAnggotaState, { createMembers } from "@/lib/hooks/keanggotaan/data";
 
 const PerjanjianReguler = memo(() => {
   const methods = useForm();
+  const router = useRouter();
+  const { getMembers } = useAnggotaState();
+  const members = getMembers();
+
+  // Fungsi untuk menangani filter pencarian pasien
+  const handleFilterChange = (fieldName, value) => {
+    console.log(`Filter changed: ${fieldName} -> ${value}`);
+    // Tambahkan logika filter di sini jika data berasal dari API
+  };
+
+  // Fungsi untuk menangani double click pada baris tabel
+  const handleRowDoubleClick = (patient) => {
+    setSelectedPatient(patient);
+    console.log("Detail pasien:", patient);
+    // Tambahkan logika untuk menampilkan data detail atau mengarah ke form berikutnya
+  };
+
+  // Fungsi untuk menangani pasien baru
+  const handleAdd = () =>
+    router.push("/perjanjian/perjanjian-reguler/add-perjanjian-reguler");
 
   const formFields = [
     {
@@ -76,9 +99,16 @@ const PerjanjianReguler = memo(() => {
   return (
     <FormProvider {...methods}>
       <DynamicForm title="Perjanjian" formConfig={formFields} />
-      <DataTablePerjanjian headers={headers} />
+      <DataTablePerjanjian
+        headers={headers}
+        data={members}
+        // onRowDoubleClick={handleRowDoubleClick}
+        title="Daftar Pasien"
+        onAdd={handleAdd}
+      />
     </FormProvider>
   );
 });
+
 PerjanjianReguler.displayName = "PerjanjianReguler";
 export default PerjanjianReguler;

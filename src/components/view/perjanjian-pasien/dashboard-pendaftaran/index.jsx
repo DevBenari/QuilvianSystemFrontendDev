@@ -5,15 +5,20 @@ import DataTableAnggota from "@/components/view/anggota/dataTable";
 import DateInput from "@/components/ui/date-input";
 import TextField from "@/components/ui/text-field";
 import { dataPasien } from "@/utils/config";
-DataTableAnggota;
+
 import axios from "axios";
 import Link from "next/link";
 import React, { memo, useState } from "react";
 import { Row, Col, Button, Table } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import DataTablePerjanjian from "../../tablePerjanjian/table";
+import DataAnggota from "@/lib/hooks/keanggotaan/data";
 
 const DashboardPerjanjian = memo(() => {
+  const { getMembers } = DataAnggota();
+
+  const members = getMembers();
+
   const methods = useForm();
   // const [isFilteredPasien, setIsFilteredPasien] = useState([])
   // const [isLoading, setIsLoading] = useState(false)
@@ -139,7 +144,7 @@ const DashboardPerjanjian = memo(() => {
   return (
     <FormProvider {...methods}>
       <DynamicForm title="Perjanjian" formConfig={formFields} />
-      <DataTablePerjanjian headers={headers} />
+      <DataTablePerjanjian headers={headers} data={members} />
     </FormProvider>
   );
 });
