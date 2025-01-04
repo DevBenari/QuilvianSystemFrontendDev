@@ -108,36 +108,36 @@ export default function PendaftaranPasienLab() {
   );
 
   //  function promo
-  useEffect(() => {
-    if (promos) {
-      setPromosState(promos);
-    }
-  }, [promos]);
-  const formFieldsPromo = [
-    {
-      name: "promoByNama",
-      label: "Search",
-      type: "text",
-      placeholder: "Search Promo by Name...",
-      onChange: (e) => handleSearchByName(e.target.value),
-    },
-  ];
+  // useEffect(() => {
+  //   if (promos) {
+  //     setPromosState(promos);
+  //   }
+  // }, [promos]);
+  // const formFieldsPromo = [
+  //   {
+  //     name: "promoByNama",
+  //     label: "Search",
+  //     type: "text",
+  //     placeholder: "Search Promo by Name...",
+  //     onChange: (e) => handleSearchByName(e.target.value),
+  //   },
+  // ];
 
-  const handleSearchByName = (searchValue) => {
-    const filteredPromos = promos.filter((promo) =>
-      promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
-    );
-    setPromosState(filteredPromos.length ? filteredPromos : promos);
-  };
+  // const handleSearchByName = (searchValue) => {
+  //   const filteredPromos = promos.filter((promo) =>
+  //     promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
+  //   );
+  //   setPromosState(filteredPromos.length ? filteredPromos : promos);
+  // };
 
-  const promoHeaders = ["NO", "PEMERIKSAAN LAB", "JUMLAH", "ACTION"];
-  const promoMembers = promosState.map((promo, index) => ({
-    no: index + 1,
-    id: promo.promoId,
-    kodePromo: promo.kodePromo || "-",
-    namaPromo: promo.namaPromo || "-",
-    keterangan: promo.keterangan || "-",
-  }));
+  // const promoHeaders = ["NO", "PEMERIKSAAN LAB", "JUMLAH", "ACTION"];
+  // const promoMembers = promosState.map((promo, index) => ({
+  //   no: index + 1,
+  //   id: promo.promoId,
+  //   kodePromo: promo.kodePromo || "-",
+  //   namaPromo: promo.namaPromo || "-",
+  //   keterangan: promo.keterangan || "-",
+  // }));
 
   // end promo
 
