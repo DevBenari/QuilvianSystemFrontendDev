@@ -14,7 +14,9 @@ import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hoo
 import SelectField from "@/components/ui/select-field";
 import DataTable from "@/components/view/anggota/dataTable";
 import dataWilayah from "@/utils/dataWilayah";
-
+import { type } from "@amcharts/amcharts5";
+import FasilitasTable from "@/components/view/fasilitas/fasilitasTable";
+import { dataFasilitas } from "@/utils/dataFasilitas";
 export default function PendaftaranRehabilitasiMedik() {
   const { promos, loading, error } = usePromos();
   const [promosState, setPromosState] = useState([]);
@@ -234,13 +236,10 @@ export default function PendaftaranRehabilitasiMedik() {
           colSize: 8,
         },
         {
-          type: "text",
-          id: "cariTindakan",
-          label: "Cari Tindakam:",
-          name: "cariTindakan",
-          type: "text",
-          placeholder: "Cari Tindakan ",
-          // onChange: { handleSearchByName },
+          type: "custom",
+          label: "Fasilitas",
+          customRender: () => <FasilitasTable tindakan={dataFasilitas} />,
+          colSize: 12,
         },
       ],
     },

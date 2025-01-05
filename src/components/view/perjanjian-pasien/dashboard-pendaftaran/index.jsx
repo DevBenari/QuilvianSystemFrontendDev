@@ -11,7 +11,7 @@ import Link from "next/link";
 import React, { memo, useState } from "react";
 import { Row, Col, Button, Table } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import DataTablePerjanjian from "../../tablePerjanjian/table";
+import DataTablePerjanjian from "../tablePerjanjian/table";
 import DataAnggota from "@/lib/hooks/keanggotaan/data";
 
 const DashboardPerjanjian = memo(() => {

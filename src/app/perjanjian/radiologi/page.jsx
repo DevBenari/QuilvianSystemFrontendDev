@@ -1,7 +1,7 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
-import DataTablePerjanjian from "@/components/view/tablePerjanjian/table";
+import DataTablePerjanjian from "@/components/view/perjanjian-pasien/tablePerjanjian/table";
 import React, { memo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";

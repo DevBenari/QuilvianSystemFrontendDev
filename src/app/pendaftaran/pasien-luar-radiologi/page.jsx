@@ -14,6 +14,13 @@ import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hoo
 import SelectField from "@/components/ui/select-field";
 import DataTable from "@/components/view/anggota/dataTable";
 import dataWilayah from "@/utils/dataWilayah";
+import { type } from "@amcharts/amcharts5";
+import TindakanTableLaboratorium from "@/components/view/pendaftaran-laboratorium/tindakanLaboratorium";
+import {
+  pemeriksaRadiologi,
+  tindakanRadiologi,
+} from "@/utils/PemeriksaanRadiologi";
+import PemeriksaanTableRadiologi from "@/components/view/radiologi/pemeriksaanRadiologi";
 
 export default function PendaftaranPasienLab() {
   const { kecamatans } = useKecamatans();
@@ -535,59 +542,6 @@ export default function PendaftaranPasienLab() {
         },
       ],
     },
-    // {
-    //   section: "Dirujuk",
-    //   layout: "inline",
-    //   fields: [
-    //     {
-    //       type: "radio",
-    //       id: "dirujukOption",
-    //       label: "Dirujuk",
-    //       name: "dirujukOption",
-    //       options: [
-    //         { label: "Kursul", value: "kursul" },
-    //         { label: "Luar Rs", value: "luarRs" },
-    //         {
-    //           label: "Atas Permintaan Sendiri",
-    //           value: "atasPermintaanSendiri",
-    //         },
-    //       ],
-    //       inline: true,
-    //       rules: { required: "Please select an option for Dirujuk" },
-    //       colSize: 4,
-    //     },
-    //     {
-    //       type: "select",
-    //       id: "kursulPromo",
-    //       label: "Pilih Promo",
-    //       name: "kursulPromo",
-    //       placeholder: "Pilih Kursul",
-    //       options: [
-    //         { label: "Bad Anak Discount 20%", value: "badAnak" },
-    //         { label: "Bad Dewasa Discount 10%", value: "badDewasa" },
-    //       ],
-    //       rules: { required: "Pilih Kursul is required" },
-    //       colSize: 6,
-    //       // Enable/disable based on selected radio option
-    //       disabled: (watchValues) => watchValues.dirujukOption !== "kursul",
-    //     },
-    //     {
-    //       type: "select",
-    //       id: "rsType",
-    //       label: "Pilih RS",
-    //       name: "rsType",
-    //       placeholder: "Pilih RS",
-    //       options: [
-    //         { label: "Rsu", value: "rsu" },
-    //         { label: "Rsk", value: "rsk" },
-    //         { label: "Rb", value: "rb" },
-    //       ],
-    //       rules: { required: "Pilih RS is required" },
-    //       colSize: 6,
-    //       disabled: (watchValues) => watchValues.dirujukOption !== "luarRs",
-    //     },
-    //   ],
-    // },
     {
       section: "Kode Member",
       fields: [
@@ -667,67 +621,9 @@ export default function PendaftaranPasienLab() {
         },
         {
           type: "custom",
-          id: "promoData",
-          label: "Promo Data Table",
+          label: "Set pemeriksaan Radiologi",
           customRender: () => (
-            <Container fluid>
-              <div className="table-responsive-md w-100">
-                <Row className="justify-content-center py-4">
-                  <button
-                    type="button"
-                    className="btn iq-bg-danger btn-rounded btn-sm my-0 col-3"
-                    onClick={openPopup}
-                  >
-                    Tindakan
-                  </button>
-                </Row>
-
-                <Table className="text-center" bordered striped>
-                  <thead>
-                    <tr>
-                      <th>No</th>
-                      <th>Pemeriksaan Lab</th>
-                      <th>Jumlah</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.length > 0 ? (
-                      data.map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td>{rowIndex + 1}</td>
-                          <td>{row.lab || "-"}</td>
-                          <td>
-                            <input
-                              type="number"
-                              className="form-control"
-                              value={row.jumlah}
-                              onChange={(e) =>
-                                handleJumlahChange(rowIndex, e.target.value)
-                              }
-                            />
-                          </td>
-                          <td>
-                            <button
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleDeleteRow(rowIndex)}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="4" className="text-center">
-                          No data available
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            </Container>
+            <PemeriksaanTableRadiologi tindakan={pemeriksaRadiologi} />
           ),
           colSize: 12,
         },
