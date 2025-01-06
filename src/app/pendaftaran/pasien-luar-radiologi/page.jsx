@@ -21,6 +21,7 @@ import {
   tindakanRadiologi,
 } from "@/utils/PemeriksaanRadiologi";
 import PemeriksaanTableRadiologi from "@/components/view/radiologi/pemeriksaanRadiologi";
+import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
 
 export default function PendaftaranPasienLab() {
   const router = useRouter();
@@ -518,9 +519,7 @@ export default function PendaftaranPasienLab() {
         {
           type: "custom",
           label: "Set pemeriksaan Radiologi",
-          customRender: () => (
-            <PemeriksaanTableRadiologi tindakan={pemeriksaRadiologi} />
-          ),
+          customRender: () => <TableTindakan tindakan={pemeriksaRadiologi} />,
           colSize: 12,
         },
       ],

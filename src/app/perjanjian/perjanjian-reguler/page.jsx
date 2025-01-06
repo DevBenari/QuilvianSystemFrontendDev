@@ -1,82 +1,105 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
-import DataTablePerjanjian from "@/components/view/perjanjian-pasien/tablePerjanjian/table";
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Button } from "react-bootstrap";
-import { useRouter } from "next/navigation";
-import useAnggotaState, { createMembers } from "@/lib/hooks/keanggotaan/data";
+import DataTable from "@/components/features/viewDataTables/dataTable";
+import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+import { dataReservasi } from "@/utils/dataPerjanjian";
 
-const PerjanjianReguler = memo(() => {
+const PerjanjianReservasi = memo(() => {
   const methods = useForm();
-  const router = useRouter();
-  const { getMembers } = useAnggotaState();
-  const members = getMembers();
+  const [filteredData, setFilteredData] = useState(dataReservasi); // Gunakan data dummy untuk tabel
+  const [searchCriteria, setSearchCriteria] = useState({
+    nomorRekamMedis: "",
+    nama: "",
+    dokter: "",
+    departemen: "",
+    tipePerjanjian: "",
+    tanggalMulai: "",
+    tanggalSelesai: "",
+  });
 
-  // Fungsi untuk menangani filter pencarian pasien
-  const handleFilterChange = (fieldName, value) => {
-    console.log(`Filter changed: ${fieldName} -> ${value}`);
-    // Tambahkan logika filter di sini jika data berasal dari API
+  // Fungsi untuk menangani pencarian dengan kriteria
+  const handleSearch = (key, value) => {
+    const updatedCriteria = { ...searchCriteria, [key]: value };
+    setSearchCriteria(updatedCriteria);
+
+    const filtered = dataReservasi.filter((item) => {
+      return Object.keys(updatedCriteria).every((criteriaKey) => {
+        const criteriaValue = updatedCriteria[criteriaKey];
+        if (!criteriaValue) return true; // Abaikan jika kriteria kosong
+
+        if (
+          criteriaKey === "tanggalMulai" ||
+          criteriaKey === "tanggalSelesai"
+        ) {
+          const itemDate = new Date(item.tanggal_lahir).getTime(); // Gunakan `tanggal_lahir` sebagai referensi
+          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
+          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
+          if (criteriaKey === "tanggalMulai" && startDate) {
+            return itemDate >= startDate;
+          }
+          if (criteriaKey === "tanggalSelesai" && endDate) {
+            return itemDate <= endDate;
+          }
+        }
+
+        return item[criteriaKey]
+          ?.toString()
+          .toLowerCase()
+          .includes(criteriaValue.toLowerCase());
+      });
+    });
+
+    setFilteredData(filtered);
   };
-
-  // Fungsi untuk menangani double click pada baris tabel
-  const handleRowDoubleClick = (patient) => {
-    setSelectedPatient(patient);
-    console.log("Detail pasien:", patient);
-    // Tambahkan logika untuk menampilkan data detail atau mengarah ke form berikutnya
-  };
-
-  // Fungsi untuk menangani pasien baru
-  const handleAdd = () =>
-    router.push("/perjanjian/perjanjian-reguler/add-perjanjian-reguler");
 
   const formFields = [
     {
       fields: [
         {
           type: "text",
-          id: "medicalRecord",
-          label: "Medical Record",
-          name: "medicalRecord",
-          placeholder: "Enter your Medical Record...",
-          onChange: (e) => handleFilterChange("medicalRecord", e.target.value),
+          id: "nomorRekamMedis",
+          label: "Medical Record ID",
+          name: "nomorRekamMedis",
+          placeholder: "Masukkan Medical Record ID...",
+          onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
           colSize: 6,
         },
         {
           type: "text",
-          id: "name",
+          id: "nama",
           label: "Nama",
-          name: "name",
-          placeholder: "Enter your Name...",
-          onChange: (e) => handleFilterChange("name", e.target.value),
+          name: "nama",
+          placeholder: "Masukkan nama pasien...",
+          onChange: (e) => handleSearch("nama", e.target.value),
           colSize: 6,
         },
         {
           type: "text",
-          id: "address",
+          id: "alamat",
           label: "Alamat",
-          name: "address",
-          placeholder: "Enter your Address...",
-          onChange: (e) => handleFilterChange("address", e.target.value),
+          name: "alamat",
+          placeholder: "Masukkan alamat pasien...",
+          onChange: (e) => handleSearch("alamat", e.target.value),
           colSize: 6,
         },
         {
           type: "text",
-          id: "phoneNumber",
+          id: "no_hp",
           label: "No. HP",
-          name: "phoneNumber",
-          placeholder: "Enter your Phone Number...",
-          onChange: (e) => handleFilterChange("phoneNumber", e.target.value),
+          name: "no_hp",
+          placeholder: "Masukkan nomor HP pasien...",
+          onChange: (e) => handleSearch("no_hp", e.target.value),
           colSize: 6,
         },
         {
           type: "date",
-          id: "birthDate",
+          id: "tanggal_lahir",
           label: "Tgl. Lahir",
-          name: "birthDate",
-          placeholder: "Enter your Birth Date...",
-          rules: { required: "Tanggal lahir harus diisi" },
+          name: "tanggal_lahir",
+          placeholder: "Masukkan tanggal lahir pasien...",
+          onChange: (e) => handleSearch("tanggal_lahir", e.target.value),
           colSize: 6,
         },
       ],
@@ -85,30 +108,39 @@ const PerjanjianReguler = memo(() => {
 
   const headers = [
     "NO",
-    "URUTAN",
     "NO RM",
     "NAMA",
-    "NO REGISTRASI",
+    "ALAMAT",
+    "TEMPAT LAHIR",
+    "TANGGAL LAHIR",
     "PENJAMIN",
-    "TANGGAL REGIS",
-    "DOKTER",
-    "DEPARTEMENT",
-    "USER",
   ];
+
+  // Format data untuk ditampilkan di tabel
+  const members = filteredData.map((item, index) => ({
+    no: index + 1,
+    nomorRekamMedis: item.nomorRekamMedis,
+    nama: item.nama,
+    alamat: item.alamat,
+    tempat_lahir: item.tempat_lahir,
+    tanggal_lahir: item.tanggal_lahir,
+    penjamin: item.penjamin,
+  }));
 
   return (
     <FormProvider {...methods}>
-      <DynamicForm title="Perjanjian" formConfig={formFields} />
-      <DataTablePerjanjian
+      <DynamicFormTable title="Perjanjian Reservasi" formConfig={formFields} />
+
+      <DataTable
         headers={headers}
         data={members}
-        // onRowDoubleClick={handleRowDoubleClick}
-        title="Daftar Pasien"
-        onAdd={handleAdd}
+        id="id"
+        rowsPerPage={5}
+        title="List Pasien Reservasi"
       />
     </FormProvider>
   );
 });
 
-PerjanjianReguler.displayName = "PerjanjianReguler";
-export default PerjanjianReguler;
+PerjanjianReservasi.displayName = "PerjanjianReservasi";
+export default PerjanjianReservasi;

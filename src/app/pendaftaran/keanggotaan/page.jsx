@@ -1,79 +1,65 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
-import DataTableAnggota from "@/components/view/anggota/dataTable";
-
+import React, { memo, useState, useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import DataTable from "@/components/features/viewDataTables/dataTable";
+import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { useAnggota } from "@/lib/hooks/keanggotaan";
-import { deleteAnggota } from "@/lib/hooks/keanggotaan/delete";
-import { useRouter } from "next/navigation";
 
-import { Fragment, useEffect, useState } from "react";
-
-export const PendaftaranKeanggotaan = () => {
-  const router = useRouter();
+const DashboardPerjanjian = memo(() => {
+  const methods = useForm();
   const { anggota, loading, error } = useAnggota();
-  const [AnggotaState, setAnggotaState] = useState([]);
+  const [filteredAnggota, setFilteredAnggota] = useState([]);
+  const [searchCriteria, setSearchCriteria] = useState({
+    nama: "",
+    nomorRm: "",
+    jenis: "",
+    status: "",
+    tanggalStart: "", // Menambahkan filter untuk tanggal
+  });
 
+  // Sinkronisasi data awal saat `anggota` berubah
   useEffect(() => {
-    if (anggota) {
-      console.log("Anggota Data:", anggota);
-      anggota.forEach((item) => {
-        console.log("Tanggal Start:", item.tanggalStart);
-      });
-      setAnggotaState(anggota);
-    }
+    setFilteredAnggota(anggota);
+    console.log("Data API diterima:", anggota); // Debugging: Data API
   }, [anggota]);
-  const resetAnggotaState = () => setAnggotaState(anggota);
 
-  // const handleSearchByNameOrCode = (value) => {
-  //   if (!value.trim()) {
-  //     resetAnggotaState();
-  //     return;
-  //   }
-
-  //   const searchValue = value.trim().toLowerCase();
-
-  //   const filteredAnggota = anggota.filter((anggota) => {
-  //     const nama = String(anggota.nama || "").toLowerCase();
-  //     const kode = String(anggota.kodeMember || "");
-  //     return nama.startsWith(searchValue) || kode.startsWith(searchValue);
-  //   });
-
-  //   setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
-  // };
-
+  // Fungsi untuk menangani pencarian dengan kriteria
   const handleSearch = (key, value) => {
-    if (!value.trim()) {
-      resetAnggotaState();
-      return;
-    }
+    const updatedCriteria = { ...searchCriteria, [key]: value };
+    setSearchCriteria(updatedCriteria);
 
-    const filteredAnggota = anggota.filter((anggota) => {
-      if (key === "tanggalStart") {
-        const anggotaDate = new Date(anggota[key]).toISOString().split("T")[0];
-        const searchDate = new Date(value).toISOString().split("T")[0];
-        return anggotaDate === searchDate;
-      }
-      const fieldValue = String(anggota[key] || "").toLowerCase();
-      const searchValue = value.trim().toLowerCase();
-      return fieldValue.includes(searchValue);
+    console.log("Kriteria pencarian diperbarui:", updatedCriteria); // Debugging: Kriteria pencarian
+
+    const filtered = anggota.filter((item) => {
+      return Object.keys(updatedCriteria).every((criteriaKey) => {
+        const criteriaValue = updatedCriteria[criteriaKey];
+        if (!criteriaValue) return true; // Abaikan jika kriteria kosong
+
+        if (criteriaKey === "tanggalStart") {
+          // Debugging: Memeriksa format tanggal
+          console.log("Memeriksa tanggal:", {
+            itemDate: item[criteriaKey],
+            criteriaValue,
+          });
+
+          // Parsing dan membandingkan tanggal
+          const itemDate = item[criteriaKey]
+            ? new Date(item[criteriaKey]).toISOString().split("T")[0]
+            : ""; // Format ke YYYY-MM-DD atau kosong
+          return itemDate === criteriaValue; // Membandingkan dengan input
+        }
+
+        // Pencarian default (teks)
+        return item[criteriaKey]
+          ?.toString()
+          .toLowerCase()
+          .includes(criteriaValue.toLowerCase());
+      });
     });
 
-    setAnggotaState(filteredAnggota.length > 0 ? filteredAnggota : []);
-    console.log(filteredAnggota);
-  };
-
-  const handleAdd = () => router.push("/pendaftaran/keanggotaan/addAnggota");
-  const handleEdit = (id) => router.push(`/pendaftaran/${id}`);
-  const handleDelete = async (id) => {
-    try {
-      await deleteAnggota(id);
-      alert("Anggota deleted successfully!");
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-      alert("Failed to delete anggota.");
-    }
+    console.log("Data setelah difilter:", filtered); // Debugging: Data yang telah difilter
+    setFilteredAnggota(filtered);
   };
 
   const formFields = [
@@ -82,9 +68,9 @@ export const PendaftaranKeanggotaan = () => {
         {
           type: "text",
           id: "nama",
-          label: "nama",
+          label: "Cari Nama Anggota",
           name: "nama",
-          placeholder: "Cari berdasarkan Nama atau Kode",
+          placeholder: "Masukkan nama anggota...",
           onChange: (e) => handleSearch("nama", e.target.value),
           colSize: 6,
         },
@@ -93,7 +79,7 @@ export const PendaftaranKeanggotaan = () => {
           id: "nomorRm",
           label: "No Rekam Medis",
           name: "nomorRm",
-          placeholder: "No Rekam Medis",
+          placeholder: "Masukkan nomor rekam medis...",
           onChange: (e) => handleSearch("nomorRm", e.target.value),
           colSize: 6,
         },
@@ -117,55 +103,55 @@ export const PendaftaranKeanggotaan = () => {
           label: "Status",
           name: "status",
           options: [
-            { label: "aktif", value: "aktif" },
-            { label: "Non-aktif", value: "non-aktif" },
+            { label: "Aktif", value: "aktif" },
+            { label: "Non-Aktif", value: "non-aktif" },
           ],
           onChange: (e) => handleSearch("status", e.target.value),
           colSize: 6,
         },
-
-        // {
-        //   type: "date",
-        //   id: "tanggalStart",
-        //   label: "Tanggal Start",
-        //   name: "tanggalStart",
-        //   colSize: 6,
-        //   onChange: (e) => handleSearch("tanggalStart", e.target.value),
-        // },
+        {
+          type: "date",
+          id: "tanggalStart",
+          label: "Tanggal Start",
+          name: "tanggalStart",
+          placeholder: "Masukkan tanggal start...",
+          onChange: (e) => handleSearch("tanggalStart", e.target.value), // Mencari berdasarkan tanggal
+          colSize: 6,
+        },
       ],
     },
   ];
 
   const headers = ["NO", "NAMA", "NO RM", "TANGGAL START", "JENIS", "STATUS"];
 
-  const members = AnggotaState.map((anggota, index) => ({
-    no: index + 1, // NO
-    nama: anggota.nama, // NAMA
-    nomorRm: anggota.nomorRm, // NO RMAL START
-    tanggalStart: anggota.tanggalStart, // TANGGS
+  // Format data untuk ditampilkan di tabel
+  const members = filteredAnggota.map((anggota, index) => ({
+    no: index + 1,
+    nama: anggota.nama,
+    nomorRm: anggota.nomorRm,
+    tanggalStart: anggota.tanggalStart,
     jenis: anggota.jenis,
     status: anggota.status,
   }));
 
   return (
-    <Fragment>
-      <DynamicForm title="Pendaftaran Keanggotaan" formConfig={formFields} />
+    <FormProvider {...methods}>
+      <DynamicFormTable title="Anggota" formConfig={formFields} />
+
       {loading && <div>Loading...</div>}
       {error && <div className="text-danger">{error}</div>}
       {!loading && !error && (
-        <DataTableAnggota
+        <DataTable
           headers={headers}
           data={members}
-          onAdd={handleAdd}
           id="id"
-          actions={{
-            edit: (row) => handleEdit(row.id),
-            delete: (row) => handleDelete(row.id),
-          }}
+          rowsPerPage={3}
+          title="Anggota"
         />
       )}
-    </Fragment>
+    </FormProvider>
   );
-};
+});
 
-export default PendaftaranKeanggotaan;
+DashboardPerjanjian.displayName = "DashboardPerjanjian";
+export default DashboardPerjanjian;

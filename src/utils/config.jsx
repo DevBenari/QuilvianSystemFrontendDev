@@ -152,6 +152,7 @@ export const menus = {
       title: "Perjanjian",
       subItems: [
         { title: "Data Pasien Perjanjian", href: "/perjanjian" },
+        { title: "Perjanjian Reguler", href: "/perjanjian/perjanjian-reguler" },
         { title: "Pasien Perjanjian ODC", href: "/perjanjian/odc" },
         {
           title: "Pasien Perjanjian Rawat Jalan",
@@ -172,6 +173,10 @@ export const menus = {
         { title: "Pengaturan Antrian", href: "/Antrian/pengaturan-antrian" },
         { title: "Display Antrian", href: "/Antrian/display-antrian" },
       ],
+    },
+    {
+      title: "Pemesanan",
+      subItems: [{ title: "Pemesanan Bed", href: "/pemesanan-bed" }],
     },
   ],
   dokter: [

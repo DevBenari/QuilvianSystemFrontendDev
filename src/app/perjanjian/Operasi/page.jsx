@@ -1,140 +1,206 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
-import DataTablePerjanjian from "@/components/view/perjanjian-pasien/tablePerjanjian/table";
 import React, { memo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Button } from "react-bootstrap";
-import { useRouter } from "next/navigation";
-import useAnggotaState, { createMembers } from "@/lib/hooks/keanggotaan/data";
+import DataTable from "@/components/features/viewDataTables/dataTable";
+import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+import { dataPerjanjianOperasi } from "@/utils/dataPerjanjian"; // Pastikan dataPerjanjianOperasi diimpor dengan benar
 
-const PerjanjianOdc = memo(() => {
+const PerjanjianOperasi = memo(() => {
   const methods = useForm();
-  const router = useRouter();
-  const { getMembers } = useAnggotaState();
-  const members = getMembers();
+  const [filteredData, setFilteredData] = useState(dataPerjanjianOperasi); // Gunakan data dummy untuk tabel
+  const [searchCriteria, setSearchCriteria] = useState({
+    nomorRekamMedis: "",
+    nama: "",
+    alamat: "",
+    kelas: "",
+    dokter: "",
+    departemen: "",
+    tanggalMulai: "",
+    tanggalSelesai: "",
+    penjamin: "",
+  });
+
+  // Fungsi untuk menangani pencarian
+  const handleSearch = (key, value) => {
+    const updatedCriteria = { ...searchCriteria, [key]: value };
+    setSearchCriteria(updatedCriteria);
+
+    const filtered = dataPerjanjianOperasi.filter((item) => {
+      return Object.keys(updatedCriteria).every((criteriaKey) => {
+        const criteriaValue = updatedCriteria[criteriaKey];
+        if (!criteriaValue) return true; // Abaikan jika kosong
+
+        if (
+          criteriaKey === "tanggalMulai" ||
+          criteriaKey === "tanggalSelesai"
+        ) {
+          const itemDate = new Date(item.tanggalOperasi).getTime();
+          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
+          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
+          if (criteriaKey === "tanggalMulai" && startDate) {
+            return itemDate >= startDate;
+          }
+          if (criteriaKey === "tanggalSelesai" && endDate) {
+            return itemDate <= endDate;
+          }
+        }
+
+        return item[criteriaKey]
+          ?.toString()
+          .toLowerCase()
+          .includes(criteriaValue.toLowerCase());
+      });
+    });
+
+    setFilteredData(filtered);
+  };
 
   const formFields = [
     {
       fields: [
         {
-          type: "date",
-          id: "startDate",
-          label: "Periode Awal",
-          name: "startDate",
-          placeholder: "Pilih Tanggal Awal",
-          colSize: 6,
-          onChange: (e) => handleFilterChange("startDate", e.target.value),
-        },
-        {
-          type: "date",
-          id: "endDate",
-          label: "Periode Akhir",
-          name: "endDate",
-          placeholder: "Pilih Tanggal Akhir",
-          colSize: 6,
-          onChange: (e) => handleFilterChange("endDate", e.target.value),
-        },
-        {
-          type: "select",
-          id: "doctor",
+          type: "text",
+          id: "dokter",
           label: "Nama Dokter",
-          name: "doctor",
-          placeholder: "Pilih Dokter",
-          options: [
-            { label: "Dr. X", value: "dr_x" },
-            { label: "Dr. Y", value: "dr_y" },
-            { label: "Dr. Z", value: "dr_z" },
-          ],
-          rules: { required: "Dokter harus dipilih" },
+          name: "dokter",
+          placeholder: "Masukkan nama dokter...",
+          onChange: (e) => handleSearch("dokter", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("doctor", e.target.value),
+        },
+        {
+          type: "date",
+          id: "tanggalMulai",
+          label: "Tanggal Mulai",
+          name: "tanggalMulai",
+          placeholder: "DD-MM-YYYY",
+          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
+          colSize: 6,
+        },
+        {
+          type: "date",
+          id: "tanggalSelesai",
+          label: "Tanggal Selesai",
+          name: "tanggalSelesai",
+          placeholder: "DD-MM-YYYY",
+          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
+          colSize: 6,
         },
         {
           type: "text",
-          id: "medicalRecord",
-          label: "Nomor RM",
-          name: "medicalRecord",
-          placeholder: "Masukkan Nomor RM",
+          id: "nomorRekamMedis",
+          label: "Medical Record ID",
+          name: "nomorRekamMedis",
+          placeholder: "Masukkan Medical Record ID...",
+          onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("medicalRecord", e.target.value),
         },
         {
           type: "text",
-          id: "patientName",
+          id: "nama",
           label: "Nama Pasien",
-          name: "patientName",
-          placeholder: "Masukkan Nama Pasien",
+          name: "nama",
+          placeholder: "Masukkan Nama Pasien...",
+          onChange: (e) => handleSearch("nama", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("patientName", e.target.value),
+        },
+        {
+          type: "text",
+          id: "alamat",
+          label: "Alamat",
+          name: "alamat",
+          placeholder: "Masukkan Alamat...",
+          onChange: (e) => handleSearch("alamat", e.target.value),
+          colSize: 6,
         },
         {
           type: "select",
-          id: "registrationStatus",
-          label: "Status Registrasi",
-          name: "registrationStatus",
-          placeholder: "Pilih Status Registrasi",
+          id: "kelas",
+          label: "Kelas",
+          name: "kelas",
           options: [
-            { label: "All", value: "all" },
-            { label: "Sudah Registrasi", value: "sudah" },
-            { label: "Belum Registrasi", value: "belum" },
+            { label: "Pilih Kelas", value: "" },
+            { label: "Kelas 1", value: "Kelas 1" },
+            { label: "Kelas 2", value: "Kelas 2" },
+            { label: "Kelas 3", value: "Kelas 3" },
           ],
+          onChange: (e) => handleSearch("kelas", e.target.value),
           colSize: 6,
-          onChange: (e) =>
-            handleFilterChange("registrationStatus", e.target.value),
         },
         {
           type: "select",
-          id: "operationRoom",
-          label: "Ruang Operasi",
-          name: "operationRoom",
-          placeholder: "Pilih Ruang Operasi",
+          id: "penjamin",
+          label: "Penjamin",
+          name: "penjamin",
           options: [
-            { label: "Ruang Operasi 1", value: "ruang_1" },
-            { label: "Ruang Operasi 2", value: "ruang_2" },
-            { label: "Ruang Operasi 3", value: "ruang_3" },
+            { label: "Pilih Penjamin", value: "" },
+            { label: "BPJS", value: "BPJS" },
+            { label: "Pribadi", value: "Pribadi" },
           ],
+          onChange: (e) => handleSearch("penjamin", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("operationRoom", e.target.value),
         },
       ],
     },
   ];
 
   const headers = [
-    "NO",
-    "KLASIFIKASI",
+    "RUANG OPERASI",
     "NO REGISTRASI",
     "TANGGAL OPERASI",
-    "RUANG OPERASI",
+    "JAM OPERASI",
     "PASIEN",
-    "NO RM",
-    "NIK",
+    "NO HP",
+    "SEX",
     "KELAS",
-    "DIAGNOSA",
+    "DIAGNOSIS",
     "TINDAKAN",
     "KETERANGAN",
     "OPERATOR",
-    "TIPE ANESTESI",
-    "JAM AWAL",
+    "TIPE ANESTHESI",
+    "JAMINAN",
     "USER",
     "USER EDIT",
     "TANGGAL INPUT",
     "TANGGAL EDIT",
-    "FUNGSI",
   ];
+
+  const members = filteredData.map((item, index) => ({
+    no: index + 1,
+    ruangOperasi: item.ruangOperasi,
+    noRegistrasi: item.noRegistrasi,
+    tanggalOperasi: item.tanggalOperasi,
+    jamOperasi: item.jamOperasi,
+    pasien: item.pasien,
+    noHP: item.noHP,
+    sex: item.sex,
+    kelas: item.kelas,
+    diagnosis: item.diagnosis,
+    tindakan: item.tindakan,
+    keterangan: item.keterangan,
+    operator: item.operator,
+    tipeAnestesi: item.tipeAnestesi,
+    jaminan: item.jaminan,
+    user: item.user,
+    userEdit: item.userEdit,
+    tanggalInput: item.tanggalInput,
+    tanggalEdit: item.tanggalEdit,
+  }));
+
   return (
     <FormProvider {...methods}>
-      <DynamicForm title="Perjanjian" formConfig={formFields} />
-      <DataTablePerjanjian
+      <DynamicFormTable title="Pencarian Operasi" formConfig={formFields} />
+
+      <DataTable
         headers={headers}
         data={members}
-        // onRowDoubleClick={handleRowDoubleClick}
-        title="Pasien Operasi"
+        id="id"
+        rowsPerPage={5}
+        title="List Perjanjian Operasi"
       />
     </FormProvider>
   );
 });
 
-PerjanjianOdc.displayName = "PerjanjianOdc";
-export default PerjanjianOdc;
+PerjanjianOperasi.displayName = "PerjanjianOperasi";
+export default PerjanjianOperasi;

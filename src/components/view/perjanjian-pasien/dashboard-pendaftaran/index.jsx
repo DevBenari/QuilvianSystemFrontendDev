@@ -1,79 +1,58 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
-import DataTableAnggota from "@/components/view/anggota/dataTable";
-import DateInput from "@/components/ui/date-input";
-import TextField from "@/components/ui/text-field";
-import { dataPasien } from "@/utils/config";
-
-import axios from "axios";
-import Link from "next/link";
-import React, { memo, useState } from "react";
-import { Row, Col, Button, Table } from "react-bootstrap";
+import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import DataTablePerjanjian from "../tablePerjanjian/table";
-import DataAnggota from "@/lib/hooks/keanggotaan/data";
+import DataTable from "@/components/features/viewDataTables/dataTable";
+import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+import { dataPerjanjian } from "@/utils/dataPerjanjian"; // Data dummy
 
 const DashboardPerjanjian = memo(() => {
-  const { getMembers } = DataAnggota();
-
-  const members = getMembers();
-
   const methods = useForm();
-  // const [isFilteredPasien, setIsFilteredPasien] = useState([])
-  // const [isLoading, setIsLoading] = useState(false)
-
-  // const handleInputChange = async (e) => {
-  //     const query = e.target.valuel;
-
-  //     if(query.trim() === "") {
-  //         setIsFilteredPasien([])
-  //         return;
-  //     }
-  //     setIsLoading(true)
-  //     try{
-  //         const response = await axios.get(`/api/patients?search=${query}`)
-  //         setIsFilteredPasien(response.data);
-  //     }catch(error){
-  //         console.log(error)
-  //     }finally{
-  //         setIsLoading(false)
-  //     }
-
-  // }
-
-  const [filters, setFilters] = useState({
-    noRekamMedis: "",
+  const [filteredData, setFilteredData] = useState(dataPerjanjian); // Gunakan data dummy untuk tabel
+  const [searchCriteria, setSearchCriteria] = useState({
     nama: "",
-    noTelp: "",
+    dokter: "",
+    departemen: "",
+    tipePerjanjian: "",
+    tanggalMulai: "",
+    tanggalSelesai: "",
   });
-  const [filteredPatients, setFilteredPatients] = useState(dataPasien);
 
-  // Fungsi untuk mengupdate filter
-  const handleFilterChange = (key, value) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    applyFilters(newFilters);
-  };
+  // Fungsi untuk menangani pencarian dengan kriteria
+  const handleSearch = (key, value) => {
+    const updatedCriteria = { ...searchCriteria, [key]: value };
+    setSearchCriteria(updatedCriteria);
 
-  // Fungsi untuk memfilter data pasien
-  const applyFilters = (filters) => {
-    const filtered = dataPasien.filter((patient) => {
-      const matchNoRekamMedis = filters.noRekamMedis
-        ? patient.noRekamMedis
-            ?.toLowerCase()
-            .includes(filters.noRekamMedis.toLowerCase())
-        : true;
-      const matchNama = filters.nama
-        ? patient.nama?.toLowerCase().includes(filters.nama.toLowerCase())
-        : true;
-      const matchNoTelp = filters.noTelp
-        ? patient.noTelp?.toLowerCase().includes(filters.noTelp.toLowerCase())
-        : true;
+    const filtered = dataPerjanjian.filter((item) => {
+      return Object.keys(updatedCriteria).every((criteriaKey) => {
+        const criteriaValue = updatedCriteria[criteriaKey];
+        if (!criteriaValue) return true; // Abaikan jika kriteria kosong
 
-      return matchNoRekamMedis && matchNama && matchNoTelp;
+        if (
+          criteriaKey === "tanggalMulai" ||
+          criteriaKey === "tanggalSelesai"
+        ) {
+          // Filter tanggal dalam range
+          const itemDate = new Date(item.tanggal).getTime(); // Konversi ke timestamp
+          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
+          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
+          if (criteriaKey === "tanggalMulai" && startDate) {
+            return itemDate >= startDate;
+          }
+          if (criteriaKey === "tanggalSelesai" && endDate) {
+            return itemDate <= endDate;
+          }
+        }
+
+        // Pencarian default (teks)
+        return item[criteriaKey]
+          ?.toString()
+          .toLowerCase()
+          .includes(criteriaValue.toLowerCase());
+      });
     });
-    setFilteredPatients(filtered);
+
+    setFilteredData(filtered);
   };
 
   const formFields = [
@@ -81,72 +60,113 @@ const DashboardPerjanjian = memo(() => {
       fields: [
         {
           type: "text",
+          id: "nama",
+          label: "nama Pasien",
+          name: "nama",
+          placeholder: "Masukkan nama Pasien...",
+          onChange: (e) => handleSearch("nama", e.target.value),
+          colSize: 6,
+        },
+        {
+          type: "text",
           id: "dokter",
           label: "Dokter",
           name: "dokter",
-          placeholder: "Enter your No Rekam Medis...",
-          onChange: (e) => handleFilterChange("dokter", e.target.value),
+          placeholder: "Masukkan nama dokter...",
+          onChange: (e) => handleSearch("dokter", e.target.value),
           colSize: 6,
         },
         {
-          type: "text",
-          id: "noRekamMedis",
-          label: "No Rekam Medis",
-          name: "noRekamMedis",
-          placeholder: "Enter your No Rekam Medis...",
-          onChange: (e) => handleFilterChange("noRekamMedis", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "text",
+          type: "select",
           id: "departemen",
           label: "Departemen",
           name: "departemen",
-          placeholder: "Enter your departemen Pasien...",
-          onChange: (e) => handleFilterChange("departemen", e.target.value),
+          options: [
+            { label: "Pilih Departemen", value: "" },
+            { label: "Poli Anak", value: "Poli Anak" },
+            { label: "Poli Penyakit Dalam", value: "Poli Penyakit Dalam" },
+            { label: "Poli Mata", value: "Poli Mata" },
+          ],
+          onChange: (e) => handleSearch("departemen", e.target.value),
           colSize: 6,
         },
         {
-          type: "text",
+          type: "select",
           id: "tipePerjanjian",
           label: "Tipe Perjanjian",
           name: "tipePerjanjian",
-          placeholder: "Enter your tipe Perjanjian Pasien...",
-          onChange: (e) => handleFilterChange("tipePerjanjian", e.target.value),
+          options: [
+            { label: "Pilih Tipe Perjanjian", value: "" },
+            { label: "Rawat Jalan", value: "Rawat Jalan" },
+            { label: "Rawat Inap", value: "Rawat Inap" },
+          ],
+          onChange: (e) => handleSearch("tipePerjanjian", e.target.value),
           colSize: 6,
         },
-        // {
-        //   type: "date",
-        //   id: "tanggalstart",
-        //   label: "Tanggal Lahir",
-        //   name: "tanggalstart",
-        //   placeholder: "Enter Tanggal Lahir",
-        //   rules: { required: "Tanggal lahir harus diisi" },
-        //   colSize: 6,
-        // },
+        {
+          type: "date",
+          id: "tanggalMulai",
+          label: "Tanggal Mulai",
+          name: "tanggalMulai",
+          placeholder: "Pilih tanggal mulai...",
+          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
+          colSize: 6,
+        },
+        {
+          type: "date",
+          id: "tanggalSelesai",
+          label: "Tanggal Selesai",
+          name: "tanggalSelesai",
+          placeholder: "Pilih tanggal selesai...",
+          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
+          colSize: 6,
+        },
       ],
     },
   ];
 
   const headers = [
     "NO",
-    "URUTAN",
     "NO RM",
     "NAMA",
     "NO REGISTRASI",
     "PENJAMIN",
-    "TANGGAL REGIS",
+    "TEL REGIS",
     "DOKTER",
-    "DEPARTEMENT",
+    "DEPARTEMEN",
     "USER",
   ];
 
+  // Format data untuk ditampilkan di tabel
+  const members = filteredData.map((item, index) => ({
+    no: index + 1,
+    nomorRekamMedis: item.nomorRekamMedis,
+    nama: item.nama,
+    no_registrasi: item.no_registrasi,
+    penjamin: item.penjamin,
+    tel_regis: item.tel_regis,
+    dokter: item.dokter,
+    departemen: item.departemen,
+    user: item.user,
+  }));
+
   return (
     <FormProvider {...methods}>
-      <DynamicForm title="Perjanjian" formConfig={formFields} />
-      <DataTablePerjanjian headers={headers} data={members} />
+      <DynamicFormTable
+        title="Pasien yang telah registrasi"
+        formConfig={formFields}
+      />
+
+      <DataTable
+        headers={headers}
+        data={members}
+        id="id"
+        rowsPerPage={5}
+        title="List Pasien Perjanjian"
+      />
     </FormProvider>
   );
 });
+
 DashboardPerjanjian.displayName = "DashboardPerjanjian";
 export default DashboardPerjanjian;

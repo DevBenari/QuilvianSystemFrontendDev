@@ -15,7 +15,7 @@ import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
 import DistanceField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({ title, formConfig, onSubmit }) => {
+const DynamicFormTable = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
     text: TextField,
     email: (props) => <TextField {...props} type="email" />,
@@ -69,6 +69,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
       options,
       rows,
       customRender,
+      colSize, // Pisahkan colSize agar tidak diteruskan
       ...otherProps // Capture all other props
     } = field;
 
@@ -189,7 +190,10 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
                                 methods,
                                 watchValues: watch(),
                               })
-                            : renderField(field)}
+                            : renderField({
+                                ...field,
+                                colSize: undefined, // Jangan teruskan ke elemen DOM
+                              })}
                         </Col>
                       ))}
                   </Row>
@@ -203,4 +207,4 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
   );
 };
 
-export default DynamicForm;
+export default DynamicFormTable;

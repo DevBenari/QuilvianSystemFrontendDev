@@ -9,11 +9,7 @@ const DataAnggota = () => {
 
   useEffect(() => {
     if (anggota) {
-      console.log("Anggota Data:", anggota);
-      anggota.forEach((item) => {
-        console.log("Tanggal Start:", item.tanggalStart);
-      });
-      setAnggotaState(anggota);
+      setAnggotaState(anggota); // Sinkronisasi data awal
     }
   }, [anggota]);
 
@@ -21,6 +17,7 @@ const DataAnggota = () => {
     AnggotaState.map((anggota, index) => ({
       no: index + 1,
       nama: anggota.nama,
+      3: anggota.nama,
       nomorRm: anggota.nomorRm,
       tanggalStart: anggota.tanggalStart,
       jenis: anggota.jenis,
