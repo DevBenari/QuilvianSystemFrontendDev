@@ -6,19 +6,17 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Row, Col, Container, Button, Table } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import RadioInput from "@/components/ui/radio-input";
-import { usePromos } from "@/lib/hooks/promo/index";
 import SelectField from "@/components/ui/select-field";
 import dataWilayah from "@/utils/dataWilayah";
 import { useKecamatans } from "@/lib/hooks/kecamatan";
 import { useCities } from "@/lib/hooks/city";
-import SearchableSelectField from "@/components/ui/select-field-search";
 import { tindakanDataConfig } from "@/utils/tindakanData";
 import TindakanTableLaboratorium from "@/components/view/pendaftaran-laboratorium/tindakanLaboratorium";
 export default function PendaftaranPasienLab() {
-  const { promos, loading, error } = usePromos();
-  const [promosState, setPromosState] = useState([]);
-  const datas = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  // const { promos, loading, error } = usePromos();
+  // const [promosState, setPromosState] = useState([]);
+  // const datas = useState([]);
+  // const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
   // const [province, setProvince] = useState("");
 
@@ -32,7 +30,7 @@ export default function PendaftaranPasienLab() {
   // };
 
   const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  // const [selectedOptions, setSelectedOptions] = useState([]);
   // function handle
 
   const handleRadioChange = (value) => {
@@ -108,19 +106,12 @@ export default function PendaftaranPasienLab() {
 
   // end function seacrh provindsi
 
-  // funhsi table tindakan
+  // funhsi table tindakan api
 
-  const { kecamatans } = useKecamatans();
-  const { cities } = useCities();
+  // const { kecamatans } = useKecamatans();
+  // const { cities } = useCities();
 
   // end table tindakan
-
-  const { control, watch } = useForm({
-    defaultValues: {
-      analisaHb: { select: null, qty: "" },
-      cairanTubuh: { select: null, qty: "" },
-    },
-  });
 
   const formFields = [
     {
@@ -562,10 +553,15 @@ export default function PendaftaranPasienLab() {
           rules: { required: "time Sampling is required" },
           colSize: 2,
         },
+      ],
+    },
+    {
+      section: "Tindakan",
+      fields: [
         {
           type: "custom",
-          id: "promoData",
-          label: "Promo Data Table",
+          id: "tindakan ",
+          label: "Tindakan Data Table",
           customRender: () => (
             <TindakanTableLaboratorium tindakan={tindakanDataConfig} />
           ),

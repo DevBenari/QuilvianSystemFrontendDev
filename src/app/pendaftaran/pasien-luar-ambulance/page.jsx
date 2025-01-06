@@ -1,27 +1,18 @@
 "use client";
-import FormValidations from "@/components/features/formValidations/formValidations";
+
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
-import { useKecamatans } from "@/lib/hooks/kecamatan/index";
-import { getById } from "@/lib/hooks/province/getProvinceId";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Container, Button, Form } from "react-bootstrap";
-import TextField from "@/components/ui/text-field";
-import RadioInput from "@/components/ui/radio-input";
 import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hook
-import SelectField from "@/components/ui/select-field";
-import DataTable from "@/components/view/anggota/dataTable";
 import dataWilayah from "@/utils/dataWilayah";
-import TimeField from "@/components/ui/time-input";
-import { type } from "@amcharts/amcharts5";
 
 export default function PendaftaranFasilitas() {
-  const { promos, loading, error } = usePromos();
-  const [promosState, setPromosState] = useState([]);
+  // const { promos, loading, error } = usePromos();
+  // const [promosState, setPromosState] = useState([]);
   const router = useRouter();
-  const [selectedOption, setSelectedOption] = useState(null);
+  // const [selectedOption, setSelectedOption] = useState(null);
   // change provinsi berdasarkan api
 
   // function handle
@@ -95,36 +86,36 @@ export default function PendaftaranFasilitas() {
   );
 
   //  function promo
-  useEffect(() => {
-    if (promos) {
-      setPromosState(promos);
-    }
-  }, [promos]);
-  const formFieldsPromo = [
-    {
-      name: "promoByNama",
-      label: "Search",
-      type: "text",
-      placeholder: "Search Promo by Name...",
-      onChange: (e) => handleSearchByName(e.target.value),
-    },
-  ];
+  // useEffect(() => {
+  //   if (promos) {
+  //     setPromosState(promos);
+  //   }
+  // }, [promos]);
+  // const formFieldsPromo = [
+  //   {
+  //     name: "promoByNama",
+  //     label: "Search",
+  //     type: "text",
+  //     placeholder: "Search Promo by Name...",
+  //     onChange: (e) => handleSearchByName(e.target.value),
+  //   },
+  // ];
 
-  const handleSearchByName = (searchValue) => {
-    const filteredPromos = promos.filter((promo) =>
-      promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
-    );
-    setPromosState(filteredPromos.length ? filteredPromos : promos);
-  };
+  // const handleSearchByName = (searchValue) => {
+  //   const filteredPromos = promos.filter((promo) =>
+  //     promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
+  //   );
+  //   setPromosState(filteredPromos.length ? filteredPromos : promos);
+  // };
 
-  const promoHeaders = ["NO", "PEMERIKSAAN LAB", "JUMLAH", "ACTION"];
-  const promoMembers = promosState.map((promo, index) => ({
-    no: index + 1,
-    id: promo.promoId,
-    kodePromo: promo.kodePromo || "-",
-    namaPromo: promo.namaPromo || "-",
-    keterangan: promo.keterangan || "-",
-  }));
+  // const promoHeaders = ["NO", "PEMERIKSAAN LAB", "JUMLAH", "ACTION"];
+  // const promoMembers = promosState.map((promo, index) => ({
+  //   no: index + 1,
+  //   id: promo.promoId,
+  //   kodePromo: promo.kodePromo || "-",
+  //   namaPromo: promo.namaPromo || "-",
+  //   keterangan: promo.keterangan || "-",
+  // }));
 
   // end promo
 

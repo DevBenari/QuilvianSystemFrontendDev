@@ -1,6 +1,6 @@
 "use client";
 
-import DataTable from "@/components/view/pendaftarn-pasien-bayi/table/dataTable";
+import DataTable from "@/components/view/pendaftaran-pasien-bayi/table/dataTable";
 import { Fragment, useEffect } from "react";
 export const PendaftaranPasienBayi = () => {
   const headers = [

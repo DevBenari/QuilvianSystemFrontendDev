@@ -11,7 +11,9 @@ const OptikTable = ({ tindakan }) => {
   });
 
   const [data, setData] = React.useState([]);
+  const [searchKeyword, setSearchKeyword] = React.useState("");
 
+  // Fungsi untuk menambahkan data ke tabel
   const handleAddToTable = () => {
     const dataToAdd = watch("tindakanSelect"); // Ambil data input form
 
@@ -49,6 +51,7 @@ const OptikTable = ({ tindakan }) => {
               lab: dataToAdd.select,
               jumlah: qtyToAdd,
               harga: tindakanItem.harga,
+              dokterPemeriksa: tindakanItem.dokterPemeriksa,
             },
           ];
           console.log("Data Baru Ditambahkan:", newData);
@@ -66,36 +69,59 @@ const OptikTable = ({ tindakan }) => {
     }
   };
 
+  // Fungsi untuk menghapus data baris tertentu
   const handleDeleteRow = (index) => {
     setData((prevData) => prevData.filter((_, i) => i !== index));
   };
 
+  // Fungsi untuk memperbarui jumlah pada tabel
   const handleJumlahChange = (index, value) => {
     setData((prevData) =>
       prevData.map((item, i) =>
         i === index
           ? {
               ...item,
-              jumlah: parseInt(value),
+              jumlah: value,
             }
           : item
       )
     );
   };
 
+  // Fungsi untuk menghitung total harga per baris
   const calculateTotalHargaPerRow = (jumlah, harga) => {
     return jumlah * harga;
   };
 
+  // Fungsi untuk menghitung total harga keseluruhan
   const calculateTotalHargaKeseluruhan = () => {
     return data.reduce((total, item) => {
       return total + calculateTotalHargaPerRow(item.jumlah, item.harga);
     }, 0);
   };
-
+  const filteredTableData = data.filter(
+    (item) =>
+      item.lab.label.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      item.dokterPemeriksa.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
   return (
     <Container fluid>
       <div className="table-responsive-md w-100">
+        <Row>
+          <Col lg="6">
+            <label htmlFor="cariNamaPemeriksa">
+              Cari Nama Pemeriksa atau Tindakan:
+            </label>
+            <input
+              type="text"
+              id="cariNamaPemeriksa"
+              className="form-control mb-3"
+              placeholder="Masukkan nama pemeriksa atau tindakan..."
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+            />
+          </Col>
+        </Row>
         <Row>
           <Col lg="6">
             <Controller
@@ -105,12 +131,12 @@ const OptikTable = ({ tindakan }) => {
               render={({ field, fieldState }) => (
                 <SearchableSelectField
                   {...field}
-                  label="Tindakan"
+                  label="Pemeriksaan Radiologi"
                   options={tindakan.map((item) => ({
-                    label: item.tindakan,
+                    label: item.pemeriksaanRadiologi,
                     value: item.id,
                   }))}
-                  placeholder="Pilih Tindakan"
+                  placeholder="Pilih Pemeriksaan Radiologi"
                   className={`mb-3 ${
                     fieldState.error ? "error-highlight" : ""
                   }`}
@@ -147,7 +173,8 @@ const OptikTable = ({ tindakan }) => {
           <thead>
             <tr>
               <th>No</th>
-              <th>Tindakan</th>
+              <th>Pemeriksaan Radiologi</th>
+              <th>Dokter Pemeriksa</th>
               <th>Jumlah</th>
               <th>Harga</th>
               <th>Total Harga</th>
@@ -155,11 +182,12 @@ const OptikTable = ({ tindakan }) => {
             </tr>
           </thead>
           <tbody>
-            {data.length > 0 ? (
-              data.map((row, rowIndex) => (
+            {filteredTableData.length > 0 ? (
+              filteredTableData.map((row, rowIndex) => (
                 <tr key={rowIndex}>
                   <td>{rowIndex + 1}</td>
                   <td>{row.lab.label || "-"}</td>
+                  <td>{row.dokterPemeriksa || "-"}</td>
                   <td>
                     <input
                       type="number"
@@ -191,7 +219,7 @@ const OptikTable = ({ tindakan }) => {
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center">
+                <td colSpan="7" className="text-center">
                   No data available
                 </td>
               </tr>

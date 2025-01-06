@@ -23,11 +23,6 @@ import {
 import PemeriksaanTableRadiologi from "@/components/view/radiologi/pemeriksaanRadiologi";
 
 export default function PendaftaranPasienLab() {
-  const { kecamatans } = useKecamatans();
-  const { promos, loading, error } = usePromos();
-  const [promosState, setPromosState] = useState([]);
-  const datas = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
   // const [province, setProvince] = useState("");
   // const changeProvince = (val) => {
@@ -112,137 +107,42 @@ export default function PendaftaranPasienLab() {
 
   // provinsi
 
-  useEffect(() => {
-    if (promos) {
-      setPromosState(promos);
-    }
-  }, [promos]);
-  const formFieldsPromo = [
-    {
-      name: "promoByNama",
-      label: "Search",
-      type: "text",
-      placeholder: "Search Promo by Name...",
-      onChange: (e) => handleSearchByName(e.target.value),
-    },
-  ];
+  // useEffect(() => {
+  //   if (promos) {
+  //     setPromosState(promos);
+  //   }
+  // }, [promos]);
+  // const formFieldsPromo = [
+  //   {
+  //     name: "promoByNama",
+  //     label: "Search",
+  //     type: "text",
+  //     placeholder: "Search Promo by Name...",
+  //     onChange: (e) => handleSearchByName(e.target.value),
+  //   },
+  // ];
 
-  const handleSearchByName = (searchValue) => {
-    const filteredPromos = promos.filter((promo) =>
-      promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
-    );
-    setPromosState(filteredPromos.length ? filteredPromos : promos);
-  };
+  // const handleSearchByName = (searchValue) => {
+  //   const filteredPromos = promos.filter((promo) =>
+  //     promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
+  //   );
+  //   setPromosState(filteredPromos.length ? filteredPromos : promos);
+  // };
 
-  const promoHeaders = [
-    "NO",
-    "PEMERIKSAAN RADIOLOGI",
-    "DOKTER PEMERIKSA",
-    "HARGA",
-    "ACTION",
-  ];
-  const promoMembers = promosState.map((promo, index) => ({
-    no: index + 1,
-    id: promo.promoId,
-    kodePromo: promo.kodePromo || "-",
-    namaPromo: promo.namaPromo || "-",
-    keterangan: promo.keterangan || "-",
-  }));
-
-  // inside field datatable function
-  const [data, setData] = useState([]);
-  const [selectedOptionsTindakan, setSelectedOptionsTindakan] = useState([]); // Initially, no rows in the table
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const openPopup = () => {
-    const selectedOptionsString = JSON.stringify(selectedOptionsTindakan);
-    window.open(
-      `/pendaftaran/pasien-luar-radiologi/partial?selectedOptions=${encodeURIComponent(
-        selectedOptionsString
-      )}`,
-      "LabPopup",
-      "width=600,height=400,scrollbars=yes"
-    );
-
-    window.onPopupSave = (selectedOptions) => {
-      setSelectedOptionsTindakan((prevSelected) => {
-        // Find unchecked options (previously selected but now unchecked)
-        const uncheckedOptions = prevSelected.filter(
-          (option) => !selectedOptions.includes(option)
-        );
-
-        // Handle row deletion for unchecked options
-        uncheckedOptions.forEach((option) => {
-          handleRowDelete(option); // Call the delete function for each unchecked option
-        });
-
-        // Filter out options already in prevSelected
-        const newOptions = selectedOptions.filter(
-          (option) => !prevSelected.includes(option)
-        );
-
-        // Return updated options with new selections added
-        return [
-          ...prevSelected.filter((option) => selectedOptions.includes(option)),
-          ...newOptions,
-        ];
-      });
-
-      // Update data state with new options
-      const updatedData = selectedOptions
-        .filter((option) => !data.some((item) => item.lab === option)) // Avoid duplicates in data
-        .map((option) => ({
-          lab: option,
-          jumlah: 1,
-        }));
-
-      setData((prevData) => [...prevData, ...updatedData]);
-    };
-  };
-
-  // Handle row deletion
-  const handleRowDelete = (option) => {
-    // Remove the row from the data array
-    const updatedData = data.filter((row) => row.lab !== option);
-    setData(updatedData);
-
-    // Update selected options to remove the unchecked option
-    setSelectedOptionsTindakan((prevSelected) =>
-      prevSelected.filter((item) => item !== option)
-    );
-  };
-
-  // Handle checkbox change in modal
-  const handleCheckboxChange = (option) => {
-    setSelectedOptions((prev) =>
-      prev.includes(option)
-        ? prev.filter((item) => item !== option)
-        : [...prev, option]
-    );
-  };
-  // Update "Jumlah" column
-  const handleJumlahChange = (index, value) => {
-    const updatedData = data.map((row, rowIndex) =>
-      rowIndex === index ? { ...row, jumlah: value } : row
-    );
-    setData(updatedData);
-  };
-
-  // Delete a row
-  const handleDeleteRow = (index) => {
-    // Remove the row from data
-    const updatedData = data.filter((_, rowIndex) => rowIndex !== index);
-    // Get the lab value of the row being deleted
-    const deletedLab = data[index].lab;
-    // Remove the corresponding option from selectedOptions
-    const updatedSelectedOptions = selectedOptions.filter(
-      (option) => option !== deletedLab
-    );
-    // Update the states
-    setData(updatedData);
-    setSelectedOptions(updatedSelectedOptions);
-    // Debugging logs
-    console.log("Updated Data:", data);
-  };
+  // const promoHeaders = [
+  //   "NO",
+  //   "PEMERIKSAAN RADIOLOGI",
+  //   "DOKTER PEMERIKSA",
+  //   "HARGA",
+  //   "ACTION",
+  // ];
+  // const promoMembers = promosState.map((promo, index) => ({
+  //   no: index + 1,
+  //   id: promo.promoId,
+  //   kodePromo: promo.kodePromo || "-",
+  //   namaPromo: promo.namaPromo || "-",
+  //   keterangan: promo.keterangan || "-",
+  // }));
 
   const formFields = [
     {
@@ -610,15 +510,11 @@ export default function PendaftaranPasienLab() {
           rules: { required: "time Sampling is required" },
           colSize: 2,
         },
-        {
-          type: "text",
-          id: "cariNamaPemeriksa",
-          label: "Cari Nama Pemeriksa:",
-          name: "cariNamaPemeriksa",
-          type: "text",
-          placeholder: "Cari Nama Pemeriksa by name...",
-          // onChange: { handleSearchByName },
-        },
+      ],
+    },
+    {
+      section: "Pemeriksaan Radiologi",
+      fields: [
         {
           type: "custom",
           label: "Set pemeriksaan Radiologi",

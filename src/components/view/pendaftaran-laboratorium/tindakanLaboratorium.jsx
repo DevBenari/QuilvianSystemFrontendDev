@@ -11,6 +11,7 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
   });
 
   const [data, setData] = React.useState([]);
+  const [cariTindakan, setCariTindakan] = React.useState("");
 
   const handleAddToTable = () => {
     const dataToAdd = watch("tindakanSelect"); // Ambil data input form
@@ -66,6 +67,12 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
     }
   };
 
+  // filtered data
+
+  const filteredDataTindakan = data.filter((item) =>
+    item.lab.label.toLowerCase().includes(cariTindakan.toLowerCase())
+  );
+
   // Fungsi untuk menghapus data baris tertentu
   const handleDeleteRow = (index) => {
     setData((prevData) => prevData.filter((_, i) => i !== index));
@@ -83,6 +90,19 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
   return (
     <Container fluid>
       <div className="table-responsive-md w-100">
+        <Row>
+          <Col lg="6">
+            <label htmlFor="">Cari Tindakan</label>
+            <input
+              type="text"
+              id="cariTindakan"
+              className="form-control"
+              placeholder="masukkan Tindakan"
+              value={cariTindakan}
+              onChange={(e) => setCariTindakan(e.target.value)}
+            />
+          </Col>
+        </Row>
         <Row>
           <Col lg="6">
             <Controller
@@ -140,8 +160,8 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
             </tr>
           </thead>
           <tbody>
-            {data.length > 0 ? (
-              data.map((row, rowIndex) => (
+            {filteredDataTindakan.length > 0 ? (
+              filteredDataTindakan.map((row, rowIndex) => (
                 <tr key={rowIndex}>
                   <td>{rowIndex + 1}</td>
                   <td>{row.lab.label || "-"}</td>
