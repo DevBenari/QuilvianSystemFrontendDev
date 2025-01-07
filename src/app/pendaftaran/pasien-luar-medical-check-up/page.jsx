@@ -1,6 +1,6 @@
 "use client";
 import FormValidations from "@/components/features/formValidations/formValidations";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
@@ -12,8 +12,8 @@ import TextField from "@/components/ui/text-field";
 import RadioInput from "@/components/ui/radio-input";
 import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hook
 import SelectField from "@/components/ui/select-field";
-import DataTable from "@/components/view/anggota/dataTable";
 import dataWilayah from "@/utils/dataWilayah";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 
 export default function PendaftaranRehabilitasiMedik() {
   const { promos, loading, error } = usePromos();

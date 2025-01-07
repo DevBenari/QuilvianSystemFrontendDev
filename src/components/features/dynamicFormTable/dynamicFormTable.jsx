@@ -153,7 +153,7 @@ const DynamicFormTable = ({ title, formConfig, onSubmit }) => {
   return (
     <FormProvider {...methods}>
       <Col lg="12">
-        <div className="iq-card mt-3">
+        <div className="iq-card" style={{ marginTop: "50px" }}>
           <div className="iq-card-header d-flex justify-content-between">
             <div className="iq-header-title">
               <h3 className="card-title tracking-wide">{title}</h3>

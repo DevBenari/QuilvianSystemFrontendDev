@@ -1,162 +1,176 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
-import DataTablePerjanjian from "@/components/view/perjanjian-pasien/tablePerjanjian/table";
 import React, { memo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Button } from "react-bootstrap";
-import { useRouter } from "next/navigation";
-import useAnggotaState, { createMembers } from "@/lib/hooks/keanggotaan/data";
+import DataTable from "@/components/features/viewDataTables/dataTable";
+import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+import { dataPasienRadiologi } from "@/utils/dataPerjanjian";
 
-const PerjanjianOdc = memo(() => {
+const PerjanjianRadiologi = memo(() => {
   const methods = useForm();
-  const router = useRouter();
-  const { getMembers } = useAnggotaState();
-  const members = getMembers();
+  const [filteredData, setFilteredData] = useState(dataPasienRadiologi);
+  const [searchCriteria, setSearchCriteria] = useState({
+    dokter: "",
+    tanggalMulai: "",
+    tanggalSelesai: "",
+    noRM: "",
+    nama: "",
+  });
+
+  // Fungsi untuk menangani pencarian
+  const handleSearch = (key, value) => {
+    const updatedCriteria = { ...searchCriteria, [key]: value };
+    setSearchCriteria(updatedCriteria);
+
+    const filtered = dataPasienRadiologi.filter((item) => {
+      return Object.keys(updatedCriteria).every((criteriaKey) => {
+        const criteriaValue = updatedCriteria[criteriaKey];
+        if (!criteriaValue) return true;
+
+        if (
+          criteriaKey === "tanggalMulai" ||
+          criteriaKey === "tanggalSelesai"
+        ) {
+          const itemDate = new Date(item.tanggalInput).getTime();
+          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
+          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
+          if (criteriaKey === "tanggalMulai" && startDate) {
+            return itemDate >= startDate;
+          }
+          if (criteriaKey === "tanggalSelesai" && endDate) {
+            return itemDate <= endDate;
+          }
+        }
+
+        return item[criteriaKey]
+          ?.toString()
+          .toLowerCase()
+          .includes(criteriaValue.toLowerCase());
+      });
+    });
+
+    setFilteredData(filtered);
+  };
 
   const formFields = [
     {
       fields: [
         {
-          type: "select",
-          id: "doctor",
-          label: "Nama Dokter",
-          name: "doctor",
-          placeholder: "Pilih Dokter",
-          options: [
-            { label: "Dr. X", value: "dr_x" },
-            { label: "Dr. Y", value: "dr_y" },
-            { label: "Dr. Z", value: "dr_z" },
-          ],
-          rules: { required: "Dokter harus dipilih" },
+          type: "text",
+          id: "dokter",
+          label: "Dokter",
+          name: "dokter",
+          placeholder: "Masukkan nama dokter...",
+          onChange: (e) => handleSearch("dokter", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("doctor", e.target.value),
-        },
-        {
-          type: "select",
-          id: "department",
-          label: "Departemen",
-          name: "department",
-          placeholder: "Pilih Departemen",
-          options: [
-            { label: "Departemen A", value: "dept_a" },
-            { label: "Departemen B", value: "dept_b" },
-            { label: "Departemen C", value: "dept_c" },
-          ],
-          rules: { required: "Departemen harus dipilih" },
-          colSize: 6,
-          onChange: (e) => handleFilterChange("department", e.target.value),
         },
         {
           type: "date",
-          id: "startDate",
-          label: "Periode Awal",
-          name: "startDate",
-          placeholder: "Pilih Tanggal Awal",
+          id: "tanggalMulai",
+          label: "Tanggal Mulai",
+          name: "tanggalMulai",
+          placeholder: "DD-MM-YYYY",
+          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("startDate", e.target.value),
         },
         {
           type: "date",
-          id: "endDate",
-          label: "Periode Akhir",
-          name: "endDate",
-          placeholder: "Pilih Tanggal Akhir",
+          id: "tanggalSelesai",
+          label: "Tanggal Selesai",
+          name: "tanggalSelesai",
+          placeholder: "DD-MM-YYYY",
+          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("endDate", e.target.value),
         },
-        {
-          type: "select",
-          id: "kategoriPenjamin",
-          label: "Kategori Penjamin",
-          name: "kategoriPenjamin",
-          placeholder: "Pilih Kategori Penjamin",
-          options: [
-            { label: "Pribadi", value: "pribadi" },
-            { label: "Penjamin/Asuransi", value: "asuransi" },
-          ],
-          rules: { required: "Kategori Penjamin harus dipilih" },
-          colSize: 6,
-          onChange: (e) =>
-            handleFilterChange("kategoriPenjamin", e.target.value),
-        },
-      ],
-    },
-    {
-      section: "Pencarian lebih lanjut",
-      fields: [
+
         {
           type: "text",
-          id: "medicalRecord",
-          label: "Medical Record",
-          name: "medicalRecord",
-          placeholder: "Masukkan No. Medical Record",
+          id: "nama",
+          label: "Nama Pasien",
+          name: "nama",
+          placeholder: "Masukkan Nama Pasien...",
+          onChange: (e) => handleSearch("nama", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("medicalRecord", e.target.value),
         },
+        // {
+        //   type: "select",
+        //   id: "kategoriPenjamin",
+        //   label: "Kategori Penjamin",
+        //   name: "kategoriPenjamin",
+        //   placeholder: "Pilih Kategori Penjamin",
+        //   options: [
+        //     { label: "Pribadi", value: "pribadi" },
+        //     { label: "Penjamin/Asuransi", value: "asuransi" },
+        //   ],
+        //   colSize: 6,
+        //   onChange: (e) =>
+        //     handleFilterChange("kategoriPenjamin", e.target.value),
+        // },
         {
           type: "text",
-          id: "name",
-          label: "Nama",
-          name: "name",
-          placeholder: "Masukkan Nama",
+          id: "noRM",
+          label: "Nomor RM",
+          name: "noRM",
+          placeholder: "Masukkan Nomor RM...",
+          onChange: (e) => handleSearch("noRM", e.target.value),
           colSize: 6,
-          onChange: (e) => handleFilterChange("name", e.target.value),
         },
-        {
-          type: "text",
-          id: "address",
-          label: "Alamat",
-          name: "address",
-          placeholder: "Masukkan Alamat",
-          colSize: 6,
-          onChange: (e) => handleFilterChange("address", e.target.value),
-        },
-        {
-          type: "select",
-          id: "roomType",
-          label: "Kelas/Type Kamar",
-          name: "roomType",
-          placeholder: "Pilih Kelas/Type Kamar",
-          options: [
-            { label: "VIP", value: "vip" },
-            { label: "Kelas 1", value: "kelas_1" },
-            { label: "Kelas 2", value: "kelas_2" },
-            { label: "Kelas 3", value: "kelas_3" },
-          ],
-          colSize: 6,
-          onChange: (e) => handleFilterChange("roomType", e.target.value),
-        },
+        // {
+        //   type: "text",
+        //   id: "alamat",
+        //   label: "Alamat",
+        //   name: "alamat",
+        //   placeholder: "Masukkan Alamat...",
+        //   onChange: (e) => handleSearch("alamat", e.target.value),
+        //   colSize: 6,
+        // },
       ],
     },
   ];
 
   const headers = [
-    "NO. RM",
-    "TANGGAL (JANJI)",
-    "NAMA",
-    "TELEPON",
-    "DOKTER",
-    "KONFIRMASI",
-    "USER",
-    "USER EDIT",
-    "TANGGAL INPUT",
-    "TANGGAL EDIT",
-    "FUNGSI",
+    "NO",
+    "nomor RM",
+    "tanggal Input",
+    "nama",
+    "telepon",
+    "dokter",
+    "konfirmasi",
+    "user",
+    "user Edit",
+    "tanggal Edit",
   ];
+
+  const members = filteredData.map((item, index) => ({
+    no: index + 1,
+    noRM: item.noRM,
+    tanggalInput: item.tanggalInput,
+    nama: item.nama,
+    telepon: item.telepon,
+    dokter: item.dokter,
+    konfirmasi: item.konfirmasi,
+    user: item.user,
+    userEdit: item.userEdit,
+    tanggalEdit: item.tanggalEdit,
+  }));
 
   return (
     <FormProvider {...methods}>
-      <DynamicForm title="Perjanjian" formConfig={formFields} />
-      <DataTablePerjanjian
+      <DynamicFormTable
+        title="Pencarian Pasien Radiologi"
+        formConfig={formFields}
+      />
+
+      <DataTable
         headers={headers}
         data={members}
-        // onRowDoubleClick={handleRowDoubleClick}
+        id="id"
+        rowsPerPage={5}
         title="Pasien Radiologi"
       />
     </FormProvider>
   );
 });
 
-PerjanjianOdc.displayName = "PerjanjianOdc";
-export default PerjanjianOdc;
+PerjanjianRadiologi.displayName = "PerjanjianRadiologi";
+export default PerjanjianRadiologi;

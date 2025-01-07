@@ -4,18 +4,13 @@ import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
-import { useKecamatans } from "@/lib/hooks/kecamatan/index";
-import { getById } from "@/lib/hooks/province/getProvinceId";
 import { FormProvider, useForm } from "react-hook-form";
 import { Row, Col, Container, Button, Table } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import RadioInput from "@/components/ui/radio-input";
-import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hook
 import SelectField from "@/components/ui/select-field";
-import DataTable from "@/components/view/anggota/dataTable";
 import dataWilayah from "@/utils/dataWilayah";
-import { type } from "@amcharts/amcharts5";
-import TindakanTableLaboratorium from "@/components/view/pendaftaran-laboratorium/tindakanLaboratorium";
+
 import {
   pemeriksaRadiologi,
   tindakanRadiologi,

@@ -8,17 +8,15 @@ import { dataPerjanjianOperasi } from "@/utils/dataPerjanjian"; // Pastikan data
 
 const PerjanjianOperasi = memo(() => {
   const methods = useForm();
-  const [filteredData, setFilteredData] = useState(dataPerjanjianOperasi); // Gunakan data dummy untuk tabel
+  const [filteredData, setFilteredData] = useState(dataPerjanjianOperasi);
   const [searchCriteria, setSearchCriteria] = useState({
-    nomorRekamMedis: "",
-    nama: "",
-    alamat: "",
-    kelas: "",
-    dokter: "",
-    departemen: "",
     tanggalMulai: "",
     tanggalSelesai: "",
-    penjamin: "",
+    dokter: "",
+    nomorRekamMedis: "",
+    namaPasien: "",
+    statusRegistrasi: "",
+    ruangOperasi: "",
   });
 
   // Fungsi untuk menangani pencarian
@@ -29,7 +27,7 @@ const PerjanjianOperasi = memo(() => {
     const filtered = dataPerjanjianOperasi.filter((item) => {
       return Object.keys(updatedCriteria).every((criteriaKey) => {
         const criteriaValue = updatedCriteria[criteriaKey];
-        if (!criteriaValue) return true; // Abaikan jika kosong
+        if (!criteriaValue) return true;
 
         if (
           criteriaKey === "tanggalMulai" ||
@@ -60,15 +58,6 @@ const PerjanjianOperasi = memo(() => {
     {
       fields: [
         {
-          type: "text",
-          id: "dokter",
-          label: "Nama Dokter",
-          name: "dokter",
-          placeholder: "Masukkan nama dokter...",
-          onChange: (e) => handleSearch("dokter", e.target.value),
-          colSize: 6,
-        },
-        {
           type: "date",
           id: "tanggalMulai",
           label: "Tanggal Mulai",
@@ -88,56 +77,56 @@ const PerjanjianOperasi = memo(() => {
         },
         {
           type: "text",
+          id: "dokter",
+          label: "Dokter",
+          name: "dokter",
+          placeholder: "Masukkan nama dokter...",
+          onChange: (e) => handleSearch("dokter", e.target.value),
+          colSize: 6,
+        },
+        {
+          type: "text",
           id: "nomorRekamMedis",
-          label: "Medical Record ID",
+          label: "Nomor RM",
           name: "nomorRekamMedis",
-          placeholder: "Masukkan Medical Record ID...",
+          placeholder: "Masukkan Nomor RM...",
           onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
           colSize: 6,
         },
         {
           type: "text",
-          id: "nama",
+          id: "namaPasien",
           label: "Nama Pasien",
-          name: "nama",
+          name: "namaPasien",
           placeholder: "Masukkan Nama Pasien...",
-          onChange: (e) => handleSearch("nama", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "text",
-          id: "alamat",
-          label: "Alamat",
-          name: "alamat",
-          placeholder: "Masukkan Alamat...",
-          onChange: (e) => handleSearch("alamat", e.target.value),
+          onChange: (e) => handleSearch("namaPasien", e.target.value),
           colSize: 6,
         },
         {
           type: "select",
-          id: "kelas",
-          label: "Kelas",
-          name: "kelas",
+          id: "statusRegistrasi",
+          label: "Status Registrasi",
+          name: "statusRegistrasi",
           options: [
-            { label: "Pilih Kelas", value: "" },
-            { label: "Kelas 1", value: "Kelas 1" },
-            { label: "Kelas 2", value: "Kelas 2" },
-            { label: "Kelas 3", value: "Kelas 3" },
+            { label: "All", value: "" },
+            { label: "Aktif", value: "Aktif" },
+            { label: "Non-Aktif", value: "Non-Aktif" },
           ],
-          onChange: (e) => handleSearch("kelas", e.target.value),
+          onChange: (e) => handleSearch("statusRegistrasi", e.target.value),
           colSize: 6,
         },
         {
           type: "select",
-          id: "penjamin",
-          label: "Penjamin",
-          name: "penjamin",
+          id: "ruangOperasi",
+          label: "Ruang Operasi",
+          name: "ruangOperasi",
           options: [
-            { label: "Pilih Penjamin", value: "" },
-            { label: "BPJS", value: "BPJS" },
-            { label: "Pribadi", value: "Pribadi" },
+            { label: "Pilih Ruang Operasi", value: "" },
+            { label: "Ruang Operasi A", value: "Ruang Operasi A" },
+            { label: "Ruang Operasi B", value: "Ruang Operasi B" },
+            { label: "Ruang Operasi C", value: "Ruang Operasi C" },
           ],
-          onChange: (e) => handleSearch("penjamin", e.target.value),
+          onChange: (e) => handleSearch("ruangOperasi", e.target.value),
           colSize: 6,
         },
       ],
@@ -145,6 +134,7 @@ const PerjanjianOperasi = memo(() => {
   ];
 
   const headers = [
+    "NO",
     "RUANG OPERASI",
     "NO REGISTRASI",
     "TANGGAL OPERASI",

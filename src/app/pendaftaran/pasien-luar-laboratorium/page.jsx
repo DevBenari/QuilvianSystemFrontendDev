@@ -1,5 +1,5 @@
 "use client";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
@@ -12,6 +12,7 @@ import { useKecamatans } from "@/lib/hooks/kecamatan";
 import { useCities } from "@/lib/hooks/city";
 import { tindakanDataConfig } from "@/utils/tindakanData";
 import TindakanTableLaboratorium from "@/components/view/pendaftaran-laboratorium/tindakanLaboratorium";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 export default function PendaftaranPasienLab() {
   // const { promos, loading, error } = usePromos();
   // const [promosState, setPromosState] = useState([]);

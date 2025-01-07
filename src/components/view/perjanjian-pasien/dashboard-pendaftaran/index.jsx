@@ -4,16 +4,16 @@ import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
-import { dataPerjanjian } from "@/utils/dataPerjanjian"; // Data dummy
+import { dataSemuaPerjanjian } from "@/utils/dataPerjanjian";
 
 const DashboardPerjanjian = memo(() => {
   const methods = useForm();
-  const [filteredData, setFilteredData] = useState(dataPerjanjian); // Gunakan data dummy untuk tabel
+  const [filteredData, setFilteredData] = useState(dataSemuaPerjanjian); // Gunakan data dummy untuk tabel
   const [searchCriteria, setSearchCriteria] = useState({
     nama: "",
     dokter: "",
     departemen: "",
-    tipePerjanjian: "",
+    tipe_perjanjian: "",
     tanggalMulai: "",
     tanggalSelesai: "",
   });
@@ -23,7 +23,7 @@ const DashboardPerjanjian = memo(() => {
     const updatedCriteria = { ...searchCriteria, [key]: value };
     setSearchCriteria(updatedCriteria);
 
-    const filtered = dataPerjanjian.filter((item) => {
+    const filtered = dataSemuaPerjanjian.filter((item) => {
       return Object.keys(updatedCriteria).every((criteriaKey) => {
         const criteriaValue = updatedCriteria[criteriaKey];
         if (!criteriaValue) return true; // Abaikan jika kriteria kosong
@@ -92,15 +92,20 @@ const DashboardPerjanjian = memo(() => {
         },
         {
           type: "select",
-          id: "tipePerjanjian",
+          id: "tipe_perjanjian",
           label: "Tipe Perjanjian",
-          name: "tipePerjanjian",
+          placeholder: "Pilih tipe Perjanjian...",
+          name: "tipe_perjanjian",
           options: [
-            { label: "Pilih Tipe Perjanjian", value: "" },
             { label: "Rawat Jalan", value: "Rawat Jalan" },
             { label: "Rawat Inap", value: "Rawat Inap" },
+            { label: "MCU", value: "MCU" },
+            { label: "Operasi", value: "Operasi" },
+            { label: "ODC", value: "ODC" },
+            { label: "Reguler", value: "Reguler" },
+            { label: "Radiologi", value: "Radiologi" },
           ],
-          onChange: (e) => handleSearch("tipePerjanjian", e.target.value),
+          onChange: (e) => handleSearch("tipe_perjanjian", e.target.value),
           colSize: 6,
         },
         {
@@ -131,6 +136,7 @@ const DashboardPerjanjian = memo(() => {
     "NAMA",
     "NO REGISTRASI",
     "PENJAMIN",
+    "TIPE PERJANJIAN",
     "TEL REGIS",
     "DOKTER",
     "DEPARTEMEN",
@@ -144,6 +150,7 @@ const DashboardPerjanjian = memo(() => {
     nama: item.nama,
     no_registrasi: item.no_registrasi,
     penjamin: item.penjamin,
+    tipe_perjanjian: item.tipe_perjanjian,
     tel_regis: item.tel_regis,
     dokter: item.dokter,
     departemen: item.departemen,
