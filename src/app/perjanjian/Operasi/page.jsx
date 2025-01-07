@@ -5,6 +5,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { dataPerjanjianOperasi } from "@/utils/dataPerjanjian"; // Pastikan dataPerjanjianOperasi diimpor dengan benar
+import { Row, Col } from "react-bootstrap";
+import DateInput from "@/components/ui/date-input";
 
 const PerjanjianOperasi = memo(() => {
   const methods = useForm();
@@ -58,22 +60,34 @@ const PerjanjianOperasi = memo(() => {
     {
       fields: [
         {
-          type: "date",
-          id: "tanggalMulai",
-          label: "Tanggal Mulai",
-          name: "tanggalMulai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
+          type: "custom",
           colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalSelesai",
-          label: "Tanggal Selesai",
-          name: "tanggalSelesai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
-          colSize: 6,
+          customRender: () => (
+            <>
+              <Row className="mb-3">
+                <Col>
+                  <DateInput
+                    name="tanggalMulai"
+                    label="Tanggal Mulai"
+                    placeholder="Enter Tanggal Mulai"
+                    onChange={(e) =>
+                      handleSearch("tanggalMulai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+                <Col>
+                  <DateInput
+                    name="tanggalSelesai"
+                    label="Tanggal Selesai"
+                    placeholder="Enter Tanggal Selesai"
+                    onChange={(e) =>
+                      handleSearch("tanggalSelesai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
         },
         {
           type: "text",

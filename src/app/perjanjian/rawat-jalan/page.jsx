@@ -4,7 +4,11 @@ import React, { memo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+
+import { Col, Row } from "react-bootstrap";
+import SearchableSelectField from "@/components/ui/select-field-search";
 import { dataRawatJalan } from "@/utils/dataPerjanjian";
+import DateInput from "@/components/ui/date-input";
 
 const PerjanjianRawatJalan = memo(() => {
   const methods = useForm();
@@ -13,11 +17,11 @@ const PerjanjianRawatJalan = memo(() => {
     nomorRekamMedis: "",
     nama: "",
     alamat: "",
-    kelas: "",
     dokter: "",
     departemen: "",
     tanggalMulai: "",
     tanggalSelesai: "",
+    penjamin: "",
   });
 
   // Fungsi untuk menangani pencarian
@@ -30,19 +34,32 @@ const PerjanjianRawatJalan = memo(() => {
         const criteriaValue = updatedCriteria[criteriaKey];
         if (!criteriaValue) return true; // Abaikan jika kosong
 
+        // Filter berdasarkan tanggal
         if (
           criteriaKey === "tanggalMulai" ||
           criteriaKey === "tanggalSelesai"
         ) {
-          const itemDate = new Date(item.tanggalInput).getTime();
-          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
-          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
-          if (criteriaKey === "tanggalMulai" && startDate) {
+          const itemDate = new Date(item.tanggalInput).getTime(); // Pastikan tanggalInput sesuai format valid
+          const startDate = new Date(
+            updatedCriteria.tanggalMulai || "1970-01-01"
+          ).getTime(); // Default awal waktu
+          const endDate = new Date(
+            updatedCriteria.tanggalSelesai || "9999-12-31"
+          ).getTime(); // Default akhir waktu
+
+          if (criteriaKey === "tanggalMulai") {
             return itemDate >= startDate;
           }
-          if (criteriaKey === "tanggalSelesai" && endDate) {
+          if (criteriaKey === "tanggalSelesai") {
             return itemDate <= endDate;
           }
+        }
+
+        if (criteriaKey === "departemenSelect.select") {
+          return item.departemen
+            ?.toString()
+            .toLowerCase()
+            .includes(criteriaValue.toLowerCase());
         }
 
         return item[criteriaKey]
@@ -62,6 +79,7 @@ const PerjanjianRawatJalan = memo(() => {
           type: "text",
           id: "dokter",
           label: "Pilih Nama Dokter",
+          placeholder: "Masukkan Nama Dokter...",
           name: "dokter",
           onChange: (e) => handleSearch("dokter", e.target.value),
           colSize: 6,
@@ -76,67 +94,122 @@ const PerjanjianRawatJalan = memo(() => {
           colSize: 6,
         },
         {
-          type: "select",
-          id: "departemen",
-          label: "Departemen",
-          name: "departemen",
-          options: [
-            { label: "Pilih Departemen", value: "" },
-            { label: "Poli Anak", value: "Poli Anak" },
-            { label: "Poli Penyakit Dalam", value: "Poli Penyakit Dalam" },
-          ],
-          onChange: (e) => handleSearch("departemen", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalMulai",
-          label: "Tanggal Mulai",
-          name: "tanggalMulai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalSelesai",
-          label: "Tanggal Selesai",
-          name: "tanggalSelesai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
-          colSize: 6,
-        },
-        {
           type: "text",
           id: "nomorRekamMedis",
-          label: "Medical Record ID",
+          label: "Nomor Rekam Medis",
           name: "nomorRekamMedis",
-          placeholder: "Masukkan Medical Record ID...",
+          placeholder: "Masukkan Nomor Rekam Medis...",
           onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
           colSize: 6,
         },
+
         {
-          type: "text",
-          id: "alamat",
-          label: "Alamat",
-          name: "alamat",
-          placeholder: "Masukkan Alamat...",
-          onChange: (e) => handleSearch("alamat", e.target.value),
+          type: "custom",
+          colSize: 6,
+          customRender: () => (
+            <>
+              <Row>
+                <Col>
+                  <SearchableSelectField
+                    name="departemenSelect.select"
+                    label="Departemen"
+                    options={[
+                      { label: "Poli Anak", value: "Poli Anak" },
+                      {
+                        label: "Poli Penyakit Dalam",
+                        value: "Poli Penyakit Dalam",
+                      },
+                      { label: "Poli Gigi", value: "Poli Gigi" },
+                      { label: "Poli Mata", value: "Poli Mata" },
+                      { label: "Poli Bedah", value: "Poli Bedah" },
+                      { label: "Poli Jantung", value: "Poli Jantung" },
+                      { label: "Poli Paru", value: "Poli Paru" },
+                      { label: "Poli Saraf", value: "Poli Saraf" },
+                      {
+                        label: "Poli Kulit dan Kelamin",
+                        value: "Poli Kulit dan Kelamin",
+                      },
+                      { label: "Poli THT", value: "Poli THT" },
+                      { label: "Poli Kandungan", value: "Poli Kandungan" },
+                      {
+                        label: "Poli Rehabilitasi Medis",
+                        value: "Poli Rehabilitasi Medis",
+                      },
+                      { label: "Poli Urologi", value: "Poli Urologi" },
+                      { label: "Poli Ortopedi", value: "Poli Ortopedi" },
+                      { label: "Poli Geriatri", value: "Poli Geriatri" },
+                    ]}
+                    placeholder="Pilih Poli"
+                    className="mb-3"
+                    onChange={(selectedOption) =>
+                      handleSearch(
+                        "departemenSelect.select",
+                        selectedOption?.value || ""
+                      )
+                    }
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
+        },
+
+        {
+          type: "select",
+          id: "adaPembatalanDokter ",
+          label: "Ada Pembatalan Dokter ",
+          name: "adaPembatalanDokter ",
+          placeholder: "Pilih Ada Pembatalan Dokter ",
+          options: [
+            { label: "Ya", value: "Ya" },
+            { label: "Tidak", value: "Tidak" },
+          ],
+          onChange: (e) => handleSearch("adaPembatalanDokter ", e.target.value),
           colSize: 6,
         },
         {
           type: "select",
-          id: "kelas",
-          label: "Kelas",
-          name: "kelas",
+          id: "penjamin",
+          label: "Penjamin",
+          name: "penjamin",
+          placeholder: "Pilih Penjamin",
           options: [
-            { label: "Pilih Kelas", value: "" },
-            { label: "Kelas 1", value: "Kelas 1" },
-            { label: "Kelas 2", value: "Kelas 2" },
-            { label: "Kelas 3", value: "Kelas 3" },
+            { label: "Pribadi", value: "Pribadi" },
+            { label: "BPJS", value: "BPJS" },
+            { label: "Mandiri", value: "Mandiri" },
           ],
-          onChange: (e) => handleSearch("kelas", e.target.value),
+          onChange: (e) => handleSearch("penjamin", e.target.value),
           colSize: 6,
+        },
+        {
+          type: "custom",
+          colSize: 6,
+          customRender: () => (
+            <>
+              <Row className="mb-3">
+                <Col>
+                  <DateInput
+                    name="tanggalMulai"
+                    label="Tanggal Mulai"
+                    placeholder="Enter Tanggal Mulai"
+                    onChange={(e) =>
+                      handleSearch("tanggalMulai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+                <Col>
+                  <DateInput
+                    name="tanggalSelesai"
+                    label="Tanggal Selesai"
+                    placeholder="Enter Tanggal Selesai"
+                    onChange={(e) =>
+                      handleSearch("tanggalSelesai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
         },
       ],
     },
@@ -158,6 +231,7 @@ const PerjanjianRawatJalan = memo(() => {
     "TANGGAL EDIT",
     "KONTRAK",
     "INFORMASI LAIN",
+    "CATATAN",
   ];
 
   // Format data untuk ditampilkan di tabel
@@ -177,6 +251,7 @@ const PerjanjianRawatJalan = memo(() => {
     tanggalEdit: item.tanggalEdit,
     kontrak: item.kontrak,
     informasiLain: item.informasiLain,
+    catatan: item.catatan,
   }));
 
   return (

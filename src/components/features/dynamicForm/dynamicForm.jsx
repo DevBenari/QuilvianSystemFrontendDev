@@ -14,6 +14,7 @@ import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
 import DistanceField from "@/components/ui/distance-filed";
+import SearchableSelectField from "@/components/ui/select-field-search";
 
 const DynamicForm = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
@@ -30,6 +31,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     signature: SignaturePad,
     time: TimeField,
     distance: DistanceField,
+    searchSelect: SearchableSelectField,
   };
 
   // TypeScript types for form configuration

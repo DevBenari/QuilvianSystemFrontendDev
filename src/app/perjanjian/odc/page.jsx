@@ -5,6 +5,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { dataODC } from "@/utils/dataPerjanjian";
+import SearchableSelectField from "@/components/ui/select-field-search";
+import { Col, Row } from "react-bootstrap";
+import DateInput from "@/components/ui/date-input";
 
 const PerjanjianOdc = memo(() => {
   const methods = useForm();
@@ -45,6 +48,13 @@ const PerjanjianOdc = memo(() => {
           }
         }
 
+        if (criteriaKey === "departemenSelect.select") {
+          return item.departemen
+            ?.toString()
+            .toLowerCase()
+            .includes(criteriaValue.toLowerCase());
+        }
+
         return item[criteriaKey]
           ?.toString()
           .toLowerCase()
@@ -62,6 +72,7 @@ const PerjanjianOdc = memo(() => {
           type: "text",
           id: "dokter",
           label: "Pilih Nama Dokter",
+          placeholder: "Masukkan Nama Dokter...",
           name: "dokter",
           onChange: (e) => handleSearch("dokter", e.target.value),
           colSize: 6,
@@ -76,37 +87,6 @@ const PerjanjianOdc = memo(() => {
           colSize: 6,
         },
         {
-          type: "select",
-          id: "departemen",
-          label: "Departemen",
-          name: "departemen",
-          options: [
-            { label: "Pilih Departemen", value: "" },
-            { label: "Poli Anak", value: "Poli Anak" },
-            { label: "Poli Penyakit Dalam", value: "Poli Penyakit Dalam" },
-          ],
-          onChange: (e) => handleSearch("departemen", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalMulai",
-          label: "Tanggal Mulai",
-          name: "tanggalMulai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalSelesai",
-          label: "Tanggal Selesai",
-          name: "tanggalSelesai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
-          colSize: 6,
-        },
-        {
           type: "text",
           id: "nomorRekamMedis",
           label: "Medical Record ID",
@@ -115,7 +95,126 @@ const PerjanjianOdc = memo(() => {
           onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
           colSize: 6,
         },
-
+        {
+          type: "select",
+          id: "penjamin",
+          label: "Penjamin",
+          name: "penjamin",
+          placeholder: "Pilih Penjamin",
+          options: [
+            { label: "Pribadi", value: "Pribadi" },
+            { label: "BPJS", value: "BPJS" },
+            { label: "Mandiri", value: "Mandiri" },
+          ],
+          onChange: (e) => handleSearch("penjamin", e.target.value),
+          colSize: 6,
+        },
+        {
+          type: "custom",
+          colSize: 12,
+          customRender: () => (
+            <>
+              <Row>
+                <Col>
+                  <SearchableSelectField
+                    name="departemenSelect.select"
+                    label="Departemen"
+                    options={[
+                      { label: "Poli Anak", value: "Poli Anak" },
+                      {
+                        label: "Poli Penyakit Dalam",
+                        value: "Poli Penyakit Dalam",
+                      },
+                      { label: "Poli Gigi", value: "Poli Gigi" },
+                      { label: "Poli Mata", value: "Poli Mata" },
+                      { label: "Poli Bedah", value: "Poli Bedah" },
+                      { label: "Poli Jantung", value: "Poli Jantung" },
+                      { label: "Poli Paru", value: "Poli Paru" },
+                      { label: "Poli Saraf", value: "Poli Saraf" },
+                      {
+                        label: "Poli Kulit dan Kelamin",
+                        value: "Poli Kulit dan Kelamin",
+                      },
+                      { label: "Poli THT", value: "Poli THT" },
+                      { label: "Poli Kandungan", value: "Poli Kandungan" },
+                      {
+                        label: "Poli Rehabilitasi Medis",
+                        value: "Poli Rehabilitasi Medis",
+                      },
+                      { label: "Poli Urologi", value: "Poli Urologi" },
+                      { label: "Poli Ortopedi", value: "Poli Ortopedi" },
+                      { label: "Poli Geriatri", value: "Poli Geriatri" },
+                    ]}
+                    placeholder="Pilih Poli"
+                    className="mb-3"
+                    onChange={(selectedOption) =>
+                      handleSearch(
+                        "departemenSelect.select",
+                        selectedOption?.value || ""
+                      )
+                    }
+                  />
+                </Col>
+                <Col>
+                  <SearchableSelectField
+                    name="kelasKamarSelect.select"
+                    label="Kelas Kamar"
+                    options={[
+                      { label: "SUITE", value: "SUITE" },
+                      { label: "LUXURY", value: "LUXURY" },
+                      {
+                        label: "ISOLASI LAVENDER SVIP",
+                        value: "ISOLASI LAVENDER SVIP",
+                      },
+                      { label: "VIP SUPERIOR", value: "VIP SUPERIOR" },
+                      {
+                        label: "ISOLASI CHRISANT SVIP",
+                        value: "ISOLASI CHRISANT SVIP",
+                      },
+                      { label: "CHRISANT SVIP", value: "CHRISANT SVIP" },
+                      { label: "VIP DELUXE", value: "VIP DELUXE" },
+                      { label: "VIP 8.3", value: "VIP 8.3" },
+                      {
+                        label: "ISOLASI CHRISANT VIP DELUXE",
+                        value: "ISOLASI CHRISANT VIP DELUXE",
+                      },
+                      {
+                        label: "CHRISANT VIP DELUXE",
+                        value: "CHRISANT VIP DELUXE",
+                      },
+                      { label: "VVIP", value: "VVIP" },
+                      { label: "GRAND ROYAL", value: "GRAND ROYAL" },
+                      { label: "CHRISANT VIP", value: "CHRISANT VIP" },
+                      { label: "VIP 8.1", value: "VIP 8.1" },
+                      {
+                        label: "ISOLASI LAVENDER VIP",
+                        value: "ISOLASI LAVENDER VIP",
+                      },
+                      {
+                        label: "ISOLASI BOUGENVIL VIP",
+                        value: "ISOLASI BOUGENVIL VIP",
+                      },
+                      {
+                        label: "ISOLASI CHRISANT VIP",
+                        value: "ISOLASI CHRISANT VIP",
+                      },
+                      { label: "VIP", value: "VIP" },
+                      { label: "VIP 8.2", value: "VIP 8.2" },
+                    ]}
+                    placeholder="Pilih Kelas Kamar"
+                    className="mb-3"
+                    onChange={(selectedOption) =>
+                      handleSearch(
+                        "kelasKamarSelect.select",
+                        selectedOption?.value || ""
+                      )
+                    }
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
+        },
         {
           type: "text",
           id: "alamat",
@@ -126,18 +225,34 @@ const PerjanjianOdc = memo(() => {
           colSize: 6,
         },
         {
-          type: "select",
-          id: "kelas",
-          label: "Kelas",
-          name: "kelas",
-          options: [
-            { label: "Pilih Kelas", value: "" },
-            { label: "Kelas 1", value: "Kelas 1" },
-            { label: "Kelas 2", value: "Kelas 2" },
-            { label: "Kelas 3", value: "Kelas 3" },
-          ],
-          onChange: (e) => handleSearch("kelas", e.target.value),
+          type: "custom",
           colSize: 6,
+          customRender: () => (
+            <>
+              <Row className="mb-3">
+                <Col>
+                  <DateInput
+                    name="tanggalMulai"
+                    label="Tanggal Mulai"
+                    placeholder="Enter Tanggal Mulai"
+                    onChange={(e) =>
+                      handleSearch("tanggalMulai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+                <Col>
+                  <DateInput
+                    name="tanggalSelesai"
+                    label="Tanggal Selesai"
+                    placeholder="Enter Tanggal Selesai"
+                    onChange={(e) =>
+                      handleSearch("tanggalSelesai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
         },
       ],
     },
@@ -145,13 +260,14 @@ const PerjanjianOdc = memo(() => {
 
   const headers = [
     "NO LIST",
-    "NO RM",
+    "NOMOR REKAM MEDIS",
     "JAM MASUK",
     "NAMA",
     "PENJAMIN",
     "ALAMAT",
     "TELEPON",
     "DOKTER",
+    "KELAS KAMAR",
     "DEPARTEMEN",
     "USER",
     "USER EDIT",
@@ -171,6 +287,7 @@ const PerjanjianOdc = memo(() => {
     alamat: item.alamat,
     telepon: item.telepon,
     dokter: item.dokter,
+    kelasKamar: item.kelasKamar,
     departemen: item.departemen,
     user: item.user,
     userEdit: item.userEdit,

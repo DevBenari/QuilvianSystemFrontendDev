@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Button,
@@ -30,6 +30,11 @@ const DataTable = ({
   const [currentPage, setCurrentPage] = useState(1); // State for current page
   const methods = useForm();
 
+  // Reset halaman ke 1 jika data berubah
+  useEffect(() => {
+    setCurrentPage(1); // Reset pagination saat data berubah
+  }, [data]);
+
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
@@ -40,11 +45,14 @@ const DataTable = ({
 
   // Pagination
   const totalPages = Math.ceil(data.length / rowsPerPage);
+
+  // Data untuk halaman saat ini
   const paginatedData = data.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
 
+  // Pindah halaman
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -103,25 +111,24 @@ const DataTable = ({
                   <div className="iq-header-title">
                     <h4 className="card-title">{title}</h4>
                   </div>
-                </div>
-              )}
-              <div className="iq-card-body">
-                <div id="table">
-                  {onAdd && (
-                    <span className="table-add float-end mb-3 me-2">
+                  <div className="add">
+                    {onAdd && (
                       <Button
                         size="sm"
                         variant=""
-                        className="btn btn-sm iq-bg-success"
+                        className="btn btn-sm iq-bg-success my-2"
                         onClick={() => onAdd()}
                       >
                         <i className="ri-add-fill">
-                          <span className="ps-1">Add New</span>
+                          <span className="ps-1">Tambah</span>
                         </i>
                       </Button>
-                    </span>
-                  )}
-
+                    )}
+                  </div>
+                </div>
+              )}{" "}
+              <div className="iq-card-body">
+                <div id="table">
                   <div className="table-responsive-md w-100">
                     <Table
                       className="text-center"

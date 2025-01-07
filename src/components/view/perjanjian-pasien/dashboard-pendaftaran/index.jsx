@@ -17,6 +17,7 @@ const DashboardPerjanjian = memo(() => {
     tanggalMulai: "",
     tanggalSelesai: "",
   });
+  // State untuk pagination
 
   // Fungsi untuk menangani pencarian dengan kriteria
   const handleSearch = (key, value) => {
@@ -61,7 +62,7 @@ const DashboardPerjanjian = memo(() => {
         {
           type: "text",
           id: "nama",
-          label: "nama Pasien",
+          label: "Nama Pasien",
           name: "nama",
           placeholder: "Masukkan nama Pasien...",
           onChange: (e) => handleSearch("nama", e.target.value),
@@ -151,7 +152,7 @@ const DashboardPerjanjian = memo(() => {
     no_registrasi: item.no_registrasi,
     penjamin: item.penjamin,
     tipe_perjanjian: item.tipe_perjanjian,
-    tel_regis: item.tel_regis,
+    tanggal_regis: item.tanggal_regis,
     dokter: item.dokter,
     departemen: item.departemen,
     user: item.user,

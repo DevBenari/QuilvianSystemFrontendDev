@@ -5,6 +5,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { dataRawatInap } from "@/utils/dataPerjanjian"; // Pastikan dataRawatInap diimpor dengan benar
+import DateInput from "@/components/ui/date-input";
+import { Col, Row } from "react-bootstrap";
+import SearchableSelectField from "@/components/ui/select-field-search";
 
 const PerjanjianRawatInap = memo(() => {
   const methods = useForm();
@@ -13,12 +16,12 @@ const PerjanjianRawatInap = memo(() => {
     nomorRekamMedis: "",
     nama: "",
     alamat: "",
-    kelas: "",
     dokter: "",
     departemen: "",
     tanggalMulai: "",
     tanggalSelesai: "",
     penjamin: "",
+    telepon: "",
   });
 
   // Fungsi untuk menangani pencarian
@@ -46,6 +49,13 @@ const PerjanjianRawatInap = memo(() => {
           }
         }
 
+        if (criteriaKey === "kelasSelect.select") {
+          return item.kelas
+            ?.toString()
+            .toLowerCase()
+            .includes(criteriaValue.toLowerCase());
+        }
+
         return item[criteriaKey]
           ?.toString()
           .toLowerCase()
@@ -62,50 +72,10 @@ const PerjanjianRawatInap = memo(() => {
         {
           type: "text",
           id: "dokter",
-          label: "Nama Dokter",
+          label: " Nama Dokter",
+          placeholder: "Masukkan Nama Dokter...",
           name: "dokter",
-          placeholder: "Masukkan nama dokter...",
           onChange: (e) => handleSearch("dokter", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "select",
-          id: "departemen",
-          label: "Departemen",
-          name: "departemen",
-          options: [
-            { label: "Pilih Departemen", value: "" },
-            { label: "Poli Anak", value: "Poli Anak" },
-            { label: "Poli Penyakit Dalam", value: "Poli Penyakit Dalam" },
-          ],
-          onChange: (e) => handleSearch("departemen", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalMulai",
-          label: "Tanggal Mulai",
-          name: "tanggalMulai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalSelesai",
-          label: "Tanggal Selesai",
-          name: "tanggalSelesai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "text",
-          id: "nomorRekamMedis",
-          label: "Medical Record ID",
-          name: "nomorRekamMedis",
-          placeholder: "Masukkan Medical Record ID...",
-          onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
           colSize: 6,
         },
         {
@@ -119,39 +89,119 @@ const PerjanjianRawatInap = memo(() => {
         },
         {
           type: "text",
-          id: "alamat",
-          label: "Alamat",
-          name: "alamat",
-          placeholder: "Masukkan Alamat...",
-          onChange: (e) => handleSearch("alamat", e.target.value),
+          id: "nomorRekamMedis",
+          label: "Medical Record ID",
+          name: "nomorRekamMedis",
+          placeholder: "Masukkan Medical Record ID...",
+          onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
           colSize: 6,
         },
         {
-          type: "select",
-          id: "kelas",
-          label: "Kelas",
-          name: "kelas",
-          options: [
-            { label: "Pilih Kelas", value: "" },
-            { label: "Kelas 1", value: "Kelas 1" },
-            { label: "Kelas 2", value: "Kelas 2" },
-            { label: "Kelas 3", value: "Kelas 3" },
-          ],
-          onChange: (e) => handleSearch("kelas", e.target.value),
+          type: "text",
+          id: "telepon",
+          label: "Nomor Hp",
+          name: "telepon",
+          placeholder: "Masukkan Nomor Hp...",
+          onChange: (e) => handleSearch("telepon", e.target.value),
           colSize: 6,
         },
         {
-          type: "select",
-          id: "penjamin",
-          label: "Penjamin",
-          name: "penjamin",
-          options: [
-            { label: "Pilih Penjamin", value: "" },
-            { label: "BPJS", value: "BPJS" },
-            { label: "Pribadi", value: "Pribadi" },
-          ],
-          onChange: (e) => handleSearch("penjamin", e.target.value),
+          type: "custom",
           colSize: 6,
+          customRender: () => (
+            <>
+              <Row>
+                <Col>
+                  <SearchableSelectField
+                    name="kelasSelect.select"
+                    label="kelas Kamar"
+                    options={[
+                      { label: "SUITE", value: "SUITE" },
+                      { label: "LUXURY", value: "LUXURY" },
+                      {
+                        label: "ISOLASI LAVENDER SVIP",
+                        value: "ISOLASI LAVENDER SVIP",
+                      },
+                      { label: "VIP SUPERIOR", value: "VIP SUPERIOR" },
+                      {
+                        label: "ISOLASI CHRISANT SVIP",
+                        value: "ISOLASI CHRISANT SVIP",
+                      },
+                      { label: "CHRISANT SVIP", value: "CHRISANT SVIP" },
+                      { label: "VIP DELUXE", value: "VIP DELUXE" },
+                      { label: "VIP 8.3", value: "VIP 8.3" },
+                      {
+                        label: "ISOLASI CHRISANT VIP DELUXE",
+                        value: "ISOLASI CHRISANT VIP DELUXE",
+                      },
+                      {
+                        label: "CHRISANT VIP DELUXE",
+                        value: "CHRISANT VIP DELUXE",
+                      },
+                      { label: "VVIP", value: "VVIP" },
+                      { label: "GRAND ROYAL", value: "GRAND ROYAL" },
+                      { label: "CHRISANT VIP", value: "CHRISANT VIP" },
+                      { label: "VIP 8.1", value: "VIP 8.1" },
+                      {
+                        label: "ISOLASI LAVENDER VIP",
+                        value: "ISOLASI LAVENDER VIP",
+                      },
+                      {
+                        label: "ISOLASI BOUGENVIL VIP",
+                        value: "ISOLASI BOUGENVIL VIP",
+                      },
+                      {
+                        label: "ISOLASI CHRISANT VIP",
+                        value: "ISOLASI CHRISANT VIP",
+                      },
+                      { label: "VIP", value: "VIP" },
+                      { label: "kelas 1", value: "kelas 1" },
+                      { label: "VIP 8.2", value: "VIP 8.2" },
+                    ]}
+                    placeholder="Pilih kelas Kamar"
+                    className="mb-3"
+                    onChange={(selectedOption) =>
+                      handleSearch(
+                        "kelasSelect.select",
+                        selectedOption?.value || ""
+                      )
+                    }
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
+        },
+
+        {
+          type: "custom",
+          colSize: 6,
+          customRender: () => (
+            <>
+              <Row className="mb-3">
+                <Col>
+                  <DateInput
+                    name="tanggalMulai"
+                    label="Tanggal Mulai"
+                    placeholder="Enter Tanggal Mulai"
+                    onChange={(e) =>
+                      handleSearch("tanggalMulai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+                <Col>
+                  <DateInput
+                    name="tanggalSelesai"
+                    label="Tanggal Selesai"
+                    placeholder="Enter Tanggal Selesai"
+                    onChange={(e) =>
+                      handleSearch("tanggalSelesai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
         },
       ],
     },
@@ -160,12 +210,14 @@ const PerjanjianRawatInap = memo(() => {
   const headers = [
     "NO LIST",
     "NO RM",
+    "TANGGAL JANJI",
     "TANGGAL MASUK",
     "NAMA",
+    "TELEPON",
     "DIAGNOSA",
     "DOKTER",
     "KELAS",
-    "KONTRAK",
+    "KONFIRMASI",
     "USER",
     "USER EDIT",
     "TANGGAL INPUT",
@@ -177,12 +229,14 @@ const PerjanjianRawatInap = memo(() => {
   const members = filteredData.map((item, index) => ({
     no: index + 1,
     nomorRekamMedis: item.nomorRekamMedis,
+    tanggalJanji: item.tanggalJanji,
     tanggalMasuk: item.tanggalMasuk,
     nama: item.nama,
+    telepon: item.telepon, // Tambahkan telepon setelah nama
     diagnosis: item.diagnosis,
     dokter: item.dokter,
     kelas: item.kelas,
-    kontrak: item.kontrak,
+    konfirmasi: item.konfirmasi,
     user: item.user,
     userEdit: item.userEdit,
     tanggalInput: item.tanggalInput,

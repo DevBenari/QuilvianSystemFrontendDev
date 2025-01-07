@@ -5,6 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { dataReservasi } from "@/utils/dataPerjanjian";
+import { useRouter } from "next/navigation";
 
 const PerjanjianReservasi = memo(() => {
   const methods = useForm();
@@ -17,7 +18,13 @@ const PerjanjianReservasi = memo(() => {
     tipePerjanjian: "",
     tanggalMulai: "",
     tanggalSelesai: "",
+    nomorTelepon: "",
   });
+
+  const router = useRouter();
+  const handleAdd = () => {
+    router.push("/perjanjian/perjanjian-reguler/add-perjanjian-reguler");
+  };
 
   // Fungsi untuk menangani pencarian dengan kriteria
   const handleSearch = (key, value) => {
@@ -86,11 +93,11 @@ const PerjanjianReservasi = memo(() => {
         },
         {
           type: "text",
-          id: "no_hp",
+          id: "nomorTelepon",
           label: "No. HP",
-          name: "no_hp",
+          name: "nomorTelepon",
           placeholder: "Masukkan nomor HP pasien...",
-          onChange: (e) => handleSearch("no_hp", e.target.value),
+          onChange: (e) => handleSearch("nomorTelepon", e.target.value),
           colSize: 6,
         },
         {
@@ -114,6 +121,7 @@ const PerjanjianReservasi = memo(() => {
     "TEMPAT LAHIR",
     "TANGGAL LAHIR",
     "PENJAMIN",
+    "NO. HP",
   ];
 
   // Format data untuk ditampilkan di tabel
@@ -125,6 +133,7 @@ const PerjanjianReservasi = memo(() => {
     tempat_lahir: item.tempat_lahir,
     tanggal_lahir: item.tanggal_lahir,
     penjamin: item.penjamin,
+    nomorTelepon: item.nomorTelepon,
   }));
 
   return (
@@ -136,7 +145,8 @@ const PerjanjianReservasi = memo(() => {
         data={members}
         id="id"
         rowsPerPage={5}
-        title="List Pasien Reservasi"
+        title="Pasien Reservasi"
+        onAdd={handleAdd}
       />
     </FormProvider>
   );
