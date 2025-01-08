@@ -4,6 +4,7 @@ import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import DateInput from "@/components/ui/date-input";
 import RadioInput from "@/components/ui/radio-input";
 import SelectField from "@/components/ui/select-field";
+import SearchableSelectField from "@/components/ui/select-field-search";
 import TextField from "@/components/ui/text-field";
 import TextArea from "@/components/ui/textArea-field";
 import { useRouter } from "next/navigation";
@@ -158,17 +159,60 @@ const AddPerjanjianReguler = () => {
                         />
                       </Col>
                       <Col lg="6">
-                        <SelectField
-                          name="kelas"
-                          label="Kelas"
+                        <SearchableSelectField
+                          name="kelasSelect.select"
+                          label="kelas Kamar"
                           options={[
+                            { label: "SUITE", value: "SUITE" },
+                            { label: "LUXURY", value: "LUXURY" },
+                            {
+                              label: "ISOLASI LAVENDER SVIP",
+                              value: "ISOLASI LAVENDER SVIP",
+                            },
+                            { label: "VIP SUPERIOR", value: "VIP SUPERIOR" },
+                            {
+                              label: "ISOLASI CHRISANT SVIP",
+                              value: "ISOLASI CHRISANT SVIP",
+                            },
+                            { label: "CHRISANT SVIP", value: "CHRISANT SVIP" },
+                            { label: "VIP DELUXE", value: "VIP DELUXE" },
+                            { label: "VIP 8.3", value: "VIP 8.3" },
+                            {
+                              label: "ISOLASI CHRISANT VIP DELUXE",
+                              value: "ISOLASI CHRISANT VIP DELUXE",
+                            },
+                            {
+                              label: "CHRISANT VIP DELUXE",
+                              value: "CHRISANT VIP DELUXE",
+                            },
+                            { label: "VVIP", value: "VVIP" },
+                            { label: "GRAND ROYAL", value: "GRAND ROYAL" },
+                            { label: "CHRISANT VIP", value: "CHRISANT VIP" },
+                            { label: "VIP 8.1", value: "VIP 8.1" },
+                            {
+                              label: "ISOLASI LAVENDER VIP",
+                              value: "ISOLASI LAVENDER VIP",
+                            },
+                            {
+                              label: "ISOLASI BOUGENVIL VIP",
+                              value: "ISOLASI BOUGENVIL VIP",
+                            },
+                            {
+                              label: "ISOLASI CHRISANT VIP",
+                              value: "ISOLASI CHRISANT VIP",
+                            },
                             { label: "VIP", value: "VIP" },
-                            { label: "Kelas 1", value: "Kelas 1" },
-                            { label: "Kelas 2", value: "Kelas 2" },
-                            { label: "Kelas 3", value: "Kelas 3" },
+                            { label: "kelas 1", value: "kelas 1" },
+                            { label: "VIP 8.2", value: "VIP 8.2" },
                           ]}
-                          placeholder="Pilih Kelas"
-                          rules={{ required: "Kelas harus dipilih" }}
+                          placeholder="Pilih kelas Kamar"
+                          className="mb-3"
+                          onChange={(selectedOption) =>
+                            handleSearch(
+                              "kelasSelect.select",
+                              selectedOption?.value || ""
+                            )
+                          }
                         />
                       </Col>
                       <Col lg="6">
