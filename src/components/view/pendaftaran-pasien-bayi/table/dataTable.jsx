@@ -1,6 +1,7 @@
 "use client";
 import TextField from "@/components/ui/text-field";
-import { pasienBayi } from "@/utils/configBayi";
+import { pasienBayi } from "@/utils/dataPasien";
+
 import React, { useState } from "react";
 import { Table, Button, Container, Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";

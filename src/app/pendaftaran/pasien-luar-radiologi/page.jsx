@@ -11,10 +11,7 @@ import RadioInput from "@/components/ui/radio-input";
 import SelectField from "@/components/ui/select-field";
 import dataWilayah from "@/utils/dataWilayah";
 
-import {
-  pemeriksaRadiologi,
-  tindakanRadiologi,
-} from "@/utils/PemeriksaanRadiologi";
+import { pemeriksaRadiologi, tindakanRadiologi } from "@/utils/dataTindakan";
 import PemeriksaanTableRadiologi from "@/components/view/radiologi/pemeriksaanRadiologi";
 import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
 
@@ -188,16 +185,17 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "jenisKelamin",
           label: "Jenis Kelamin",
           name: "jenisKelamin",
+          placeholder: "Jenis Kelamin",
           options: [
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" },
           ],
           rules: { required: "Jenis Kelamin is required" },
-          className: "my-3",
+
           colSize: 6,
         },
         {
@@ -283,10 +281,10 @@ export default function PendaftaranPasienLab() {
       ],
     },
     {
-      section: "Detail Konsultasi",
+      // section: "Detail Konsultasi",
       fields: [
         {
-          type: "radio",
+          type: "select",
           id: "penjamin",
           label: "Tipe Pasien",
           name: "penjamin",
@@ -296,7 +294,7 @@ export default function PendaftaranPasienLab() {
             { label: "Penjamin", value: "penjamin" },
           ],
           rules: { required: "Penjamin is required" },
-          colSize: 12,
+          colSize: 8,
         },
         {
           type: "select",
@@ -311,7 +309,7 @@ export default function PendaftaranPasienLab() {
             { label: "Non BPJS", value: "non-bpjs" },
           ],
           rules: { required: "Penjamin is required" },
-          colSize: 8,
+          colSize: 6,
         },
         {
           type: "date",
@@ -319,133 +317,90 @@ export default function PendaftaranPasienLab() {
           label: "Tanggal Registrasi",
           name: "tglRegistrasi",
           rules: { required: "Tanggal Registrasi is required" },
-          colSize: 8,
-        },
-        {
-          type: "custom",
-          id: "dirujuk",
-          label: "Dirujuk",
-          name: "dirujuk",
-          placeholder: "Dirujuk",
-          rules: { required: "Dirujuk is required" },
-          customRender: () => (
-            <>
-              <div className="iq-header-title">
-                <h4 className="card-title my-2"> Dirujuk </h4>
-              </div>
-              <Row>
-                <Col lg="6">
-                  <RadioInput
-                    name="konsul"
-                    options={[{ label: "Konsul", value: "konsul" }]}
-                    className="d-flex gap-5 mt-2"
-                    onChange={() => handleRadioChange("konsul")}
-                  />
-                </Col>
-                <Col lg="12">
-                  <SelectField
-                    name="pilihDokter"
-                    options={[
-                      { label: "Dr. A", value: "dr_a" },
-                      { label: "Dr. B", value: "dr_b" },
-                      { label: "Dr. C", value: "dr_c" },
-                    ]}
-                    placeholder="Pilih Dokter"
-                    className="mb-3"
-                    onChange={(e) => handleSelectChange("konsul")}
-                    disabled={
-                      handleSelectedOption && handleSelectedOption !== "konsul"
-                    }
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col lg="6">
-                  <RadioInput
-                    name="LuarRs"
-                    options={[{ label: "Luar Rs", value: "LuarRs" }]}
-                    className="d-flex gap-5 mt-2"
-                    onChange={() => handleRadioChange("LuarRs")}
-                  />
-                </Col>
-                <Col lg="12">
-                  <SelectField
-                    name="pilihRs"
-                    options={[
-                      { label: "Puskesmas", value: "puskesmas" },
-                      { label: "Dr/Drg", value: "dr_drg" },
-                      { label: "Maramedik", value: "maramedik" },
-                      { label: "Dukun Terlatih", value: "dukun_terlatih" },
-                      { label: "Kasus Polisi", value: "kasus_polisi" },
-                      { label: "Keluarga", value: "keluarga" },
-                    ]}
-                    placeholder="Tipe RSU/RS/RB"
-                    className="mb-3"
-                    onChange={(e) => handleSelectChange("LuarRs")}
-                    disabled={
-                      handleSelectedOption && handleSelectedOption !== "LuarRs"
-                    }
-                  />
-                </Col>
-                <Row hidden={handleSelectedOption !== "LuarRs"}>
-                  <Col lg="6">
-                    <TextField
-                      label="Nama : "
-                      name="namaLuarRs"
-                      type="text"
-                      placeholder="Enter Nama "
-                      className="form-control mb-0"
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <TextField
-                      label="Nomor Telepon Luar Rs :"
-                      name="Luar Rs"
-                      type="text"
-                      placeholder="Enter nomor telepon Luar Rs "
-                      className="form-control mb-0"
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <TextField
-                      label="Alamat  :"
-                      name="alamatLuarRs"
-                      type="text"
-                      placeholder="Enter Alamat "
-                      className="form-control mb-0"
-                    />
-                  </Col>
-                </Row>
-              </Row>
-              <Row>
-                <Col lg="12">
-                  <RadioInput
-                    name="atasPermintaanSendiri"
-                    options={[
-                      {
-                        label: "Atas Permintaan Sendiri",
-                        value: "atasPermintaanSendiri",
-                      },
-                    ]}
-                    className="d-flex gap-5 mt-2 mb-3"
-                    onChange={() => handleRadioChange("atasPermintaanSendiri")}
-                  />
-                </Col>
-              </Row>
-            </>
-          ),
           colSize: 6,
         },
       ],
     },
     {
-      section: "Kode Member",
+      section: "Dirujuk",
+      fields: [
+        {
+          type: "select",
+          id: "dirujuk",
+          name: "dirujuk",
+          placeholder: "Pilih Rujukan",
+          options: [
+            { label: "Konsul", value: "konsul" },
+            { label: "Luar RS", value: "luarRs" },
+            {
+              label: "Atas Permintaan Sendiri",
+              value: "atasPermintaanSendiri",
+            },
+          ],
+          colSize: 8,
+          className: "mb-3",
+        },
+        {
+          type: "select",
+          id: "dokterPemeriksa",
+          name: "dokterPemeriksa",
+          label: "Dokter Pemeriksa",
+          placeholder: "Pilih Dokter",
+          options: [
+            { label: "Dr. Sarah Johnson", value: "dr_sarah_johnson" },
+            { label: "Dr. Michael Brown", value: "dr_michael_brown" },
+            { label: "Dr. Emily Davis", value: "dr_emily_davis" },
+            { label: "Dr. John Smith", value: "dr_john_smith" },
+            { label: "Dr. Emma Wilson", value: "dr_emma_wilson" },
+          ],
+          hide: (watchValues) => watchValues.dirujuk !== "konsul", // Tampilkan hanya untuk "konsul"
+          colSize: 6,
+          className: "mb-3",
+        },
+        {
+          type: "select",
+          id: "tipeRs",
+          name: "tipeRs",
+          label: "Tipe RSU/RS/RB",
+          placeholder: "Pilih Tipe RSU/RS/RB",
+          options: [
+            { label: "Puskesmas", value: "puskesmas" },
+            { label: "Dr/Drg", value: "dr_drg" },
+            { label: "Maramedik", value: "maramedik" },
+          ],
+          hide: (watchValues) => watchValues.dirujuk !== "luarRs", // Tampilkan hanya untuk "luarRs"
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "namaLuarRs",
+          name: "namaLuarRs",
+          label: "Nama",
+          placeholder: "Masukkan Nama",
+          hide: (watchValues) => watchValues.dirujuk !== "luarRs", // Tampilkan hanya untuk "luarRs"
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "teleponLuarRs",
+          name: "teleponLuarRs",
+          label: "Nomor Telepon",
+          placeholder: "Masukkan Nomor Telepon",
+          hide: (watchValues) => watchValues.dirujuk !== "luarRs", // Tampilkan hanya untuk "luarRs"
+          colSize: 6,
+          className: "mb-3",
+        },
+      ],
+    },
+    {
+      // section: "Kode Member",
       fields: [
         {
           type: "select",
           id: "pilihPromoo",
           label: "Pilih Promo",
           name: "pilihPromoo",
+          placeholder: "Pilih Promo",
           options: [
             { label: "Voucher Potongan", value: "voucher_potongan" },
             { label: "RS MMC Dokter", value: "rs_mmc_dokter" },
@@ -460,6 +415,7 @@ export default function PendaftaranPasienLab() {
           id: "tipePemeriksaan",
           label: "Tipe Pemeriksaan",
           name: "tipePemeriksaan",
+          placeholder: "Pilih Tipe Pemeriksaan",
           options: [
             { label: "Patologi Klinik", value: "patologi_klinik" },
             { label: "Patologi Anatomi", value: "patologi_anatomi" },
@@ -469,10 +425,11 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "suratRujukan",
           label: "Surat Rujukan",
           name: "suratRujukan",
+          placeholder: "Pilih Surat Rujukan",
           options: [
             { label: "Ada", value: "Ada" },
             { label: "Tidak Ada", value: "Tidak Ada" },
@@ -481,22 +438,12 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "text",
-          id: "diagnosaAwal",
-          label: "Diagnosa Awal",
-          name: "diagnosaAwal",
-          placeholder: "Diagnosa Awal",
-          rules: { required: "Diagnosa Awal is required" },
-          colSize: 6,
-        },
-
-        {
           type: "date",
           id: "tglSampling",
           label: "Tanggal Sampling",
           name: "tglSampling",
           rules: { required: "Tanggal Sampling is required" },
-          colSize: 5,
+          colSize: 3,
         },
         {
           type: "time",
@@ -504,7 +451,16 @@ export default function PendaftaranPasienLab() {
           label: "Jam",
           name: "timeSampling",
           rules: { required: "time Sampling is required" },
-          colSize: 2,
+          colSize: 3,
+        },
+        {
+          type: "textarea",
+          id: "diagnosaAwal",
+          label: "Diagnosa Awal",
+          name: "diagnosaAwal",
+          placeholder: "Diagnosa Awal",
+          rules: { required: "Diagnosa Awal is required" },
+          colSize: 12,
         },
       ],
     },
@@ -513,7 +469,6 @@ export default function PendaftaranPasienLab() {
       fields: [
         {
           type: "custom",
-          label: "Set pemeriksaan Radiologi",
           customRender: () => <TableTindakan tindakan={pemeriksaRadiologi} />,
           colSize: 12,
         },
@@ -532,41 +487,45 @@ export default function PendaftaranPasienLab() {
         },
         {
           type: "select",
-          id: "dokterLab",
-          label: "Dokter Lab",
-          name: "dokterLab",
+          id: "dokterPemeriksa",
+          label: "Dokter Pemeriksa",
+          name: "dokterPemeriksa",
           placeholder: "Pilih Dokter",
           options: [
-            { label: "Dr. X", value: "dr_x" },
-            { label: "Dr. Y", value: "dr_y" },
-            { label: "Dr. Z", value: "dr_z" },
+            { label: "Dr. Sarah Johnson", value: "dr_sarah_johnson" },
+            { label: "Dr. Michael Brown", value: "dr_michael_brown" },
+            { label: "Dr. Emily Davis", value: "dr_emily_davis" },
+            { label: "Dr. John Smith", value: "dr_john_smith" },
+            { label: "Dr. Emma Wilson", value: "dr_emma_wilson" },
           ],
-          rules: { required: "Dokter Lab is required" },
+          rules: { required: "Dokter Pemeriksa is required" },
           colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "pemeriksaanTestCito",
           label: "Pemeriksaan Test Cito",
           name: "pemeriksaanTestCito",
+          placeholder: "Pilih Pemeriksaan Test Cito",
           options: [
             { label: "Ya", value: "ya" },
             { label: "Tidak ", value: "tidak " },
           ],
-          rules: { required: "Surat Rujukan is required" },
-          colSize: 12,
+          rules: { required: "pemeriksaan Test Cito is required" },
+          colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "cetakkartu",
           label: "Cetak Kartu",
           name: "cetakkartu",
+          placeholder: "Pilih Cetak Kartu",
           options: [
             { label: "Ya", value: "ya" },
             { label: "Tidak ", value: "tidak " },
           ],
-          rules: { required: "Surat Rujukan is required" },
-          colSize: 12,
+          rules: { required: "Cetak Kartu is required" },
+          colSize: 6,
         },
       ],
     },

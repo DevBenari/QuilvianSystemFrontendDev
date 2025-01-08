@@ -5,6 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { useAnggota } from "@/lib/hooks/keanggotaan";
+import { useRouter } from "next/navigation";
 
 const DashboardPerjanjian = memo(() => {
   const methods = useForm();
@@ -62,6 +63,12 @@ const DashboardPerjanjian = memo(() => {
     setFilteredAnggota(filtered);
   };
 
+  const router = useRouter();
+
+  const handleAdd = () => {
+    router.push("/pendaftaran/keanggotaan/addAnggota");
+  };
+
   const formFields = [
     {
       fields: [
@@ -88,6 +95,7 @@ const DashboardPerjanjian = memo(() => {
           id: "jenis",
           label: "Jenis",
           name: "jenis",
+          placeholder: "Pilih Jenis",
           options: [
             { label: "VIP Member dengan UP", value: "VIP Member dengan UP" },
             { label: "VIP Member B", value: "VIP Member B" },
@@ -102,6 +110,7 @@ const DashboardPerjanjian = memo(() => {
           id: "status",
           label: "Status",
           name: "status",
+          placeholder: "Pilih Status",
           options: [
             { label: "Aktif", value: "aktif" },
             { label: "Non-Aktif", value: "non-aktif" },
@@ -145,6 +154,7 @@ const DashboardPerjanjian = memo(() => {
           headers={headers}
           data={members}
           id="id"
+          onAdd={handleAdd}
           rowsPerPage={3}
           title="Anggota"
         />

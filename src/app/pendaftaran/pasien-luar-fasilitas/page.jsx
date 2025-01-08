@@ -8,7 +8,8 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import dataWilayah from "@/utils/dataWilayah";
 import FasilitasTable from "@/components/view/fasilitas/fasilitasTable";
-import { dataFasilitas } from "@/utils/dataFasilitas";
+import { dataFasilitas } from "@/utils/dataTindakan";
+
 export default function PendaftaranRehabilitasiMedik() {
   // const { promos, loading, error } = usePromos();
   // const [promosState, setPromosState] = useState([]);
@@ -151,15 +152,6 @@ export default function PendaftaranRehabilitasiMedik() {
           colSize: 6,
         },
         {
-          type: "text",
-          id: "nomorHP",
-          label: "Nomor HP",
-          name: "nomorHP",
-          placeholder: "Nomor HP",
-          rules: { required: "Nomor HP is required" },
-          colSize: 6,
-        },
-        {
           type: "date",
           id: "tglLahir",
           label: "Tanggal Lahir",
@@ -168,16 +160,26 @@ export default function PendaftaranRehabilitasiMedik() {
           colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "jenisKelamin",
           label: "Jenis Kelamin",
           name: "jenisKelamin",
+          placeholder: "Jenis Kelamin",
           options: [
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" },
           ],
           rules: { required: "Jenis Kelamin is required" },
-          className: "my-3",
+
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "nomorHP",
+          label: "Nomor HP",
+          name: "nomorHP",
+          placeholder: "Nomor HP",
+          rules: { required: "Nomor HP is required" },
           colSize: 6,
         },
         {
@@ -225,12 +227,23 @@ export default function PendaftaranRehabilitasiMedik() {
             { label: "Dr. rindu", value: "dr_rindu" },
           ],
           rules: { required: "Dokter Lab is required" },
-          colSize: 8,
+          colSize: 6,
         },
+      ],
+    },
+    {
+      section: "Penyedia Fasilitas",
+      fields: [
         {
           type: "custom",
           label: "Fasilitas",
-          customRender: () => <FasilitasTable tindakan={dataFasilitas} />,
+          customRender: () => (
+            <FasilitasTable
+              title="Fasilitas"
+              // judul="Penyedia Fasilitas"
+              tindakan={dataFasilitas}
+            />
+          ),
           colSize: 12,
         },
       ],

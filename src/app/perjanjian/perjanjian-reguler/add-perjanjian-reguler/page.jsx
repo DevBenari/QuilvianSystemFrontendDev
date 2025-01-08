@@ -119,9 +119,10 @@ const AddPerjanjianReguler = () => {
             <>
               <Row className="my-3">
                 <Col lg="12">
-                  <RadioInput
+                  <SelectField
                     name="layanan"
                     label="Pilih Layanan"
+                    placeholder="Pilih Layanan"
                     options={[
                       { label: "Rawat Inap", value: "Rawat Inap" },
                       { label: "Rawat Jalan", value: "Rawat Jalan" },
@@ -130,9 +131,10 @@ const AddPerjanjianReguler = () => {
                       { label: "Operasi", value: "Operasi" },
                       { label: "MCU", value: "MCU" },
                     ]}
+                    value={selectedLayanan} // Tamb
                     onChange={(e) => handleLayananChange(e.target.value)}
                     rules={{ required: "Layanan harus dipilih" }}
-                    className={"mb-5"}
+                    className={"mb-2"}
                   />
                 </Col>
 

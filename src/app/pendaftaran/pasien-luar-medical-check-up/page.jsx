@@ -174,16 +174,17 @@ export default function PendaftaranRehabilitasiMedik() {
           colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "jenisKelamin",
           label: "Jenis Kelamin",
           name: "jenisKelamin",
+          placeholder: "Jenis Kelamin",
           options: [
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" },
           ],
           rules: { required: "Jenis Kelamin is required" },
-          className: "my-3",
+
           colSize: 6,
         },
         {
@@ -211,15 +212,7 @@ export default function PendaftaranRehabilitasiMedik() {
           },
           colSize: 6,
         },
-        {
-          type: "textarea",
-          id: "alamatRumah",
-          label: "Alamat Rumah",
-          name: "alamatRumah",
-          placeholder: "Alamat Rumah",
-          rules: { required: "Alamat Rumah is required" },
-          colSize: 12,
-        },
+
         {
           type: "select",
           id: "pasien_provinsi",
@@ -276,22 +269,32 @@ export default function PendaftaranRehabilitasiMedik() {
           colSize: 6,
           onChange: (e) => handleChange("kelurahan", e.target.value),
         },
+        {
+          type: "textarea",
+          id: "alamatRumah",
+          label: "Alamat Rumah",
+          name: "alamatRumah",
+          placeholder: "Alamat Rumah",
+          rules: { required: "Alamat Rumah is required" },
+          colSize: 12,
+        },
       ],
     },
     {
+      section: "Detatil Konsultasi ",
       fields: [
         {
-          type: "radio",
+          type: "select",
           id: "penjamin",
           label: "Tipe Pasien",
           name: "penjamin",
-          placeholder: "Penjamin",
+          placeholder: "Tipe Penjamin",
           options: [
             { label: "Umum", value: "umum" },
             { label: "Penjamin", value: "penjamin" },
           ],
           rules: { required: "Penjamin is required" },
-          colSize: 12,
+          colSize: 6,
         },
         {
           type: "select",
@@ -306,7 +309,7 @@ export default function PendaftaranRehabilitasiMedik() {
             { label: "Non BPJS", value: "non-bpjs" },
           ],
           rules: { required: "Penjamin is required" },
-          colSize: 8,
+          colSize: 6,
         },
         {
           type: "date",
@@ -314,7 +317,7 @@ export default function PendaftaranRehabilitasiMedik() {
           label: "Tanggal Registrasi",
           name: "tglRegistrasi",
           rules: { required: "Tanggal Registrasi is required" },
-          colSize: 8,
+          colSize: 6,
         },
         {
           type: "select",
@@ -329,7 +332,7 @@ export default function PendaftaranRehabilitasiMedik() {
             { label: "latihan lingkup gerak", value: "latihanLingkupGerak" },
           ],
           rules: { required: "Daftar Tindakan Rehabilitasi Medik is required" },
-          colSize: 8,
+          colSize: 6,
         },
         {
           type: "select",
@@ -338,135 +341,212 @@ export default function PendaftaranRehabilitasiMedik() {
           name: "dokterPemeriksa",
           placeholder: "Dokter Pemeriksa",
           options: [
-            { label: "Dr. zainudin", value: "dr_zainudin" },
-            { label: "Dr. putri", value: "dr_putri" },
-            { label: "Dr. rindu", value: "dr_rindu" },
+            { label: "Dr. Sarah Johnson", value: "dr_sarah_johnson" },
+            { label: "Dr. Michael Brown", value: "dr_michael_brown" },
+            { label: "Dr. Emily Davis", value: "dr_emily_davis" },
+            { label: "Dr. John Smith", value: "dr_john_smith" },
+            { label: "Dr. Emma Wilson", value: "dr_emma_wilson" },
           ],
           rules: { required: "Dokter Lab is required" },
-          colSize: 8,
-        },
-        {
-          type: "custom",
-          id: "dirujuk",
-          label: "Dirujuk",
-          name: "dirujuk",
-          placeholder: "Dirujuk",
-          rules: { required: "Dirujuk is required" },
-          customRender: () => (
-            <>
-              <div className="iq-header-title">
-                <h4 className="card-title my-2"> Dirujuk </h4>
-              </div>
-              <Row>
-                <Col lg="6">
-                  <RadioInput
-                    name="konsul"
-                    options={[{ label: "Konsul", value: "konsul" }]}
-                    className="d-flex gap-5 mt-2"
-                    onChange={() => handleRadioChange("konsul")}
-                  />
-                </Col>
-                <Col lg="12">
-                  <SelectField
-                    name="pilihDokter"
-                    options={[
-                      { label: "Dr. A", value: "dr_a" },
-                      { label: "Dr. B", value: "dr_b" },
-                      { label: "Dr. C", value: "dr_c" },
-                    ]}
-                    placeholder="Pilih Dokter"
-                    className="mb-3"
-                    onChange={(e) => handleSelectChange("konsul")}
-                    disabled={selectedOption && selectedOption !== "konsul"}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col lg="6">
-                  <RadioInput
-                    name="LuarRs"
-                    options={[{ label: "Luar Rs", value: "LuarRs" }]}
-                    className="d-flex gap-5 mt-2"
-                    onChange={() => handleRadioChange("LuarRs")}
-                  />
-                </Col>
-                <Col lg="12">
-                  <SelectField
-                    name="pilihRs"
-                    options={[
-                      { label: "Puskesmas", value: "puskesmas" },
-                      { label: "Dr/Drg", value: "dr_drg" },
-                      { label: "Maramedik", value: "maramedik" },
-                      { label: "Dukun Terlatih", value: "dukun_terlatih" },
-                      { label: "Kasus Polisi", value: "kasus_polisi" },
-                      { label: "Keluarga", value: "keluarga" },
-                    ]}
-                    placeholder="Tipe RSU/RS/RB"
-                    className="mb-3"
-                    onChange={(e) => handleSelectChange("LuarRs")}
-                    disabled={selectedOption && selectedOption !== "LuarRs"}
-                  />
-                </Col>
-                <Row hidden={selectedOption !== "LuarRs"}>
-                  <Col lg="6">
-                    <TextField
-                      label="Nama : "
-                      name="namaLuarRs"
-                      type="text"
-                      placeholder="Enter Nama "
-                      className="form-control mb-0"
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <TextField
-                      label="Nomor Telepon Luar Rs :"
-                      name="Luar Rs"
-                      type="text"
-                      placeholder="Enter nomor telepon Luar Rs "
-                      className="form-control mb-0"
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <TextField
-                      label="Alamat  :"
-                      name="alamatLuarRs"
-                      type="text"
-                      placeholder="Enter Alamat "
-                      className="form-control mb-0"
-                    />
-                  </Col>
-                </Row>
-              </Row>
-              <Row>
-                <Col lg="12">
-                  <RadioInput
-                    name="atasPermintaanSendiri"
-                    options={[
-                      {
-                        label: "Atas Permintaan Sendiri",
-                        value: "atasPermintaanSendiri",
-                      },
-                    ]}
-                    className="d-flex gap-5 mt-2 mb-3"
-                    onChange={() => handleRadioChange("atasPermintaanSendiri")}
-                  />
-                </Col>
-              </Row>
-            </>
-          ),
           colSize: 6,
         },
+
+        // {
+        //   type: "custom",
+        //   id: "dirujuk",
+        //   label: "Dirujuk",
+        //   name: "dirujuk",
+        //   placeholder: "Dirujuk",
+        //   rules: { required: "Dirujuk is required" },
+        //   customRender: () => (
+        //     <>
+        //       <div className="iq-header-title">
+        //         <h4 className="card-title my-2"> Dirujuk </h4>
+        //       </div>
+        //       <Row>
+        //         <Col lg="6">
+        //           <RadioInput
+        //             name="konsul"
+        //             options={[{ label: "Konsul", value: "konsul" }]}
+        //             className="d-flex gap-5 mt-2"
+        //             onChange={() => handleRadioChange("konsul")}
+        //           />
+        //         </Col>
+        //         <Col lg="12">
+        //           <SelectField
+        //             name="pilihDokter"
+        //             options={[
+        //               { label: "Dr. A", value: "dr_a" },
+        //               { label: "Dr. B", value: "dr_b" },
+        //               { label: "Dr. C", value: "dr_c" },
+        //             ]}
+        //             placeholder="Pilih Dokter"
+        //             className="mb-3"
+        //             onChange={(e) => handleSelectChange("konsul")}
+        //             disabled={selectedOption && selectedOption !== "konsul"}
+        //           />
+        //         </Col>
+        //       </Row>
+        //       <Row>
+        //         <Col lg="6">
+        //           <RadioInput
+        //             name="LuarRs"
+        //             options={[{ label: "Luar Rs", value: "LuarRs" }]}
+        //             className="d-flex gap-5 mt-2"
+        //             onChange={() => handleRadioChange("LuarRs")}
+        //           />
+        //         </Col>
+        //         <Col lg="12">
+        //           <SelectField
+        //             name="pilihRs"
+        //             options={[
+        //               { label: "Puskesmas", value: "puskesmas" },
+        //               { label: "Dr/Drg", value: "dr_drg" },
+        //               { label: "Maramedik", value: "maramedik" },
+        //               { label: "Dukun Terlatih", value: "dukun_terlatih" },
+        //               { label: "Kasus Polisi", value: "kasus_polisi" },
+        //               { label: "Keluarga", value: "keluarga" },
+        //             ]}
+        //             placeholder="Tipe RSU/RS/RB"
+        //             className="mb-3"
+        //             onChange={(e) => handleSelectChange("LuarRs")}
+        //             disabled={selectedOption && selectedOption !== "LuarRs"}
+        //           />
+        //         </Col>
+        //         <Row hidden={selectedOption !== "LuarRs"}>
+        //           <Col lg="6">
+        //             <TextField
+        //               label="Nama : "
+        //               name="namaLuarRs"
+        //               type="text"
+        //               placeholder="Enter Nama "
+        //               className="form-control mb-0"
+        //             />
+        //           </Col>
+        //           <Col lg="6">
+        //             <TextField
+        //               label="Nomor Telepon Luar Rs :"
+        //               name="Luar Rs"
+        //               type="text"
+        //               placeholder="Enter nomor telepon Luar Rs "
+        //               className="form-control mb-0"
+        //             />
+        //           </Col>
+        //           <Col lg="6">
+        //             <TextField
+        //               label="Alamat  :"
+        //               name="alamatLuarRs"
+        //               type="text"
+        //               placeholder="Enter Alamat "
+        //               className="form-control mb-0"
+        //             />
+        //           </Col>
+        //         </Row>
+        //       </Row>
+        //       <Row>
+        //         <Col lg="12">
+        //           <RadioInput
+        //             name="atasPermintaanSendiri"
+        //             options={[
+        //               {
+        //                 label: "Atas Permintaan Sendiri",
+        //                 value: "atasPermintaanSendiri",
+        //               },
+        //             ]}
+        //             className="d-flex gap-5 mt-2 mb-3"
+        //             onChange={() => handleRadioChange("atasPermintaanSendiri")}
+        //           />
+        //         </Col>
+        //       </Row>
+        //     </>
+        //   ),
+        //   colSize: 6,
+        // },
         {
-          type: "radio",
+          type: "select",
           id: "suratRujukan",
           label: "Surat Rujukan",
           name: "suratRujukan",
+          placeholder: "Surat Rujukan",
           options: [
             { label: "Ada", value: "Ada" },
             { label: "Tidak Ada", value: "Tidak Ada" },
           ],
           rules: { required: "Surat Rujukan is required" },
+          colSize: 6,
+        },
+      ],
+    },
+
+    {
+      section: "Dirujuk",
+      fields: [
+        {
+          type: "select",
+          id: "dirujuk",
+          name: "dirujuk",
+          label: "Pilih Rujukan",
+          placeholder: "Pilih Rujukan",
+          options: [
+            { label: "Konsul", value: "konsul" },
+            { label: "Luar RS", value: "luarRs" },
+            {
+              label: "Atas Permintaan Sendiri",
+              value: "atasPermintaanSendiri",
+            },
+          ],
           colSize: 12,
+          className: "mb-3",
+        },
+        {
+          type: "select",
+          id: "dokterPemeriksa",
+          name: "dokterPemeriksa",
+          label: "Dokter Pemeriksa",
+          placeholder: "Pilih Dokter",
+          options: [
+            { label: "Dr. Sarah Johnson", value: "dr_sarah_johnson" },
+            { label: "Dr. Michael Brown", value: "dr_michael_brown" },
+            { label: "Dr. Emily Davis", value: "dr_emily_davis" },
+            { label: "Dr. John Smith", value: "dr_john_smith" },
+            { label: "Dr. Emma Wilson", value: "dr_emma_wilson" },
+          ],
+          hide: (watchValues) => watchValues.dirujuk !== "konsul", // Tampilkan hanya untuk "konsul"
+          colSize: 6,
+          className: "mb-3",
+        },
+        {
+          type: "select",
+          id: "tipeRs",
+          name: "tipeRs",
+          label: "Tipe RSU/RS/RB",
+          placeholder: "Pilih Tipe RSU/RS/RB",
+          options: [
+            { label: "Puskesmas", value: "puskesmas" },
+            { label: "Dr/Drg", value: "dr_drg" },
+            { label: "Maramedik", value: "maramedik" },
+          ],
+          hide: (watchValues) => watchValues.dirujuk !== "luarRs", // Tampilkan hanya untuk "luarRs"
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "namaLuarRs",
+          name: "namaLuarRs",
+          label: "Nama",
+          placeholder: "Masukkan Nama",
+          hide: (watchValues) => watchValues.dirujuk !== "luarRs", // Tampilkan hanya untuk "luarRs"
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "teleponLuarRs",
+          name: "teleponLuarRs",
+          label: "Nomor Telepon",
+          placeholder: "Masukkan Nomor Telepon",
+          hide: (watchValues) => watchValues.dirujuk !== "luarRs", // Tampilkan hanya untuk "luarRs"
+          colSize: 6,
+          className: "mb-3",
         },
         {
           type: "textarea",

@@ -3,8 +3,8 @@ import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
-import { pemeriksaRadiologi } from "@/utils/PemeriksaanRadiologi";
 import OptikTable from "@/components/view/optik/OptikTable";
+import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 
 export default function PendaftaranRehabilitasiMedik() {
   // const [promosState, setPromosState] = useState([]);
@@ -87,15 +87,6 @@ export default function PendaftaranRehabilitasiMedik() {
           colSize: 6,
         },
         {
-          type: "text",
-          id: "nomorHP",
-          label: "Nomor HP",
-          name: "nomorHP",
-          placeholder: "Nomor HP",
-          rules: { required: "Nomor HP is required" },
-          colSize: 6,
-        },
-        {
           type: "date",
           id: "tglLahir",
           label: "Tanggal Lahir",
@@ -104,18 +95,29 @@ export default function PendaftaranRehabilitasiMedik() {
           colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "jenisKelamin",
           label: "Jenis Kelamin",
           name: "jenisKelamin",
+          placeholder: "Jenis Kelamin",
           options: [
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" },
           ],
           rules: { required: "Jenis Kelamin is required" },
-          className: "my-3",
+
           colSize: 6,
         },
+        {
+          type: "text",
+          id: "nomorHP",
+          label: "Nomor HP",
+          name: "nomorHP",
+          placeholder: "Nomor HP",
+          rules: { required: "Nomor HP is required" },
+          colSize: 6,
+        },
+
         {
           type: "text",
           id: "nomorTlpn",
@@ -161,7 +163,7 @@ export default function PendaftaranRehabilitasiMedik() {
             { label: "Dr. rindu", value: "dr_rindu" },
           ],
           rules: { required: "Dokter Lab is required" },
-          colSize: 8,
+          colSize: 6,
         },
       ],
     },

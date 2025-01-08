@@ -90,19 +90,18 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
   return (
     <Container fluid>
       <div className="table-responsive-md w-100">
-        <Row>
+        {/* <Row>
           <Col lg="6">
             <label htmlFor="">Cari Tindakan</label>
             <input
-              type="text"
               id="cariTindakan"
-              className="form-control"
+              className="form-control mb-3"
               placeholder="masukkan Tindakan"
               value={cariTindakan}
               onChange={(e) => setCariTindakan(e.target.value)}
             />
           </Col>
-        </Row>
+        </Row> */}
         <Row>
           <Col lg="6">
             <Controller
@@ -126,7 +125,7 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
             />
           </Col>
           <Col lg="2">
-            <label htmlFor="">Qty</label>
+            <label htmlFor="">Jumlah</label>
             <Controller
               name="tindakanSelect.qty"
               control={control}
@@ -146,7 +145,7 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
               className="btn btn-primary py-2 my-4"
               onClick={handleAddToTable}
             >
-              Add To Table
+              Tambahkan Ke Tabel
             </Button>
           </Col>
         </Row>
@@ -182,7 +181,7 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
                       type="button"
                       onClick={() => handleDeleteRow(rowIndex)}
                     >
-                      Delete
+                      Hapus
                     </button>
                   </td>
                 </tr>
@@ -190,7 +189,7 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
             ) : (
               <tr>
                 <td colSpan="4" className="text-center">
-                  No data available
+                  Tidak Ada Data
                 </td>
               </tr>
             )}

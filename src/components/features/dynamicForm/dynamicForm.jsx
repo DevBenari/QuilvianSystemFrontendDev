@@ -169,7 +169,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
               {formConfig.map((section, sectionIndex) => (
                 <div
                   key={`section-${sectionIndex}`}
-                  className="iq-card-header m-1"
+                  className="iq-card-header mt-3"
                 >
                   {section.section && (
                     <div className="iq-header-title">
@@ -202,7 +202,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
                 </div>
               ))}
               <Button type="submit" className="btn btn-primary mx-3 my-3">
-                Submit
+                Kirim
               </Button>
             </Form>
           </div>

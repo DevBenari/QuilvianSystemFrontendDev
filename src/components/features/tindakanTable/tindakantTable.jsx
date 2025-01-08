@@ -109,21 +109,6 @@ const TableTindakan = ({ tindakan }) => {
       <div className="table-responsive-md w-100">
         <Row>
           <Col lg="6">
-            <label htmlFor="cariNamaPemeriksa">
-              Cari Nama Pemeriksa atau Tindakan:
-            </label>
-            <input
-              type="text"
-              id="cariNamaPemeriksa"
-              className="form-control mb-3"
-              placeholder="Masukkan nama pemeriksa atau tindakan..."
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col lg="6">
             <Controller
               name="tindakanSelect.select"
               control={control}
@@ -165,7 +150,7 @@ const TableTindakan = ({ tindakan }) => {
               className="btn btn-primary py-2 my-4"
               onClick={handleAddToTable}
             >
-              Add To Table
+              Tambahkan Data
             </Button>
           </Col>
         </Row>
@@ -220,7 +205,7 @@ const TableTindakan = ({ tindakan }) => {
             ) : (
               <tr>
                 <td colSpan="7" className="text-center">
-                  No data available
+                  tidak ada data
                 </td>
               </tr>
             )}

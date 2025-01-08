@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
 import SearchableSelectField from "@/components/ui/select-field-search";
 
-const FasilitasTable = ({ tindakan }) => {
+const FasilitasTable = ({ tindakan, title, onAdd, judul }) => {
   const { control, watch, setValue } = useForm({
     defaultValues: {
       tindakanSelect: { select: null, qty: "" },
@@ -96,6 +96,10 @@ const FasilitasTable = ({ tindakan }) => {
   return (
     <Container fluid>
       <div className="table-responsive-md w-100">
+        {/* <hr className="mb-4" /> */}
+        <div className="iq-header-title">
+          <h4 className="card-title">{judul}</h4>
+        </div>
         <Row>
           <Col lg="6">
             <Controller
@@ -105,12 +109,12 @@ const FasilitasTable = ({ tindakan }) => {
               render={({ field, fieldState }) => (
                 <SearchableSelectField
                   {...field}
-                  label="Tindakan"
+                  label={title}
                   options={tindakan.map((item) => ({
                     label: item.tindakan,
                     value: item.id,
                   }))}
-                  placeholder="Pilih Tindakan"
+                  placeholder="Pilih Fasilitas"
                   className={`mb-3 ${
                     fieldState.error ? "error-highlight" : ""
                   }`}
@@ -139,7 +143,7 @@ const FasilitasTable = ({ tindakan }) => {
               className="btn btn-primary py-2 my-4"
               onClick={handleAddToTable}
             >
-              Add To Table
+              Tambahkan Ke Table
             </Button>
           </Col>
         </Row>
@@ -184,7 +188,7 @@ const FasilitasTable = ({ tindakan }) => {
                       type="button"
                       onClick={() => handleDeleteRow(rowIndex)}
                     >
-                      Delete
+                      Hapus
                     </button>
                   </td>
                 </tr>
@@ -192,7 +196,7 @@ const FasilitasTable = ({ tindakan }) => {
             ) : (
               <tr>
                 <td colSpan="6" className="text-center">
-                  No data available
+                  Tidak ada Data
                 </td>
               </tr>
             )}

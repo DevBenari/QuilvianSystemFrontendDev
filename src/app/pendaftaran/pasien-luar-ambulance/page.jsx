@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { FormProvider, useForm } from "react-hook-form";
 import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hook
 import dataWilayah from "@/utils/dataWilayah";
+import { Col, Row } from "react-bootstrap";
+import SearchableSelectField from "@/components/ui/select-field-search";
 
 export default function PendaftaranFasilitas() {
   // const { promos, loading, error } = usePromos();
@@ -167,16 +169,17 @@ export default function PendaftaranFasilitas() {
           colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "jenisKelamin",
           label: "Jenis Kelamin",
           name: "jenisKelamin",
+          placeholder: "Jenis Kelamin",
           options: [
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" },
           ],
           rules: { required: "Jenis Kelamin is required" },
-          className: "my-3",
+
           colSize: 6,
         },
         {
@@ -213,50 +216,96 @@ export default function PendaftaranFasilitas() {
           colSize: 12,
         },
         {
-          type: "select",
-          id: "Departemen",
-          label: "Departemen",
-          name: "Departemen",
-          placeholder: "select option",
-          options: [{ label: "Ambulance", value: "ambulance" }],
-          rules: { required: "Dokter Lab is required" },
-          colSize: 6,
+          type: "custom",
+          colSize: 12,
+          customRender: () => (
+            <>
+              <Row>
+                <Col>
+                  <SearchableSelectField
+                    name="departemenSelect.select"
+                    label="Departemen"
+                    options={[
+                      { label: "Poli Anak", value: "Poli Anak" },
+                      {
+                        label: "Poli Penyakit Dalam",
+                        value: "Poli Penyakit Dalam",
+                      },
+                      { label: "Poli Gigi", value: "Poli Gigi" },
+                      { label: "Poli Mata", value: "Poli Mata" },
+                      { label: "Poli Bedah", value: "Poli Bedah" },
+                      { label: "Poli Jantung", value: "Poli Jantung" },
+                      { label: "Poli Paru", value: "Poli Paru" },
+                      { label: "Poli Saraf", value: "Poli Saraf" },
+                      {
+                        label: "Poli Kulit dan Kelamin",
+                        value: "Poli Kulit dan Kelamin",
+                      },
+                      { label: "Poli THT", value: "Poli THT" },
+                      { label: "Poli Kandungan", value: "Poli Kandungan" },
+                      {
+                        label: "Poli Rehabilitasi Medis",
+                        value: "Poli Rehabilitasi Medis",
+                      },
+                      { label: "Poli Urologi", value: "Poli Urologi" },
+                      { label: "Poli Ortopedi", value: "Poli Ortopedi" },
+                      { label: "Poli Geriatri", value: "Poli Geriatri" },
+                    ]}
+                    placeholder="Pilih Poli"
+                    className="mb-3"
+                  />
+                </Col>
+                <Col>
+                  <SearchableSelectField
+                    name="komponenSelect.select"
+                    label="komponen"
+                    options={[
+                      {
+                        label: "AMBULANCE ZONA 1 (0-5KM)",
+                        value: "ambulance_zona_1",
+                      },
+                      {
+                        label: "AMBULANCE ZONA 2 (5-15KM)",
+                        value: "ambulance_zona_2",
+                      },
+                      {
+                        label: "AMBULANCE ZONA 3 (15-25KM)",
+                        value: "ambulance_zona_3",
+                      },
+                      {
+                        label: "AMBULANCE ZONA 4 (25-30KM)",
+                        value: "ambulance_zona_4",
+                      },
+                      {
+                        label: "JASA 1 PERAWAT RESCUE PASIEN",
+                        value: "perawat_rescue_pasien",
+                      },
+                      {
+                        label: "JASA 1 PERAWAT HOME VISIT DALAM KOTA",
+                        value: "perawat_home_visit_dalam_kota",
+                      },
+                      {
+                        label: "JASA DOKTER STANDBY AMBULANCE PER JAM",
+                        value: "dokter_standby_ambulance",
+                      },
+                      {
+                        label: "JASA DOKTER HOME VISIT DALAM KOTA",
+                        value: "dokter_home_visit_dalam_kota",
+                      },
+                      {
+                        label: "JASA DOKTER RESCUE PASIEN",
+                        value: "dokter_rescue_pasien",
+                      },
+                    ]}
+                    placeholder="Pilih Poli"
+                    className="mb-3"
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
         },
-        {
-          type: "select",
-          id: "komponen",
-          label: "Komponen",
-          name: "komponen",
-          placeholder: "Komponen",
-          options: [
-            { label: "AMBULANCE ZONA 1 (0-5KM)", value: "ambulance_zona_1" },
-            { label: "AMBULANCE ZONA 2 (5-15KM)", value: "ambulance_zona_2" },
-            { label: "AMBULANCE ZONA 3 (15-25KM)", value: "ambulance_zona_3" },
-            { label: "AMBULANCE ZONA 4 (25-30KM)", value: "ambulance_zona_4" },
-            {
-              label: "JASA 1 PERAWAT RESCUE PASIEN",
-              value: "perawat_rescue_pasien",
-            },
-            {
-              label: "JASA 1 PERAWAT HOME VISIT DALAM KOTA",
-              value: "perawat_home_visit_dalam_kota",
-            },
-            {
-              label: "JASA DOKTER STANDBY AMBULANCE PER JAM",
-              value: "dokter_standby_ambulance",
-            },
-            {
-              label: "JASA DOKTER HOME VISIT DALAM KOTA",
-              value: "dokter_home_visit_dalam_kota",
-            },
-            {
-              label: "JASA DOKTER RESCUE PASIEN",
-              value: "dokter_rescue_pasien",
-            },
-          ],
-          rules: { required: "Komponen is required" },
-          colSize: 6,
-        },
+
         {
           type: "text",
           id: "daerahTujuan",
@@ -335,17 +384,18 @@ export default function PendaftaranFasilitas() {
           colSize: 12,
         },
         {
-          type: "radio",
+          type: "select",
           id: "antarJemput",
           label: "Antar Jemput",
           name: "antarJemput",
+          placeholder: "Pilih Antar Jemput",
           options: [
             { label: "Ya", value: "ya" },
             { label: "Tidak", value: "tidak" },
           ],
           rules: { required: "Antar Jemput is required" },
           className: "my-3",
-          colSize: 12,
+          colSize: 6,
         },
       ],
     },

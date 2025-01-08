@@ -27,22 +27,23 @@ const AddAnggota = () => {
           rules: { required: "Nama Peserta harus diisi" },
         },
         {
-          type: "radio",
+          type: "select",
           id: "jenisKelamin",
           label: "Jenis Kelamin",
           name: "jenisKelamin",
+          placeholder: "jenis kelamin",
           options: [
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" },
           ],
           rules: { required: "Jenis Kelamin harus dipilih" },
           colSize: 6,
-          className: "mt-3",
         },
         {
           type: "select",
           id: "jenis",
           label: "Tipe Member",
+          placeholder: "Tipe Member",
           name: "jenis",
           options: [
             { label: "VIP Member dengan UP", value: "VIP_Member_dengan_UP" },
@@ -58,6 +59,7 @@ const AddAnggota = () => {
           id: "status",
           label: "Status",
           name: "status",
+          placeholder: "status",
           options: [
             { label: "Aktif", value: "aktif" },
             { label: "Non-aktif", value: "non-aktif" },
@@ -105,6 +107,7 @@ const AddAnggota = () => {
           id: "agama",
           label: "Agama",
           name: "agama",
+          placeholder: "agama",
           options: [
             { label: "Islam", value: "islam" },
             { label: "Kristen Protestan", value: "kristen_protestan" },
