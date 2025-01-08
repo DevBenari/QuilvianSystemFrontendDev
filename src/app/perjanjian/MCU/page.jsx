@@ -1,44 +1,55 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicFormTable/dynamicFormTable";
-import DataTablePerjanjian from "@/components/view/perjanjian-pasien/tablePerjanjian/table";
+import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+import DataTable from "@/components/features/viewDataTables/dataTable";
+import DateInput from "@/components/ui/date-input";
 import { dataPasienMCU } from "@/utils/dataPerjanjian";
+
 import React, { memo, useState } from "react";
+import { Col, Row } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 
 const PerjanjianMCU = memo(() => {
   const methods = useForm();
-  const [filteredData, setFilteredData] = useState(dataPasienMCU); // Gunakan data dummy untuk tabel
+  const [filteredData, setFilteredData] = useState(dataPasienMCU);
   const [searchCriteria, setSearchCriteria] = useState({
-    startDate: "",
-    endDate: "",
-    medicalRecord: "",
-    name: "",
-    address: "",
-    paketMCU: "",
-    kategoriPenjamin: "",
+    tanggalMulai: "",
+    tanggalSelesai: "",
+    nama: "",
+    noRM: "",
+    alamat: "",
   });
 
   // Fungsi untuk menangani pencarian
-  const handleFilterChange = (key, value) => {
+  const handleSearch = (key, value) => {
     const updatedCriteria = { ...searchCriteria, [key]: value };
     setSearchCriteria(updatedCriteria);
 
     const filtered = dataPasienMCU.filter((item) => {
       return Object.keys(updatedCriteria).every((criteriaKey) => {
         const criteriaValue = updatedCriteria[criteriaKey];
-        if (!criteriaValue) return true; // Abaikan jika kosong
+        if (!criteriaValue) return true;
 
-        if (criteriaKey === "startDate" || criteriaKey === "endDate") {
-          const itemDate = new Date(item.telJanji).getTime();
-          const startDate = new Date(updatedCriteria.startDate).getTime();
-          const endDate = new Date(updatedCriteria.endDate).getTime();
-          if (criteriaKey === "startDate" && startDate) {
+        if (
+          criteriaKey === "tanggalMulai" ||
+          criteriaKey === "tanggalSelesai"
+        ) {
+          const itemDate = new Date(item.tanggalOperasi).getTime();
+          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
+          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
+          if (criteriaKey === "tanggalMulai" && startDate) {
             return itemDate >= startDate;
           }
-          if (criteriaKey === "endDate" && endDate) {
+          if (criteriaKey === "tanggalSelesai" && endDate) {
             return itemDate <= endDate;
           }
+        }
+
+        if (criteriaKey === "kelasSelect.select") {
+          return item.kelas
+            ?.toString()
+            .toLowerCase()
+            .includes(criteriaValue.toLowerCase());
         }
 
         return item[criteriaKey]
@@ -55,78 +66,198 @@ const PerjanjianMCU = memo(() => {
     {
       fields: [
         {
-          type: "date",
-          id: "startDate",
-          label: "Periode Awal",
-          name: "startDate",
-          placeholder: "Pilih Tanggal Awal",
+          type: "custom",
           colSize: 6,
-          onChange: (e) => handleFilterChange("startDate", e.target.value),
-        },
-        {
-          type: "date",
-          id: "endDate",
-          label: "Periode Akhir",
-          name: "endDate",
-          placeholder: "Pilih Tanggal Akhir",
-          colSize: 6,
-          onChange: (e) => handleFilterChange("endDate", e.target.value),
+          customRender: () => (
+            <>
+              <Row className="mb-3">
+                <Col>
+                  <DateInput
+                    name="tanggalMulai"
+                    label="Tanggal Mulai"
+                    placeholder="Enter Tanggal Mulai"
+                    onChange={(e) =>
+                      handleSearch("tanggalMulai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+                <Col>
+                  <DateInput
+                    name="tanggalSelesai"
+                    label="Tanggal Selesai"
+                    placeholder="Enter Tanggal Selesai"
+                    onChange={(e) =>
+                      handleSearch("tanggalSelesai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
         },
         {
           type: "text",
-          id: "medicalRecord",
-          label: "No RM",
-          name: "medicalRecord",
-          placeholder: "Masukkan No RM",
+          id: "noRM",
+          label: "Nomor Rekam Medis",
+          name: "noRM",
+          placeholder: "Masukkan Nomor Rekam Medis",
           colSize: 6,
-          onChange: (e) => handleFilterChange("medicalRecord", e.target.value),
+          onChange: (e) => handleSearch("noRM", e.target.value),
         },
         {
           type: "text",
-          id: "name",
+          id: "nama",
           label: "Nama",
-          name: "name",
+          name: "nama",
           placeholder: "Masukkan Nama",
           colSize: 6,
-          onChange: (e) => handleFilterChange("name", e.target.value),
+          onChange: (e) => handleSearch("nama", e.target.value),
         },
         {
           type: "text",
-          id: "address",
+          id: "alamat",
           label: "Alamat",
-          name: "address",
+          name: "alamat",
           placeholder: "Masukkan Alamat",
           colSize: 6,
-          onChange: (e) => handleFilterChange("address", e.target.value),
+          onChange: (e) => handleSearch("alamat", e.target.value),
         },
-        {
-          type: "select",
-          id: "paketMCU",
-          label: "Paket MCU",
-          name: "paketMCU",
-          placeholder: "Pilih Paket MCU",
-          options: [
-            { label: "Paket A", value: "paket_a" },
-            { label: "Paket B", value: "paket_b" },
-            { label: "Paket C", value: "paket_c" },
-          ],
-          colSize: 6,
-          onChange: (e) => handleFilterChange("paketMCU", e.target.value),
-        },
-        {
-          type: "select",
-          id: "kategoriPenjamin",
-          label: "Kategori Penjamin",
-          name: "kategoriPenjamin",
-          placeholder: "Pilih Kategori Penjamin",
-          options: [
-            { label: "Pribadi", value: "pribadi" },
-            { label: "Penjamin/Asuransi", value: "asuransi" },
-          ],
-          colSize: 6,
-          onChange: (e) =>
-            handleFilterChange("kategoriPenjamin", e.target.value),
-        },
+        // {
+        //   type: "custom",
+        //   colSize: 6,
+        //   customRender: () => (
+        //     <>
+        //       <Row>
+        //         <Col>
+        //           <SearchableSelectField
+        //             name="paketMcuSelect.select"
+        //             label="Paket MCU"
+        //             options={[
+        //               {
+        //                 label: "Deteksi Dini Kanker Hati",
+        //                 value: "Deteksi Dini Kanker Hati",
+        //               },
+        //               {
+        //                 label: "Deteksi Dini Kanker Kandungan",
+        //                 value: "Deteksi Dini Kanker Kandungan",
+        //               },
+        //               {
+        //                 label: "Deteksi Dini Kanker Paru",
+        //                 value: "Deteksi Dini Kanker Paru",
+        //               },
+        //               {
+        //                 label: "Deteksi Dini Kanker Wanita",
+        //                 value: "Deteksi Dini Kanker Wanita",
+        //               },
+        //               {
+        //                 label: "Deteksi Dini Stroke 1",
+        //                 value: "Deteksi Dini Stroke 1",
+        //               },
+        //               {
+        //                 label: "Deteksi Dini Stroke 2",
+        //                 value: "Deteksi Dini Stroke 2",
+        //               },
+        //               { label: "Kanker Hati", value: "Kanker Hati" },
+        //               {
+        //                 label: "Kanker Kolorektal",
+        //                 value: "Kanker Kolorektal",
+        //               },
+        //               {
+        //                 label: "Kanker Payudara (Wanita < 40 Tahun)",
+        //                 value: "Kanker Payudara (Wanita < 40 Tahun)",
+        //               },
+        //               {
+        //                 label: "Kanker Payudara (Wanita > 40 Tahun)",
+        //                 value: "Kanker Payudara (Wanita > 40 Tahun)",
+        //               },
+        //               { label: "Kanker Serviks", value: "Kanker Serviks" },
+        //               {
+        //                 label: "MCU Darma Henwa Grup A1 < 35 TH",
+        //                 value: "MCU Darma Henwa Grup A1 < 35 TH",
+        //               },
+        //               {
+        //                 label: "MCU Darma Henwa Grup A2 > 35 TH",
+        //                 value: "MCU Darma Henwa Grup A2 > 35 TH",
+        //               },
+        //               {
+        //                 label: "Paket A - Istri Pegawai Bukit Asam",
+        //                 value: "Paket A - Istri Pegawai Bukit Asam",
+        //               },
+        //               {
+        //                 label: "Paket Bisnis / Business",
+        //                 value: "Paket Bisnis / Business",
+        //               },
+        //               {
+        //                 label: "Paket B - Suami Pegawai Bukit Asam",
+        //                 value: "Paket B - Suami Pegawai Bukit Asam",
+        //               },
+        //               {
+        //                 label: "Paket Dasar / Basic",
+        //                 value: "Paket Dasar / Basic",
+        //               },
+        //               {
+        //                 label: "Paket Dokter Senior (Basic)",
+        //                 value: "Paket Dokter Senior (Basic)",
+        //               },
+        //               {
+        //                 label: "Paket Eksekutif Pria",
+        //                 value: "Paket Eksekutif Pria",
+        //               },
+        //               {
+        //                 label: "Paket Eksekutif Wanita",
+        //                 value: "Paket Eksekutif Wanita",
+        //               },
+        //               { label: "Paket Jantung", value: "Paket Jantung" },
+        //               {
+        //                 label: "Paket Pemeriksaan Diabetes",
+        //                 value: "Paket Pemeriksaan Diabetes",
+        //               },
+        //               {
+        //                 label: "Paket Pemeriksaan Mata",
+        //                 value: "Paket Pemeriksaan Mata",
+        //               },
+        //               {
+        //                 label: "Paket Pemeriksaan THT",
+        //                 value: "Paket Pemeriksaan THT",
+        //               },
+        //               {
+        //                 label: "Paket Pemeriksaan Tulang",
+        //                 value: "Paket Pemeriksaan Tulang",
+        //               },
+        //               { label: "Paket Lansia", value: "Paket Lansia" },
+        //               { label: "Paket Anak-Anak", value: "Paket Anak-Anak" },
+        //               { label: "Paket Hamil", value: "Paket Hamil" },
+        //               { label: "Paket Pra Nikah", value: "Paket Pra Nikah" },
+        //               { label: "Paket Vaksinasi", value: "Paket Vaksinasi" },
+        //             ]}
+        //             placeholder="Pilih Paket MCU"
+        //             className="mb-3"
+        //             onChange={(selectedOption) =>
+        //               handleSearch(
+        //                 "paketMcuSelect.select",
+        //                 selectedOption?.value || ""
+        //               )
+        //             }
+        //           />
+        //         </Col>
+        //       </Row>
+        //     </>
+        //   ),
+        // },
+        // {
+        //   type: "select",
+        //   id: "kategoriPenjamin",
+        //   label: "Kategori Penjamin",
+        //   name: "kategoriPenjamin",
+        //   placeholder: "Pilih Kategori Penjamin",
+        //   options: [
+        //     { label: "Pribadi", value: "pribadi" },
+        //     { label: "Penjamin/Asuransi", value: "asuransi" },
+        //   ],
+        //   colSize: 6,
+        //   onChange: (e) =>
+        //     handleFilterChange("kategoriPenjamin", e.target.value),
+        // },
       ],
     },
   ];
@@ -137,13 +268,12 @@ const PerjanjianMCU = memo(() => {
     "NAMA",
     "ALAMAT",
     "TELEPON",
-    "TEL_JANJI",
+    "TGL JANJI",
     "STATUS",
     "USER",
     "USER EDIT",
     "WAKTU INPUT",
     "WAKTU EDIT",
-    "FUNGSI",
   ];
 
   const members = filteredData.map((item, index) => ({
@@ -152,22 +282,24 @@ const PerjanjianMCU = memo(() => {
     nama: item.nama,
     alamat: item.alamat,
     telepon: item.telepon,
-    telJanji: item.telJanji,
+    tanggalJanji: item.tanggalJanji,
     status: item.status,
     user: item.user,
     userEdit: item.userEdit,
     waktuInput: item.waktuInput,
     waktuEdit: item.waktuEdit,
-    fungsi: item.fungsi,
   }));
 
   return (
     <FormProvider {...methods}>
-      <DynamicForm title="Perjanjian MCU" formConfig={formFields} />
-      <DataTablePerjanjian
+      <DynamicFormTable title="Pencarian MCU" formConfig={formFields} />
+
+      <DataTable
         headers={headers}
         data={members}
-        title="Pasien MCU"
+        id="id"
+        rowsPerPage={5}
+        title="Perjanjian MCU"
       />
     </FormProvider>
   );

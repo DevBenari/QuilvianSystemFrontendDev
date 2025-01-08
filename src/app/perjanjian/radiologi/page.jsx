@@ -5,6 +5,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { dataPasienRadiologi } from "@/utils/dataPerjanjian";
+import { Col, Row } from "react-bootstrap";
+import DateInput from "@/components/ui/date-input";
 
 const PerjanjianRadiologi = memo(() => {
   const methods = useForm();
@@ -56,6 +58,36 @@ const PerjanjianRadiologi = memo(() => {
     {
       fields: [
         {
+          type: "custom",
+          colSize: 6,
+          customRender: () => (
+            <>
+              <Row className="mb-3">
+                <Col>
+                  <DateInput
+                    name="tanggalMulai"
+                    label="Tanggal Mulai"
+                    placeholder="Enter Tanggal Mulai"
+                    onChange={(e) =>
+                      handleSearch("tanggalMulai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+                <Col>
+                  <DateInput
+                    name="tanggalSelesai"
+                    label="Tanggal Selesai"
+                    placeholder="Enter Tanggal Selesai"
+                    onChange={(e) =>
+                      handleSearch("tanggalSelesai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
+        },
+        {
           type: "text",
           id: "dokter",
           label: "Dokter",
@@ -64,25 +96,6 @@ const PerjanjianRadiologi = memo(() => {
           onChange: (e) => handleSearch("dokter", e.target.value),
           colSize: 6,
         },
-        {
-          type: "date",
-          id: "tanggalMulai",
-          label: "Tanggal Mulai",
-          name: "tanggalMulai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalSelesai",
-          label: "Tanggal Selesai",
-          name: "tanggalSelesai",
-          placeholder: "DD-MM-YYYY",
-          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
-          colSize: 6,
-        },
-
         {
           type: "text",
           id: "nama",
@@ -131,26 +144,28 @@ const PerjanjianRadiologi = memo(() => {
   const headers = [
     "NO",
     "nomor RM",
-    "tanggal Input",
+    "tanggal Janji",
     "nama",
     "telepon",
     "dokter",
     "konfirmasi",
     "user",
     "user Edit",
+    "tanggal Input", // Tambahkan tanggal Input ke header
     "tanggal Edit",
   ];
 
   const members = filteredData.map((item, index) => ({
     no: index + 1,
     noRM: item.noRM,
-    tanggalInput: item.tanggalInput,
+    tanggalJanji: item.tanggalJanji, // Tambahkan tanggalJanji
     nama: item.nama,
     telepon: item.telepon,
     dokter: item.dokter,
     konfirmasi: item.konfirmasi,
     user: item.user,
     userEdit: item.userEdit,
+    tanggalInput: item.tanggalInput, // Tambahkan tanggalInput
     tanggalEdit: item.tanggalEdit,
   }));
 

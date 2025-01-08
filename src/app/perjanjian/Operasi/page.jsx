@@ -7,6 +7,7 @@ import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicForm
 import { dataPerjanjianOperasi } from "@/utils/dataPerjanjian"; // Pastikan dataPerjanjianOperasi diimpor dengan benar
 import { Row, Col } from "react-bootstrap";
 import DateInput from "@/components/ui/date-input";
+import SearchableSelectField from "@/components/ui/select-field-search";
 
 const PerjanjianOperasi = memo(() => {
   const methods = useForm();
@@ -16,9 +17,10 @@ const PerjanjianOperasi = memo(() => {
     tanggalSelesai: "",
     dokter: "",
     nomorRekamMedis: "",
-    namaPasien: "",
+    pasien: "",
     statusRegistrasi: "",
     ruangOperasi: "",
+    noRegistrasi: "",
   });
 
   // Fungsi untuk menangani pencarian
@@ -44,6 +46,13 @@ const PerjanjianOperasi = memo(() => {
           if (criteriaKey === "tanggalSelesai" && endDate) {
             return itemDate <= endDate;
           }
+        }
+
+        if (criteriaKey === "kelasSelect.select") {
+          return item.kelas
+            ?.toString()
+            .toLowerCase()
+            .includes(criteriaValue.toLowerCase());
         }
 
         return item[criteriaKey]
@@ -91,20 +100,11 @@ const PerjanjianOperasi = memo(() => {
         },
         {
           type: "text",
-          id: "dokter",
-          label: "Dokter",
-          name: "dokter",
-          placeholder: "Masukkan nama dokter...",
-          onChange: (e) => handleSearch("dokter", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "text",
-          id: "nomorRekamMedis",
-          label: "Nomor RM",
-          name: "nomorRekamMedis",
-          placeholder: "Masukkan Nomor RM...",
-          onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
+          id: "noRegistrasi",
+          label: "Nomor Registrasi",
+          name: "noRegistrasi",
+          placeholder: "Masukkan Nomor Registrasi...",
+          onChange: (e) => handleSearch("noRegistrasi", e.target.value),
           colSize: 6,
         },
         {
@@ -113,36 +113,110 @@ const PerjanjianOperasi = memo(() => {
           label: "Nama Pasien",
           name: "namaPasien",
           placeholder: "Masukkan Nama Pasien...",
-          onChange: (e) => handleSearch("namaPasien", e.target.value),
+          onChange: (e) => handleSearch("pasien", e.target.value),
           colSize: 6,
         },
-        {
-          type: "select",
-          id: "statusRegistrasi",
-          label: "Status Registrasi",
-          name: "statusRegistrasi",
-          options: [
-            { label: "All", value: "" },
-            { label: "Aktif", value: "Aktif" },
-            { label: "Non-Aktif", value: "Non-Aktif" },
-          ],
-          onChange: (e) => handleSearch("statusRegistrasi", e.target.value),
-          colSize: 6,
-        },
+        // {
+        //   type: "select",
+        //   id: "statusRegistrasi",
+        //   label: "Status Registrasi",
+        //   name: "statusRegistrasi",
+        //   placeholder: "Status Registrasi",
+        //   options: [
+        //     { label: "Aktif", value: "Aktif" },
+        //     { label: "Non-Aktif", value: "Non-Aktif" },
+        //   ],
+        //   onChange: (e) => handleSearch("statusRegistrasi", e.target.value),
+        //   colSize: 6,
+        // },
         {
           type: "select",
           id: "ruangOperasi",
           label: "Ruang Operasi",
           name: "ruangOperasi",
+          placeholder: "Pilih ruang operasi",
           options: [
-            { label: "Pilih Ruang Operasi", value: "" },
-            { label: "Ruang Operasi A", value: "Ruang Operasi A" },
-            { label: "Ruang Operasi B", value: "Ruang Operasi B" },
-            { label: "Ruang Operasi C", value: "Ruang Operasi C" },
+            { label: "OK I", value: "OK I" },
+            { label: "OK II", value: "OK II" },
+            { label: "OK III", value: "OK III" },
+            { label: "OK IV", value: "OK IV" },
+            { label: "OK V", value: "OK V" },
+            { label: "ENDOSCOPY II", value: "ENDOSCOPY II" },
+            { label: "ENDOSCOPY III", value: "ENDOSCOPY III" },
+            { label: "ENDOSCOPY I", value: "ENDOSCOPY I" },
+            { label: "RR", value: "RR" },
+            { label: "CCVC", value: "CCVC" },
           ],
           onChange: (e) => handleSearch("ruangOperasi", e.target.value),
           colSize: 6,
         },
+        // {
+        //   type: "custom",
+        //   colSize: 6,
+        //   customRender: () => (
+        //     <>
+        //       <Row>
+        //         <Col>
+        //           <SearchableSelectField
+        //             name="kelasSelect.select"
+        //             label="kelas Kamar"
+        //             options={[
+        //               { label: "SUITE", value: "SUITE" },
+        //               { label: "LUXURY", value: "LUXURY" },
+        //               {
+        //                 label: "ISOLASI LAVENDER SVIP",
+        //                 value: "ISOLASI LAVENDER SVIP",
+        //               },
+        //               { label: "VIP SUPERIOR", value: "VIP SUPERIOR" },
+        //               {
+        //                 label: "ISOLASI CHRISANT SVIP",
+        //                 value: "ISOLASI CHRISANT SVIP",
+        //               },
+        //               { label: "CHRISANT SVIP", value: "CHRISANT SVIP" },
+        //               { label: "VIP DELUXE", value: "VIP DELUXE" },
+        //               { label: "VIP 8.3", value: "VIP 8.3" },
+        //               {
+        //                 label: "ISOLASI CHRISANT VIP DELUXE",
+        //                 value: "ISOLASI CHRISANT VIP DELUXE",
+        //               },
+        //               {
+        //                 label: "CHRISANT VIP DELUXE",
+        //                 value: "CHRISANT VIP DELUXE",
+        //               },
+        //               { label: "VVIP", value: "VVIP" },
+        //               { label: "GRAND ROYAL", value: "GRAND ROYAL" },
+        //               { label: "CHRISANT VIP", value: "CHRISANT VIP" },
+        //               { label: "VIP 8.1", value: "VIP 8.1" },
+        //               {
+        //                 label: "ISOLASI LAVENDER VIP",
+        //                 value: "ISOLASI LAVENDER VIP",
+        //               },
+        //               {
+        //                 label: "ISOLASI BOUGENVIL VIP",
+        //                 value: "ISOLASI BOUGENVIL VIP",
+        //               },
+        //               {
+        //                 label: "ISOLASI CHRISANT VIP",
+        //                 value: "ISOLASI CHRISANT VIP",
+        //               },
+        //               { label: "VIP", value: "VIP" },
+        //               { label: "kelas 1", value: "kelas 1" },
+        //               { label: "VIP 8.2", value: "VIP 8.2" },
+        //             ]}
+        //             placeholder="Pilih kelas Kamar"
+        //             className="mb-3"
+        //             onChange={(selectedOption) =>
+        //               handleSearch(
+        //                 "kelasSelect.select",
+        //                 selectedOption?.value || ""
+        //               )
+        //             }
+        //           />
+        //         </Col>
+        //       </Row>
+        //     </>
+        //   ),
+        // },
       ],
     },
   ];

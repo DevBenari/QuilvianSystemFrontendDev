@@ -5,6 +5,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { dataSemuaPerjanjian } from "@/utils/dataPerjanjian";
+import { Col, Row } from "react-bootstrap";
+import DateInput from "@/components/ui/date-input";
+import SearchableSelectField from "@/components/ui/select-field-search";
 
 const DashboardPerjanjian = memo(() => {
   const methods = useForm();
@@ -45,6 +48,13 @@ const DashboardPerjanjian = memo(() => {
           }
         }
 
+        if (criteriaKey === "departemenSelect.select") {
+          return item.departemen
+            ?.toString()
+            .toLowerCase()
+            .includes(criteriaValue.toLowerCase());
+        }
+
         // Pencarian default (teks)
         return item[criteriaKey]
           ?.toString()
@@ -78,18 +88,54 @@ const DashboardPerjanjian = memo(() => {
           colSize: 6,
         },
         {
-          type: "select",
-          id: "departemen",
-          label: "Departemen",
-          name: "departemen",
-          options: [
-            { label: "Pilih Departemen", value: "" },
-            { label: "Poli Anak", value: "Poli Anak" },
-            { label: "Poli Penyakit Dalam", value: "Poli Penyakit Dalam" },
-            { label: "Poli Mata", value: "Poli Mata" },
-          ],
-          onChange: (e) => handleSearch("departemen", e.target.value),
+          type: "custom",
           colSize: 6,
+          customRender: () => (
+            <>
+              <Row>
+                <Col>
+                  <SearchableSelectField
+                    name="departemenSelect.select"
+                    label="Departemen"
+                    options={[
+                      { label: "Poli Anak", value: "Poli Anak" },
+                      {
+                        label: "Poli Penyakit Dalam",
+                        value: "Poli Penyakit Dalam",
+                      },
+                      { label: "Poli Gigi", value: "Poli Gigi" },
+                      { label: "Poli Mata", value: "Poli Mata" },
+                      { label: "Poli Bedah", value: "Poli Bedah" },
+                      { label: "Poli Jantung", value: "Poli Jantung" },
+                      { label: "Poli Paru", value: "Poli Paru" },
+                      { label: "Poli Saraf", value: "Poli Saraf" },
+                      {
+                        label: "Poli Kulit dan Kelamin",
+                        value: "Poli Kulit dan Kelamin",
+                      },
+                      { label: "Poli THT", value: "Poli THT" },
+                      { label: "Poli Kandungan", value: "Poli Kandungan" },
+                      {
+                        label: "Poli Rehabilitasi Medis",
+                        value: "Poli Rehabilitasi Medis",
+                      },
+                      { label: "Poli Urologi", value: "Poli Urologi" },
+                      { label: "Poli Ortopedi", value: "Poli Ortopedi" },
+                      { label: "Poli Geriatri", value: "Poli Geriatri" },
+                    ]}
+                    placeholder="Pilih Poli"
+                    className="mb-3"
+                    onChange={(selectedOption) =>
+                      handleSearch(
+                        "departemenSelect.select",
+                        selectedOption?.value || ""
+                      )
+                    }
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
         },
         {
           type: "select",
@@ -110,22 +156,34 @@ const DashboardPerjanjian = memo(() => {
           colSize: 6,
         },
         {
-          type: "date",
-          id: "tanggalMulai",
-          label: "Tanggal Mulai",
-          name: "tanggalMulai",
-          placeholder: "Pilih tanggal mulai...",
-          onChange: (e) => handleSearch("tanggalMulai", e.target.value),
+          type: "custom",
           colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tanggalSelesai",
-          label: "Tanggal Selesai",
-          name: "tanggalSelesai",
-          placeholder: "Pilih tanggal selesai...",
-          onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
-          colSize: 6,
+          customRender: () => (
+            <>
+              <Row className="mb-3">
+                <Col>
+                  <DateInput
+                    name="tanggalMulai"
+                    label="Tanggal Mulai"
+                    placeholder="Enter Tanggal Mulai"
+                    onChange={(e) =>
+                      handleSearch("tanggalMulai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+                <Col>
+                  <DateInput
+                    name="tanggalSelesai"
+                    label="Tanggal Selesai"
+                    placeholder="Enter Tanggal Selesai"
+                    onChange={(e) =>
+                      handleSearch("tanggalSelesai", e.target.value)
+                    } // Perbaikan penulisan onChange
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
         },
       ],
     },
