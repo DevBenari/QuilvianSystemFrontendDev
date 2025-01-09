@@ -1,395 +1,299 @@
 'use client'
-import DateInput from "@/components/ui/date-input"
-import TextField from "@/components/ui/text-field"
-import TimeField from "@/components/ui/time-input"
-import { Col, Image, Row, Tab, Nav, Table } from "react-bootstrap"
+
+import ReusableTabs from "@/components/ui/tabs-ui"
+
+import { Col, Image, Row} from "react-bootstrap"
 import { FormProvider, useForm } from "react-hook-form"
+import SoapDokter from "./soap-dokter"
+import CpptDokter from "./cppt-dokter"
+import ResepDokter from "./resep-dokter"
+import VitalSign from "./vital-sign"
+
 
 const DokterPage = () => {
-    const methods = useForm({
-        defaultValues: {
-            tekananDarah:'',
-        },
-        mode: 'onSubmit'
-    });
+    const methods = useForm();
+
+    // const onSubmit = (data) => {
+    //     console.log(data);
+    // }
+
+    // const handleButtonClick = () => {
+    //     alert("Mulai ditekan!");
+    //   };
     return (
-        <FormProvider {...methods} className="mt-3">
-            <Row>
-                <Col md="3">
-                    <div className="iq-card py-2 my-2">
-                        <div className="iq-card-header">
-                            <Col md="12" className="my-3 " >
-                                <Row>
-                                    {/* <Col xs="4">
-                                        <Image
-                                            src="/Images/jamal.jpg"
-                                            className="img-fluid rounded w-100 h-100"
-                                            alt="user"
-                                        />
-                                    </Col> */}
-                                    <Col xs="12">
-                                        <div className="d-flex flex-column gap-2">
-                                            <p className="font-size-24 text-black" >Rizki Gunawan Adiputro, spB,dr. <span> (09:00 - 12:00)</span> </p>
-                                            <button className="btn btn-primary">mulai</button>
+        <div className="mt-3" >
+            <FormProvider {...methods}>a
+                <Row>
+                    <Col md="3">
+                        <div className="iq-card iq-card-profile-dokter py-2 my-2 ">
+                            <div className="iq-card-header">
+                                <Col md="12" className="my-3 iq-card-body " >
+                                    <Row>
+                                        <Col xs="4">
+                                            <Image
+                                                src="/Images/jamal.jpg"
+                                                className="img-fluid rounded w-100 h-100"
+                                                alt="user"
+                                            />
+                                        </Col>
+                                        <Col xs="8">
+                                            <div className="d-flex flex-column gap-2">
+                                                <p className="font-size-24 text-black" >Rizki Gunawan Adiputro, spB,dr. <span> (09:00 - 12:00)</span> </p>
+                                                <button className="btn btn-primary">mulai</button>
+                                            </div>
+                                        </Col> 
+                                    </Row>
+                                </Col>
+                            </div>
+                            <Col md="12" className="my-2">
+                                <div className="iq-card-body">
+                                    {/* <h4>Sedang tidak ada Pasien</h4> */}
+                                    <Col md="12" className="mt-3 ">
+                                        <div className="iq-card-pasien-name p-2">
+                                            <h5> Pasien : Dio Dear Mahardika </h5>
+                                            <p>00-84-22-89:: Laki-Laki ::  37 th 4 Bln 21 Hr</p>
                                         </div>
-                                    </Col> 
+                                    </Col>
+                                </div>
+                            </Col>
+                        </div>
+                    </Col>
+                    <Col md="9" className="my-2 iq-card py-3">
+                        <div className="iq-card-header">
+                            <Col md="12" >
+                                <Row>
+                                    <Col md="5">
+                                        <div >
+                                            <h5>nama pasien </h5>
+                                            <p>Perempuan 16 Apr 1970 (54 Thn 8 Bln 2 Hr)</p>
+                                            <button className="btn btn-primary mb-2">History resume</button>
+                                        </div>
+                                    </Col>
+                                    <Col md="7">
+                                        <Row>
+                                            <Col md="7">
+                                                <div>
+                                                    <p className="m-0">Waktu Registrasi : 27/12/2024 08:00:00</p>
+                                                    <p className="m-0">Waktu Panggil       : 27/12/2024 08:00:00</p>
+                                                    <p className="m-0">Selisih Waktu       : 00:00</p>
+                                                </div>
+                                            </Col>
+                                            <Col md="5">
+                                                <div>
+                                                    <p className="m-0">Penjamin    : Umum</p>
+                                                    <p className="m-0">Alergi      : Disangkal</p>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </Col>
                                 </Row>
                             </Col>
                         </div>
-                        <Col md="12" className="my-2">
-                            <div className="iq-card-header ">
-                                <Col md="12" className="mt-5 ">
-                                    <div className="iq-card-pasien-name p-2">
-                                        <h5> Pasien : Dio Dear Mahardika </h5>
-                                        <p>00-84-22-89:: Laki-Laki ::  37 th 4 Bln 21 Hr</p>
-                                    </div>
-                                </Col>
-                                {/* <Col md="12" className="mt-5 ">
-                                    <div className="iq-card-pasien-name p-2">
-                                        <h5> Pasien : Dio Dear Mahardika </h5>
-                                        <p>00-84-22-89:: Laki-Laki ::  37 th 4 Bln 21 Hr</p>
-                                    </div>
-                                </Col>
-                                <Col md="12" className="mt-5 ">
-                                    <div className="iq-card-pasien-name p-2">
-                                        <h5> Pasien : Dio Dear Mahardika </h5>
-                                        <p>00-84-22-89:: Laki-Laki ::  37 th 4 Bln 21 Hr</p>
-                                    </div>
-                                </Col> */}
-                                
-                            </div>
-                        </Col>
-                    </div>
-                </Col>
-                <Col md="9" className="my-2 iq-card py-3">
-                    <div className="iq-card-header">
-                        <Col md="12" >
-                            <Row>
-                                <Col md="5">
-                                    <div >
-                                        <h5>nama pasien </h5>
-                                        <p>Perempuan 16 Apr 1970 (54 Thn 8 Bln 2 Hr)</p>
-                                        <button className="btn btn-primary mb-2">History resume</button>
-                                    </div>
-                                </Col>
-                                <Col md="7">
-                                    <Row>
-                                        <Col md="7">
-                                            <div>
-                                                <p className="m-0">Waktu Registrasi : 27/12/2024 08:00:00</p>
-                                                <p className="m-0">Waktu Panggil       : 27/12/2024 08:00:00</p>
-                                                <p className="m-0">Selisih Waktu       : 00:00</p>
-                                            </div>
-                                        </Col>
-                                        <Col md="5">
-                                            <div>
-                                                <p className="m-0">Penjamin    : Umum</p>
-                                                <p className="m-0">Alergi      : Disangkal</p>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </div>
-                    <Col md="12" className="iq-card-header p-2">
-                    <div >
-                        <Tab.Container defaultActiveKey={"pills-home-fill"}>
-                            <div className=" d-flex justify-content-between">
-                            {/* <div className="iq-header-title">
-                                <h4 className="card-title">Tabs Fill and justify</h4>
-                            </div> */}
-                            </div>
-                            <div className="iq-card-body">
-                                <Nav
-                                    as={"ul"}
-                                    className="nav nav-pills mb-3 nav-fill"
-                                    id="pills-tab-1"
-                                    role="tablist"
-                                >
-                                    <Nav.Item as={"li"}>
-                                    <Nav.Link
-                                        id="pills-home-tab-fill"
-                                        data-bs-toggle="pill"
-                                        eventKey="CPPT"
-                                        role="tab"
-                                        aria-controls="pills-home"
-                                        aria-selected="true"
-                                    >
-                                        CPPT
-                                    </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item as={"li"}>
-                                    <Nav.Link
-                                        id="pills-profile-tab-fill"
-                                        data-bs-toggle="pill"
-                                        eventKey="SOAP"
-                                        role="tab"
-                                        aria-controls="pills-profile"
-                                        aria-selected="false"
-                                    >
-                                        SOAP
-                                    </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item as={"li"}>
-                                    <Nav.Link
-                                        id="pills-contact-tab-fill"
-                                        data-bs-toggle="pill"
-                                        eventKey="Vital-Sign"
-                                        role="tab"
-                                        aria-controls="pills-contact"
-                                        aria-selected="false"
-                                    >
-                                        Vital-Sign
-                                    </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item as={"li"}>
-                                    <Nav.Link
-                                        id="pills-contact-tab-fill"
-                                        data-bs-toggle="pill"
-                                        eventKey="Resep"
-                                        role="tab"
-                                        aria-controls="pills-contact"
-                                        aria-selected="false"
-                                    >
-                                        Resep
-                                    </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item as={"li"}>
-                                    <Nav.Link
-                                        id="pills-contact-tab-fill"
-                                        data-bs-toggle="pill"
-                                        eventKey="Tindakan"
-                                        role="tab"
-                                        aria-controls="pills-contact"
-                                        aria-selected="false"
-                                    >
-                                        Tindakan
-                                    </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item as={"li"}>
-                                    <Nav.Link
-                                        id="pills-contact-tab-fill"
-                                        data-bs-toggle="pill"
-                                        eventKey="Peralatab-Medis"
-                                        role="tab"
-                                        aria-controls="pills-contact"
-                                        aria-selected="false"
-                                    >
-                                        Peralatan Medis
-                                    </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item as={"li"}>
-                                    <Nav.Link
-                                        id="pills-contact-tab-fill"
-                                        data-bs-toggle="pill"
-                                        eventKey="Penunjang"
-                                        role="tab"
-                                        aria-controls="pills-contact"
-                                        aria-selected="false"
-                                    >
-                                        Penunjang
-                                    </Nav.Link>
-                                    </Nav.Item>
-                                </Nav>
-                                <Tab.Content className="tab-content" id="pills-tabContent-1">
-                                    <Tab.Pane
-                                        className="tab-pane fade show"
-                                        eventKey="CPPT"
-                                        role="tabpanel"
-                                        aria-labelledby="pills-home-tab-fill"
-                                    >
-                                        <div>
-                                            <Row>
-                                                <Col md="6">
-                                                    <div>
-                                                        <h1>Hallo</h1>
-                                                    </div>
-                                                </Col>
-                                                <Col md="6">
-                                                    <div>
-                                                        <h1>hallo</h1>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        </div>
-                                    </Tab.Pane>
-                                    <Tab.Pane
-                                    className="tab-pane fade"
-                                    eventKey="SOAP"
-                                    role="tabpanel"
-                                    aria-labelledby="pills-profile-tab-fill"
-                                    >
-                                    <p>
-                                        Lorem Ipsum is simply dummy text of the printing and
-                                        typesetting industry. Lorem Ipsum has been the
-                                        industrys standard dummy text ever since the 1500s,
-                                        when an unknown printer took a galley of type and
-                                        scrambled it to make a type specimen book.
-                                    </p>
-                                    </Tab.Pane>
-                                    <Tab.Pane
-                                        className="tab-pane fade"
-                                        eventKey="Vital-Sign"
-                                        role="tabpanel"
-                                        aria-labelledby="pills-contact-tab-fill"
-                                    >
-                                        <div>
-                                            <Col xs="12" className="iq-card">
-                                                <div>
-                                                    <h5 className="mb-3">Histori Vital sign</h5>
-                                                    <div className="table-responsive-md w-100">
-                                                        <Table className="text-center" bordered striped>
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Tanggal</th>
-                                                                    <th>No Registrasi</th>
-                                                                    <th>Unit(REGIS)</th>
-                                                                    <th>Edited By</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>                                    
-                                                                <tr >
-                                                                    <td>22-12-2024</td>
-                                                                    <td>08-00-7563</td>
-                                                                    <td>Umum</td>
-                                                                    <td>Dr. Abdul</td>                                           
-                                                                </tr>
-                                                                <tr >
-                                                                    <td>22-12-2024</td>
-                                                                    <td>08-00-7563</td>
-                                                                    <td>Umum</td>
-                                                                    <td>Dr. Abdul</td>                                           
-                                                                </tr>
-                                                                <tr >
-                                                                    <td>22-12-2024</td>
-                                                                    <td>08-00-7563</td>
-                                                                    <td>Umum</td>
-                                                                    <td>Dr. Abdul</td>                                           
-                                                                </tr>
-                                                                                                    
-                                                            </tbody>
-                                                        </Table>
-                                                    </div>
-                                                </div>
+                        <Col md="12" className="iq-card-header p-2">
+                        <div>
+                            <ReusableTabs >
+                                <ReusableTabs.TabItem eventKey="tab1" title="VITAL-SIGN">
+                                    <VitalSign />
+                                </ReusableTabs.TabItem>
+                                <ReusableTabs.TabItem eventKey="tab2" title="SOAP">
+                                    <SoapDokter />
+
+                                    {/* <Col xs="12" className="mt-5">
+                                        <Row className="g-4 ">
+                                            <Col xs="3" className=" ">
+                                                <TextField 
+                                                    name="tekananDarah"
+                                                    label="Tekanan Darah :  * "
+                                                    placeholder={''}
+                                                    rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                    disabled={true}
+                                                    value={"120/08 mmHg"}
+                                                            
+                                                />
                                             </Col>
-                                            <Col xs="12" className="iq-card">
-                                                <div className="iq-card-header">
-                                                    <h5>Tanggal Pengkajian *</h5>
-                                                    <Col xs="12" className="mb-3">
-                                                        <Row>
-                                                            <Col md="6">
-                                                                <div className="mt-3">
-                                                                    <DateInput
-                                                                        name="tanggalPengkajian"
-                                                                        label=""
-                                                                        placeholder={'Enter Tanggal Penkajian'}
-                                                                        rules={{ required: 'Tanggal Penkajian harus diisi' }} // Aturan validasi
-                                                                    />
-                                                                </div>
-                                                            </Col>
-                                                            <Col md="6">
-                                                                <div className="mt-3">
-                                                                    <TimeField 
-                                                                        name="waktuPengkajian"
-                                                                        label=""
-                                                                        placeholder={'Enter Waktu Penkajian'}
-                                                                        rules={{ required: 'Waktu Penkajian harus diisi' }} // Aturan validasi   
-                                                                    />
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
-                                                    </Col>
-                                                </div>
+                                            <Col xs="3" className=" ">
+                                                <TextField 
+                                                    name="beratBadan"
+                                                    label="Berat Badan :  *  "
+                                                    placeholder={''}
+                                                    rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                    disabled={true}
+                                                    value={"60 Kg"}
+                                                />
                                             </Col>
-                                            <Col xs="12" className="iq-card-header">
-                                                <div>
-                                                    <h5 className="mb-3">Vital Sign *</h5>
-                                                    <Col Col md="7">
-                                                        <Row>
-                                                            <Col xs="5" className="mb-3">
-                                                                <TextField 
-                                                                    name="tekananDarah"
-                                                                    label="TD :  *   "
-                                                                    placeholder={'Enter TD'}
-                                                                    rules={{ required: 'Tekanan Darah harus diisi' }} // Aturan validasi
-                                                                />
-                                                            </Col>
-                                                            <Col xs="auto" className="d-flex align-items-center">
-                                                                <span>/</span>
-                                                            </Col>
-                                                            <Col xs="3" >
-                                                                <TextField 
-                                                                    name="tekananDarahBawah"
-                                                                    className="textField"
-                                                                    label=""
-                                                                    rules={{ required: 'Tekanan Darah harus diisi' }} // Aturan validasi
-                                                                />
-                                                            </Col>
-                                                            <Col xs="auto" className="d-flex align-items-center">
-                                                                 <span>mmHg</span>
-                                                            </Col>
-                                                        </Row>
-                                                    </Col>
-                                                    <Col xs="6">
-                                                        <TextField 
-                                                            name="Hr"
-                                                            label="HR :  *"
-                                                            placeholder={'Enter HR'}
-                                                            rules={{ required: 'HR harus diisi' }} 
+                                            <Col xs="3" className=" ">
+                                                <TextField 
+                                                    name="tinggiBadan"
+                                                    label="Tinggi Badan :  *  "
+                                                    placeholder={''}
+                                                    rules={{ required: 'tinggi Badan harus diisi' }} 
+                                                    disabled={true}
+                                                    value={"168 cm"}
+                                                />
+                                            </Col>
+                                            <Col xs="3" className="">
+                                                <TextField 
+                                                    name="heartRate"
+                                                    label="Heart Rate :  *"
+                                                    placeholder={''}
+                                                    rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                    disabled={true}
+                                                    value={"91 / menit"}
+                                                />
+                                            </Col>
+                                                    <Col xs="3" className=" ">
+                                                        <TextField
+                                                            name="RespiratoryRate"
+                                                            label="Respiratory Rate : *"
+                                                            placeholder=""
+                                                            rules={{ required: 'Respiratory Rate harus diisi' }}
+                                                            disabled={true} // Set disabled ke true
+                                                            value={"20 x / Menit"} // Set value dari data
                                                         />
                                                     </Col>
-                                                    <Col xs="6">
-                                                        <TextField 
-                                                            name="tinggiBadan"
-                                                            label="TB :  *"
-                                                            placeholder={'Enter TB'}
-                                                            rules={{ required: 'TB harus diisi' }} 
-                                                        />
-                                                    </Col>
-                                                    <Col xs="6">
-                                                        <TextField 
-                                                            name="BeratBadan"
-                                                            label="BB :  *"
-                                                            placeholder={'Enter BB'}
-                                                            rules={{ required: 'BB harus diisi' }} 
-                                                        />
-                                                    </Col>
-                                                    <Col xs="6">
-                                                        <TextField 
-                                                            name="rr"
-                                                            label="RR :  *"
-                                                            placeholder={'Enter RR'}
-                                                            rules={{ required: 'RR harus diisi' }} 
-                                                        />
-                                                    </Col>
-                                                    <Col xs="6">
+                                                    <Col xs="3" className=" ">
                                                         <TextField 
                                                             name="suhu"
-                                                            label="suhu *C :  *"
-                                                            placeholder={'Enter suhu C'}
-                                                            rules={{ required: 'suhu *C harus diisi' }} 
+                                                            label="Suhu :  *"
+                                                            placeholder={''}
+                                                            rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                            disabled= {true}
+                                                            value={"36.5 °C"}
                                                         />
                                                     </Col>
-                                                </div>
+                                                </Row>
                                             </Col>
-                                            <Col xs="12" className="iq-card-header">
-                                                <div>
-                                                    <h5 className="mb-3">Grafik</h5>
-                                                    
-                                                </div>
-                                            </Col>
+                                    <Col xs="12" className="iq-card bg-primary p-3">
+                                        <div>
+                                            <h1>hallo</h1>
                                         </div>
-                                    </Tab.Pane>
-                                </Tab.Content>
-                            </div>
-                        </Tab.Container>
+                                        <Col xs="12" className="bg-light p-3 rounded">
+                                              <Row>
+                                                <Col xs="6">
+                                                    <Col xs="12">
+                                                        <TextArea  
+                                                            label="Subjectif: * "
+                                                            name="Subjectif"
+                                                            placeholder="Masukkan Subjectif  Pasien..."
+                                                            rules={{ required: 'Subjectif  Pasien harus diisi' }}
+                                                            rows={5}      
+                                                        />
+                                                    </Col>
+                                                    <Col xs="12">
+                                                        <TextArea  
+                                                            label="Objectif: * "
+                                                            name="Objectif"
+                                                            placeholder="Masukkan Objectif  Pasien..."
+                                                            rules={{ required: 'Objectif  Pasien harus diisi' }}
+                                                            rows={5}      
+                                                        />
+                                                    </Col>
+                                                    <Col xs="12">
+                                                        <TextArea  
+                                                            label="Assesment: * "
+                                                            name="Assesment"
+                                                            placeholder="Masukkan Assesment  Pasien..."
+                                                            rules={{ required: 'Assesment  Pasien harus diisi' }}
+                                                            rows={5}      
+                                                        />
+                                                    </Col>
+                                                    <Col xs="12">
+                                                        <TextArea  
+                                                            label="Planning: * "
+                                                            name="planning"
+                                                            placeholder="Masukkan Planning  Pasien..."
+                                                            rules={{ required: 'Planning  Pasien harus diisi' }}
+                                                            rows={5}      
+                                                        />
+                                                    </Col>
+                                                    <Col xs="12">
+                                                        <TextArea  
+                                                            label="Instruksi: * "
+                                                            name="instruksi"
+                                                            placeholder="Masukkan Instruksi  Pasien..."
+                                                            rules={{ required: 'Instruksi  Pasien harus diisi' }}
+                                                            rows={5}      
+                                                        />
+                                                    </Col>
+                                                            
+                                                </Col>
+                                                <Col xs="6">
+                                                    <Col xs="12">
+                                                        <TextField 
+                                                            label={"ICD-9: *"}
+                                                            name="icd9"
+                                                            placeholder="Masukkan ICD-9 Pasien..."
+                                                            rules={{ required: 'ICD-9 Pasien harus diisi' }}
+                                                        />
+                                                    </Col>
+                                                    <Col xs="12">
+                                                        <TextField 
+                                                            label={"ICD-9: *"}
+                                                            name="icd9"
+                                                            placeholder="Masukkan ICD-9 Pasien..."
+                                                            rules={{ required: 'ICD-9 Pasien harus diisi' }}
+                                                        />
+                                                    </Col>
+                                                </Col>
+                                              </Row>
+                                            <button className="btn btn-primary">Simpan</button>
+
+                                        </Col>
+                                    </Col>
+                                    <Col xs="12" className="iq-card p-3">
+                                        <div>
+                                            <h4 className="mb-0">Data Pasien *</h4>
+                                        </div>
+                                        <Col md="12">
+                                            <Accordion defaultActiveKey={"0"}>
+                                                <AccordionToggle 
+                                                    eventKey="1"
+                                                    title="Rizki Gunawan Adiputro Dr."
+                                                    department="Departement"
+                                                    onButtonClick={handleButtonClick}
+                                                    variant={"primary"}    
+                                                /> 
+                                            </Accordion>
+                                        </Col>
+                                        <Col md="12">
+                                            <Accordion defaultActiveKey={"0"}>
+                                                <AccordionToggle 
+                                                    eventKey="1"
+                                                    title="Rizki Gunawan Adiputro Dr."
+                                                    department="Departement"
+                                                    onButtonClick={handleButtonClick}
+                                                    variant={"primary"}    
+                                                /> 
+                                            </Accordion>
+                                        </Col>
+                                    </Col> */}
+                                </ReusableTabs.TabItem>
+                                <ReusableTabs.TabItem eventKey="tab3" title="CPPT">
+                                    <CpptDokter />
+                                </ReusableTabs.TabItem>
+                                <ReusableTabs.TabItem eventKey="tab4" title="RESEP">
+                                    <ResepDokter />
+                                </ReusableTabs.TabItem>
+                                <ReusableTabs.TabItem eventKey="tab5" title="TINDAKAN">
+                                    <div>Konten Tab 5</div>
+                                </ReusableTabs.TabItem>
+                                <ReusableTabs.TabItem eventKey="tab6" title="PERALATAN MEDIS">
+                                    <div>Konten Tab 6</div>
+                                </ReusableTabs.TabItem>
+                                <ReusableTabs.TabItem eventKey="tab7" title="PENUNJANG">
+                                    <div>Konten Tab 7</div>
+                                </ReusableTabs.TabItem>
+                            </ReusableTabs>
+
                         </div>
+                        </Col>
                     </Col>
-                </Col>
-            </Row>
-        </FormProvider>
+                </Row>
+            </FormProvider>
+        </div>
     )
 }
 
 export default DokterPage
+
+

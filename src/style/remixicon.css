@@ -841,6 +841,8 @@
 .ri-heading:before { content: "\ed1b"; }
 .ri-headphone-fill:before { content: "\ed1c"; }
 .ri-headphone-line:before { content: "\ed1d"; }
+.ri-health-book-fill:before { content: "\ee06"; }
+.ri-health-book-line:before { content: "\ee07"; }
 .ri-heart-2-fill:before { content: "\ed1e"; }
 .ri-heart-2-line:before { content: "\ed1f"; }
 .ri-heart-fill:before { content: "\ed20"; }

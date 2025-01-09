@@ -1,0 +1,581 @@
+<Tab.Container defaultActiveKey={"pills-home-fill"}>
+                                <div className=" d-flex justify-content-between">
+                                {/* <div className="iq-header-title">
+                                    <h4 className="card-title">Tabs Fill and justify</h4>
+                                </div> */}
+                                </div>
+                                <div className="iq-card-body">
+                                    <Nav
+                                        as={"ul"}
+                                        className="nav nav-pills mb-3 nav-fill"
+                                        id="pills-tab-1"
+                                        role="tablist"
+                                    >
+                                        <Nav.Item as={"li"}>
+                                        <Nav.Link
+                                            id="pills-home-tab-fill"
+                                            data-bs-toggle="pill"
+                                            eventKey="CPPT"
+                                            role="tab"
+                                            aria-controls="pills-home"
+                                            aria-selected="true"
+                                        >
+                                            CPPT
+                                        </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item as={"li"}>
+                                        <Nav.Link
+                                            id="pills-profile-tab-fill"
+                                            data-bs-toggle="pill"
+                                            eventKey="SOAP"
+                                            role="tab"
+                                            aria-controls="pills-profile"
+                                            aria-selected="false"
+                                        >
+                                            SOAP
+                                        </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item as={"li"}>
+                                        <Nav.Link
+                                            id="pills-contact-tab-fill"
+                                            data-bs-toggle="pill"
+                                            eventKey="Vital-Sign"
+                                            role="tab"
+                                            aria-controls="pills-contact"
+                                            aria-selected="false"
+                                        >
+                                            VITAL-SIGN  
+                                        </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item as={"li"}>
+                                        <Nav.Link
+                                            id="pills-contact-tab-fill"
+                                            data-bs-toggle="pill"
+                                            eventKey="Resep"
+                                            role="tab"
+                                            aria-controls="pills-contact"
+                                            aria-selected="false"
+                                        >
+                                            Resep
+                                        </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item as={"li"}>
+                                        <Nav.Link
+                                            id="pills-contact-tab-fill"
+                                            data-bs-toggle="pill"
+                                            eventKey="Tindakan"
+                                            role="tab"
+                                            aria-controls="pills-contact"
+                                            aria-selected="false"
+                                        >
+                                            Tindakan
+                                        </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item as={"li"}>
+                                        <Nav.Link
+                                            id="pills-contact-tab-fill"
+                                            data-bs-toggle="pill"
+                                            eventKey="Peralatab-Medis"
+                                            role="tab"
+                                            aria-controls="pills-contact"
+                                            aria-selected="false"
+                                        >
+                                            Peralatan Medis
+                                        </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item as={"li"}>
+                                        <Nav.Link
+                                            id="pills-contact-tab-fill"
+                                            data-bs-toggle="pill"
+                                            eventKey="Penunjang"
+                                            role="tab"
+                                            aria-controls="pills-contact"
+                                            aria-selected="false"
+                                        >
+                                            Penunjang
+                                        </Nav.Link>
+                                        </Nav.Item>
+                                    </Nav>
+                                    <Tab.Content className="tab-content" id="pills-tabContent-1">
+                                        <Tab.Pane
+                                            className="tab-pane fade show"
+                                            eventKey="CPPT"
+                                            role="tabpanel"
+                                            aria-labelledby="pills-home-tab-fill"
+                                        >
+                                            <div className="iq-card my-4">
+                                                <Row className="g-2">
+                                                    <Col xs="12" className="mt-3">
+                                                        <Row className="text-center">
+                                                            <Col md="6">
+                                                                <div className="shadow-sm py-2">
+                                                                    <h5 className="font-bold text-widest">DOKTER</h5>
+                                                                </div>
+                                                            </Col>
+                                                            <Col md="6" >
+                                                                <div className="shadow-sm py-2">
+                                                                    <h5 className="font-bold text-widest">PERAWAT</h5>
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                    <Col md="6" id="CPPT-Dokter">
+                                                        <Col md="12">
+                                                            <Accordion defaultActiveKey={"0"}>
+                                                                <AccordionToggle 
+                                                                    eventKey="1"
+                                                                    title="Rizki Gunawan Adiputro Dr."
+                                                                    department="Departement"
+                                                                    onButtonClick={handleButtonClick}
+                                                                    variant={"primary"}
+                                                                    
+                                                                /> 
+                                                            </Accordion>
+                                                        </Col>
+                                                        <Col md="12" className="mt-2">
+                                                            <Accordion defaultActiveKey={"0"}>
+                                                                <AccordionToggle 
+                                                                    eventKey="2"
+                                                                    title="Rizki Gunawan Adiputro Dr."
+                                                                    department="Departement"
+                                                                    onButtonClick={handleButtonClick}
+                                                                    variant={"primary"}
+                                                                    
+                                                                /> 
+                                                            </Accordion>
+                                                        </Col>
+                                                        {/* <div className="card bg-primary p-3">
+                                                            <div className="iq-card-header d-flex justify-content-between">
+                                                                <div>
+                                                                    <p className="text-white mb-0">Rizki Gunawan Adiputro Dr.</p>
+                                                                    <h5 className="text-white font-bold font-size-16">Departement</h5>
+                                                                </div>
+                                                                <div className="d-flex flex-column justify-content-center align-items-center">
+                                                                    <button className="btn btn-primary">Verifikasi</button>
+                                                                    <div>
+                                                                        <p className="text-white mb-0 font-size-12">waktu</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className=" mt-2 bg-light p-3 text-black">
+                                                                <div>
+                                                                    <h5>Subjectif : *</h5>
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h5>Objectif : *</h5>
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h5>Assesment : *</h5> 
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h5>Planning</h5> 
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h5>Instruksi</h5> 
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+
+                                                            </div>
+                                                        </div> */}
+                                                    </Col>
+                                                    <Col md="6" id="CPPT-Perawat">
+                                                        <Col md="12">
+                                                            <Accordion defaultActiveKey={"0"}>
+                                                                <AccordionToggle 
+                                                                    eventKey="1"
+                                                                    title="Rizki Gunawan Adiputro Dr."
+                                                                    department="Departement"
+                                                                    onButtonClick={handleButtonClick}
+                                                                    variant={"success"}
+                                                                    
+                                                                /> 
+                                                            </Accordion>
+                                                        </Col>
+                                                        <Col md="12" className="mt-2">
+                                                            <Accordion defaultActiveKey={"0"}>
+                                                                <AccordionToggle 
+                                                                    eventKey="2"
+                                                                    title="Rizki Gunawan Adiputro Dr."
+                                                                    department="Departement"
+                                                                    onButtonClick={handleButtonClick}
+                                                                    variant={"success"}
+                                                                    
+                                                                /> 
+                                                            </Accordion>
+                                                        </Col>
+                                                        {/* <div className="card bg-success p-3">
+                                                            <div className="iq-card-header d-flex justify-content-between">
+                                                                <div>
+                                                                    <p className="text-white mb-0">Rizki Gunawan Adiputro Dr.</p>
+                                                                    <h5 className="text-white font-bold font-size-16">Departement</h5>
+                                                                </div>
+                                                                <div className="d-flex flex-column justify-content-center align-items-center">
+                                                                    <button className="btn btn-primary">Verifikasi</button>
+                                                                    <div>
+                                                                        <p className="text-white mb-0 font-size-12">waktu</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className=" mt-2 bg-light p-3 text-black">
+                                                                <div>
+                                                                    <h5>Subjectif : *</h5>
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h5>Objectif : *</h5>
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h5>Assesment : *</h5> 
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h5>Planning</h5> 
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                                <div>
+                                                                    <h5>Instruksi</h5> 
+                                                                    <p>lorem ipsum dolor pangsit kuah enak di malam tahun baru</p>
+                                                                </div>
+                                                            </div>
+                                                        </div> */}
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </Tab.Pane>
+                                        <Tab.Pane
+                                            className="tab-pane fade"
+                                            eventKey="SOAP"
+                                            role="tabpanel"
+                                            aria-labelledby="pills-profile-tab-fill"
+                                        >
+                                            
+                                            <Col xs="12" className="mt-5">
+                                                <Row className="g-4 ">
+                                                    <Col xs="3" className=" ">
+                                                        <TextField 
+                                                            name="tekananDarah"
+                                                            label="Tekanan Darah :  * "
+                                                            value=""
+                                                            placeholder={''}
+                                                            rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                            disabled
+                                                            renderCustomContent={(value) => (
+                                                                <div className="d-flex justify-content-between">
+                                                                  <span className="text-muted">Tekanan Darah : *</span>
+                                                                  <span className="text-dark font-weight-bold">120/08 mmHg</span>
+                                                                </div>
+                                                              )}
+                                                            
+                                                        />
+                                                    </Col>
+                                                    <Col xs="3" className=" ">
+                                                        <TextField 
+                                                            name="beratBadan"
+                                                            label="Berat Badan :  *  "
+                                                            placeholder={''}
+                                                            rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                            disabled
+                                                            renderCustomContent={(value) => (
+                                                                <div className="d-flex justify-content-between">
+                                                                  <span className="text-muted">Tekanan Darah : *</span>
+                                                                  <span className="text-dark font-weight-bold">120/08 mmHg</span>
+                                                                </div>
+                                                              )}
+                                                        />
+                                                    </Col>
+                                                    <Col xs="3" className="">
+                                                        <TextField 
+                                                            name="heartRate"
+                                                            label="Heart Rate :  *"
+                                                            placeholder={''}
+                                                            rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                            disabled
+                                                            renderCustomContent={(value) => (
+                                                                <div className="d-flex justify-content-between">
+                                                                  <span className="text-muted">Tekanan Darah : *</span>
+                                                                  <span className="text-dark font-weight-bold">120/08 mmHg</span>
+                                                                </div>
+                                                              )}
+                                                        />
+                                                    </Col>
+                                                    <Col xs="3" className=" ">
+                                                        <TextField 
+                                                            name="RespiratoryRate"
+                                                            label="Respiratory Rate :  *"
+                                                            placeholder={''}
+                                                            rules={{ required: 'Respiratory Rate harus diisi' }} 
+                                                            disabled
+                                                            renderCustomContent={(value) => (
+                                                                <div className="d-flex justify-content-between">
+                                                                  <span className="text-muted">Tekanan Darah : *</span>
+                                                                  <span className="text-dark font-weight-bold">120/08 mmHg</span>
+                                                                </div>
+                                                              )}
+                                                        />
+                                                    </Col>
+                                                    <Col xs="3" className=" ">
+                                                        <TextField 
+                                                            name="suhu"
+                                                            label="Suhu :  *"
+                                                            placeholder={''}
+                                                            rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                            disabled
+                                                            renderCustomContent={(value) => (
+                                                                <div className="d-flex justify-content-between">
+                                                                  <span className="text-muted">Tekanan Darah : *</span>
+                                                                  <span className="text-dark font-weight-bold">120/08 mmHg</span>
+                                                                </div>
+                                                              )}
+                                                        />
+                                                    </Col>
+                                                    <Col xs="3" className=" ">
+                                                        <TextField 
+                                                            name="tekananDarah"
+                                                            label="Tekanan Darah :  *"
+                                                            placeholder={''}
+                                                            rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                            disabled
+                                                            renderCustomContent={(value) => (
+                                                                <div className="d-flex justify-content-between">
+                                                                  <span className="text-muted">Tekanan Darah : *</span>
+                                                                  <span className="text-dark font-weight-bold">120/08 mmHg</span>
+                                                                </div>
+                                                              )}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                            <Col xs="12" className="iq-card bg-primary p-3">
+                                                <div>
+                                                    <h1>hallo</h1>
+                                                </div>
+                                                <Col xs="12" className="bg-light p-3 rounded">
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            label={"Subjectif"}
+                                                            name={"subjectif"}
+                                                            placeholder={"Subjectif"}
+                                                            rules={{ required: 'Subjectif harus diisi' }} 
+                                                            
+                                                        />
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            label={"Objectif"}
+                                                            name={"Objectif"}
+                                                            placeholder={"Objectif"}
+                                                            rules={{ required: 'Objectif harus diisi' }} 
+                                                            
+                                                        />
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            label={"Asessment"}
+                                                            name={"Asessment"}
+                                                            placeholder={"Asessment"}
+                                                            rules={{ required: 'Asessment   " harus diisi' }} 
+                                                            
+                                                        />
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            label={"Planning"}
+                                                            name={"Planning"}
+                                                            placeholder={"Planning"}
+                                                            rules={{ required: 'Planning" harus diisi' }} 
+                                                            
+                                                        />
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <TextField 
+                                                            label={"Instruksi"}
+                                                            name={"Instruksi"}
+                                                            placeholder={"Instruksi"}
+                                                            rules={{ required: 'Instruksi" harus diisi' }} 
+                                                            
+                                                        />
+                                                    </Col>
+                                                    <button className="btn btn-primary">Simpan</button>
+                                                </Col>
+                                            </Col>
+                                        </Tab.Pane>
+                                        <Tab.Pane
+                                            className="tab-pane fade"
+                                            eventKey="Vital-Sign"
+                                            role="tabpanel"
+                                            aria-labelledby="pills-contact-tab-fill"
+                                        >
+                                            <div>
+                                                <Col xs="12" className="iq-card">
+                                                    <div className="card-body">
+                                                        <h5 className="mb-3">Histori Vital sign</h5>
+                                                        <div className="table-responsive-md w-100">
+                                                            <Table className="text-center" bordered striped>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Tanggal</th>
+                                                                        <th>No Registrasi</th>
+                                                                        <th>Unit(REGIS)</th>
+                                                                        <th>Edited By</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>                                    
+                                                                    <tr >
+                                                                        <td>22-12-2024</td>
+                                                                        <td>08-00-7563</td>
+                                                                        <td>Umum</td>
+                                                                        <td>Dr. Abdul</td>                                           
+                                                                    </tr>
+                                                                    <tr >
+                                                                        <td>22-12-2024</td>
+                                                                        <td>08-00-7563</td>
+                                                                        <td>Umum</td>
+                                                                        <td>Dr. Abdul</td>                                           
+                                                                    </tr>
+                                                                    <tr >
+                                                                        <td>22-12-2024</td>
+                                                                        <td>08-00-7563</td>
+                                                                        <td>Umum</td>
+                                                                        <td>Dr. Abdul</td>                                           
+                                                                    </tr>
+                                                                                                        
+                                                                </tbody>
+                                                            </Table>
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                                <Form onSubmit={methods.handleSubmit(onSubmit)}>
+                                                    <Col xs="12" className="iq-card">
+                                                        <div className="iq-card-header">
+                                                            <h4>Tanggal Pemeriksaan Medis *</h4>
+                                                            <Col xs="12" className="mb-3">
+                                                                <Row>
+                                                                    <Col md="6">
+                                                                        <div className="mt-3">
+                                                                            <DateInput
+                                                                                name="tanggalPengkajian"
+                                                                                label=""
+                                                                                placeholder={'Enter Tanggal Pengkajian Pemeriksaan Medis'}
+                                                                                rules={{ required: 'Tanggal Pengkajian Pemeriksaan Medis harus diisi' }} // Aturan validasi
+                                                                            />
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col md="6">
+                                                                        <div className="mt-3">
+                                                                            <TimeField 
+                                                                                name="waktuPengkajian"
+                                                                                label=""
+                                                                                placeholder={'Enter Waktu Penkajian'}
+                                                                                rules={{ required: 'Waktu Penkajian harus diisi' }} // Aturan validasi   
+                                                                            />
+                                                                        </div>
+                                                                    </Col>
+                                                                </Row>
+                                                            </Col>
+                                                        </div>
+                                                    </Col>
+                                                    <Col xs="12" className="iq-card-header">
+                                                        <div>
+                                                            <h4 className="mb-3">Vital Sign *</h4>
+                                                            <Col Col md="7">
+                                                                <Row>
+                                                                    <Col xs="5" className="mb-3">
+                                                                        <TextField 
+                                                                            name="tekananDarah"
+                                                                            label="TD :  *   "
+                                                                            placeholder={'Enter TD'}
+                                                                            rules={{ required: 'Tekanan Darah harus diisi' }} // Aturan validasi
+                                                                        />
+                                                                    </Col>
+                                                                    <Col xs="auto" className="d-flex align-items-center">
+                                                                        <span>/</span>
+                                                                    </Col>
+                                                                    <Col xs="3" >
+                                                                        <TextField 
+                                                                            name="tekananDarahBawah"
+                                                                            className="textField"
+                                                                            label=""
+                                                                            rules={{ required: 'Tekanan Darah harus diisi' }} // Aturan validasi
+                                                                        />
+                                                                    </Col>
+                                                                    <Col xs="auto" className="d-flex align-items-center">
+                                                                        <span>mmHg</span>
+                                                                    </Col>
+                                                                </Row>
+                                                            </Col>
+                                                            <Col xs="6">
+                                                                <TextField 
+                                                                    name="Hr"
+                                                                    label="HR :  *"
+                                                                    placeholder={'Enter HR'}
+                                                                    rules={{ required: 'HR harus diisi' }} 
+                                                                />
+                                                            </Col>
+                                                            <Col xs="6">
+                                                                <TextField 
+                                                                    name="tinggiBadan"
+                                                                    label="TB :  *"
+                                                                    placeholder={'Enter TB'}
+                                                                    rules={{ required: 'TB harus diisi' }} 
+                                                                />
+                                                            </Col>
+                                                            <Col xs="6">
+                                                                <TextField 
+                                                                    name="BeratBadan"
+                                                                    label="BB :  *"
+                                                                    placeholder={'Enter BB'}
+                                                                    rules={{ required: 'BB harus diisi' }} 
+                                                                />
+                                                            </Col>
+                                                            <Col xs="6">
+                                                                <TextField 
+                                                                    name="rr"
+                                                                    label="RR :  *"
+                                                                    placeholder={'Enter RR'}
+                                                                    rules={{ required: 'RR harus diisi' }} 
+                                                                />
+                                                            </Col>
+                                                            <Col xs="6">
+                                                                <TextField 
+                                                                    name="suhu"
+                                                                    label="suhu *C :  *"
+                                                                    placeholder={'Enter suhu C'}
+                                                                    rules={{ required: 'suhu *C harus diisi' }} 
+                                                                />
+                                                            </Col>
+                                                        </div>
+                                                    </Col>
+                                                    <Col xs="12" className="iq-card-header">
+                                                        <button type="submit" className="btn btn-primary">Submit</button>
+                                                    </Col>
+                                                </Form>
+                                                <Col xs="12" className="iq-card-header">
+                                                    <div className="mt-4">
+                                                        <h4 className="mb-3">Grafik Pemeriksaan Vital Sign *</h4>
+                                                        <Col xs="6">
+                                                            <TextField 
+                                                                name="suhu"
+                                                                label="suhu *C :  *"
+                                                                placeholder={'Enter suhu C'}
+                                                                rules={{ required: 'suhu *C harus diisi' }} 
+                                                            />
+                                                        </Col><Col xs="6">
+                                                            <TextField 
+                                                                name="suhu"
+                                                                label="suhu *C :  *"
+                                                                placeholder={'Enter suhu C'}
+                                                                rules={{ required: 'suhu *C harus diisi' }} 
+                                                            />
+                                                        </Col>
+                                                    </div>
+                                                </Col>
+                                            </div>
+                                        </Tab.Pane>
+                                    </Tab.Content>
+                                </div>
+                            </Tab.Container>
