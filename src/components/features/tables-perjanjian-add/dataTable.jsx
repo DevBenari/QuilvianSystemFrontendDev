@@ -13,7 +13,7 @@ import DateInput from "@/components/ui/date-input";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 
-const DataTable = ({
+const DataTableAdd = ({
   headers,
   formFields,
   title,
@@ -25,6 +25,7 @@ const DataTable = ({
   customActions = [], // Array of custom actions
   id,
   rowsPerPage = 10, // Default rows per page
+  onRowClick,
 }) => {
   const [searchValue, setSearchValue] = useState(""); // State for search input value
   const [currentPage, setCurrentPage] = useState(1); // State for current page
@@ -150,7 +151,7 @@ const DataTable = ({
                       <tbody>
                         {paginatedData.length > 0 ? (
                           paginatedData.map((row, rowIndex) => (
-                            <tr key={rowIndex} onClick={() => onRowClick(row)}>
+                            <tr key={rowIndex} onClick={() => onRowClick(item)}>
                               {Object.entries(row)
                                 .filter(([key]) => key !== id)
                                 .map(([key, value], colIndex) => (
@@ -277,4 +278,4 @@ const DataTable = ({
   );
 };
 
-export default DataTable;
+export default DataTableAdd;
