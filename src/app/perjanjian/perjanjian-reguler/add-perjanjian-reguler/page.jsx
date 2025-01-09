@@ -1,12 +1,21 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
 import DateInput from "@/components/ui/date-input";
 import RadioInput from "@/components/ui/radio-input";
 import SelectField from "@/components/ui/select-field";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import TextField from "@/components/ui/text-field";
 import TextArea from "@/components/ui/textArea-field";
+import { pemeriksaRadiologi } from "@/utils/dataTindakan";
+import {
+  dataDepartemen,
+  dataDokter,
+  dataKelas,
+  paketMcu,
+  ruangOperasi,
+} from "@/utils/SearchSelect";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { Row, Col } from "react-bootstrap";
@@ -60,17 +69,17 @@ const AddPerjanjianReguler = () => {
           colSize: 6,
         },
         {
-          type: "radio",
+          type: "select",
           id: "jenisKelamin",
           label: "Jenis Kelamin",
           name: "jenisKelamin",
+          placeholder: "Pilih jenis kelamin",
           options: [
             { label: "Laki-Laki", value: "Laki-Laki" },
             { label: "Perempuan", value: "Perempuan" },
           ],
           rules: { required: "Jenis kelamin harus dipilih" },
           colSize: 6,
-          className: "mt-3",
         },
         {
           type: "textarea",
@@ -119,7 +128,7 @@ const AddPerjanjianReguler = () => {
           customRender: () => (
             <>
               <Row className="my-3">
-                <Col lg="12">
+                <Col lg="8">
                   <SelectField
                     name="layanan"
                     label="Pilih Layanan"
@@ -141,17 +150,10 @@ const AddPerjanjianReguler = () => {
 
                 {/* Form Dinamis Berdasarkan Pilihan */}
                 <div className="w-100">
-                  <div
-                    className={`collapse ${
-                      selectedLayanan === "Rawat Inap" ||
-                      selectedLayanan === "ODC"
-                        ? "show"
-                        : ""
-                    }`}
-                  >
+                  {selectedLayanan === "Rawat Inap" && (
                     <Row>
                       <Col lg="6">
-                        <TextField
+                        <DateInput
                           name="janjiTanggal"
                           label="Janji Tanggal"
                           placeholder="Masukkan Tanggal"
@@ -162,127 +164,69 @@ const AddPerjanjianReguler = () => {
                         <SearchableSelectField
                           name="kelasSelect.select"
                           label="kelas Kamar"
-                          options={[
-                            { label: "SUITE", value: "SUITE" },
-                            { label: "LUXURY", value: "LUXURY" },
-                            {
-                              label: "ISOLASI LAVENDER SVIP",
-                              value: "ISOLASI LAVENDER SVIP",
-                            },
-                            { label: "VIP SUPERIOR", value: "VIP SUPERIOR" },
-                            {
-                              label: "ISOLASI CHRISANT SVIP",
-                              value: "ISOLASI CHRISANT SVIP",
-                            },
-                            { label: "CHRISANT SVIP", value: "CHRISANT SVIP" },
-                            { label: "VIP DELUXE", value: "VIP DELUXE" },
-                            { label: "VIP 8.3", value: "VIP 8.3" },
-                            {
-                              label: "ISOLASI CHRISANT VIP DELUXE",
-                              value: "ISOLASI CHRISANT VIP DELUXE",
-                            },
-                            {
-                              label: "CHRISANT VIP DELUXE",
-                              value: "CHRISANT VIP DELUXE",
-                            },
-                            { label: "VVIP", value: "VVIP" },
-                            { label: "GRAND ROYAL", value: "GRAND ROYAL" },
-                            { label: "CHRISANT VIP", value: "CHRISANT VIP" },
-                            { label: "VIP 8.1", value: "VIP 8.1" },
-                            {
-                              label: "ISOLASI LAVENDER VIP",
-                              value: "ISOLASI LAVENDER VIP",
-                            },
-                            {
-                              label: "ISOLASI BOUGENVIL VIP",
-                              value: "ISOLASI BOUGENVIL VIP",
-                            },
-                            {
-                              label: "ISOLASI CHRISANT VIP",
-                              value: "ISOLASI CHRISANT VIP",
-                            },
-                            { label: "VIP", value: "VIP" },
-                            { label: "kelas 1", value: "kelas 1" },
-                            { label: "VIP 8.2", value: "VIP 8.2" },
-                          ]}
+                          options={dataKelas}
                           placeholder="Pilih kelas Kamar"
                           className="mb-3"
-                          onChange={(selectedOption) =>
-                            handleSearch(
-                              "kelasSelect.select",
-                              selectedOption?.value || ""
-                            )
-                          }
                         />
                       </Col>
                       <Col lg="6">
-                        <SelectField
+                        <SearchableSelectField
                           name="dokter"
                           label="Dokter Pemeriksa"
-                          options={[
-                            { label: "dr. Tirta", value: "dr. Tirta" },
-                            { label: "dr. Yeni", value: "dr. Yeni" },
-                            { label: "dr. Yanto", value: "dr. Yanto" },
-                          ]}
+                          options={dataDokter}
                           placeholder="Pilih Dokter"
                           rules={{ required: "Dokter harus dipilih" }}
                         />
                       </Col>
                     </Row>
-                  </div>
+                  )}
 
-                  <div
-                    className={`collapse ${
-                      selectedLayanan === "Rawat Jalan" ? "show" : ""
-                    }`}
-                  >
+                  {selectedLayanan === "Rawat Jalan" && (
                     <Row>
                       <Col lg="6">
                         <DateInput
                           name="tglKunjungan"
                           label="Tanggal Kunjungan"
+                          placeholder="Masukkan Tanggal Kunjungan"
                           rules={{ required: "Tanggal Kunjungan harus diisi" }}
                         />
                       </Col>
                       <Col lg="6">
-                        <SelectField
-                          name="poliklinik"
-                          label="Poliklinik"
-                          options={[
-                            { label: "Poliklinik Kulit", value: "Kulit" },
-                            { label: "Poliklinik Umum", value: "Umum" },
-                          ]}
-                          placeholder="Pilih Poliklinik"
-                          rules={{ required: "Poliklinik harus dipilih" }}
+                        <SearchableSelectField
+                          name="departemenSelect.select"
+                          label="Departemen"
+                          options={dataDepartemen}
+                          placeholder="Pilih Poli"
+                          className="mb-3"
                         />
                       </Col>
                       <Col lg="6">
-                        <SelectField
+                        <SearchableSelectField
                           name="dokter"
                           label="Dokter Pemeriksa"
-                          options={[
-                            { label: "dr. Adam", value: "dr. Adam" },
-                            { label: "dr. Fina", value: "dr. Fina" },
-                          ]}
+                          options={dataDokter}
                           placeholder="Pilih Dokter"
                           rules={{ required: "Dokter harus dipilih" }}
                         />
                       </Col>
                     </Row>
-                  </div>
+                  )}
 
-                  <div
-                    className={`collapse ${
-                      selectedLayanan === "Operasi" ? "show" : ""
-                    }`}
-                  >
+                  {selectedLayanan === "Operasi" && (
                     <Row>
                       <Col lg="6">
-                        <TextField
-                          name="ruangOperasi"
+                        <SearchableSelectField
+                          name="ruangOperasi.select"
                           label="Ruang Operasi"
-                          placeholder="Masukkan Ruangan"
-                          rules={{ required: "Ruang Operasi harus diisi" }}
+                          options={ruangOperasi}
+                          placeholder="Pilih ruang operasi"
+                          className="mb-3"
+                          // onChange={(selectedOption) =>
+                          //   handleSearch(
+                          //     "ruangOperasi.select",
+                          //     selectedOption?.value || ""
+                          //   )
+                          // }
                         />
                       </Col>
                       <Col lg="6">
@@ -293,28 +237,61 @@ const AddPerjanjianReguler = () => {
                         />
                       </Col>
                       <Col lg="6">
-                        <SelectField
+                        <SearchableSelectField
                           name="dokterOperator"
                           label="Dokter Operator"
-                          options={[
-                            { label: "dr. Surya", value: "dr. Surya" },
-                            { label: "dr. Budi", value: "dr. Budi" },
-                          ]}
+                          options={dataDokter}
                           placeholder="Pilih Dokter Operator"
                           rules={{ required: "Dokter Operator harus dipilih" }}
                         />
                       </Col>
                     </Row>
-                  </div>
+                  )}
 
-                  <div
-                    className={`collapse ${
-                      selectedLayanan === "Radiologi" ||
-                      selectedLayanan === "MCU"
-                        ? "show"
-                        : ""
-                    }`}
-                  >
+                  {selectedLayanan === "ODC" && (
+                    <Row>
+                      <Col lg="6">
+                        <DateInput
+                          name="tglKunjungan"
+                          label="Tanggal Kunjungan"
+                          rules={{ required: "Tanggal Kunjungan harus diisi" }}
+                        />
+                      </Col>
+                      <Col lg="6">
+                        <SearchableSelectField
+                          name="departemenSelect.select"
+                          label="Departemen"
+                          options={dataDepartemen}
+                          placeholder="Pilih Poli"
+                          className="mb-3"
+                        />
+                      </Col>
+                      <Col lg="6">
+                        <SearchableSelectField
+                          name="dokter"
+                          label="Dokter Pemeriksa"
+                          options={dataDokter}
+                          placeholder="Pilih Dokter"
+                          rules={{ required: "Dokter harus dipilih" }}
+                        />
+                      </Col>
+                    </Row>
+                  )}
+
+                  {selectedLayanan === "Radiologi" && (
+                    <Row>
+                      <Col lg="3">
+                        <DateInput
+                          name="tglJanji"
+                          label="Tanggal Janji"
+                          rules={{ required: "Tanggal Pelayanan harus diisi" }}
+                          className="mb-3"
+                        />
+                      </Col>
+                      <TableTindakan tindakan={pemeriksaRadiologi} />,
+                    </Row>
+                  )}
+                  {selectedLayanan === "MCU" && (
                     <Row>
                       <Col lg="6">
                         <DateInput
@@ -324,19 +301,16 @@ const AddPerjanjianReguler = () => {
                         />
                       </Col>
                       <Col lg="6">
-                        <SelectField
-                          name="paket"
-                          label="Paket Pelayanan"
-                          options={[
-                            { label: "Paket 1", value: "Paket 1" },
-                            { label: "Paket 2", value: "Paket 2" },
-                          ]}
-                          placeholder="Pilih Paket"
-                          rules={{ required: "Paket Pelayanan harus dipilih" }}
+                        <SearchableSelectField
+                          name="paketMcuSelect.select"
+                          label="Paket MCU"
+                          options={paketMcu}
+                          placeholder="Pilih Paket MCU"
+                          className="mb-3"
                         />
                       </Col>
                     </Row>
-                  </div>
+                  )}
                 </div>
               </Row>
             </>
