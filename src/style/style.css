@@ -5002,6 +5002,28 @@ textarea.form-control {
   min-height: auto;
 }
 
+.iq-card-profile-dokter {
+  height: 99%;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #0f1317 ;  /* ganti dengan warna yang diinginkan */
+  color: white !important;  /* menyesuaikan teks agar terlihat jelas */
+}
+
+.accordion-button {
+  background-color: #ffff ; /* ganti dengan warna yang diinginkan */
+  color: black !important;  /* menyesuaikan teks */
+}
+
+
+/* Menghilangkan ikon panah */
+.accordion-button::after {
+  display: none;
+}
+
+
+
 /*===================== 
 Rtl Switch 
 ===========================*/

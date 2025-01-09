@@ -398,9 +398,10 @@ const PendaftaranPasienBaru = () => {
                                             placeholder="Pilih Provinsi"
                                             rules={{ required: 'Provinsi pasien harus diisi' }}
                                             className="mb-3"
-                                            onChange={(e) => handleChange("pasien", "provinsi", e.target.value)}
+                                            onChangeCallback={(value) => handleChange("pasien", "provinsi", value)} // gunakan `onChangeCallback`
                                         />
                                     </Col>
+
                                     <Col lg="6">
                                         <SelectField 
                                             name="pasien_kabupaten"
@@ -412,7 +413,7 @@ const PendaftaranPasienBaru = () => {
                                             placeholder="Pilih Kabupaten"
                                             rules={{ required: 'Kabupaten is required' }}
                                             className="mb-3"
-                                            onChange={(e) => handleChange("pasien", "kabupaten", e.target.value)}
+                                            onChangeCallback={(value) => handleChange("pasien", "kabupaten", value)}
                                         />
                                     </Col>
                                     <Col lg="6">
@@ -426,7 +427,7 @@ const PendaftaranPasienBaru = () => {
                                             placeholder="Pilih Kecamatan"
                                             rules={{ required: 'Kecamatan is required' }}
                                             className="mb-3"
-                                            onChange={(e) => handleChange("pasien", "kecamatan", e.target.value)} 
+                                            onChangeCallback={(value) => handleChange("pasien", "kecamatan", value)} 
                                         />
                                     </Col>
                                     <Col lg="6">
