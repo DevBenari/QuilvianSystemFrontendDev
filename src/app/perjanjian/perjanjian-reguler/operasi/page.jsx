@@ -21,18 +21,19 @@ import {
 import TimeField from "@/components/ui/time-input";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import TextArea from "@/components/ui/textArea-field";
 const Operasi = () => {
   const methods = useForm();
   const [selectedLayanan, setSelectedLayanan] = useState("");
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchOperasi, setSearchOperasi] = useState({});
 
   const handleLayananChange = (value) => {
     setSelectedLayanan(value);
   };
 
+  // Function Operasi Start
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchOperasi, setSearchOperasi] = useState({});
   const handleDateChange = (date) => {
     setSelectedDate(date);
     const formattedDate = date.toISOString().slice(0, 10);
@@ -94,6 +95,8 @@ const Operasi = () => {
   const [selectedDokterOperasi, setSelectedDokterOperasi] = useState("");
   const [selectedTindakanOperasi, setSelectedTindakanOperasi] = useState("");
 
+  // function Operasi ENd
+
   return (
     <FormProvider {...methods}>
       <Form onSubmit={methods.handleSubmit((data) => console.log(data))}>
@@ -153,6 +156,28 @@ const Operasi = () => {
                         value={selectedTindakanOperasi}
                         className="mb-3"
                         readOnly
+                      />
+                    </Col>
+                    <Col lg="12">
+                      <TextArea
+                        label="Catatan"
+                        name="catatan"
+                        placeholder="Masukkan Catatan Pasien..."
+                        rules={{
+                          required: "Catatan Pasien harus diisi",
+                        }}
+                        rows={5}
+                      />
+                    </Col>
+                    <Col lg="12">
+                      <TextArea
+                        label="Diagnosa"
+                        name="diagnosa"
+                        placeholder="Masukkan Diagnosa Pasien..."
+                        rules={{
+                          required: "Diagnosa Pasien harus diisi",
+                        }}
+                        rows={5}
                       />
                     </Col>
                   </Row>
