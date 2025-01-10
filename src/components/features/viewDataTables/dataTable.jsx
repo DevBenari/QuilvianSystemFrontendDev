@@ -150,7 +150,7 @@ const DataTable = ({
                       <tbody>
                         {paginatedData.length > 0 ? (
                           paginatedData.map((row, rowIndex) => (
-                            <tr key={rowIndex} onClick={() => onRowClick(row)}>
+                            <tr key={rowIndex}>
                               {Object.entries(row)
                                 .filter(([key]) => key !== id)
                                 .map(([key, value], colIndex) => (

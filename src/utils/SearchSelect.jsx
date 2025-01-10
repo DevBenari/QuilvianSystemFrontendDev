@@ -231,3 +231,19 @@ export const dataKelas = [
   { label: "kelas 1", value: "kelas 1" },
   { label: "VIP 8.2", value: "VIP 8.2" },
 ];
+
+export const tipeAnestesiOptions = [
+  { label: "Anestesi Umum", value: "anestesi_umum" },
+  { label: "Anestesi Lokal", value: "anestesi_lokal" },
+  { label: "Anestesi Regional", value: "anestesi_regional" },
+  { label: "Sedasi", value: "sedasi" },
+  { label: "Anestesi Epidural", value: "anestesi_epidural" },
+  { label: "Anestesi Spinal", value: "anestesi_spinal" },
+  {
+    label: "Anestesi Blok Saraf Perifer",
+    value: "anestesi_blok_saraf_perifer",
+  },
+  { label: "Anestesi Intravena", value: "anestesi_intravena" },
+  { label: "Anestesi Inhalasi", value: "anestesi_inhalasi" },
+  { label: "Anestesi Topikal", value: "anestesi_topikal" },
+];
