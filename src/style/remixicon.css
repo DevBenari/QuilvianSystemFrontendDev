@@ -506,6 +506,8 @@
 .ri-door-lock-box-line:before { content: "\ebcc"; }
 .ri-door-lock-fill:before { content: "\ebcd"; }
 .ri-door-lock-line:before { content: "\ebce"; }
+.ri-dossier-fill:before { content: "\ec4d"; }
+.ri-dossier-line:before { content: "\ec4e"; }
 .ri-douban-fill:before { content: "\ebcf"; }
 .ri-douban-line:before { content: "\ebd0"; }
 .ri-double-quotes-l:before { content: "\ebd1"; }

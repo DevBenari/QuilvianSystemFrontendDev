@@ -9,7 +9,6 @@ import styles from "../page.module.css"
 const PendaftaranPasien = () => {
     return (
         <div className={styles.page} >
-            <TopNav module={"pendaftaran"}/>
             <DashboardPendaftaran />
         </div>
     )

@@ -1,12 +1,14 @@
 'use client'
 import DateInput from "@/components/ui/date-input"
+import SelectField from "@/components/ui/select-field"
 import TextField from "@/components/ui/text-field"
 import { dataPasien } from "@/utils/config"
+import { range } from "@amcharts/amcharts5/.internal/core/util/Animation"
 
 import axios from "axios"
 import Link from "next/link"
 import React, { memo, useState} from "react"
-import { Row, Col,Button, Table } from "react-bootstrap"
+import { Row, Col,Button, Table, Form } from "react-bootstrap"
 import { FormProvider, useForm } from "react-hook-form"
 const DashboardPendaftaran = memo(() => {
     const methods = useForm();
@@ -38,6 +40,8 @@ const DashboardPendaftaran = memo(() => {
         noTelp: "",
     });
     const [filteredPatients, setFilteredPatients] = useState(dataPasien);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
     // Fungsi untuk mengupdate filter
     const handleFilterChange = (key, value) => {
@@ -63,61 +67,150 @@ const DashboardPendaftaran = memo(() => {
         });
         setFilteredPatients(filtered);
     };
+
+    const handleFilterDate = () => {
+        if (!startDate || !endDate) {
+            alert("Harap pilih rentang tanggal!");
+            return;
+        }
+
+        const filtered = dataPasien.filter(pasien => {
+            const pasienDate = new Date(pasien.date);
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+        
+            // Hanya bandingkan tanggal tanpa waktu (set waktu menjadi pukul 00:00:00)
+            start.setHours(0, 0, 0, 0);
+            end.setHours(23, 59, 59, 999);
+        
+            return pasienDate >= start && pasienDate <= end;
+        });
+        
+        console.log(filtered)
+        setFilteredPatients(filtered);
+    };
+
+     // Fungsi untuk menangani perubahan pada pilihan filter
+  const handleFilterTime = (filterType) => {
+    const now = new Date();
+    let start = new Date();
+    let end = new Date();
+
+    switch (filterType) {
+      case "Today":
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
+        break;
+      case "Last Day":
+        start.setDate(now.getDate() - 1);
+        end = start;
+        break;
+      case "Last Week":
+        start.setDate(now.getDate() - 7);
+        end = now;
+        break;
+      case "This Month":
+        start.setDate(1);
+        end.setMonth(now.getMonth() + 1);
+        end.setDate(0); // Set to the last date of this month
+        break;
+      case "Last Month":
+        start.setMonth(now.getMonth() - 1);
+        start.setDate(1);
+        end.setMonth(now.getMonth());
+        end.setDate(0);
+        break;
+      default:
+        return;
+    }
+
+    // Filter data pasien berdasarkan tanggal
+    const filtered = dataPasien.filter(pasien => {
+      const pasienDate = new Date(pasien.date);
+      return pasienDate >= start && pasienDate <= end;
+    });
+
+    // Update state dengan data yang sudah difilter
+    setFilteredPatients(filtered);
+  };
     
-
-
+  
     return (
         <FormProvider {...methods}>
-            <Col lg="12" className="mt-5">
-                <Row>
-                    <Col xs="6" lg="3">
-                        <TextField 
-                            label="No Rekam Medis :"
-                            name="noRekamMedis"
-                            type="text"
-                            placeholder="Enter your No Rekam Medis..."
-                            className="form-control mb-0"
-                            rules={{
-                                required: 'No Rekam Medis is required',
-                            }}
-                            onChange={(e) => handleFilterChange("noRekamMedis", e.target.value)}
+            <Col lg="12" className=" iq-card p-4">
+                <div className="d-flex justify-content-between iq-card-header">
+                    <h2 className="mb-3">Searching Pasien  </h2>
+                    <button
+                        className="btn btn-dark my-3 mx-3"
+                        onClick={() => window.location.reload()}
+                    >
+                        <i className="ri-refresh-line"></i>
+                    </button>
+                </div>
+                    <Col lg="12" className="mt-2">
+                    <Row>
+                        <Col xs="3">
+                            <TextField 
+                                label="Cari Regist Pasien :"
+                                name="noRekamMedis"
+                                type="text"
+                                placeholder="Enter your No Rekam Medis..."
+                                className="form-control mb-0"
+                                onChange={(e) => handleFilterChange("noRekamMedis", e.target.value)}
+                            />
+                        </Col>
+                        <Col xs="2">
+                        <SelectField
+                            name="ByTime"
+                            label="Filter By : *"
+                            options={[
+                                { value:"Today", label:"Today"},
+                                { value: 'last day', label: 'last day' },
+                                { value: 'Last Week', label: 'Last Week' },
+                                { value: 'This Month', label: 'This Month' },
+                                { value: 'Last Month', label: 'Last Month' },
+                            ]}
+                            onChangeCallback={handleFilterTime}
                         />
-                    </Col>
-                    <Col xs="6" lg="3">
-                        <TextField 
-                            label="Nama :"
-                            name="nama"
-                            type="text"
-                            placeholder="Enter your Nama Pasien..."
-                            className="form-control mb-0"
-                            rules={{
-                                required: 'Nama Pasien is required',
-                            }}
-                            onChange={(e) => handleFilterChange("nama", e.target.value)}
-                        />
-                    </Col>
-                    <Col xs="6" lg="3">
-                        <TextField 
-                            label="No Telp :"
-                            name="noTelp"
-                            type="text"
-                            placeholder="Enter your No Rekam Medis..."
-                            className="form-control mb-0"
-                            rules={{
-                                required: 'No Rekam Medis is required',
-                            }}
-                            onChange={(e) => handleFilterChange("noTelp", e.target.value)}
-                        />
-                    </Col>
-                    <Col xs="6" lg="3">
-                        <DateInput
-                            name="tanggalLahir"
-                            label="Tanggal Lahir"
-                            placeholder={'Enter Tanggal Lahir'}
-                            rules={{ required: 'Tanggal lahir harus diisi' }} // Aturan validasi
-                        />
-                    </Col>
-                </Row>
+                        </Col>
+                        <Col xs="3">
+                            <DateInput 
+                                name="startDate"
+                                label=" tanggal Awal regist Pasien : "
+                                placeholder={'Enter tanggal regist Pasien'}
+                                // options={{ 
+                                //     MaxDate: startDate,
+                                //         allowInput: false,
+                                // }}
+                                onChange={([date]) => setStartDate(date)}
+                            />
+                        </Col>
+                        <Col xs="3">
+                            <DateInput 
+                                name="endDate"
+                                label=" tanggal Akhir regist Pasien : "
+                                placeholder={'Enter tanggal regist Pasien'}
+                                // options={{ 
+                                // MaxDate: endDate,
+                                //     allowInput: false,
+                                // }}
+                                onChange={([date]) => setEndDate(date)}
+                            />
+                        </Col>
+                        <Col xs="1" className="mt-2">
+
+                                    <button 
+                                        onClick={handleFilterDate} 
+                                        className="btn btn-info mt-4 "
+                                    >
+                                        <i className="ri-search-line"></i>
+                                    </button>
+                              
+                        </Col>
+
+                        
+                    </Row>
+                    </Col>       
             </Col>
             <div className="mt-5">
                 <Row>
@@ -141,6 +234,7 @@ const DashboardPendaftaran = memo(() => {
                                             <tr>
                                                 <th>ID</th>
                                                 <th>No Rekam Medis</th>
+                                                <th>Tanggal</th>
                                                 <th>Nama</th>
                                                 <th>Jenis Kelamin</th>
                                                 <th>Tanggal Lahir</th>
@@ -154,6 +248,7 @@ const DashboardPendaftaran = memo(() => {
                                                     <tr key={index}>
                                                         <td>{item.id}</td>
                                                         <td>{item.noRekamMedis}</td>
+                                                        <td>{item.date}</td>
                                                         <td>{item.nama}</td>
                                                         <td>{item.jenisKelamin}</td>
                                                         <td>{item.tglLahir}</td>

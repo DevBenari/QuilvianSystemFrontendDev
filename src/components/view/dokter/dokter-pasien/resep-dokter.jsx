@@ -163,7 +163,7 @@ const PrescriptionForm = () => {
                 </Button>
               </Col>
             </Row>
-            <Table bordered hover className="mt-4">
+            <Table bordered hover responsive className="mt-4">
               <thead>
                 <tr>
                   <th>Nama Obat</th>

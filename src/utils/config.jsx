@@ -46,6 +46,7 @@ export const dataPasien = [
     {
         id: 1,
         noRekamMedis: "123456789",
+        date: "2022-01-01",
         nama: "Dwi",
         jenisKelamin: "Laki-laki",
         tglLahir: "2022-01-01",
@@ -55,6 +56,7 @@ export const dataPasien = [
     {
         id: 2,
         noRekamMedis: "123456789",
+        date: "2022-01-10",
         nama: "Alisa",
         jenisKelamin: "Perempuan",
         tglLahir: "2001-02-05",
@@ -64,6 +66,7 @@ export const dataPasien = [
     {
         id: 3,
         noRekamMedis: "123456789",
+        date: "2022-02-15",
         nama: "Iwan",
         jenisKelamin: "Laki-laki",
         tglLahir: "2022-05-03",
@@ -159,9 +162,12 @@ export const menus = {
         ],
       },
       {
-        title: "Dokter Pasien",
+        title: "Pemeriksaan Pasien ",
         subItems: [
-          { title: "Pasien Dokter", href: "/dokter/pasien" },
+          { title: "Pemeriksaan Pasien IGD", href: "/pemeriksaan/igd" },
+          { title: "Pemeriksaan Pasien Rawat Jalan", href: "/pemeriksaan/rawat-jalan" },
+          { title: "Pemeriksaan Pasien Rawat Inap", href: "/pemeriksaan/rawat-inap" },
+          { title: "Pemeriksaan Pasien Radiologi", href: "/pemeriksaan/radiologi" },
         ],
       },
     ],
