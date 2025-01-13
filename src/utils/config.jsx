@@ -1,45 +1,45 @@
 export const dataWilayah = [
   {
-      provinsi: "Jawa Barat",
-      kabupaten: [
+    provinsi: "Jawa Barat",
+    kabupaten: [
+      {
+        nama: "Bandung",
+        kecamatan: [
           {
-              nama: "Bandung",
-              kecamatan: [
-                  {
-                      nama: "Coblong",
-                      kelurahan: ["Dago", "Ciumbuleuit"]
-                  },
-                  {
-                      nama: "Cicendo",
-                      kelurahan: ["Arjuna", "Husen"]
-                  }
-              ]
+            nama: "Coblong",
+            kelurahan: ["Dago", "Ciumbuleuit"],
           },
           {
-              nama: "Bogor",
-              kecamatan: [
-                  {
-                      nama: "Cibinong",
-                      kelurahan: ["Pondok Rajeg", "Karadenan"]
-                  }
-              ]
-          }
-      ]
+            nama: "Cicendo",
+            kelurahan: ["Arjuna", "Husen"],
+          },
+        ],
+      },
+      {
+        nama: "Bogor",
+        kecamatan: [
+          {
+            nama: "Cibinong",
+            kelurahan: ["Pondok Rajeg", "Karadenan"],
+          },
+        ],
+      },
+    ],
   },
   {
-      provinsi: "Jawa Tengah",
-      kabupaten: [
+    provinsi: "Jawa Tengah",
+    kabupaten: [
+      {
+        nama: "Semarang",
+        kecamatan: [
           {
-              nama: "Semarang",
-              kecamatan: [
-                  {
-                      nama: "Candisari",
-                      kelurahan: ["Gajahmungkur", "Kedungmundu"]
-                  }
-              ]
-          }
-      ]
-  }
+            nama: "Candisari",
+            kelurahan: ["Gajahmungkur", "Kedungmundu"],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const dataPasien = [
@@ -74,7 +74,6 @@ export const dataPasien = [
         noTelp: "08123456789",
     }
 ];
-
 
 // menuData.js
 // export const menuPendaftaran = [
@@ -116,7 +115,7 @@ export const dataPasien = [
 //     }
 //   ];
 
-  // config.js
+// config.js
 export const menus = {
     pendaftaran: [
       {
