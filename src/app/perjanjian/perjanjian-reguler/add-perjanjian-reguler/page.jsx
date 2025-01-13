@@ -20,6 +20,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { Row, Col } from "react-bootstrap";
+import AddPerjanjianForm from "../add-perjanjian/page";
 
 const AddPerjanjianReguler = () => {
   const router = useRouter();
@@ -105,206 +106,6 @@ const AddPerjanjianReguler = () => {
           rules: { required: "Penjamin is required" },
           colSize: 6,
         },
-        // Layanan
-        // Pilihan Layanan
-      ],
-    },
-    {
-      section: "Perjanjian Pasien",
-      fields: [
-        {
-          type: "custom",
-          id: "layanan",
-          label: "",
-          name: "layanan",
-          customRender: () => (
-            <>
-              <Col lg="6">
-                <SelectField
-                  name="layanan"
-                  label="Pilih Layanan"
-                  placeholder="Pilih Layanan"
-                  options={[
-                    { label: "Rawat Inap", value: "Rawat Inap" },
-                    { label: "Rawat Jalan", value: "Rawat Jalan" },
-                    { label: "ODC", value: "ODC" },
-                    { label: "Radiologi", value: "Radiologi" },
-                    { label: "Operasi", value: "Operasi" },
-                    { label: "MCU", value: "MCU" },
-                  ]}
-                  // value={selectedLayanan} // Gunakan nilai dari react-hook-form
-                  onChangeCallback={handleLayananChange}
-                  rules={{ required: "Layanan harus dipilih" }}
-                  className={"mb-2"}
-                />
-              </Col>
-
-              {/* Form Dinamis Berdasarkan Pilihan */}
-
-              {selectedLayanan === "Rawat Inap" && (
-                <Row>
-                  <Col lg="6">
-                    <DateInput
-                      name="janjiTanggal"
-                      label="Janji Tanggal"
-                      placeholder="Masukkan Tanggal"
-                      rules={{ required: "Janji Tanggal harus diisi" }}
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="kelasSelect.select"
-                      label="kelas Kamar"
-                      options={dataKelas}
-                      placeholder="Pilih kelas Kamar"
-                      className="mb-6"
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="dokter"
-                      label="Dokter Pemeriksa"
-                      options={dataDokter}
-                      placeholder="Pilih Dokter"
-                      rules={{ required: "Dokter harus dipilih" }}
-                    />
-                  </Col>
-                </Row>
-              )}
-
-              {selectedLayanan === "Rawat Jalan" && (
-                <Row>
-                  <Col lg="6">
-                    <DateInput
-                      name="tglKunjungan"
-                      label="Tanggal Kunjungan"
-                      placeholder="Masukkan Tanggal Kunjungan"
-                      rules={{ required: "Tanggal Kunjungan harus diisi" }}
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="departemenSelect.select"
-                      label="Departemen"
-                      options={dataDepartemen}
-                      placeholder="Pilih Poli"
-                      className="mb-6"
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="dokter"
-                      label="Dokter Pemeriksa"
-                      options={dataDokter}
-                      placeholder="Pilih Dokter"
-                      rules={{ required: "Dokter harus dipilih" }}
-                    />
-                  </Col>
-                </Row>
-              )}
-
-              {selectedLayanan === "Operasi" && (
-                <Row>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="ruangOperasi.select"
-                      label="Ruang Operasi"
-                      options={ruangOperasi}
-                      placeholder="Pilih ruang operasi"
-                      className="mb-3"
-                      // onChange={(selectedOption) =>
-                      //   handleSearch(
-                      //     "ruangOperasi.select",
-                      //     selectedOption?.value || ""
-                      //   )
-                      // }
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <DateInput
-                      name="tglOperasi"
-                      label="Tanggal Operasi"
-                      rules={{ required: "Tanggal Operasi harus diisi" }}
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="dokterOperator"
-                      label="Dokter Operator"
-                      options={dataDokter}
-                      placeholder="Pilih Dokter Operator"
-                      rules={{ required: "Dokter Operator harus dipilih" }}
-                    />
-                  </Col>
-                </Row>
-              )}
-
-              {selectedLayanan === "ODC" && (
-                <Row>
-                  <Col lg="6">
-                    <DateInput
-                      name="tglKunjungan"
-                      label="Tanggal Kunjungan"
-                      rules={{ required: "Tanggal Kunjungan harus diisi" }}
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="departemenSelect.select"
-                      label="Departemen"
-                      options={dataDepartemen}
-                      placeholder="Pilih Poli"
-                      className="mb-3"
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="dokter"
-                      label="Dokter Pemeriksa"
-                      options={dataDokter}
-                      placeholder="Pilih Dokter"
-                      rules={{ required: "Dokter harus dipilih" }}
-                    />
-                  </Col>
-                </Row>
-              )}
-
-              {selectedLayanan === "Radiologi" && (
-                <Row>
-                  <Col lg="6">
-                    <DateInput
-                      name="tglJanji"
-                      label="Tanggal Janji"
-                      rules={{ required: "Tanggal Pelayanan harus diisi" }}
-                      className="mb-3"
-                    />
-                  </Col>
-                  <TableTindakan tindakan={pemeriksaRadiologi} />,
-                </Row>
-              )}
-              {selectedLayanan === "MCU" && (
-                <Row>
-                  <Col lg="6">
-                    <DateInput
-                      name="tglPelayanan"
-                      label="Tanggal Pelayanan"
-                      rules={{ required: "Tanggal Pelayanan harus diisi" }}
-                    />
-                  </Col>
-                  <Col lg="6">
-                    <SearchableSelectField
-                      name="paketMcuSelect.select"
-                      label="Paket MCU"
-                      options={paketMcu}
-                      placeholder="Pilih Paket MCU"
-                      className="mb-3"
-                    />
-                  </Col>
-                </Row>
-              )}
-            </>
-          ),
-        },
         {
           type: "textarea",
           id: "diagnosaAwal",
@@ -319,10 +120,10 @@ const AddPerjanjianReguler = () => {
           name: "informasiLainnya",
           placeholder: "Masukkan informasi lainnya",
         },
-
-        // Diagnosa dan Informasi Tambahan
       ],
     },
+
+    // Diagnosa dan Informasi Tambahan
   ];
 
   const handleSubmit = async (data) => {
@@ -333,7 +134,7 @@ const AddPerjanjianReguler = () => {
 
   return (
     <Fragment>
-      <DynamicDuaForm
+      <DynamicForm
         title="Pendaftaran Perjanjian Reguler"
         formConfig={formFields}
         onSubmit={handleSubmit}

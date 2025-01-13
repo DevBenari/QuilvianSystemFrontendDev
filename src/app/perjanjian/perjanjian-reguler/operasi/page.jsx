@@ -26,27 +26,27 @@ const Operasi = () => {
   const methods = useForm();
   const [selectedLayanan, setSelectedLayanan] = useState("");
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchOperasi, setSearchOperasi] = useState({});
+
   const handleLayananChange = (value) => {
     setSelectedLayanan(value);
   };
 
-  // Function Operasi Start
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchOperasi, setSearchOperasi] = useState({});
   const handleDateChange = (date) => {
     setSelectedDate(date);
     const formattedDate = date.toISOString().slice(0, 10);
     filterData(formattedDate, searchOperasi);
   };
 
-  const handleSearch = (key, value) => {
+  const handleSearchOperasi = (key, value) => {
     // Update state search dengan nilai terbaru
     const newSearchOperasi = { ...searchOperasi, [key]: value };
     setSearchOperasi(newSearchOperasi);
 
     // FormattedDate untuk mengambil data berdasarkan tanggal terpilih
-    const formattedDate = selectedDate.toISOString().slice(0, 10);
+    const formattedDate = selectedDateOperasi.toISOString().slice(0, 10);
     const dataTanggal = dataOperasiTersedia[formattedDate] || [];
 
     // Melakukan filter pada data berdasarkan key dan value yang diinput
@@ -54,7 +54,7 @@ const Operasi = () => {
       item.ruangan?.toString().toLowerCase().includes(value.toLowerCase())
     );
 
-    setFilteredData(filtered);
+    setfilteredDataOperasi(filtered);
   };
 
   const filterData = (formattedDate, searchParams) => {
@@ -64,10 +64,10 @@ const Operasi = () => {
         item[key]?.toString().toLowerCase().includes(val.toLowerCase())
       )
     );
-    setFilteredData(filtered);
+    setfilteredDataOperasi(filtered);
   };
 
-  const header = [
+  const headerOperasi = [
     "No",
     "Jam Mulai",
     "Jam Selesai",
@@ -77,7 +77,7 @@ const Operasi = () => {
     "Ruangan",
   ];
 
-  const members = filteredData.map((item, index) => ({
+  const membersOperasi = filteredDataOperasi.map((item, index) => ({
     no: index + 1,
     jamMulai: item.jamMulai,
     jamSelesai: item.jamSelesai,
@@ -203,8 +203,8 @@ const Operasi = () => {
                             Tanggal Kunjungan
                           </label>
                           <DatePicker
-                            selected={selectedDate}
-                            onChange={handleDateChange}
+                            selected={selectedDateOperasi}
+                            onChange={handleDateChangeOperasi}
                             dateFormat="yyyy-MM-dd"
                             className="form-control"
                           />
@@ -218,14 +218,17 @@ const Operasi = () => {
                           placeholder="Pilih ruang operasi"
                           className="mb-3"
                           onChange={(selectedOption) =>
-                            handleSearch("ruangan", selectedOption?.value || "")
+                            handleSearchOperasi(
+                              "ruangan",
+                              selectedOption?.value || ""
+                            )
                           }
                         />
                       </Col>
                     </Row>
                     <DataTable
-                      headers={header}
-                      data={members}
+                      headers={headerOperasi}
+                      data={membersOperasi}
                       rowsPerPage={4}
                       customActions={[
                         {

@@ -72,7 +72,7 @@ const RawatInap = () => {
     <FormProvider {...methods}>
       <Form onSubmit={methods.handleSubmit((data) => console.log(data))}>
         <Row className="mt-3">
-          <Col md={6}>
+          <Col md={selectedLayanan ? 6 : 12}>
             <div className="iq-card">
               <div className="iq-card-body">
                 <SelectField
@@ -128,9 +128,10 @@ const RawatInap = () => {
               </div>
             </div>
           </Col>
-          <Col md={6}>
-            {selectedLayanan === "Rawat Inap" && (
-              <>
+
+          {selectedLayanan === "Rawat Inap" && (
+            <>
+              <Col md={6}>
                 <div className="iq-card">
                   <div className="iq-card-header d-flex justify-content-between">
                     <div className="iq-header-title my-3">
@@ -165,9 +166,9 @@ const RawatInap = () => {
                     ]}
                   />
                 </div>
-              </>
-            )}
-          </Col>
+              </Col>
+            </>
+          )}
         </Row>
       </Form>
     </FormProvider>

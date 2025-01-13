@@ -23,7 +23,7 @@ const PerjanjianReservasi = memo(() => {
 
   const router = useRouter();
   const handleAdd = () => {
-    router.push("/perjanjian/perjanjian-reguler/add-perjanjian-reguler");
+    router.push("/perjanjian/perjanjian-reguler/add-perjanjian");
   };
 
   // Fungsi untuk menangani pencarian dengan kriteria
