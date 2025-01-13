@@ -1,7 +1,7 @@
 "use client";
 import FormValidations from "@/components/features/formValidations/formValidations";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import React, { Fragment, useState, useEffect, useCallback } from "react";
+import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
 import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { FormProvider, useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ import { pemeriksaRadiologi, tindakanRadiologi } from "@/utils/dataTindakan";
 import PemeriksaanTableRadiologi from "@/components/view/radiologi/pemeriksaanRadiologi";
 import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
 
-export default function PendaftaranPasienLab() {
+const PendaftaranPasienRadiologi = memo(() => {
   const router = useRouter();
   // const [province, setProvince] = useState("");
   // const changeProvince = (val) => {
@@ -551,4 +551,7 @@ export default function PendaftaranPasienLab() {
       />
     </Fragment>
   );
-}
+});
+
+PendaftaranPasienRadiologi.displayName = "PendaftaranPasienRadiologi";
+export default PendaftaranPasienRadiologi;

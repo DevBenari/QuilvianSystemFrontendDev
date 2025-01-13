@@ -1,52 +1,37 @@
 "use client";
+import FormValidations from "@/components/features/formValidations/formValidations";
 
-import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
-import { useRouter } from "next/navigation";
+import React, { Fragment, useState, useEffect, useCallback } from "react";
+import { addPromo } from "@/lib/hooks/keanggotaan/add";
+import { useRouter } from "next/navigation"; // Import the useRouter hook
+import { useKecamatans } from "@/lib/hooks/kecamatan/index";
+import { getById } from "@/lib/hooks/province/getProvinceId";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Container, Button, Table } from "react-bootstrap";
+import { Row, Col, Container, Button } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import RadioInput from "@/components/ui/radio-input";
+import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hook
 import SelectField from "@/components/ui/select-field";
 import dataWilayah from "@/utils/dataWilayah";
-import { useKecamatans } from "@/lib/hooks/kecamatan";
-import { useCities } from "@/lib/hooks/city";
-
-import TindakanTableLaboratorium from "@/components/view/pendaftaran-laboratorium/tindakanLaboratorium";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import { tindakanDataConfig } from "@/utils/dataTindakan";
-export default function PendaftaranPasienLab() {
-  // const { promos, loading, error } = usePromos();
-  // const [promosState, setPromosState] = useState([]);
-  // const datas = useState([]);
-  // const [searchTerm, setSearchTerm] = useState("");
+
+export default function PendaftaranRehabilitasiMedik() {
+  const { promos, loading, error } = usePromos();
+  const [promosState, setPromosState] = useState([]);
   const router = useRouter();
-  // const [province, setProvince] = useState("");
+  const [selectedOption, setSelectedOption] = useState(null);
+  // change provinsi berdasarkan api
 
-  // const changeProvince = (val) => {
-  //   setProvince("");
-  //   kecamatans.forEach((kecamatan) => {
-  //     if (kecamatan.subDistrictId === val) {
-  //       setProvince(kecamatan.provinceId);
-  //     }
-  //   });
-  // };
+  // function handle
 
-  const [selectedOption, setSelectedOption] = useState("");
-
-  const handleRadioChange = (e) => {
-    const value = e.target.value; // Ambil value dari radio button
-    setSelectedOption(value); // Set state berdasarkan pilihan
+  const handleRadioChange = (value) => {
+    setSelectedOption(value);
   };
 
-  // const [selectedOptions, setSelectedOptions] = useState([]);
-  // function handle
   const handleSelectChange = (value) => {
     setSelectedOption(value);
   };
 
-  // end function handle
-
-  // function search provinsi
   const { setValue } = useForm();
 
   const [pasienSelectedProvinsi, setPasienSelectedProvinsi] = useState("");
@@ -107,18 +92,42 @@ export default function PendaftaranPasienLab() {
     [pasienFilteredKabupaten, pasienFilteredKecamatan, setValue]
   );
 
-  // end function seacrh provindsi
+  //  function promo
+  useEffect(() => {
+    if (promos) {
+      setPromosState(promos);
+    }
+  }, [promos]);
+  const formFieldsPromo = [
+    {
+      name: "promoByNama",
+      label: "Search",
+      type: "text",
+      placeholder: "Search Promo by Name...",
+      onChange: (e) => handleSearchByName(e.target.value),
+    },
+  ];
 
-  // funhsi table tindakan api
+  const handleSearchByName = (searchValue) => {
+    const filteredPromos = promos.filter((promo) =>
+      promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
+    );
+    setPromosState(filteredPromos.length ? filteredPromos : promos);
+  };
 
-  // const { kecamatans } = useKecamatans();
-  // const { cities } = useCities();
+  const promoHeaders = ["NO", "PEMERIKSAAN LAB", "JUMLAH", "ACTION"];
+  const promoMembers = promosState.map((promo, index) => ({
+    no: index + 1,
+    id: promo.promoId,
+    kodePromo: promo.kodePromo || "-",
+    namaPromo: promo.namaPromo || "-",
+    keterangan: promo.keterangan || "-",
+  }));
 
-  // end table tindakan
+  // end promo
 
   const formFields = [
     {
-      section: "Data Pasien",
       fields: [
         {
           type: "text",
@@ -203,15 +212,7 @@ export default function PendaftaranPasienLab() {
           },
           colSize: 6,
         },
-        {
-          type: "textarea",
-          id: "alamatRumah",
-          label: "Alamat Rumah",
-          name: "alamatRumah",
-          placeholder: "Alamat Rumah",
-          rules: { required: "Alamat Rumah is required" },
-          colSize: 12,
-        },
+
         {
           type: "select",
           id: "pasien_provinsi",
@@ -268,23 +269,32 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
           onChange: (e) => handleChange("kelurahan", e.target.value),
         },
+        {
+          type: "textarea",
+          id: "alamatRumah",
+          label: "Alamat Rumah",
+          name: "alamatRumah",
+          placeholder: "Alamat Rumah",
+          rules: { required: "Alamat Rumah is required" },
+          colSize: 12,
+        },
       ],
     },
     {
-      section: "Data Pasien 2",
+      section: "Detatil Konsultasi ",
       fields: [
         {
           type: "select",
           id: "penjamin",
           label: "Tipe Pasien",
           name: "penjamin",
-          placeholder: "Penjamin",
+          placeholder: "Tipe Penjamin",
           options: [
             { label: "Umum", value: "umum" },
             { label: "Penjamin", value: "penjamin" },
           ],
           rules: { required: "Penjamin is required" },
-          colSize: 8,
+          colSize: 6,
         },
         {
           type: "select",
@@ -309,10 +319,44 @@ export default function PendaftaranPasienLab() {
           rules: { required: "Tanggal Registrasi is required" },
           colSize: 6,
         },
+        {
+          type: "select",
+          id: "tindakanMedik",
+          name: "tindakanMedik",
+          label: "Daftar Tindakan Rehabilitasi Medik",
+          placeholder: "Daftar Tindakan Rehabilitasi Medik",
+          options: [
+            { label: "jasa suntik", value: "jasaSuntik" },
+            { label: "jasa medik", value: "jasaMedik" },
+            { label: "latihan ambulasi", value: "latihanAmbulasi" },
+            { label: "latihan lingkup gerak", value: "latihanLingkupGerak" },
+          ],
+          rules: { required: "Daftar Tindakan Rehabilitasi Medik is required" },
+          colSize: 6,
+        },
+        {
+          type: "select",
+          id: "dokterPemeriksa",
+          label: "Dokter Pemeriksa",
+          name: "dokterPemeriksa",
+          placeholder: "Dokter Pemeriksa",
+          options: [
+            { label: "Dr. Sarah Johnson", value: "dr_sarah_johnson" },
+            { label: "Dr. Michael Brown", value: "dr_michael_brown" },
+            { label: "Dr. Emily Davis", value: "dr_emily_davis" },
+            { label: "Dr. John Smith", value: "dr_john_smith" },
+            { label: "Dr. Emma Wilson", value: "dr_emma_wilson" },
+          ],
+          rules: { required: "Dokter Lab is required" },
+          colSize: 6,
+        },
 
         // {
         //   type: "custom",
-
+        //   id: "dirujuk",
+        //   label: "Dirujuk",
+        //   name: "dirujuk",
+        //   placeholder: "Dirujuk",
         //   rules: { required: "Dirujuk is required" },
         //   customRender: () => (
         //     <>
@@ -337,7 +381,6 @@ export default function PendaftaranPasienLab() {
         //               { label: "Dr. C", value: "dr_c" },
         //             ]}
         //             placeholder="Pilih Dokter"
-        //             rules={{ required: "Pilih Dokter is required" }}
         //             className="mb-3"
         //             onChange={(e) => handleSelectChange("konsul")}
         //             disabled={selectedOption && selectedOption !== "konsul"}
@@ -349,7 +392,6 @@ export default function PendaftaranPasienLab() {
         //           <RadioInput
         //             name="LuarRs"
         //             options={[{ label: "Luar Rs", value: "LuarRs" }]}
-        //             rules={{ required: "Luar Rs is required" }}
         //             className="d-flex gap-5 mt-2"
         //             onChange={() => handleRadioChange("LuarRs")}
         //           />
@@ -366,7 +408,6 @@ export default function PendaftaranPasienLab() {
         //               { label: "Keluarga", value: "keluarga" },
         //             ]}
         //             placeholder="Tipe RSU/RS/RB"
-        //             rules={{ required: "Tipe RSU/RS/RB is required" }}
         //             className="mb-3"
         //             onChange={(e) => handleSelectChange("LuarRs")}
         //             disabled={selectedOption && selectedOption !== "LuarRs"}
@@ -380,9 +421,6 @@ export default function PendaftaranPasienLab() {
         //               type="text"
         //               placeholder="Enter Nama "
         //               className="form-control mb-0"
-        //               rules={{
-        //                 required: "Nama is required",
-        //               }}
         //             />
         //           </Col>
         //           <Col lg="6">
@@ -392,9 +430,6 @@ export default function PendaftaranPasienLab() {
         //               type="text"
         //               placeholder="Enter nomor telepon Luar Rs "
         //               className="form-control mb-0"
-        //               rules={{
-        //                 required: "nomor telepon Luar Rs is required",
-        //               }}
         //             />
         //           </Col>
         //           <Col lg="6">
@@ -404,9 +439,6 @@ export default function PendaftaranPasienLab() {
         //               type="text"
         //               placeholder="Enter Alamat "
         //               className="form-control mb-0"
-        //               rules={{
-        //                 required: "Alamat is required",
-        //               }}
         //             />
         //           </Col>
         //         </Row>
@@ -421,9 +453,6 @@ export default function PendaftaranPasienLab() {
         //                 value: "atasPermintaanSendiri",
         //               },
         //             ]}
-        //             rules={{
-        //               required: "Atas Permintaan Sendiri is required",
-        //             }}
         //             className="d-flex gap-5 mt-2 mb-3"
         //             onChange={() => handleRadioChange("atasPermintaanSendiri")}
         //           />
@@ -433,8 +462,22 @@ export default function PendaftaranPasienLab() {
         //   ),
         //   colSize: 6,
         // },
+        {
+          type: "select",
+          id: "suratRujukan",
+          label: "Surat Rujukan",
+          name: "suratRujukan",
+          placeholder: "Surat Rujukan",
+          options: [
+            { label: "Ada", value: "Ada" },
+            { label: "Tidak Ada", value: "Tidak Ada" },
+          ],
+          rules: { required: "Surat Rujukan is required" },
+          colSize: 6,
+        },
       ],
     },
+
     {
       section: "Dirujuk",
       fields: [
@@ -442,7 +485,8 @@ export default function PendaftaranPasienLab() {
           type: "select",
           id: "dirujuk",
           name: "dirujuk",
-          placeholder: "Pilihan Rujukan ",
+          label: "Pilih Rujukan",
+          placeholder: "Pilih Rujukan",
           options: [
             { label: "Konsul", value: "konsul" },
             { label: "Luar RS", value: "luarRs" },
@@ -451,7 +495,7 @@ export default function PendaftaranPasienLab() {
               value: "atasPermintaanSendiri",
             },
           ],
-          colSize: 8,
+          colSize: 12,
           className: "mb-3",
         },
         {
@@ -504,53 +548,6 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
           className: "mb-3",
         },
-      ],
-    },
-    {
-      section: "Kode Member",
-      fields: [
-        {
-          type: "select",
-          id: "pilihPromoo",
-          label: "Pilih Promo",
-          name: "pilihPromoo",
-          placeholder: "Pilih Promo",
-          options: [
-            { label: "Voucher Potongan", value: "voucher_potongan" },
-            { label: "RS MMC Dokter", value: "rs_mmc_dokter" },
-            { label: "RS MMC Tunai (10%)", value: "rs_mmc_tunai" },
-            { label: "VIP BKM Tanpa Part", value: "vip_bkm" },
-          ],
-          rules: { required: "Pilih Promo is required" },
-          colSize: 6,
-        },
-        {
-          type: "select",
-          id: "tipePemeriksaan",
-          label: "Tipe Pemeriksaan",
-          name: "tipePemeriksaan",
-          placeholder: "Tipe Pemeriksaan",
-          options: [
-            { label: "Patologi Klinik", value: "patologi_klinik" },
-            { label: "Patologi Anatomi", value: "patologi_anatomi" },
-            { label: "Mikrobiologi", value: "mikrobiologi" },
-          ],
-          rules: { required: "Tipe Pemeriksaan is required" },
-          colSize: 6,
-        },
-        {
-          type: "select",
-          id: "suratRujukan",
-          label: "Surat Rujukan",
-          name: "suratRujukan",
-          placeholder: "Surat Rujukan",
-          options: [
-            { label: "Ada", value: "Ada" },
-            { label: "Tidak Ada", value: "Tidak Ada" },
-          ],
-          rules: { required: "Surat Rujukan is required" },
-          colSize: 6,
-        },
         {
           type: "textarea",
           id: "diagnosaAwal",
@@ -559,82 +556,6 @@ export default function PendaftaranPasienLab() {
           placeholder: "Diagnosa Awal",
           rules: { required: "Diagnosa Awal is required" },
           colSize: 12,
-        },
-
-        {
-          type: "date",
-          id: "tglSampling",
-          label: "Tanggal Sampling",
-          name: "tglSampling",
-          rules: { required: "Tanggal Sampling is required" },
-          colSize: 4,
-        },
-        {
-          type: "time",
-          id: "timeSampling",
-          label: "Jam",
-          name: "timeSampling",
-          rules: { required: "time Sampling is required" },
-          colSize: 2,
-        },
-      ],
-    },
-    {
-      section: "Tindakan",
-      fields: [
-        {
-          type: "custom",
-          id: "tindakan ",
-          label: "Tindakan Data Table",
-          customRender: () => (
-            <>
-              <TindakanTableLaboratorium tindakan={tindakanDataConfig} />
-            </>
-          ),
-          colSize: 12,
-        },
-      ],
-    },
-    {
-      fields: [
-        {
-          type: "table",
-          id: "tableTindakan",
-          label: "Table Tindakan",
-          name: "tableTindakan",
-          columns: ["Pemeriksaan Lab", "Jumlah", "Action"],
-          rules: { required: "Table Tindakan is required" },
-          colSize: 12,
-        },
-        {
-          type: "select",
-          id: "dokterLab",
-          label: "Dokter Lab",
-          name: "dokterLab",
-          placeholder: "Pilih Dokter",
-          options: [
-            { label: "Dr. Sarah Johnson", value: "dr_sarah_johnson" },
-            { label: "Dr. Michael Brown", value: "dr_michael_brown" },
-            { label: "Dr. Emily Davis", value: "dr_emily_davis" },
-            { label: "Dr. John Smith", value: "dr_john_smith" },
-            { label: "Dr. Emma Wilson", value: "dr_emma_wilson" },
-          ],
-          rules: { required: "Dokter Lab is required" },
-          colSize: 6,
-        },
-
-        {
-          type: "select",
-          id: "pemeriksaanTestCito",
-          label: "Pemeriksaan Test Cito",
-          name: "pemeriksaanTestCito",
-          placeholder: "Pemeriksaan Test Cito",
-          options: [
-            { label: "Ya", value: "ya" },
-            { label: "Tidak ", value: "tidak " },
-          ],
-          rules: { required: "Surat Rujukan is required" },
-          colSize: 6,
         },
       ],
     },
@@ -654,7 +575,7 @@ export default function PendaftaranPasienLab() {
   return (
     <Fragment>
       <DynamicForm
-        title="Registrasi laboratorium"
+        title="Registrasi Rehabilitasi Medik"
         formConfig={formFields}
         onSubmit={handleSubmit}
       />

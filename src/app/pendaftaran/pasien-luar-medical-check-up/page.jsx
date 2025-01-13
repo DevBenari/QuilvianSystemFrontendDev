@@ -1,7 +1,7 @@
 "use client";
 import FormValidations from "@/components/features/formValidations/formValidations";
 
-import React, { Fragment, useState, useEffect, useCallback } from "react";
+import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
 import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useKecamatans } from "@/lib/hooks/kecamatan/index";
@@ -14,8 +14,10 @@ import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hoo
 import SelectField from "@/components/ui/select-field";
 import dataWilayah from "@/utils/dataWilayah";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import SearchableSelectField from "@/components/ui/select-field-search";
+import { dataDokter, paketMcu } from "@/utils/SearchSelect";
 
-export default function PendaftaranRehabilitasiMedik() {
+const PendaftaranPasienLuarMedicalCheckUp = memo(() => {
   const { promos, loading, error } = usePromos();
   const [promosState, setPromosState] = useState([]);
   const router = useRouter();
@@ -31,66 +33,6 @@ export default function PendaftaranRehabilitasiMedik() {
   const handleSelectChange = (value) => {
     setSelectedOption(value);
   };
-
-  const { setValue } = useForm();
-
-  const [pasienSelectedProvinsi, setPasienSelectedProvinsi] = useState("");
-  const [pasienFilteredKabupaten, setPasienFilteredKabupaten] = useState([]);
-  const [pasienFilteredKecamatan, setPasienFilteredKecamatan] = useState([]);
-  const [pasienFilteredKelurahan, setPasienFilteredKelurahan] = useState([]);
-
-  const handleChange = useCallback(
-    (field, value) => {
-      if (field === "provinsi") {
-        // Set provinsi yang dipilih
-        setPasienSelectedProvinsi(value);
-
-        // Filter data kabupaten berdasarkan provinsi
-        const selectedProvinsi = dataWilayah.find(
-          (item) => item.provinsi === value
-        );
-        setPasienFilteredKabupaten(
-          selectedProvinsi ? selectedProvinsi.kabupaten : []
-        );
-
-        // Reset kecamatan dan kelurahan jika provinsi berubah
-        setPasienFilteredKecamatan([]);
-        setPasienFilteredKelurahan([]);
-        setValue("pasien_provinsi", value);
-        setValue("pasien_kabupaten", ""); // Reset kabupaten
-        setValue("pasien_kecamatan", ""); // Reset kecamatan
-        setValue("pasien_kelurahan", ""); // Reset kelurahan
-      } else if (field === "kabupaten") {
-        // Filter data kecamatan berdasarkan kabupaten
-        const selectedKabupaten = pasienFilteredKabupaten.find(
-          (item) => item.nama === value
-        );
-        setPasienFilteredKecamatan(
-          selectedKabupaten ? selectedKabupaten.kecamatan : []
-        );
-
-        // Reset kelurahan jika kabupaten berubah
-        setPasienFilteredKelurahan([]);
-        setValue("pasien_kabupaten", value);
-        setValue("pasien_kecamatan", ""); // Reset kecamatan
-        setValue("pasien_kelurahan", ""); // Reset kelurahan
-      } else if (field === "kecamatan") {
-        // Filter data kelurahan berdasarkan kecamatan
-        const selectedKecamatan = pasienFilteredKecamatan.find(
-          (item) => item.nama === value
-        );
-        setPasienFilteredKelurahan(
-          selectedKecamatan ? selectedKecamatan.kelurahan : []
-        );
-        setValue("pasien_kecamatan", value);
-        setValue("pasien_kelurahan", ""); // Reset kelurahan
-      } else if (field === "kelurahan") {
-        // Set kelurahan yang dipilih
-        setValue("pasien_kelurahan", value);
-      }
-    },
-    [pasienFilteredKabupaten, pasienFilteredKecamatan, setValue]
-  );
 
   //  function promo
   useEffect(() => {
@@ -212,63 +154,6 @@ export default function PendaftaranRehabilitasiMedik() {
           },
           colSize: 6,
         },
-
-        {
-          type: "select",
-          id: "pasien_provinsi",
-          label: "Provinsi Pasien",
-          name: "pasien_provinsi",
-          placeholder: "Pilih Provinsi",
-          options: dataWilayah.map((item) => ({
-            label: item.provinsi,
-            value: item.provinsi,
-          })),
-          rules: { required: "Provinsi is required" },
-          colSize: 6,
-          onChange: (e) => handleChange("provinsi", e.target.value),
-        },
-        {
-          type: "select",
-          id: "pasien_kabupaten",
-          label: "Kabupaten Pasien",
-          name: "pasien_kabupaten",
-          placeholder: "Pilih Kabupaten",
-          options: pasienFilteredKabupaten.map((item) => ({
-            label: item.nama,
-            value: item.nama,
-          })),
-          rules: { required: "Kabupaten is required" },
-          colSize: 6,
-          onChange: (e) => handleChange("kabupaten", e.target.value),
-        },
-        {
-          type: "select",
-          id: "pasien_kecamatan",
-          label: "Kecamatan Pasien",
-          name: "pasien_kecamatan",
-          placeholder: "Pilih Kecamatan",
-          options: pasienFilteredKecamatan.map((item) => ({
-            label: item.nama,
-            value: item.nama,
-          })),
-          rules: { required: "Kecamatan is required" },
-          colSize: 6,
-          onChange: (e) => handleChange("kecamatan", e.target.value),
-        },
-        {
-          type: "select",
-          id: "pasien_kelurahan",
-          label: "Kelurahan Pasien",
-          name: "pasien_kelurahan",
-          placeholder: "Pilih Kelurahan",
-          options: pasienFilteredKelurahan.map((item) => ({
-            label: item,
-            value: item,
-          })),
-          rules: { required: "Kelurahan is required" },
-          colSize: 6,
-          onChange: (e) => handleChange("kelurahan", e.target.value),
-        },
         {
           type: "textarea",
           id: "alamatRumah",
@@ -351,117 +236,56 @@ export default function PendaftaranRehabilitasiMedik() {
           colSize: 6,
         },
 
-        // {
-        //   type: "custom",
-        //   id: "dirujuk",
-        //   label: "Dirujuk",
-        //   name: "dirujuk",
-        //   placeholder: "Dirujuk",
-        //   rules: { required: "Dirujuk is required" },
-        //   customRender: () => (
-        //     <>
-        //       <div className="iq-header-title">
-        //         <h4 className="card-title my-2"> Dirujuk </h4>
-        //       </div>
-        //       <Row>
-        //         <Col lg="6">
-        //           <RadioInput
-        //             name="konsul"
-        //             options={[{ label: "Konsul", value: "konsul" }]}
-        //             className="d-flex gap-5 mt-2"
-        //             onChange={() => handleRadioChange("konsul")}
-        //           />
-        //         </Col>
-        //         <Col lg="12">
-        //           <SelectField
-        //             name="pilihDokter"
-        //             options={[
-        //               { label: "Dr. A", value: "dr_a" },
-        //               { label: "Dr. B", value: "dr_b" },
-        //               { label: "Dr. C", value: "dr_c" },
-        //             ]}
-        //             placeholder="Pilih Dokter"
-        //             className="mb-3"
-        //             onChange={(e) => handleSelectChange("konsul")}
-        //             disabled={selectedOption && selectedOption !== "konsul"}
-        //           />
-        //         </Col>
-        //       </Row>
-        //       <Row>
-        //         <Col lg="6">
-        //           <RadioInput
-        //             name="LuarRs"
-        //             options={[{ label: "Luar Rs", value: "LuarRs" }]}
-        //             className="d-flex gap-5 mt-2"
-        //             onChange={() => handleRadioChange("LuarRs")}
-        //           />
-        //         </Col>
-        //         <Col lg="12">
-        //           <SelectField
-        //             name="pilihRs"
-        //             options={[
-        //               { label: "Puskesmas", value: "puskesmas" },
-        //               { label: "Dr/Drg", value: "dr_drg" },
-        //               { label: "Maramedik", value: "maramedik" },
-        //               { label: "Dukun Terlatih", value: "dukun_terlatih" },
-        //               { label: "Kasus Polisi", value: "kasus_polisi" },
-        //               { label: "Keluarga", value: "keluarga" },
-        //             ]}
-        //             placeholder="Tipe RSU/RS/RB"
-        //             className="mb-3"
-        //             onChange={(e) => handleSelectChange("LuarRs")}
-        //             disabled={selectedOption && selectedOption !== "LuarRs"}
-        //           />
-        //         </Col>
-        //         <Row hidden={selectedOption !== "LuarRs"}>
-        //           <Col lg="6">
-        //             <TextField
-        //               label="Nama : "
-        //               name="namaLuarRs"
-        //               type="text"
-        //               placeholder="Enter Nama "
-        //               className="form-control mb-0"
-        //             />
-        //           </Col>
-        //           <Col lg="6">
-        //             <TextField
-        //               label="Nomor Telepon Luar Rs :"
-        //               name="Luar Rs"
-        //               type="text"
-        //               placeholder="Enter nomor telepon Luar Rs "
-        //               className="form-control mb-0"
-        //             />
-        //           </Col>
-        //           <Col lg="6">
-        //             <TextField
-        //               label="Alamat  :"
-        //               name="alamatLuarRs"
-        //               type="text"
-        //               placeholder="Enter Alamat "
-        //               className="form-control mb-0"
-        //             />
-        //           </Col>
-        //         </Row>
-        //       </Row>
-        //       <Row>
-        //         <Col lg="12">
-        //           <RadioInput
-        //             name="atasPermintaanSendiri"
-        //             options={[
-        //               {
-        //                 label: "Atas Permintaan Sendiri",
-        //                 value: "atasPermintaanSendiri",
-        //               },
-        //             ]}
-        //             className="d-flex gap-5 mt-2 mb-3"
-        //             onChange={() => handleRadioChange("atasPermintaanSendiri")}
-        //           />
-        //         </Col>
-        //       </Row>
-        //     </>
-        //   ),
-        //   colSize: 6,
-        // },
+        {
+          type: "custom",
+          id: "paketMcu",
+          label: "paketMcu",
+          name: "paketMcu",
+          placeholder: "paketMcu",
+          rules: { required: "paketMcu is required" },
+          customRender: () => (
+            <>
+              <Row>
+                <Col lg="6">
+                  <SearchableSelectField
+                    name="paketMcu"
+                    label="Paket MCU"
+                    options={paketMcu}
+                    placeholder="Pilih paketMcu"
+                    rules={{ required: "paketMcu harus dipilih" }}
+                  />
+                </Col>
+                <Col lg="6">
+                  <SearchableSelectField
+                    name="dokter"
+                    label="Dokter Pemeriksa"
+                    options={dataDokter}
+                    placeholder="Pilih Dokter"
+                    rules={{ required: "Dokter harus dipilih" }}
+                    className={"mb-3"}
+                  />
+                </Col>
+              </Row>
+            </>
+          ),
+          colSize: 12,
+        },
+        {
+          type: "select",
+          id: "pilihPromoo",
+          label: "Pilih Promo",
+          name: "pilihPromoo",
+          placeholder: "Pilih Promo",
+          options: [
+            { label: "Voucher Potongan", value: "voucher_potongan" },
+            { label: "RS MMC Dokter", value: "rs_mmc_dokter" },
+            { label: "RS MMC Tunai (10%)", value: "rs_mmc_tunai" },
+            { label: "VIP BKM Tanpa Part", value: "vip_bkm" },
+          ],
+          rules: { required: "Pilih Promo is required" },
+          colSize: 6,
+        },
+
         {
           type: "select",
           id: "suratRujukan",
@@ -575,10 +399,15 @@ export default function PendaftaranRehabilitasiMedik() {
   return (
     <Fragment>
       <DynamicForm
-        title="Registrasi Rehabilitasi Medik"
+        title="Registrasi Pasien Medical CheckUp"
         formConfig={formFields}
         onSubmit={handleSubmit}
       />
     </Fragment>
   );
-}
+});
+
+PendaftaranPasienLuarMedicalCheckUp.displayName =
+  "PendaftaranPasienLuarMedicalCheckUp";
+
+export default PendaftaranPasienLuarMedicalCheckUp;

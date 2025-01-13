@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"; // Import the useRouter hook
 import OptikTable from "@/components/view/optik/OptikTable";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 
-export default function PendaftaranRehabilitasiMedik() {
+export const PendaftaranPasienLuarOptik = memo(() => {
   // const [promosState, setPromosState] = useState([]);
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState(null);
@@ -201,4 +201,8 @@ export default function PendaftaranRehabilitasiMedik() {
       />
     </Fragment>
   );
-}
+});
+
+PendaftaranPasienLuarOptik.displayName = "PendaftaranPasienLuarOptik";
+
+export default PendaftaranPasienLuarOptik;

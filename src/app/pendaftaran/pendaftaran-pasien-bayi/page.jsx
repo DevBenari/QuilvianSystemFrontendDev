@@ -1,8 +1,8 @@
 "use client";
 
 import DataTable from "@/components/view/pendaftaran-pasien-bayi/table/dataTable";
-import { Fragment, useEffect } from "react";
-export const PendaftaranPasienBayi = () => {
+import { Fragment, memo, useEffect } from "react";
+export const PendaftaranPasienBayi = memo(() => {
   const headers = [
     "NO RM",
     "KELAS",
@@ -22,6 +22,8 @@ export const PendaftaranPasienBayi = () => {
       />
     </Fragment>
   );
-};
+});
+
+PendaftaranPasienBayi.displayName = "PendaftaranPasienBayi";
 
 export default PendaftaranPasienBayi;
