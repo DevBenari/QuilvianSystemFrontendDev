@@ -12,7 +12,7 @@ import SelectField from "@/components/ui/select-field";
 import dataWilayah from "@/utils/dataWilayah";
 
 import { pemeriksaRadiologi, tindakanRadiologi } from "@/utils/dataTindakan";
-import PemeriksaanTableRadiologi from "@/components/view/radiologi/pemeriksaanRadiologi";
+
 import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
 
 const PendaftaranPasienRadiologi = memo(() => {

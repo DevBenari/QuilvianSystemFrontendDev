@@ -1,6 +1,6 @@
 "use client";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import React, { Fragment, useState, useEffect, useCallback } from "react";
+import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
 import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import OptikTable from "@/components/view/optik/OptikTable";

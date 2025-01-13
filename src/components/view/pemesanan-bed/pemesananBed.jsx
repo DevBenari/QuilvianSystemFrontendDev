@@ -1,180 +1,276 @@
 "use client";
-import DataTable from "@/components/features/viewDataTables/dataTable";
-import { usePromos } from "@/lib/hooks/promo";
-import { deletePromo } from "@/lib/hooks/promo/delete";
-import { editPromo } from "@/lib/hooks/promo/edit";
-import { getById } from "@/lib/hooks/promo/getById";
-import { dataBed } from "@/utils/PasienPerjanjian";
-import { useRouter } from "next/navigation";
-import React, { Fragment, useState, useEffect, memo } from "react";
-import { useForm } from "react-hook-form";
+import DateInput from "@/components/ui/date-input";
+import SelectField from "@/components/ui/select-field";
+import TextField from "@/components/ui/text-field";
+import { dataBookingBed } from "@/utils/PasienPerjanjian";
+import React, { useState, useEffect } from "react";
 
-const PemesananBed = memo(() => {
-  // const router = useRouter();
-  // const { promos, loading, error } = usePromos(); // Fetch promo data
-  // const [promosState, setPromosState] = useState([]); // State to hold promos data
-  // const [searchTerm, setSearchTerm] = useState(""); // State for search term
+import {
+  Table,
+  FormControl,
+  Form,
+  Container,
+  Row,
+  Col,
+  Pagination,
+  Button,
+  Modal,
+} from "react-bootstrap";
+import { FormProvider, useForm } from "react-hook-form";
 
-  // // Sync promosState with promos after fetching
-  // useEffect(() => {
-  //   if (promos) {
-  //     setPromosState(promos);
-  //   }
-  // }, [promos]);
+const PemesananBed = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const rowsPerPage = 10;
 
-  // const handleSearch = async (data) => {
-  //   try {
-  //     console.log(data);
-  //     const response = await editPromo(data, data.id);
-  //     window.location.reload();
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Failed to update promo.");
-  //   }
-  // };
-  // const handleSearchByName = (searchValue) => {
-  //   if (!searchValue.trim()) {
-  //     setPromosState(promos); // Reset to initial promos if search term is empty
-  //     return;
-  //   }
+  const [selectedBed, setSelectedBed] = useState("");
+  const [selectedRuangan, setSelectedRuangan] = useState("");
 
-  //   const filteredPromos = promos.filter((promo) =>
-  //     promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
-  //   );
-
-  //   if (filteredPromos.length > 0) {
-  //     setPromosState(filteredPromos); // Update promosState with the filtered promos
-  //   } else {
-  //     // alert("No promo found with the given name.");
-  //     setPromosState([]); // Clear promosState if no result found
-  //   }
-  // };
-  // const formFields = [
-  //   {
-  //     name: "promoByNama",
-  //     label: "Search",
-  //     type: "text",
-  //     placeholder: "Search Booking by Name...",
-  //     onChange: (e) => handleSearchByName(e.target.value),
-  //   },
-  // ];
-  // const headers = ["NO", "Class", "Room", "Bed", "Status"];
-
-  // // Map promos to match the DataTable structure
-  // const members = promosState.map((promo, index) => ({
-  //   no: index + 1,
-  //   id: promo.promoId,
-  //   name: promo.kodePromo || "-",
-  //   type_member: promo.namaPromo || "-",
-  //   3: promo.namaPromo || "-",
-  //   promo: promo.keterangan || "-", // Assuming promos have a description field
-  // }));
-
-  const methods = useForm();
-  const [filteredData, setFilteredData] = useState(dataBed);
-  const [searchCriteria, setSearchCriteria] = useState({
-    tanggalMulai: "",
-    tanggalSelesai: "",
-    nama: "",
-    noRM: "",
-    alamat: "",
+  const methods = useForm({
+    defaultValues: {
+      noRekamMedis: "",
+      patientName: "",
+      bed: selectedBed,
+      ruangan: selectedRuangan,
+      tanggalBooking: "",
+    },
   });
 
-  // Fungsi untuk menangani pencarian
-  const handleSearch = (key, value) => {
-    const updatedCriteria = { ...searchCriteria, [key]: value };
-    setSearchCriteria(updatedCriteria);
+  // modals booking
 
-    const filtered = dataPasienMCU.filter((item) => {
-      return Object.keys(updatedCriteria).every((criteriaKey) => {
-        const criteriaValue = updatedCriteria[criteriaKey];
-        if (!criteriaValue) return true;
+  const handleBooking = (bed, ruangan) => {
+    console.log("Debug: Selected ruangan:", ruangan); // Log untuk ruanga
+    console.log("Selected bed: ", bed); // Untuk debugging, periksa output ini
+    setSelectedBed(bed); // Pastikan 'bed' adalah objek atau nilai yang diharapkan
+    setShowModal(true);
+    setSelectedRuangan(ruangan);
 
-        if (
-          criteriaKey === "tanggalMulai" ||
-          criteriaKey === "tanggalSelesai"
-        ) {
-          const itemDate = new Date(item.tanggalOperasi).getTime();
-          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
-          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
-          if (criteriaKey === "tanggalMulai" && startDate) {
-            return itemDate >= startDate;
-          }
-          if (criteriaKey === "tanggalSelesai" && endDate) {
-            return itemDate <= endDate;
-          }
-        }
-
-        if (criteriaKey === "kelasSelect.select") {
-          return item.kelas
-            ?.toString()
-            .toLowerCase()
-            .includes(criteriaValue.toLowerCase());
-        }
-
-        return item[criteriaKey]
-          ?.toString()
-          .toLowerCase()
-          .includes(criteriaValue.toLowerCase());
-      });
-    });
-
-    setFilteredData(filtered);
+    // Set nilai menggunakan setValue
+    methods.setValue("bed", bed);
+    methods.setValue("ruangan", ruangan);
   };
 
-  const formFields = [
-    {
-      name: "tanggalMulai",
-      label: "Tanggal Mulai",
-      type: "date",
-      onChange: (e) => handleSearch("tanggalMulai", e.target.value),
-    },
-    {
-      name: "tanggalSelesai",
-      label: "Tanggal Selesai",
-      type: "date",
-      onChange: (e) => handleSearch("tanggalSelesai", e.target.value),
-    },
-  ];
+  const handleClose = () => {
+    setShowModal(false);
+  };
 
-  const headers = ["NO", "Class", "Room", "Bed Detail", "Status"];
-
-  const members = dataBed.flatMap((item, index) =>
-    item.beds.map((bed, bedIndex) => ({
-      id: `${index + 1}-${bedIndex + 1}`, // ID unik
-      no: index + 1 + bedIndex, // Nomor baris
-      class: item.class,
-      room: item.room,
-      detail: bed.detail,
-      status: bed.status,
+  const filteredData = dataBookingBed
+    .map((item) => ({
+      ...item,
+      beds: item.beds.filter((bed) =>
+        bed.bed.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
     }))
+    .filter((item) => item.beds.length > 0);
+
+  const totalRows = filteredData.reduce(
+    (sum, item) => sum + item.beds.length,
+    0
   );
+  const totalPages = Math.ceil(totalRows / rowsPerPage);
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredData
+    .flatMap((item) =>
+      item.beds.map((bed) => ({
+        ...bed,
+        no: item.no,
+        kelas: item.kelas,
+        ruangan: item.ruangan,
+      }))
+    )
+    .slice(indexOfFirstRow, indexOfLastRow);
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reset to first page on search change
+  };
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // handle submit
+
+  const onSubmit = (data) => {
+    console.log("Form data submitted:", data);
+    handleClose();
+  };
 
   return (
-    <Fragment>
-      <DataTable
-        headers={headers}
-        data={members}
-        id="id"
-        rowsPerPage={10}
-        formFields={formFields}
-        // onSave={handleSearch}
-        title="List Booking Bed"
-        actions={{
-          booking: (row) => handleEdit(row.id),
-        }}
-        customActions={[
-          {
-            label: "Booking",
-            onClick: (row) => console.log("Custom Action 1", row),
-            className: "iq-bg-success",
-          },
-        ]}
-      />
-    </Fragment>
+    <Container fluid>
+      <Row>
+        <Col lg="12">
+          <div className="iq-card">
+            <div className="iq-card-body">
+              <Form className="mb-3">
+                <FormControl
+                  type="text"
+                  placeholder="Search by bed..."
+                  onChange={handleSearchChange}
+                />
+              </Form>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Kelas</th>
+                    <th>Ruangan</th>
+                    <th>Bed</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentRows.map((item, index, arr) => (
+                    <tr key={index}>
+                      {index === 0 || arr[index].no !== arr[index - 1].no ? (
+                        <td
+                          rowSpan={
+                            filteredData.find((x) => x.no === item.no).beds
+                              .length
+                          }
+                        >
+                          {item.no}
+                        </td>
+                      ) : null}
+                      {index === 0 ||
+                      arr[index].kelas !== arr[index - 1].kelas ? (
+                        <td
+                          rowSpan={
+                            filteredData.find((x) => x.kelas === item.kelas)
+                              .beds.length
+                          }
+                        >
+                          {item.kelas}
+                        </td>
+                      ) : null}
+                      {index === 0 ||
+                      arr[index].ruangan !== arr[index - 1].ruangan ? (
+                        <td
+                          rowSpan={
+                            filteredData.find((x) => x.ruangan === item.ruangan)
+                              .beds.length
+                          }
+                        >
+                          {item.ruangan}
+                        </td>
+                      ) : null}
+                      <td>{item.bed}</td>
+                      <td>{item.status}</td>
+                      <td>
+                        {item.status === "Free" ? (
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              console.log(
+                                "Button clicked:",
+                                item.bed,
+                                item.ruangan
+                              ); // Debugging sebelum fungsi dipanggil
+                              handleBooking(item.bed, item.ruangan);
+                            }}
+                          >
+                            Booking
+                          </Button>
+                        ) : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              {totalPages > 1 && (
+                <Pagination className="justify-content-center">
+                  <Pagination.First
+                    onClick={() => paginate(1)}
+                    disabled={currentPage === 1}
+                  />
+                  <Pagination.Prev
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  />
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <Pagination.Item
+                      key={i + 1}
+                      active={i + 1 === currentPage}
+                      onClick={() => paginate(i + 1)}
+                    >
+                      {i + 1}
+                    </Pagination.Item>
+                  ))}
+                  <Pagination.Next
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  />
+                  <Pagination.Last
+                    onClick={() => paginate(totalPages)}
+                    disabled={currentPage === totalPages}
+                  />
+                </Pagination>
+              )}
+              <FormProvider {...methods}>
+                <Modal show={showModal} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Form Booking</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form onSubmit={methods.handleSubmit(onSubmit)}>
+                      <TextField
+                        name="bed"
+                        label="Bed"
+                        type="text"
+                        className="form-control mb-3"
+                        value={selectedBed}
+                        readOnly
+                      />
+                      <TextField
+                        name="ruangan"
+                        label="Ruangan "
+                        type="text"
+                        className="form-control mb-3"
+                        value={selectedRuangan}
+                        readOnly
+                      />
+                      <TextField
+                        label="No Rekam Medis:"
+                        name="noRekamMedis"
+                        type="text"
+                        placeholder="Enter No Rekam Medis..."
+                        className="mb-3"
+                      />
+                      <TextField
+                        label="Pasien"
+                        name="patientName"
+                        type="text"
+                        placeholder="Masukkan nama pasien"
+                        className="mb-3"
+                      />
+                      <DateInput
+                        name="tanggalBooking"
+                        label="Tanggal Booking"
+                        placeholder={"Enter Tanggal Booking"}
+                        rules={{ required: "Tanggal Booking harus diisi" }}
+                      />
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      Batal
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={methods.handleSubmit(onSubmit)}
+                    >
+                      Simpan
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </FormProvider>
+            </div>
+          </div>
+        </Col>
+      </Row>
+    </Container>
   );
-});
-
-PemesananBed.displayName = "PemesananBed";
+};
 
 export default PemesananBed;

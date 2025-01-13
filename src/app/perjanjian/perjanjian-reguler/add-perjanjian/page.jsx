@@ -403,7 +403,7 @@ const AddPerjanjianForm = memo(() => {
                       </Col>
                       <Col lg="4">
                         <TextField
-                          name="waktuPr aktek"
+                          name="waktuPraktek"
                           label="Waktu Praktek"
                           type="text"
                           className="form-control"
