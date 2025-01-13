@@ -171,8 +171,14 @@ export const menus = {
     {
       title: "Antrian",
       subItems: [
-        { title: "Pengaturan Antrian", href: "/Antrian/pengaturan-antrian" },
-        { title: "Display Antrian", href: "/Antrian/display-antrian" },
+        {
+          title: "Pengaturan Antrian",
+          href: "/antrian-pendaftaran/pengaturan-antrian",
+        },
+        {
+          title: "Display Antrian",
+          href: "/antrian-pendaftaran/display-antrian",
+        },
       ],
     },
     {
