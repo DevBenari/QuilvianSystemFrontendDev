@@ -23,11 +23,12 @@ const SearchableSelectField = forwardRef(
       fieldState: { error },
     } = useController({ name, control, rules });
 
+    // Custom styles to match the original design
     const customStyles = {
       control: (provided) => ({
         ...provided,
         border: "1px solid #ced4da",
-        borderRadius: "0.25rem",
+        borderRadius: "0.25 m",
         boxShadow: "none",
         height: "calc(1.5em + 0.75rem + 2px)",
       }),
@@ -46,8 +47,8 @@ const SearchableSelectField = forwardRef(
         {label && <Form.Label>{label}</Form.Label>}
         <Select
           {...field}
-          ref={ref}
           {...props}
+          ref={ref} // Forward the ref to the Select component
           options={options}
           placeholder={placeholder || "Select an option"}
           isInvalid={!!error}
@@ -72,5 +73,4 @@ const SearchableSelectField = forwardRef(
 );
 
 SearchableSelectField.displayName = "SearchableSelectField";
-
 export default SearchableSelectField;

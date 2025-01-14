@@ -684,8 +684,8 @@ const PendaftaranPasienBaru = () => {
                         placeholder="Pilih Provinsi"
                         rules={{ required: "Provinsi is required" }}
                         className="mb-3"
-                        onChange={(e) =>
-                          handleChange("keluarga", "provinsi", e.target.value)
+                        onChangeCallback={(value) =>
+                          handleChange("keluarga", "provinsi", value)
                         }
                       />
                     </Col>
@@ -700,8 +700,8 @@ const PendaftaranPasienBaru = () => {
                         placeholder="Pilih Kabupaten"
                         rules={{ required: "Kabupaten is required" }}
                         className="mb-3"
-                        onChange={(e) =>
-                          handleChange("keluarga", "kabupaten", e.target.value)
+                        onChangeCallback={(value) =>
+                          handleChange("keluarga", "kabupaten", value)
                         }
                       />
                     </Col>
@@ -716,8 +716,8 @@ const PendaftaranPasienBaru = () => {
                         placeholder="Pilih Kecamatan"
                         rules={{ required: "Kecamatan is required" }}
                         className="mb-3"
-                        onChange={(e) =>
-                          handleChange("keluarga", "kecamatan", e.target.value)
+                        onChangeCallback={(value) =>
+                          handleChange("keluarga", "kecamatan", value)
                         }
                       />
                     </Col>

@@ -6,7 +6,6 @@ import TopNav from "@/components/features/navbars/top-nav";
 const perjanjian = () => {
   return (
     <div className={styles.page}>
-      <TopNav module={"pendaftaran"} />
       <DashboardPerjanjian />
     </div>
   );

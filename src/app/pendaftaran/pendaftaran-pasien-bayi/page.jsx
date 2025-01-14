@@ -1,26 +1,21 @@
 "use client";
+import React from "react";
+import styles from "@/app/page.module.css";
+import DashboardPendaftaranBayi from "@/components/view/pendaftaran-pasien/pendaftaran-pasien-bayi";
 
-import DataTable from "@/components/view/pendaftaran-pasien-bayi/table/dataTable";
-import { Fragment, memo, useEffect } from "react";
-export const PendaftaranPasienBayi = memo(() => {
-  const headers = [
-    "NO RM",
-    "KELAS",
-    "Ruang",
-    "NAMA PASIEN MELAHIRKAN",
-    "DOKTER",
-  ];
+export const PendaftaranPasienBayi = () => {
+  // const headers = [
+  //   "NO RM",
+  //   "KELAS",
+  //   "Ruang",
+  //   "NAMA PASIEN MELAHIRKAN",
+  //   "DOKTER",
+  // ];
 
   return (
-    <Fragment>
-      <DataTable
-        headers={headers}
-        id="id"
-        actions={{
-          edit: (row) => handleEdit(row.id),
-        }}
-      />
-    </Fragment>
+    <div className={styles.page}>
+      <DashboardPendaftaranBayi />
+    </div>
   );
 });
 

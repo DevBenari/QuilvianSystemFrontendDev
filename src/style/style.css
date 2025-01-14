@@ -466,12 +466,12 @@ a:hover {
 }
 
 .iq-card-pasien-name {
-  border: 1px solid #eef0f4;
+  border: 1px solid #d7dbda;
   padding: 5px 10px;
   border-radius: 10px;
-  -webkit-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+  /* -webkit-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
   -moz-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
-  box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+  box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1); */
 } 
 
 /* p{
@@ -1083,6 +1083,50 @@ body.sidebar-main .iq-sidebar:hover .iq-menu li.menu-open>a {
   transition: all 0.45s ease 0s;
   border-radius: 25px;
   -webkit-border-radius: 25px;
+}
+
+.topnav-container {
+  display: flex;
+  flex-direction: column;  /* Stack the sidebar and submenu vertically */
+  align-items: flex-start; /* Align items to the start (left) */
+}
+
+.sidebar {
+  width: 250px;  /* Sidebar width */ /* Optional: background color */
+  padding: 10px;
+  position: sticky;  /* Optional: sticky behavior during scroll */
+}
+
+.submenu {
+  margin-top: 20px;  /* Space between the sidebar and submenu */
+  width: 100%;  /* Submenu takes full width */
+}
+
+.submenu-list {
+  list-style-type: none;  /* Remove default list styles */
+  padding: 0;
+}
+
+.menu-item {
+  margin-bottom: 10px;  /* Space between different menu items */
+}
+
+.submenu-items {
+  padding-left: 20px;  /* Indentation for submenu items */
+  list-style-type: none;  /* Remove default list styles */
+}
+
+.submenu-item {
+  margin-bottom: 5px;  /* Space between submenu items */
+}
+
+.submenu-item a {
+  
+  text-decoration: none;
+}
+
+.submenu-item a:hover {
+  text-decoration: underline;
 }
 
 .iq-top-navbar.fixed-header {
@@ -5004,6 +5048,7 @@ textarea.form-control {
 
 .iq-card-profile-dokter {
   height: 99%;
+  border: 1px solid #e9edf4;
 }
 
 .accordion-button:not(.collapsed) {

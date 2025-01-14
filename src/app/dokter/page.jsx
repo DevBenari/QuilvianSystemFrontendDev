@@ -5,7 +5,6 @@ import DokterPage from "@/components/view/dokter/dokter-pasien"
 const PageDokter = () => {
     return (
         <div className={styles.page}>
-            <TopNav module={"dokter"} />
             <DokterPage />  
         </div>
     )
