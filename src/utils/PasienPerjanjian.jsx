@@ -741,8 +741,8 @@ export const dataBookingBed = [
     ruangan: "VIP DELUXE",
     beds: [
       { bed: "802 - center", status: "Free" },
-      { bed: "805 - center", status: "Booked" },
-      { bed: "807 - center", status: "Occupied" },
+      { bed: "805 - center", status: "Free" },
+      { bed: "807 - center", status: "Free" },
     ],
   },
   {
@@ -751,7 +751,7 @@ export const dataBookingBed = [
     ruangan: "VIP",
     beds: [
       { bed: "304 - left", status: "Free" },
-      { bed: "308 - left", status: "Occupied" },
+      { bed: "308 - left", status: "Free" },
       { bed: "407 - left", status: "Free" },
     ],
   },
@@ -760,8 +760,8 @@ export const dataBookingBed = [
     kelas: "Regular",
     ruangan: "Regular 1",
     beds: [
-      { bed: "210 - right", status: "Booked" },
-      { bed: "211 - right", status: "Occupied" },
+      { bed: "210 - right", status: "Free" },
+      { bed: "211 - right", status: "Free" },
       { bed: "212 - right", status: "Free" },
     ],
   },
@@ -771,15 +771,15 @@ export const dataBookingBed = [
     ruangan: "Economy 1",
     beds: [
       { bed: "115 - left", status: "Free" },
-      { bed: "117 - left", status: "Occupied" },
+      { bed: "117 - left", status: "Free" },
     ],
   },
   {
     no: "5",
-    kelas: "Economy",
+    kelas: "Bisnis",
     ruangan: "Economy 2",
     beds: [
-      { bed: "120 - right", status: "Booked" },
+      { bed: "120 - right", status: "Free" },
       { bed: "121 - right", status: "Free" },
     ],
   },
@@ -788,23 +788,23 @@ export const dataBookingBed = [
     kelas: "Regular",
     ruangan: "Regular 2",
     beds: [
-      { bed: "305 - center", status: "Occupied" },
+      { bed: "305 - center", status: "Free" },
       { bed: "306 - center", status: "Free" },
       { bed: "307 - center", status: "Free" },
     ],
   },
   {
     no: "7",
-    kelas: "VIP",
+    kelas: "Isolasi",
     ruangan: "VIP 2",
     beds: [
       { bed: "401 - left", status: "Free" },
-      { bed: "402 - left", status: "Booked" },
+      { bed: "402 - left", status: "Free" },
     ],
   },
   {
     no: "8",
-    kelas: "VIP DELUXE",
+    kelas: "VIP",
     ruangan: "VIP DELUXE 2",
     beds: [
       { bed: "501 - center", status: "Occupied" },
@@ -813,10 +813,10 @@ export const dataBookingBed = [
   },
   {
     no: "9",
-    kelas: "Regular",
-    ruangan: "Regular 3",
+    kelas: "Isolasi",
+    ruangan: "Isolasi 1",
     beds: [
-      { bed: "310 - right", status: "Booked" },
+      { bed: "310 - right", status: "Free" },
       { bed: "311 - right", status: "Occupied" },
     ],
   },
@@ -826,7 +826,187 @@ export const dataBookingBed = [
     ruangan: "Economy 3",
     beds: [
       { bed: "123 - left", status: "Free" },
-      { bed: "125 - left", status: "Occupied" },
+      { bed: "125 - left", status: "Free" },
+    ],
+  },
+  {
+    no: "11",
+    kelas: "VIPpppp",
+    ruangan: "VIP 3",
+    beds: [
+      { bed: "601 - center", status: "Free" },
+      { bed: "602 - center", status: "Free" },
+    ],
+  },
+  {
+    no: "12",
+    kelas: "Reguler",
+    ruangan: "Regular 3",
+    beds: [
+      { bed: "211 - left", status: "Free" },
+      { bed: "213 - left", status: "Free" },
+    ],
+  },
+  {
+    no: "13",
+    kelas: "Economyyyy",
+    ruangan: "Economy 4",
+    beds: [
+      { bed: "128 - right", status: "Occupied" },
+      { bed: "130 - right", status: "Free" },
+    ],
+  },
+  {
+    no: "14",
+    kelas: "VIPppp",
+    ruangan: "VIP DELUXE 3",
+    beds: [
+      { bed: "503 - center", status: "Free" },
+      { bed: "504 - center", status: "Free" },
+    ],
+  },
+  {
+    no: "15",
+    kelas: "Isolasi",
+    ruangan: "Isolasi 2",
+    beds: [
+      { bed: "315 - right", status: "Free" },
+      { bed: "317 - right", status: "Occupied" },
+    ],
+  },
+  {
+    no: "16",
+    kelas: "Economy",
+    ruangan: "Economy 5",
+    beds: [
+      { bed: "133 - left", status: "Free" },
+      { bed: "134 - left", status: "Occupied" },
+    ],
+  },
+  {
+    no: "17",
+    kelas: "Bisnis",
+    ruangan: "Bisnis 1",
+    beds: [
+      { bed: "222 - right", status: "Free" },
+      { bed: "223 - right", status: "Occupied" },
+    ],
+  },
+  {
+    no: "18",
+    kelas: "VIP",
+    ruangan: "VIP DELUXE 4",
+    beds: [
+      { bed: "511 - center", status: "Free" },
+      { bed: "512 - center", status: "Occupied" },
+    ],
+  },
+  {
+    no: "19",
+    kelas: "Economy",
+    ruangan: "Regular 4",
+    beds: [
+      { bed: "214 - left", status: "Free" },
+      { bed: "216 - left", status: "Occupied" },
+    ],
+  },
+  {
+    no: "20",
+    kelas: "Isolasi",
+    ruangan: "Isolasi 3",
+    beds: [
+      { bed: "321 - right", status: "Occupied" },
+      { bed: "322 - right", status: "Free" },
+    ],
+  },
+  {
+    no: "21",
+    kelas: "Economy",
+    ruangan: "Economy 6",
+    beds: [
+      { bed: "136 - left", status: "Free" },
+      { bed: "137 - left", status: "Free" },
+    ],
+  },
+  {
+    no: "22",
+    kelas: "Isolasi",
+    ruangan: "VIP 5",
+    beds: [
+      { bed: "605 - center", status: "Free" },
+      { bed: "606 - center", status: "Occupied" },
+    ],
+  },
+  {
+    no: "23",
+    kelas: "Reguler",
+    ruangan: "Regular 5",
+    beds: [
+      { bed: "219 - left", status: "Occupied" },
+      { bed: "220 - left", status: "Free" },
+    ],
+  },
+  {
+    no: "24",
+    kelas: "Bisnis",
+    ruangan: "Bisnis 2",
+    beds: [
+      { bed: "225 - right", status: "Free" },
+      { bed: "226 - right", status: "Occupied" },
+    ],
+  },
+  {
+    no: "25",
+    kelas: "Economy",
+    ruangan: "Economy 7",
+    beds: [
+      { bed: "140 - left", status: "Free" },
+      { bed: "141 - left", status: "Occupied" },
+    ],
+  },
+  {
+    no: "26",
+    kelas: "Isolasi",
+    ruangan: "Isolasi 5",
+    beds: [
+      { bed: "521 - center", status: "Free" },
+      { bed: "523 - center", status: "Occupied" },
+    ],
+  },
+  {
+    no: "27",
+    kelas: "Reguler",
+    ruangan: "Reguler 6",
+    beds: [
+      { bed: "228 - left", status: "Occupied" },
+      { bed: "230 - left", status: "Free" },
+    ],
+  },
+  {
+    no: "28",
+    kelas: "Isolasi",
+    ruangan: "Isolasi 4",
+    beds: [
+      { bed: "326 - right", status: "Occupied" },
+      { bed: "327 - right", status: "Free" },
+    ],
+  },
+  {
+    no: "29",
+    kelas: "Economy",
+    ruangan: "Economy 8",
+    beds: [
+      { bed: "145 - left", status: "Free" },
+      { bed: "146 - left", status: "Occupied" },
+    ],
+  },
+  {
+    no: "30",
+    kelas: "VIP",
+    ruangan: "VIP 6",
+    beds: [
+      { bed: "610 - center", status: "Occupied" },
+      { bed: "611 - center", status: "Free" },
     ],
   },
 ];

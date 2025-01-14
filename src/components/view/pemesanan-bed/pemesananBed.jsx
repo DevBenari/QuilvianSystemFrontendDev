@@ -1,5 +1,6 @@
 "use client";
 import DateInput from "@/components/ui/date-input";
+import DateInputPicker from "@/components/ui/date-picker";
 import SelectField from "@/components/ui/select-field";
 import TextField from "@/components/ui/text-field";
 import { dataBookingBed } from "@/utils/PasienPerjanjian";
@@ -22,7 +23,7 @@ const PemesananBed = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const rowsPerPage = 10;
+  const rowsPerPage = 20;
 
   const [selectedBed, setSelectedBed] = useState("");
   const [selectedRuangan, setSelectedRuangan] = useState("");
@@ -33,7 +34,7 @@ const PemesananBed = () => {
       patientName: "",
       bed: selectedBed,
       ruangan: selectedRuangan,
-      tanggalBooking: "",
+      tanggalBooking: null,
     },
   });
 
@@ -93,21 +94,35 @@ const PemesananBed = () => {
 
   const onSubmit = (data) => {
     console.log("Form data submitted:", data);
+    if (!data.tanggalBooking) {
+      console.error("Tanggal Booking tidak terisi");
+    }
     handleClose();
   };
 
   return (
-    <Container fluid>
+    <Container fluid className="mt-4">
       <Row>
         <Col lg="12">
           <div className="iq-card">
+            <div className="iq-card-header d-flex justify-content-between">
+              <div className="iq-header-title">
+                <h4 className="card-title">Pemesanan Bed</h4>
+              </div>
+            </div>
             <div className="iq-card-body">
               <Form className="mb-3">
-                <FormControl
-                  type="text"
-                  placeholder="Search by bed..."
-                  onChange={handleSearchChange}
-                />
+                <Col lg="6">
+                  <label htmlFor="cariBed" className="mb-2">
+                    Cari Bed
+                  </label>
+                  <FormControl
+                    type="text"
+                    label="Cari Bed"
+                    placeholder="Cari Bed"
+                    onChange={handleSearchChange}
+                  />
+                </Col>
               </Form>
               <Table striped bordered hover>
                 <thead>
@@ -244,12 +259,14 @@ const PemesananBed = () => {
                         placeholder="Masukkan nama pasien"
                         className="mb-3"
                       />
-                      <DateInput
-                        name="tanggalBooking"
-                        label="Tanggal Booking"
-                        placeholder={"Enter Tanggal Booking"}
-                        rules={{ required: "Tanggal Booking harus diisi" }}
-                      />
+                      <Col lg="6">
+                        <DateInputPicker
+                          name="tanggalBooking"
+                          label="Tanggal Booking"
+                          placeholder="Enter Tanggal Booking"
+                          rules={{ required: "Tanggal Booking harus diisi" }}
+                        />
+                      </Col>
                     </Form>
                   </Modal.Body>
                   <Modal.Footer>
