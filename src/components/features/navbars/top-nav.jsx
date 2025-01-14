@@ -21,7 +21,7 @@
     return (
       <div className={` iq-card fixed-header`}>
         <div className="iq-navbar-custom px-4">
-          <di v className="topnav-container">
+          <div className="topnav-container">
             {/* Sidebar (your existing sidebar layout) */}
             <div className="sidebar">
               {/* Sidebar content */}
@@ -44,7 +44,7 @@
                 ))}
               </div>
             </div>
-          </di>
+          </div>
         </div>
       </div>
     );

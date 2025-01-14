@@ -11,8 +11,8 @@ const PendaftaranLayout = ({ children }) => {
     <div>
       <Row>
         {/* Sidebar hanya muncul jika ukuran layar ≥ 1500 */}
-          <Col md="2">
-            <ResponsiveNav module={"pendaftaran"} />
+          <Col md="2" className="fixed">
+            <ResponsiveNav module={"pendaftaran"}  />
           </Col>
         
         {/* Content mengisi seluruh lebar jika ukuran layar < 1500 */}

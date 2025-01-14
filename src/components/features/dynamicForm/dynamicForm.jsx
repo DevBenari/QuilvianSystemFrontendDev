@@ -15,6 +15,7 @@ import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
 import DistanceField from "@/components/ui/distance-filed";
 import SearchableSelectField from "@/components/ui/select-field-search";
+import ButtonNav from "@/components/ui/button-navigation";
 
 const DynamicForm = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
@@ -163,6 +164,14 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
             <div className="iq-header-title ">
               <h3 className="card-title tracking-wide">{title}</h3>
             </div>
+            <div>
+              <ButtonNav 
+                className="btn btn-primary mx-3 my-3"
+                label="Kembali"
+                path="/pendaftaran/pasien-luar-laboratorium"
+                icon="ri-arrow-left-line"
+              />
+            </div>
           </div>
           <div className="card-body">
             <Form onSubmit={methods.handleSubmit(handleSubmit)}>
@@ -184,20 +193,12 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
                     }
                   >
                     {section.fields
-                      .filter((field) => !shouldHideField(field)) // Filter out hidden fields
-                      .map((field, fieldIndex) => (
-                        <Col
-                          key={field.id || fieldIndex}
-                          lg={field.colSize || 6}
-                        >
-                          {field.customRender
-                            ? field.customRender({
-                                methods,
-                                watchValues: watch(),
-                              })
-                            : renderField(field)}
+                      .filter((field) => !shouldHideField(field))
+                      .map(({ colSize, ...field }, fieldIndex) => (
+                        <Col key={field.id || fieldIndex} lg={colSize || 6}>
+                          {renderField(field)}
                         </Col>
-                      ))}
+                    ))}
                   </Row>
                 </div>
               ))}

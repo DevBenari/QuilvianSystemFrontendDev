@@ -1,24 +1,24 @@
 'use client'
 import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard"
+import ButtonNav from "@/components/ui/button-navigation"
 import { daftarPasien } from "@/utils/config"
 import React, { memo, useState} from "react"
 import { Row, Col,Button, Table} from "react-bootstrap"
 import { FormProvider, useForm } from "react-hook-form"
-const DashboardPendaftaran = memo(() => {
-    const methods = useForm();
-    const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
-   
-
-    const handleRemovePatient = (id) => {
-        const updatedPatients = filteredPatients.filter(patient => patient.id !== id);
-        setFilteredPatients(updatedPatients);
-    };
-    
+const DashboardPendaftaranLab = () => {
+     const methods = useForm();
+            const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
+           
+        
+            const handleRemovePatient = (id) => {
+                const updatedPatients = filteredPatients.filter(patient => patient.id !== id);
+                setFilteredPatients(updatedPatients);
+            };
     return (
         <FormProvider {...methods}>
             <Col lg="12" className=" iq-card p-4">
                 <div className="d-flex justify-content-between iq-card-header">
-                    <h2 className="mb-3">Searching Pasien  </h2>
+                    <h2 className="mb-3">Searching Pasien Laboratorium </h2>
                     <button
                         className="btn btn-dark my-3 mx-3"
                         onClick={() => window.location.reload()}
@@ -46,9 +46,14 @@ const DashboardPendaftaran = memo(() => {
                                 <div className="iq-card-body">
                                 <div id="table" className="table-editable">
                                     <span className="table-add float-end mb-3 me-2">
-                                    <Button size='sm' variant='' className="btn btn-sm iq-bg-success "><i
-                                        className="ri-add-fill"><span className="ps-1">Add New</span></i>
-                                    </Button>
+                                        <ButtonNav 
+                                        path="/pendaftaran/pasien-luar-laboratorium/regist-pasien-luar-lab"
+                                        label="Tambah Pasien"
+                                        icon="ri-add-fill"
+                                        size="sm"
+                                        variant=""
+                                        className="btn btn-sm iq-bg-success"
+                                        />
                                     </span>
                                     <div className="table-responsive-md w-100">
                                         <Table className="text-center" bordered striped>
@@ -93,6 +98,6 @@ const DashboardPendaftaran = memo(() => {
             </div>
         </FormProvider>
     )
-})
-DashboardPendaftaran.displayName = "DashboardPendaftaran"
-export default DashboardPendaftaran
+}
+
+export default DashboardPendaftaranLab

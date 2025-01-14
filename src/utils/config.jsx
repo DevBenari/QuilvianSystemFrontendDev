@@ -42,7 +42,7 @@ export const dataWilayah = [
   },
 ];
 
-export const dataPasien = [
+export const daftarPasien = [
     {
         id: 1,
         noRekamMedis: "123456789",
@@ -171,5 +171,7 @@ export const menus = {
       },
     ],
   };
+
+  
   
   

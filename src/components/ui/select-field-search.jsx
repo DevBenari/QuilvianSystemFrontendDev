@@ -1,9 +1,9 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { useController, useFormContext } from "react-hook-form";
 import Select from "react-select";
 import { Form } from "react-bootstrap";
 
-const SearchableSelectField = ({
+const SearchableSelectField = forwardRef(({
   name,
   label,
   options,
@@ -12,7 +12,7 @@ const SearchableSelectField = ({
   className,
   onChange: parentOnChange,
   ...props
-}) => {
+}, ref) => {
   const { control } = useFormContext();
   const {
     field,
@@ -24,7 +24,7 @@ const SearchableSelectField = ({
     control: (provided) => ({
       ...provided,
       border: "1px solid #ced4da",
-      borderRadius: "0.25rem",
+      borderRadius: "0.25 m",
       boxShadow: "none",
       height: "calc(1.5em + 0.75rem + 2px)",
     }),
@@ -40,22 +40,23 @@ const SearchableSelectField = ({
 
   return (
     <Form.Group className={className}>
-      {label && <Form.Label>{label}</Form.Label>}
-      <Select
-        {...field}
-        {...props}
-        options={options}
-        placeholder={placeholder || "Select an option"}
-        isInvalid={!!error}
-        styles={customStyles}
-        value={options.find((option) => option.value === field.value) || null}
-        onChange={(selected) => {
-          field.onChange(selected?.value || null); // This updates react-hook-form's internal state
-          if (parentOnChange) {
-            parentOnChange(selected); // Call the parent's onChange if provided
-          }
-        }}
-        isClearable
+    {label && <Form.Label>{label}</Form.Label>}
+    <Select
+      {...field}
+      {...props}
+      ref={ref} // Forward the ref to the Select component
+      options={options}
+      placeholder={placeholder || "Select an option"}
+      isInvalid={!!error}
+      styles={customStyles}
+      value={options.find((option) => option.value === field.value) || null}
+      onChange={(selected) => {
+        field.onChange(selected?.value || null);
+        if (parentOnChange) {
+          parentOnChange(selected);
+        }
+      }}
+      isClearable
       />
       {error && (
         <Form.Control.Feedback type="invalid" className="d-block">
@@ -64,6 +65,7 @@ const SearchableSelectField = ({
       )}
     </Form.Group>
   );
-};
+});
 
+SearchableSelectField.displayName = "SearchableSelectField";
 export default SearchableSelectField;
