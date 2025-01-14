@@ -8,7 +8,8 @@ import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import TindakanTableLaboratorium from "@/components/view/pendaftaran-laboratorium/tindakanLaboratorium";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import { tindakanDataConfig } from "@/utils/dataTindakan";
-export default function PendaftaranPasienLab() { 
+import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
+export default function PendaftaranPasienLab() {
   const router = useRouter();
   const [selectedOption, setSelectedOption] = useState("");
 
@@ -30,13 +31,14 @@ export default function PendaftaranPasienLab() {
     pasienFilteredKabupaten,
     pasienFilteredKecamatan,
     pasienFilteredKelurahan,
-    handleChange,} = UseSelectWilayah(setValue, dataWilayah)
+    handleChange,
+  } = UseSelectWilayah(setValue, dataWilayah);
 
   const formFields = [
     {
       fields: [
         {
-          type: "text",
+          type: "number",
           id: "noRegistrasi",
           label: "No Registrasi",
           name: "noRegistrasi",
@@ -45,7 +47,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "text",
+          type: "number",
           id: "noRekamMedis",
           label: "No Rekam Medis",
           name: "noRekamMedis",
@@ -63,7 +65,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "text",
+          type: "number",
           id: "nomorHP",
           label: "Nomor HP",
           name: "nomorHP",
@@ -94,7 +96,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "text",
+          type: "number",
           id: "nomorTlpn",
           label: "Nomor Telepon",
           name: "nomorTlpn",
@@ -128,61 +130,61 @@ export default function PendaftaranPasienLab() {
           colSize: 12,
         },
         {
-            type: "select",
-            id: "pasien_provinsi",
-            label: "Provinsi Pasien",
-            name: "pasien_provinsi",
-            placeholder: "Pilih Provinsi",
-            options: dataWilayah.map((item) => ({
-              label: item.provinsi,
-              value: item.provinsi,
-            })),
-            rules: { required: "Provinsi is required" },
-            colSize: 6,
-            onChangeCallback: (value) => handleChange("provinsi", value),
-          },
-          {
-            type: "select",
-            id: "pasien_kabupaten",
-            label: "Kabupaten Pasien",
-            name: "pasien_kabupaten",
-            placeholder: "Pilih Kabupaten",
-            options: pasienFilteredKabupaten.map((item) => ({
-              label: item.nama,
-              value: item.nama,
-            })),
-            rules: { required: "Kabupaten is required" },
-            colSize: 6,
-            onChangeCallback: (value) => handleChange("kabupaten", value),
-          },
-          {
-            type: "select",
-            id: "pasien_kecamatan",
-            label: "Kecamatan Pasien",
-            name: "pasien_kecamatan",
-            placeholder: "Pilih Kecamatan",
-            options: pasienFilteredKecamatan.map((item) => ({
-              label: item.nama,
-              value: item.nama,
-            })),
-            rules: { required: "Kecamatan is required" },
-            colSize: 6,
-            onChangeCallback: (value) => handleChange("kecamatan", value),
-          },
-          {
-            type: "select",
-            id: "pasien_kelurahan",
-            label: "Kelurahan Pasien",
-            name: "pasien_kelurahan",
-            placeholder: "Pilih Kelurahan",
-            options: pasienFilteredKelurahan.map((item) => ({
-              label: item,
-              value: item,
-            })),
-            rules: { required: "Kelurahan is required" },
-            colSize: 6,
-            onChangeCallback: (value) => handleChange("kelurahan", value),
-          },
+          type: "select",
+          id: "pasien_provinsi",
+          label: "Provinsi Pasien",
+          name: "pasien_provinsi",
+          placeholder: "Pilih Provinsi",
+          options: dataWilayah.map((item) => ({
+            label: item.provinsi,
+            value: item.provinsi,
+          })),
+          rules: { required: "Provinsi is required" },
+          colSize: 6,
+          onChangeCallback: (value) => handleChange("provinsi", value),
+        },
+        {
+          type: "select",
+          id: "pasien_kabupaten",
+          label: "Kabupaten Pasien",
+          name: "pasien_kabupaten",
+          placeholder: "Pilih Kabupaten",
+          options: pasienFilteredKabupaten.map((item) => ({
+            label: item.nama,
+            value: item.nama,
+          })),
+          rules: { required: "Kabupaten is required" },
+          colSize: 6,
+          onChangeCallback: (value) => handleChange("kabupaten", value),
+        },
+        {
+          type: "select",
+          id: "pasien_kecamatan",
+          label: "Kecamatan Pasien",
+          name: "pasien_kecamatan",
+          placeholder: "Pilih Kecamatan",
+          options: pasienFilteredKecamatan.map((item) => ({
+            label: item.nama,
+            value: item.nama,
+          })),
+          rules: { required: "Kecamatan is required" },
+          colSize: 6,
+          onChangeCallback: (value) => handleChange("kecamatan", value),
+        },
+        {
+          type: "select",
+          id: "pasien_kelurahan",
+          label: "Kelurahan Pasien",
+          name: "pasien_kelurahan",
+          placeholder: "Pilih Kelurahan",
+          options: pasienFilteredKelurahan.map((item) => ({
+            label: item,
+            value: item,
+          })),
+          rules: { required: "Kelurahan is required" },
+          colSize: 6,
+          onChangeCallback: (value) => handleChange("kelurahan", value),
+        },
       ],
     },
     {
@@ -223,7 +225,6 @@ export default function PendaftaranPasienLab() {
           rules: { required: "Tanggal Registrasi is required" },
           colSize: 6,
         },
-
       ],
     },
     {
@@ -286,7 +287,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "text",
+          type: "number",
           id: "teleponLuarRs",
           name: "teleponLuarRs",
           label: "Nomor Telepon",
@@ -375,10 +376,9 @@ export default function PendaftaranPasienLab() {
       fields: [
         {
           type: "custom",
-          id: "tindakan ",
           label: "Tindakan Data Table",
           customRender: () => (
-            <TindakanTableLaboratorium tindakan={tindakanDataConfig} />
+            <TindakanTableHarga tindakan={tindakanDataConfig} />
           ),
           colSize: 12,
         },
@@ -386,15 +386,6 @@ export default function PendaftaranPasienLab() {
     },
     {
       fields: [
-        {
-          type: "table",
-          id: "tableTindakan",
-          label: "Table Tindakan",
-          name: "tableTindakan",
-          columns: ["Pemeriksaan Lab", "Jumlah", "Action"],
-          rules: { required: "Table Tindakan is required" },
-          colSize: 12,
-        },
         {
           type: "select",
           id: "dokterLab",
@@ -429,15 +420,8 @@ export default function PendaftaranPasienLab() {
     },
   ];
 
-  const handleSubmit = async (data) => {
-    try {
-      const response = await addPromo(data);
-      alert("Promo added successfully!");
-      router.push("/pendaftaran");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add promo.");
-    }
+  const handleSubmit = (data) => {
+    console.log("Form Data:", data);
   };
 
   return (

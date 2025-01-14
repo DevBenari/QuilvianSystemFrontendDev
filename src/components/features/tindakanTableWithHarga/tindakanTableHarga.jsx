@@ -1,102 +1,94 @@
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useFormContext, Controller, useFieldArray } from "react-hook-form";
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
 import SearchableSelectField from "@/components/ui/select-field-search";
 
-const FasilitasTable = ({ tindakan, title, onAdd, judul }) => {
-  const { control, watch, setValue } = useForm({
-    defaultValues: {
-      tindakanSelect: { select: null, qty: "" },
-    },
+const TindakanTableHarga = ({ tindakan, title, judul }) => {
+  const { control, watch, setValue } = useFormContext();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "tindakanList", // Menghubungkan ke form utama
   });
 
-  const [data, setData] = React.useState([]);
+  // Transformasikan tindakanDataConfig agar sesuai dengan format dropdown
+  const tindakanOptions = tindakan.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
 
+  // Fungsi untuk menambahkan tindakan ke tabel
   const handleAddToTable = () => {
-    const dataToAdd = watch("tindakanSelect"); // Ambil data input form
+    const dataToAdd = watch("tindakanSelect");
 
-    if (dataToAdd.select && dataToAdd.qty) {
-      const qtyToAdd = parseInt(dataToAdd.qty); // Konversi qty ke angka
-      console.log("===== DEBUGGING =====");
-      console.log("Qty Ditambahkan:", qtyToAdd);
-      console.log("Tindakan Dipilih:", dataToAdd.select);
+    if (dataToAdd?.select && dataToAdd?.qty) {
+      const qtyToAdd = parseInt(dataToAdd.qty);
 
-      setData((prev) => {
-        console.log("Data Sebelum Update:", prev);
+      // Cari harga dari dataFasilitas berdasarkan ID yang dipilih
+      const selectedTindakan = tindakan.find(
+        (item) => item.id === dataToAdd.select.value
+      );
 
-        // Periksa apakah tindakan sudah ada di tabel berdasarkan ID
-        const existingIndex = prev.findIndex(
-          (item) => item.lab.value === dataToAdd.select.value
-        );
+      // Periksa apakah tindakan sudah ada di tabel berdasarkan ID
+      const existingIndex = fields.findIndex(
+        (item) => item.lab.value === dataToAdd.select.value
+      );
 
-        if (existingIndex > -1) {
-          // Jika tindakan sudah ada, tambahkan qty baru langsung dari input
-          const updatedData = [...prev];
-          updatedData[existingIndex] = {
-            ...updatedData[existingIndex],
-            jumlah: qtyToAdd, // Ganti langsung dengan nilai qty input baru
-          };
-          console.log("Data Setelah Update (Jika Sudah Ada):", updatedData);
-          return updatedData;
-        } else {
-          // Jika tindakan belum ada, tambahkan entri baru
-          const tindakanItem = tindakan.find(
-            (item) => item.id === dataToAdd.select.value
-          );
-          const newData = [
-            ...prev,
-            {
-              lab: dataToAdd.select,
-              jumlah: qtyToAdd,
-              harga: tindakanItem.harga,
-            },
-          ];
-          console.log("Data Baru Ditambahkan:", newData);
-          return newData;
-        }
-      });
+      if (existingIndex > -1) {
+        // Jika tindakan sudah ada, perbarui jumlahnya
+        const updatedFields = [...fields];
+        updatedFields[existingIndex] = {
+          ...updatedFields[existingIndex],
+          jumlah: qtyToAdd,
+          harga: selectedTindakan?.harga || 0,
+        };
+        setValue("tindakanList", updatedFields);
+      } else {
+        // Jika tindakan belum ada, tambahkan entri baru
+        append({
+          lab: dataToAdd.select,
+          jumlah: qtyToAdd,
+          harga: selectedTindakan?.harga || 0,
+        });
+      }
 
-      // Reset nilai qty setelah ditambahkan ke tabel
+      // Reset input Qty setelah ditambahkan ke tabel
       setValue("tindakanSelect.qty", "1");
-      console.log("Qty Reset ke 1");
     } else {
-      console.log(
+      console.error(
         "ERROR: Data yang ditambahkan tidak lengkap (qty atau tindakan kosong)"
       );
     }
   };
 
-  const handleDeleteRow = (index) => {
-    setData((prevData) => prevData.filter((_, i) => i !== index));
-  };
-
+  // Fungsi untuk mengubah jumlah tindakan di tabel
   const handleJumlahChange = (index, value) => {
-    setData((prevData) =>
-      prevData.map((item, i) =>
-        i === index
-          ? {
-              ...item,
-              jumlah: parseInt(value),
-            }
-          : item
-      )
-    );
+    const updatedFields = [...fields];
+    updatedFields[index] = {
+      ...updatedFields[index],
+      jumlah: parseInt(value) || 0,
+    };
+    setValue("tindakanList", updatedFields); // Perbarui tindakanList di form utama
   };
 
+  // Fungsi untuk menghitung total harga per baris
   const calculateTotalHargaPerRow = (jumlah, harga) => {
     return jumlah * harga;
   };
 
+  // Fungsi untuk menghitung total keseluruhan harga
   const calculateTotalHargaKeseluruhan = () => {
-    return data.reduce((total, item) => {
+    return fields.reduce((total, item) => {
       return total + calculateTotalHargaPerRow(item.jumlah, item.harga);
     }, 0);
+  };
+
+  const handleDeleteRow = (index) => {
+    remove(fields, index);
   };
 
   return (
     <Container fluid>
       <div className="table-responsive-md w-100">
-        {/* <hr className="mb-4" /> */}
         <div className="iq-header-title">
           <h4 className="card-title">{judul}</h4>
         </div>
@@ -109,11 +101,8 @@ const FasilitasTable = ({ tindakan, title, onAdd, judul }) => {
               render={({ field, fieldState }) => (
                 <SearchableSelectField
                   {...field}
-                  label={title}
-                  options={tindakan.map((item) => ({
-                    label: item.tindakan,
-                    value: item.id,
-                  }))}
+                  label="Fasilitas"
+                  options={tindakanOptions}
                   placeholder="Pilih Fasilitas"
                   className={`mb-3 ${
                     fieldState.error ? "error-highlight" : ""
@@ -133,6 +122,7 @@ const FasilitasTable = ({ tindakan, title, onAdd, judul }) => {
                   type="number"
                   className="form-control"
                   placeholder="qty"
+                  value={field.value || ""} // Berikan nilai default jika undefined
                 />
               )}
             />
@@ -147,7 +137,7 @@ const FasilitasTable = ({ tindakan, title, onAdd, judul }) => {
             </Button>
           </Col>
         </Row>
-        <Table className="text-center" bordered striped>
+        <Table bordered striped className="text-center">
           <thead>
             <tr>
               <th>No</th>
@@ -159,34 +149,28 @@ const FasilitasTable = ({ tindakan, title, onAdd, judul }) => {
             </tr>
           </thead>
           <tbody>
-            {data.length > 0 ? (
-              data.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  <td>{rowIndex + 1}</td>
-                  <td>{row.lab.label || "-"}</td>
+            {fields.length > 0 ? (
+              fields.map((row, index) => (
+                <tr key={row.id}>
+                  <td>{index + 1}</td>
+                  <td>{row.lab.label}</td>
                   <td>
                     <input
                       type="number"
                       className="form-control"
                       value={row.jumlah}
                       onChange={(e) =>
-                        handleJumlahChange(rowIndex, e.target.value)
+                        handleJumlahChange(index, e.target.value)
                       }
                     />
                   </td>
                   <td>Rp {row.harga.toLocaleString()}</td>
-                  <td>
-                    Rp{" "}
-                    {calculateTotalHargaPerRow(
-                      row.jumlah,
-                      row.harga
-                    ).toLocaleString()}
-                  </td>
+                  <td>Rp {(row.jumlah * row.harga).toLocaleString()}</td>
                   <td>
                     <button
                       className="btn btn-danger btn-sm"
                       type="button"
-                      onClick={() => handleDeleteRow(rowIndex)}
+                      onClick={() => handleDeleteRow(index)}
                     >
                       Hapus
                     </button>
@@ -215,4 +199,4 @@ const FasilitasTable = ({ tindakan, title, onAdd, judul }) => {
   );
 };
 
-export default FasilitasTable;
+export default TindakanTableHarga;

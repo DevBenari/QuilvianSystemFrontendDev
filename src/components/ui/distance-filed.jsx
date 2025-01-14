@@ -1,10 +1,11 @@
 import React, { memo } from "react";
-import { useController, useForm } from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 import { Form } from "react-bootstrap";
 
-const DistanceField = memo(
+const NumberField = memo(
   ({ name, label, rules, className, placeholder, ...props }) => {
-    const { control } = useForm();
+    // Mengambil control dari FormProvider
+    const { control } = useFormContext();
     const {
       field,
       fieldState: { error },
@@ -18,10 +19,14 @@ const DistanceField = memo(
           <input
             {...field}
             {...props}
-            type="number" // Tipe input untuk angka
-            step="0" // Presisi jarak (contoh: 0.01 km)
+            type="tel" // Gunakan type "tel" untuk menerima angka tanpa panah spinner
             className={`form-control ${error ? "is-invalid" : ""}`}
-            placeholder={placeholder || "Masukkan jarak"}
+            placeholder={placeholder || "Masukkan nomor"}
+            onInput={(e) => {
+              // Pastikan hanya angka yang bisa dimasukkan
+              e.target.value = e.target.value.replace(/[^0-9]/g, "");
+              field.onChange(e);
+            }}
           />
         </div>
         {/* Pesan Error */}
@@ -35,5 +40,5 @@ const DistanceField = memo(
   }
 );
 
-DistanceField.displayName = "DistanceField";
-export default DistanceField;
+NumberField.displayName = "NumberField";
+export default NumberField;

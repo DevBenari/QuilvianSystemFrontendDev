@@ -1,12 +1,13 @@
 "use client";
 import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
-import { pasienBayi } from "@/utils/dataPasien";
+import ButtonNav from "@/components/ui/button-navigation";
+import { daftarPasien } from "@/utils/config";
 import React, { memo, useState } from "react";
 import { Row, Col, Button, Table } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-const DashboardPendaftaranBayi = memo(() => {
+const DashboardPendaftaranFasilitas = () => {
   const methods = useForm();
-  const [filteredPatients, setFilteredPatients] = useState(pasienBayi);
+  const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
 
   const handleRemovePatient = (id) => {
     const updatedPatients = filteredPatients.filter(
@@ -14,12 +15,11 @@ const DashboardPendaftaranBayi = memo(() => {
     );
     setFilteredPatients(updatedPatients);
   };
-
   return (
     <FormProvider {...methods}>
       <Col lg="12" className=" iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Searching Pasien Bayi </h2>
+          <h2 className="mb-3">Searching Pasien Fasilitas </h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -29,7 +29,7 @@ const DashboardPendaftaranBayi = memo(() => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={pasienBayi}
+            data={daftarPasien}
             setFilteredPatients={setFilteredPatients}
             onFilteredPatients={filteredPatients}
           />
@@ -49,15 +49,14 @@ const DashboardPendaftaranBayi = memo(() => {
               <div className="iq-card-body">
                 <div id="table" className="table-editable">
                   <span className="table-add float-end mb-3 me-2">
-                    <Button
+                    <ButtonNav
+                      path="/pendaftaran/pasien-luar-fasilitas/regist-pasien-luar-fasilitas"
+                      label="Tambah Pasien"
+                      icon="ri-add-fill"
                       size="sm"
                       variant=""
-                      className="btn btn-sm iq-bg-success "
-                    >
-                      <i className="ri-add-fill">
-                        <span className="ps-1">Add New</span>
-                      </i>
-                    </Button>
+                      className="btn btn-sm iq-bg-success"
+                    />
                   </span>
                   <div className="table-responsive-md w-100">
                     <Table className="text-center" bordered striped>
@@ -67,9 +66,10 @@ const DashboardPendaftaranBayi = memo(() => {
                           <th>No Rekam Medis</th>
                           <th>Tanggal</th>
                           <th>Nama</th>
-                          <th>dokter</th>
-                          <th>kelas</th>
-                          <th>ruang</th>
+                          <th>Jenis Kelamin</th>
+                          <th>Tanggal Lahir</th>
+                          <th>Umur</th>
+                          <th>No Telp</th>
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -80,9 +80,10 @@ const DashboardPendaftaranBayi = memo(() => {
                             <td>{item.noRekamMedis}</td>
                             <td>{item.date}</td>
                             <td>{item.nama}</td>
-                            <td>{item.dokter}</td>
-                            <td>{item.kelas}</td>
-                            <td>{item.ruang}</td>
+                            <td>{item.jenisKelamin}</td>
+                            <td>{item.tglLahir}</td>
+                            <td>{item.umur}</td>
+                            <td>{item.noTelp}</td>
                             <td>
                               <span className="table-remove">
                                 <button
@@ -107,6 +108,6 @@ const DashboardPendaftaranBayi = memo(() => {
       </div>
     </FormProvider>
   );
-});
-DashboardPendaftaranBayi.displayName = "DashboardPendaftaranBayi";
-export default DashboardPendaftaranBayi;
+};
+
+export default DashboardPendaftaranFasilitas;

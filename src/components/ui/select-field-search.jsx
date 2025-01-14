@@ -28,13 +28,13 @@ const SearchableSelectField = forwardRef(
       control: (provided) => ({
         ...provided,
         border: "1px solid #ced4da",
-        borderRadius: "0.25 m",
+        borderRadius: "0.25rem",
         boxShadow: "none",
         height: "calc(1.5em + 0.75rem + 2px)",
       }),
       menu: (provided) => ({
         ...provided,
-        zIndex: 9999, // Ensure it overlays correctly
+        zIndex: 9999,
       }),
       placeholder: (provided) => ({
         ...provided,
@@ -46,16 +46,15 @@ const SearchableSelectField = forwardRef(
       <Form.Group className={className}>
         {label && <Form.Label>{label}</Form.Label>}
         <Select
-          {...field}
           {...props}
-          ref={ref} // Forward the ref to the Select component
+          ref={ref}
           options={options}
           placeholder={placeholder || "Select an option"}
           isInvalid={!!error}
           styles={customStyles}
-          value={options.find((option) => option.value === field.value) || null}
+          value={field.value || null}
           onChange={(selected) => {
-            field.onChange(selected?.value || null);
+            field.onChange(selected || null);
             if (parentOnChange) {
               parentOnChange(selected);
             }

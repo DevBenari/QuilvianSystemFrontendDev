@@ -13,9 +13,11 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
-import DistanceField from "@/components/ui/distance-filed";
+
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
+import { DevTools } from "@hookform/devtools";
+import NumberField from "@/components/ui/distance-filed";
 
 const DynamicForm = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
@@ -31,7 +33,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     richText: RichTextEditor,
     signature: SignaturePad,
     time: TimeField,
-    distance: DistanceField,
+    number: NumberField,
     searchSelect: SearchableSelectField,
   };
 
@@ -116,7 +118,13 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     }
 
     return (
-      <Component key={id} {...sanitizedProps} options={options} rows={rows} />
+      <Component
+        key={id}
+        {...sanitizedProps}
+        options={options}
+        rows={rows}
+        control={methods.control}
+      />
     );
   };
 
@@ -137,7 +145,13 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     }, {}),
     mode: "onSubmit",
   });
-  const { watch } = methods;
+
+  const {
+    watch,
+
+    register,
+    formState: { errors },
+  } = methods;
   const handleSubmit = (data) => {
     try {
       if (onSubmit) {
@@ -149,6 +163,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
       console.error("Error submitting form:", error);
     }
   };
+
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
       return field.hide(watch());
@@ -165,10 +180,10 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
               <h3 className="card-title tracking-wide">{title}</h3>
             </div>
             <div>
-              <ButtonNav 
+              <ButtonNav
                 className="btn btn-primary mx-3 my-3"
                 label="Kembali"
-                path="/pendaftaran/pasien-luar-laboratorium"
+                path="/pendaftaran/pasien-luar-fasilitas"
                 icon="ri-arrow-left-line"
               />
             </div>
@@ -198,7 +213,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
                         <Col key={field.id || fieldIndex} lg={colSize || 6}>
                           {renderField(field)}
                         </Col>
-                    ))}
+                      ))}
                   </Row>
                 </div>
               ))}

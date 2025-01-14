@@ -8,13 +8,13 @@ const DateInput = memo(
     name,
     label,
     rules,
+    control,
     className,
     placeholder,
     options = {},
     onChange,
     ...props
   }) => {
-    const { control } = useForm();
     const {
       field,
       fieldState: { error },

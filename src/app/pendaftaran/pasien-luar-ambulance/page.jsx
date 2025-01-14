@@ -401,15 +401,8 @@ export default function PendaftaranFasilitas() {
     },
   ];
 
-  const handleSubmit = async (data) => {
-    try {
-      const response = await addPromo(data);
-      alert("Promo added successfully!");
-      router.push("/pendaftaran");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add promo.");
-    }
+  const handleSubmit = (data) => {
+    console.log("Form Data:", data);
   };
 
   return (
