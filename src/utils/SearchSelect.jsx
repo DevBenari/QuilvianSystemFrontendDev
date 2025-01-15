@@ -247,3 +247,42 @@ export const tipeAnestesiOptions = [
   { label: "Anestesi Inhalasi", value: "anestesi_inhalasi" },
   { label: "Anestesi Topikal", value: "anestesi_topikal" },
 ];
+
+export const dataAmbulance = [
+  {
+    label: "AMBULANCE ZONA 1 (0-5KM)",
+    value: "ambulance_zona_1",
+  },
+  {
+    label: "AMBULANCE ZONA 2 (5-15KM)",
+    value: "ambulance_zona_2",
+  },
+  {
+    label: "AMBULANCE ZONA 3 (15-25KM)",
+    value: "ambulance_zona_3",
+  },
+  {
+    label: "AMBULANCE ZONA 4 (25-30KM)",
+    value: "ambulance_zona_4",
+  },
+  {
+    label: "JASA 1 PERAWAT RESCUE PASIEN",
+    value: "perawat_rescue_pasien",
+  },
+  {
+    label: "JASA 1 PERAWAT HOME VISIT DALAM KOTA",
+    value: "perawat_home_visit_dalam_kota",
+  },
+  {
+    label: "JASA DOKTER STANDBY AMBULANCE PER JAM",
+    value: "dokter_standby_ambulance",
+  },
+  {
+    label: "JASA DOKTER HOME VISIT DALAM KOTA",
+    value: "dokter_home_visit_dalam_kota",
+  },
+  {
+    label: "JASA DOKTER RESCUE PASIEN",
+    value: "dokter_rescue_pasien",
+  },
+];

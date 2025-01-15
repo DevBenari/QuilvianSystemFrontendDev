@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button, Image } from "react-bootstrap";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -13,10 +13,13 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
-import DistanceField from "@/components/ui/distance-filed";
+import { motion } from "framer-motion";
 import SearchableSelectField from "@/components/ui/select-field-search";
+import ButtonNav from "@/components/ui/button-navigation";
+import { DevTools } from "@hookform/devtools";
+import NumberField from "@/components/ui/distance-filed";
 
-const DynamicDuaForm = ({ title, formConfig, onSubmit }) => {
+const DynamicFormAnimasi = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -30,7 +33,7 @@ const DynamicDuaForm = ({ title, formConfig, onSubmit }) => {
     richText: RichTextEditor,
     signature: SignaturePad,
     time: TimeField,
-    distance: DistanceField,
+    number: NumberField,
     searchSelect: SearchableSelectField,
   };
 
@@ -72,6 +75,8 @@ const DynamicDuaForm = ({ title, formConfig, onSubmit }) => {
       options,
       rows,
       date,
+      colSize,
+      motion: motionProps, // ✅ Rename dari "motion" ke "motionProps"
       customRender,
       ...otherProps // Capture all other props
     } = field;
@@ -103,7 +108,6 @@ const DynamicDuaForm = ({ title, formConfig, onSubmit }) => {
     // Remove any props that are not necessary for the DOM, like `hide`
     const sanitizedProps = { ...commonProps, ...otherProps };
     delete sanitizedProps.hide;
-    delete sanitizedProps.colSize; // Exclude `
 
     if (customRender) {
       return customRender({ key: id, ...sanitizedProps });
@@ -115,13 +119,27 @@ const DynamicDuaForm = ({ title, formConfig, onSubmit }) => {
       return null;
     }
 
+    const FieldWrapper = motionProps ? motion.div : "div";
+
     return (
-      <Component key={id} {...sanitizedProps} options={options} rows={rows} />
+      <FieldWrapper
+        key={id}
+        {...motionProps} // ✅ Apply motion props jika ada
+        className={className}
+      >
+        <Component
+          key={id}
+          {...sanitizedProps}
+          options={options}
+          rows={rows}
+          control={methods.control}
+        />
+      </FieldWrapper>
     );
   };
 
   /**
-   * DynamicDuaForm Component
+   * DynamicFormAnimasi Component
    * @param {Object} props
    * @param {string} props.title - Title for the form.
    * @param {Array<{section: string, fields: FormField[], layout?: "inline" | "default"}>} props.formConfig - Configuration for the form.
@@ -137,7 +155,13 @@ const DynamicDuaForm = ({ title, formConfig, onSubmit }) => {
     }, {}),
     mode: "onSubmit",
   });
-  const { watch } = methods;
+
+  const {
+    watch,
+
+    register,
+    formState: { errors },
+  } = methods;
   const handleSubmit = (data) => {
     try {
       if (onSubmit) {
@@ -149,6 +173,7 @@ const DynamicDuaForm = ({ title, formConfig, onSubmit }) => {
       console.error("Error submitting form:", error);
     }
   };
+
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
       return field.hide(watch());
@@ -158,100 +183,67 @@ const DynamicDuaForm = ({ title, formConfig, onSubmit }) => {
 
   return (
     <FormProvider {...methods}>
-      <div className=" mt-3">
-        <Row>
-          {/* Bagian Kiri: Form */}
-          <Col md={7}>
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-title">
-                  <h3 className="card-title tracking-wide">{title}</h3>
-                </div>
-              </div>
-              <div className="card-body">
-                <Form onSubmit={methods.handleSubmit(handleSubmit)}>
-                  {formConfig.map((section, sectionIndex) => (
-                    <div
-                      key={`section-${sectionIndex}`}
-                      className="iq-card-header mt-3"
-                    >
-                      {section.section && (
-                        <div className="iq-header-title">
-                          <h4 className="mb-3">{section.section}</h4>
-                        </div>
-                      )}
-                      <Row
-                        className={
-                          section.layout === "inline"
-                            ? "d-flex align-items-center"
-                            : ""
-                        }
-                      >
-                        {section.fields
-                          .filter((field) => !shouldHideField(field)) // Filter out hidden fields
-                          .map((field, fieldIndex) => (
-                            <Col
-                              key={field.id || fieldIndex}
-                              lg={field.colSize || 6}
-                            >
-                              {field.customRender
-                                ? field.customRender({
-                                    methods,
-                                    watchValues: watch(),
-                                  })
-                                : renderField(field)}
-                            </Col>
-                          ))}
-                      </Row>
-                    </div>
-                  ))}
-                  <Button type="submit" className="btn btn-primary mx-3 my-3">
-                    Kirim
-                  </Button>
-                </Form>
-              </div>
+      <Row>
+        <div className="iq-card" style={{ marginTop: "50px" }}>
+          <div className="iq-card-header d-flex justify-content-between ">
+            <div className="iq-header-title ">
+              <h3 className="card-title tracking-wide">{title}</h3>
             </div>
-          </Col>
+            <div>
+              <ButtonNav
+                className="btn btn-primary mx-3 my-3"
+                label="Kembali"
+                path="/pendaftaran"
+                icon="ri-arrow-left-line"
+              />
+            </div>
+          </div>
+          <div className="card-body">
+            <Form onSubmit={methods.handleSubmit(handleSubmit)}>
+              {formConfig.map((section, sectionIndex) => {
+                const SectionWrapper = section.motion ? motion.div : "div";
 
-          {/* Bagian Kanan: Informasi Dokter */}
-          <Col md={5}>
-            <div className="iq-card iq-card-profile-dokter py-2 my-2">
-              <div className="iq-card-header">
-                <div className="iq-card-body">
-                  <Row>
-                    <Col xs={4}>
-                      <Image
-                        src="/Images/jamal.jpg"
-                        className="img-fluid rounded w-100 h-100"
-                        alt="user"
-                      />
-                    </Col>
-                    <Col xs={8}>
-                      <div className="d-flex flex-column gap-2">
-                        <p className="font-size-24 text-black">
-                          Rizki Gunawan Adiputro, spB,dr.{" "}
-                          <span> (09:00 - 12:00)</span>{" "}
-                        </p>
-                        <button className="btn btn-primary">mulai</button>
+                return (
+                  <SectionWrapper
+                    key={`section-${sectionIndex}`}
+                    {...section.motion}
+                    className="iq-card-header mt-3"
+                  >
+                    {section.section && (
+                      <div className="iq-header-title">
+                        <h4 className="mb-3">{section.section}</h4>
                       </div>
-                    </Col>
-                  </Row>
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <Col className="mt-3">
-                  <div className="iq-card-pasien-name p-2">
-                    <h5>Pasien : Dio Dear Mahardika</h5>
-                    <p>00-84-22-89:: Laki-Laki :: 37 th 4 Bln 21 Hr</p>
-                  </div>
-                </Col>
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </div>
+                    )}
+                    <Row
+                      className={
+                        section.layout === "inline"
+                          ? "d-flex align-items-center"
+                          : ""
+                      }
+                    >
+                      {section.fields
+                        .filter((field) => !shouldHideField(field))
+                        .map((field, fieldIndex) => (
+                          <Col
+                            key={field.id || fieldIndex}
+                            lg={field.colSize || 6}
+                          >
+                            {renderField(field)}
+                          </Col>
+                        ))}
+                    </Row>
+                  </SectionWrapper>
+                );
+              })}
+              <Button type="submit" className="btn btn-primary mx-3 my-3">
+                Kirim
+              </Button>
+            </Form>
+          </div>
+        </div>
+      </Row>
     </FormProvider>
   );
 };
 
-export default DynamicDuaForm;
+export default DynamicFormAnimasi;

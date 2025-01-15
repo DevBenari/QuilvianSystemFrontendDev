@@ -1,7 +1,7 @@
 "use client";
 
 import DynamicDuaForm from "@/components/features/dynamicDuaForm.jsx/dynamicDuaForm";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicForm";
 import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
 import DateInput from "@/components/ui/date-input";
 import RadioInput from "@/components/ui/radio-input";

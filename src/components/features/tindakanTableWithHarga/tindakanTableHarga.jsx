@@ -3,7 +3,17 @@ import { useFormContext, Controller, useFieldArray } from "react-hook-form";
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
 import SearchableSelectField from "@/components/ui/select-field-search";
 
-const TindakanTableHarga = ({ tindakan, title, judul }) => {
+const TindakanTableHarga = ({
+  tindakan,
+  title,
+  judul,
+  placeholder,
+  label,
+  labelKey = "name",
+  valueKey = "id",
+  hargaKey,
+  rules,
+}) => {
   const { control, watch, setValue } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -12,8 +22,9 @@ const TindakanTableHarga = ({ tindakan, title, judul }) => {
 
   // Transformasikan tindakanDataConfig agar sesuai dengan format dropdown
   const tindakanOptions = tindakan.map((item) => ({
-    label: item.name,
-    value: item.id,
+    label: item[labelKey],
+    value: item[valueKey],
+    harga: hargaKey ? item[hargaKey] : 0,
   }));
 
   // Fungsi untuk menambahkan tindakan ke tabel
@@ -24,7 +35,7 @@ const TindakanTableHarga = ({ tindakan, title, judul }) => {
       const qtyToAdd = parseInt(dataToAdd.qty);
 
       // Cari harga dari dataFasilitas berdasarkan ID yang dipilih
-      const selectedTindakan = tindakan.find(
+      const selectedHarga = tindakan.find(
         (item) => item.id === dataToAdd.select.value
       );
 
@@ -39,7 +50,7 @@ const TindakanTableHarga = ({ tindakan, title, judul }) => {
         updatedFields[existingIndex] = {
           ...updatedFields[existingIndex],
           jumlah: qtyToAdd,
-          harga: selectedTindakan?.harga || 0,
+          harga: selectedHarga?.harga || 0, // Perbarui harga jika tersedia
         };
         setValue("tindakanList", updatedFields);
       } else {
@@ -47,7 +58,7 @@ const TindakanTableHarga = ({ tindakan, title, judul }) => {
         append({
           lab: dataToAdd.select,
           jumlah: qtyToAdd,
-          harga: selectedTindakan?.harga || 0,
+          harga: selectedHarga?.harga || 0, // Set harga jika tersedia
         });
       }
 
@@ -60,6 +71,8 @@ const TindakanTableHarga = ({ tindakan, title, judul }) => {
     }
   };
 
+  // Perbarui total keseluruhan di form utama setiap kali data tabel berubah
+
   // Fungsi untuk mengubah jumlah tindakan di tabel
   const handleJumlahChange = (index, value) => {
     const updatedFields = [...fields];
@@ -71,16 +84,17 @@ const TindakanTableHarga = ({ tindakan, title, judul }) => {
   };
 
   // Fungsi untuk menghitung total harga per baris
-  const calculateTotalHargaPerRow = (jumlah, harga) => {
-    return jumlah * harga;
-  };
 
   // Fungsi untuk menghitung total keseluruhan harga
-  const calculateTotalHargaKeseluruhan = () => {
-    return fields.reduce((total, item) => {
-      return total + calculateTotalHargaPerRow(item.jumlah, item.harga);
+  const [totalKeseluruhan, setTotalKeseluruhan] = React.useState(0);
+
+  React.useEffect(() => {
+    const total = fields.reduce((total, item) => {
+      return total + item.jumlah * item.harga;
     }, 0);
-  };
+    setTotalKeseluruhan(total);
+    setValue("totalKeseluruhan", total); // Perbarui nilai di form utama
+  }, [fields, setValue]);
 
   const handleDeleteRow = (index) => {
     remove(fields, index);
@@ -97,13 +111,13 @@ const TindakanTableHarga = ({ tindakan, title, judul }) => {
             <Controller
               name="tindakanSelect.select"
               control={control}
-              rules={{ required: "Tindakan is required" }}
+              rules={rules}
               render={({ field, fieldState }) => (
                 <SearchableSelectField
                   {...field}
-                  label="Fasilitas"
+                  label={label}
                   options={tindakanOptions}
-                  placeholder="Pilih Fasilitas"
+                  placeholder={placeholder || "Pilih Tindakan"}
                   className={`mb-3 ${
                     fieldState.error ? "error-highlight" : ""
                   }`}
@@ -189,9 +203,7 @@ const TindakanTableHarga = ({ tindakan, title, judul }) => {
         <div className="text-end mt-3">
           <h5>
             Total Harga Keseluruhan:{" "}
-            <strong>
-              Rp {calculateTotalHargaKeseluruhan().toLocaleString()}
-            </strong>
+            <strong>Rp {totalKeseluruhan.toLocaleString()}</strong>
           </h5>
         </div>
       </div>

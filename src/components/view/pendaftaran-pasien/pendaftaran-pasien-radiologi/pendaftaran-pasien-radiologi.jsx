@@ -1,26 +1,16 @@
 "use client";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+
 import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
-import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useForm } from "react-hook-form";
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
-import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
+import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 
-const PendaftaranPasienRadiologi = memo(() => {
+const PendaftaranPasienRadiologi = () => {
   const router = useRouter();
-
-  const [handleSelectedOption, setHandleSelectedOption] = useState(null);
-
-  const handleRadioChange = (value) => {
-    setHandleSelectedOption(value);
-  };
-
-  const handleSelectChange = (value) => {
-    setHandleSelectedOption(value);
-  };
 
   const { setValue } = useForm();
   // fungsi untuk melakukan select provinsi
@@ -108,15 +98,7 @@ const PendaftaranPasienRadiologi = memo(() => {
           },
           colSize: 6,
         },
-        {
-          type: "textarea",
-          id: "alamatRumah",
-          label: "Alamat Rumah",
-          name: "alamatRumah",
-          placeholder: "Alamat Rumah",
-          rules: { required: "Alamat Rumah is required" },
-          colSize: 12,
-        },
+
         {
           type: "select",
           id: "pasien_provinsi",
@@ -173,6 +155,15 @@ const PendaftaranPasienRadiologi = memo(() => {
           colSize: 6,
           onChangeCallback: (value) => handleChange("kelurahan", value),
         },
+        {
+          type: "textarea",
+          id: "alamatRumah",
+          label: "Alamat Rumah",
+          name: "alamatRumah",
+          placeholder: "Alamat Rumah",
+          rules: { required: "Alamat Rumah is required" },
+          colSize: 12,
+        },
       ],
     },
     {
@@ -203,8 +194,9 @@ const PendaftaranPasienRadiologi = memo(() => {
             { label: "BPJS", value: "bpjs" },
             { label: "Non BPJS", value: "non-bpjs" },
           ],
+
           rules: { required: "Penjamin is required" },
-          colSize: 6,
+          colSize: 8,
         },
         {
           type: "date",
@@ -218,6 +210,7 @@ const PendaftaranPasienRadiologi = memo(() => {
     },
     {
       section: "Dirujuk",
+
       fields: [
         {
           type: "select",
@@ -232,6 +225,7 @@ const PendaftaranPasienRadiologi = memo(() => {
               value: "atasPermintaanSendiri",
             },
           ],
+          rules: { required: "Dirujuk is required" },
           colSize: 8,
           className: "mb-3",
         },
@@ -250,6 +244,7 @@ const PendaftaranPasienRadiologi = memo(() => {
           ],
           hide: (watchValues) => watchValues.dirujuk !== "konsul", // Tampilkan hanya untuk "konsul"
           colSize: 6,
+
           className: "mb-3",
         },
         {
@@ -288,7 +283,7 @@ const PendaftaranPasienRadiologi = memo(() => {
       ],
     },
     {
-      // section: "Kode Member",
+      section: "Kode Member",
       fields: [
         {
           type: "select",
@@ -305,20 +300,7 @@ const PendaftaranPasienRadiologi = memo(() => {
           rules: { required: "Pilih Promo is required" },
           colSize: 6,
         },
-        {
-          type: "select",
-          id: "tipePemeriksaan",
-          label: "Tipe Pemeriksaan",
-          name: "tipePemeriksaan",
-          placeholder: "Pilih Tipe Pemeriksaan",
-          options: [
-            { label: "Patologi Klinik", value: "patologi_klinik" },
-            { label: "Patologi Anatomi", value: "patologi_anatomi" },
-            { label: "Mikrobiologi", value: "mikrobiologi" },
-          ],
-          rules: { required: "Tipe Pemeriksaan is required" },
-          colSize: 6,
-        },
+
         {
           type: "select",
           id: "suratRujukan",
@@ -332,22 +314,7 @@ const PendaftaranPasienRadiologi = memo(() => {
           rules: { required: "Surat Rujukan is required" },
           colSize: 6,
         },
-        {
-          type: "date",
-          id: "tglSampling",
-          label: "Tanggal Sampling",
-          name: "tglSampling",
-          rules: { required: "Tanggal Sampling is required" },
-          colSize: 3,
-        },
-        {
-          type: "time",
-          id: "timeSampling",
-          label: "Jam",
-          name: "timeSampling",
-          rules: { required: "time Sampling is required" },
-          colSize: 3,
-        },
+
         {
           type: "textarea",
           id: "diagnosaAwal",
@@ -364,22 +331,23 @@ const PendaftaranPasienRadiologi = memo(() => {
       fields: [
         {
           type: "custom",
-          customRender: () => <TableTindakan tindakan={pemeriksaRadiologi} />,
+          customRender: () => (
+            <TindakanTableHarga
+              tindakan={pemeriksaRadiologi}
+              placeholder="Masukkan Nama Pemeriksaan"
+              label="Pemeriksaan Radiologi"
+              labelKey="pemeriksaanRadiologi"
+              ValueKey="id"
+              hargaKey="harga"
+              rules={{ required: "Pemeriksaan Radiologi is required" }}
+            />
+          ),
           colSize: 12,
         },
       ],
     },
     {
       fields: [
-        {
-          type: "table",
-          id: "tableTindakan",
-          label: "Table Tindakan",
-          name: "tableTindakan",
-          columns: ["Pemeriksaan Lab", "Jumlah", "Action"],
-          rules: { required: "Table Tindakan is required" },
-          colSize: 12,
-        },
         {
           type: "select",
           id: "dokterPemeriksa",
@@ -426,15 +394,8 @@ const PendaftaranPasienRadiologi = memo(() => {
     },
   ];
 
-  const handleSubmit = async (data) => {
-    try {
-      const response = await addPromo(data);
-      alert("Promo added successfully!");
-      router.push("/pendaftaran");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add promo.");
-    }
+  const handleSubmit = (data) => {
+    console.log("Form Data:", data);
   };
 
   return (
@@ -446,7 +407,6 @@ const PendaftaranPasienRadiologi = memo(() => {
       />
     </Fragment>
   );
-});
+};
 
-PendaftaranPasienRadiologi.displayName = "PendaftaranPasienRadiologi";
 export default PendaftaranPasienRadiologi;

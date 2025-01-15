@@ -1,121 +1,12 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import React, { Fragment, useState, useEffect, useCallback } from "react";
-import { addPromo } from "@/lib/hooks/keanggotaan/add";
-import { useRouter } from "next/navigation"; // Import the useRouter hook
-import { FormProvider, useForm } from "react-hook-form";
-
-import dataWilayah from "@/utils/dataWilayah";
 
 import { dataFasilitas } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 
 export const PendaftaranPasienLuarFasilitas = () => {
-  const router = useRouter();
-
-  const handleRadioChange = (value) => {
-    setSelectedOption(value);
-  };
-
-  const handleSelectChange = (value) => {
-    setSelectedOption(value);
-  };
-
-  const { setValue } = useForm();
-
-  const [pasienSelectedProvinsi, setPasienSelectedProvinsi] = useState("");
-  const [pasienFilteredKabupaten, setPasienFilteredKabupaten] = useState([]);
-  const [pasienFilteredKecamatan, setPasienFilteredKecamatan] = useState([]);
-  const [pasienFilteredKelurahan, setPasienFilteredKelurahan] = useState([]);
-
-  const handleChange = useCallback(
-    (field, value) => {
-      if (field === "provinsi") {
-        // Set provinsi yang dipilih
-        setPasienSelectedProvinsi(value);
-
-        // Filter data kabupaten berdasarkan provinsi
-        const selectedProvinsi = dataWilayah.find(
-          (item) => item.provinsi === value
-        );
-        setPasienFilteredKabupaten(
-          selectedProvinsi ? selectedProvinsi.kabupaten : []
-        );
-
-        // Reset kecamatan dan kelurahan jika provinsi berubah
-        setPasienFilteredKecamatan([]);
-        setPasienFilteredKelurahan([]);
-        setValue("pasien_provinsi", value);
-        setValue("pasien_kabupaten", ""); // Reset kabupaten
-        setValue("pasien_kecamatan", ""); // Reset kecamatan
-        setValue("pasien_kelurahan", ""); // Reset kelurahan
-      } else if (field === "kabupaten") {
-        // Filter data kecamatan berdasarkan kabupaten
-        const selectedKabupaten = pasienFilteredKabupaten.find(
-          (item) => item.nama === value
-        );
-        setPasienFilteredKecamatan(
-          selectedKabupaten ? selectedKabupaten.kecamatan : []
-        );
-
-        // Reset kelurahan jika kabupaten berubah
-        setPasienFilteredKelurahan([]);
-        setValue("pasien_kabupaten", value);
-        setValue("pasien_kecamatan", ""); // Reset kecamatan
-        setValue("pasien_kelurahan", ""); // Reset kelurahan
-      } else if (field === "kecamatan") {
-        // Filter data kelurahan berdasarkan kecamatan
-        const selectedKecamatan = pasienFilteredKecamatan.find(
-          (item) => item.nama === value
-        );
-        setPasienFilteredKelurahan(
-          selectedKecamatan ? selectedKecamatan.kelurahan : []
-        );
-        setValue("pasien_kecamatan", value);
-        setValue("pasien_kelurahan", ""); // Reset kelurahan
-      } else if (field === "kelurahan") {
-        // Set kelurahan yang dipilih
-        setValue("pasien_kelurahan", value);
-      }
-    },
-    [pasienFilteredKabupaten, pasienFilteredKecamatan, setValue]
-  );
-
-  //  function promo
-  // useEffect(() => {
-  //   if (promos) {
-  //     setPromosState(promos);
-  //   }
-  // }, [promos]);
-  // const formFieldsPromo = [
-  //   {
-  //     name: "promoByNama",
-  //     label: "Search",
-  //     type: "text",
-  //     placeholder: "Search Promo by Name...",
-  //     onChange: (e) => handleSearchByName(e.target.value),
-  //   },
-  // ];
-
-  // const handleSearchByName = (searchValue) => {
-  //   const filteredPromos = promos.filter((promo) =>
-  //     promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
-  //   );
-  //   setPromosState(filteredPromos.length ? filteredPromos : promos);
-  // };
-
-  // const promoHeaders = ["NO", "PEMERIKSAAN LAB", "JUMLAH", "ACTION"];
-  // const promoMembers = promosState.map((promo, index) => ({
-  //   no: index + 1,
-  //   id: promo.promoId,
-  //   kodePromo: promo.kodePromo || "-",
-  //   namaPromo: promo.namaPromo || "-",
-  //   keterangan: promo.keterangan || "-",
-  // }));
-
-  // end promo
-
   const formFields = [
     {
       fields: [
@@ -231,9 +122,17 @@ export const PendaftaranPasienLuarFasilitas = () => {
         {
           type: "custom",
           label: "Fasilitas",
-
           customRender: () => (
-            <TindakanTableHarga title="Fasilitas" tindakan={dataFasilitas} />
+            <TindakanTableHarga
+              title="Fasilitas"
+              tindakan={dataFasilitas}
+              label="Fasilitas"
+              rules={{ required: "Fasilitas is required" }}
+              ValueKey="id"
+              labelKey="tindakan"
+              hargaKey="harga"
+              placeholder="masukkan Nama Fasilitas"
+            />
           ),
           colSize: 12,
         },

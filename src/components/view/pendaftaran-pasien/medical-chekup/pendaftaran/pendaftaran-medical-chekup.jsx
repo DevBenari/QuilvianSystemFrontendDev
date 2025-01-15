@@ -1,73 +1,13 @@
 "use client";
-import FormValidations from "@/components/features/formValidations/formValidations";
 
 import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
-import { addPromo } from "@/lib/hooks/keanggotaan/add";
-import { useRouter } from "next/navigation"; // Import the useRouter hook
-import { useKecamatans } from "@/lib/hooks/kecamatan/index";
-import { getById } from "@/lib/hooks/province/getProvinceId";
-import { FormProvider, useForm } from "react-hook-form";
 import { Row, Col, Container, Button } from "react-bootstrap";
-import TextField from "@/components/ui/text-field";
-import RadioInput from "@/components/ui/radio-input";
-import { usePromos } from "@/lib/hooks/promo/index"; // Import the usePromos hook
-import SelectField from "@/components/ui/select-field";
-import dataWilayah from "@/utils/dataWilayah";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+
 import SearchableSelectField from "@/components/ui/select-field-search";
 import { dataDokter, paketMcu } from "@/utils/SearchSelect";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 
-const PendaftaranPasienLuarMedicalCheckUp = memo(() => {
-  const { promos, loading, error } = usePromos();
-  const [promosState, setPromosState] = useState([]);
-  const router = useRouter();
-  const [selectedOption, setSelectedOption] = useState(null);
-  // change provinsi berdasarkan api
-
-  // function handle
-
-  const handleRadioChange = (value) => {
-    setSelectedOption(value);
-  };
-
-  const handleSelectChange = (value) => {
-    setSelectedOption(value);
-  };
-
-  //  function promo
-  useEffect(() => {
-    if (promos) {
-      setPromosState(promos);
-    }
-  }, [promos]);
-  const formFieldsPromo = [
-    {
-      name: "promoByNama",
-      label: "Search",
-      type: "text",
-      placeholder: "Search Promo by Name...",
-      onChange: (e) => handleSearchByName(e.target.value),
-    },
-  ];
-
-  const handleSearchByName = (searchValue) => {
-    const filteredPromos = promos.filter((promo) =>
-      promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
-    );
-    setPromosState(filteredPromos.length ? filteredPromos : promos);
-  };
-
-  const promoHeaders = ["NO", "PEMERIKSAAN LAB", "JUMLAH", "ACTION"];
-  const promoMembers = promosState.map((promo, index) => ({
-    no: index + 1,
-    id: promo.promoId,
-    kodePromo: promo.kodePromo || "-",
-    namaPromo: promo.namaPromo || "-",
-    keterangan: promo.keterangan || "-",
-  }));
-
-  // end promo
-
+const PendaftaranPasienLuarMedicalCheckUp = () => {
   const formFields = [
     {
       fields: [
@@ -238,10 +178,7 @@ const PendaftaranPasienLuarMedicalCheckUp = memo(() => {
 
         {
           type: "custom",
-          id: "paketMcu",
           label: "paketMcu",
-          name: "paketMcu",
-          placeholder: "paketMcu",
           rules: { required: "paketMcu is required" },
           customRender: () => (
             <>
@@ -385,15 +322,8 @@ const PendaftaranPasienLuarMedicalCheckUp = memo(() => {
     },
   ];
 
-  const handleSubmit = async (data) => {
-    try {
-      const response = await addPromo(data);
-      alert("Promo added successfully!");
-      router.push("/pendaftaran");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add promo.");
-    }
+  const handleSubmit = (data) => {
+    console.log("Form Data", data);
   };
 
   return (
@@ -405,9 +335,6 @@ const PendaftaranPasienLuarMedicalCheckUp = memo(() => {
       />
     </Fragment>
   );
-});
-
-PendaftaranPasienLuarMedicalCheckUp.displayName =
-  "PendaftaranPasienLuarMedicalCheckUp";
+};
 
 export default PendaftaranPasienLuarMedicalCheckUp;

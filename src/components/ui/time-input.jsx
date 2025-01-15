@@ -11,6 +11,13 @@ const TimeField = memo(
       fieldState: { error },
     } = useController({ name, control, rules });
 
+    // ✅ Fungsi untuk memformat waktu menjadi HH:mm
+    const formatTime = (time) => {
+      const hours = time.getHours().toString().padStart(2, "0");
+      const minutes = time.getMinutes().toString().padStart(2, "0");
+      return `${hours}:${minutes}`;
+    };
+
     return (
       <Form.Group className={className}>
         {label && <Form.Label>{label}</Form.Label>}
@@ -24,7 +31,11 @@ const TimeField = memo(
             time_24hr: true,
           }}
           className={`form-control ${error ? "is-invalid" : ""}`}
-          onChange={([time]) => field.onChange(time)}
+          onChange={([time]) => {
+            // ✅ Format waktu sebelum mengupdate form state
+            const formattedTime = formatTime(time);
+            field.onChange(formattedTime);
+          }}
           placeholder={placeholder}
         />
         {error && (

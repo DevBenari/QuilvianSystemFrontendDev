@@ -1,61 +1,11 @@
 "use client";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+
 import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
-import { addPromo } from "@/lib/hooks/keanggotaan/add";
-import { useRouter } from "next/navigation"; // Import the useRouter hook
-import OptikTable from "@/components/view/optik/OptikTable";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
+import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 
 export const PendaftaranPasienLuarOptik = memo(() => {
-  // const [promosState, setPromosState] = useState([]);
-  const router = useRouter();
-  const [selectedOption, setSelectedOption] = useState(null);
-  // change provinsi berdasarkan api
-
-  // function handle
-
-  const handleRadioChange = (value) => {
-    setSelectedOption(value);
-  };
-
-  const handleSelectChange = (value) => {
-    setSelectedOption(value);
-  };
-
-  //  function promo
-  // useEffect(() => {
-  //   if (promos) {
-  //     setPromosState(promos);
-  //   }
-  // }, [promos]);
-  // const formFieldsPromo = [
-  //   {
-  //     name: "promoByNama",
-  //     label: "Search",
-  //     type: "text",
-  //     placeholder: "Search Promo by Name...",
-  //     onChange: (e) => handleSearchByName(e.target.value),
-  //   },
-  // ];
-
-  // const handleSearchByName = (searchValue) => {
-  //   const filteredPromos = promos.filter((promo) =>
-  //     promo.namaPromo.toLowerCase().includes(searchValue.trim().toLowerCase())
-  //   );
-  //   setPromosState(filteredPromos.length ? filteredPromos : promos);
-  // };
-
-  // const promoHeaders = ["NO", "PEMERIKSAAN LAB", "JUMLAH", "ACTION"];
-  // const promoMembers = promosState.map((promo, index) => ({
-  //   no: index + 1,
-  //   id: promo.promoId,
-  //   kodePromo: promo.kodePromo || "-",
-  //   namaPromo: promo.namaPromo || "-",
-  //   keterangan: promo.keterangan || "-",
-  // }));
-
-  // end promo
-
   const formFields = [
     {
       fields: [
@@ -172,24 +122,25 @@ export const PendaftaranPasienLuarOptik = memo(() => {
       fields: [
         {
           type: "custom",
-          id: "tindakanOptik",
           label: "Tindakan Optik",
-          customRender: () => <OptikTable tindakan={pemeriksaRadiologi} />,
+          customRender: () => (
+            <TindakanTableHarga
+              tindakan={pemeriksaRadiologi}
+              label="Tindakan Optik"
+              placeholder="Pilih Tindakan Optik"
+              ValueKey="id"
+              labelKey="pemeriksaanRadiologi"
+              hargaKey="harga"
+            />
+          ),
           colSize: 12,
         },
       ],
     },
   ];
 
-  const handleSubmit = async (data) => {
-    try {
-      const response = await addPromo(data);
-      alert("Promo added successfully!");
-      router.push("/pendaftaran");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add promo.");
-    }
+  const handleSubmit = (data) => {
+    console.log("Form Data :", data);
   };
 
   return (

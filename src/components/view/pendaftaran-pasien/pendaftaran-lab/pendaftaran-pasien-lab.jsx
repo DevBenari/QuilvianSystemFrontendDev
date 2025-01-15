@@ -1,29 +1,15 @@
 "use client";
 
 import React, { Fragment, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+
 import { useForm } from "react-hook-form";
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
-import TindakanTableLaboratorium from "@/components/view/pendaftaran-laboratorium/tindakanLaboratorium";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+
 import { tindakanDataConfig } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 export default function PendaftaranPasienLab() {
-  const router = useRouter();
-  const [selectedOption, setSelectedOption] = useState("");
-
-  const handleRadioChange = (e) => {
-    const value = e.target.value; // Ambil value dari radio button
-    setSelectedOption(value); // Set state berdasarkan pilihan
-  };
-
-  // const [selectedOptions, setSelectedOptions] = useState([]);
-  // function handle
-  const handleSelectChange = (value) => {
-    setSelectedOption(value);
-  };
-
   const { setValue } = useForm();
   // fungsi untuk melakukan select provinsi
   const {
@@ -38,7 +24,7 @@ export default function PendaftaranPasienLab() {
     {
       fields: [
         {
-          type: "number",
+          type: "text",
           id: "noRegistrasi",
           label: "No Registrasi",
           name: "noRegistrasi",
@@ -47,7 +33,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "number",
+          type: "text",
           id: "noRekamMedis",
           label: "No Rekam Medis",
           name: "noRekamMedis",
@@ -65,7 +51,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "number",
+          type: "text",
           id: "nomorHP",
           label: "Nomor HP",
           name: "nomorHP",
@@ -96,7 +82,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "number",
+          type: "text",
           id: "nomorTlpn",
           label: "Nomor Telepon",
           name: "nomorTlpn",
@@ -120,15 +106,7 @@ export default function PendaftaranPasienLab() {
           },
           colSize: 6,
         },
-        {
-          type: "textarea",
-          id: "alamatRumah",
-          label: "Alamat Rumah",
-          name: "alamatRumah",
-          placeholder: "Alamat Rumah",
-          rules: { required: "Alamat Rumah is required" },
-          colSize: 12,
-        },
+
         {
           type: "select",
           id: "pasien_provinsi",
@@ -184,6 +162,24 @@ export default function PendaftaranPasienLab() {
           rules: { required: "Kelurahan is required" },
           colSize: 6,
           onChangeCallback: (value) => handleChange("kelurahan", value),
+        },
+        {
+          type: "textarea",
+          id: "alamatRumah",
+          label: "Alamat Rumah",
+          name: "alamatRumah",
+          placeholder: "Alamat Rumah",
+          rules: { required: "Alamat Rumah is required" },
+          colSize: 12,
+        },
+        {
+          type: "text",
+          id: "kodePos",
+          label: "Kode Pos",
+          name: "kodePos",
+          placeholder: "Kode Pos",
+          rules: { required: "Kode Pos is required" },
+          colSize: 6,
         },
       ],
     },

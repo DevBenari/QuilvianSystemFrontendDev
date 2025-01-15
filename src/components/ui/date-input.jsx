@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import Flatpickr from "react-flatpickr";
-import { useController, useForm } from "react-hook-form";
+import { useController } from "react-hook-form";
 import { Form } from "react-bootstrap";
 
 const DateInput = memo(
@@ -20,6 +20,14 @@ const DateInput = memo(
       fieldState: { error },
     } = useController({ name, control, rules });
 
+    // Fungsi untuk memformat tanggal menjadi "YYYY-MM-DD"
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
     return (
       <Form.Group className={className}>
         {label && <Form.Label>{label}</Form.Label>}
@@ -33,8 +41,14 @@ const DateInput = memo(
           }}
           className={`form-control ${error ? "is-invalid" : ""}`}
           onChange={([date]) => {
-            field.onChange(date); // Pastikan hook form tetap bekerja
-            if (onChange) onChange([date]); // Panggil onChange dari props jika ada
+            // Format tanggal sebelum dikirim ke form state
+            const formattedDate = formatDate(date);
+
+            // Update nilai di hook form dengan format yang benar
+            field.onChange(formattedDate);
+
+            // Panggil onChange dari props jika ada
+            if (onChange) onChange(formattedDate);
           }}
           placeholder={placeholder}
         />
