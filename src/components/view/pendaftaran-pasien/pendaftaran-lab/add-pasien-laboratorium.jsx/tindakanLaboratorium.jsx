@@ -90,18 +90,6 @@ const TindakanTableLaboratorium = ({ tindakan }) => {
   return (
     <Container fluid>
       <div className="table-responsive-md w-100">
-        {/* <Row>
-          <Col lg="6">
-            <label htmlFor="">Cari Tindakan</label>
-            <input
-              id="cariTindakan"
-              className="form-control mb-3"
-              placeholder="masukkan Tindakan"
-              value={cariTindakan}
-              onChange={(e) => setCariTindakan(e.target.value)}
-            />
-          </Col>
-        </Row> */}
         <Row>
           <Col lg="6">
             <Controller

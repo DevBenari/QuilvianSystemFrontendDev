@@ -1,27 +1,26 @@
 "use client";
 
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
-
-import { Col, Row } from "react-bootstrap";
+import { dataODC } from "@/utils/dataPerjanjian";
 import SearchableSelectField from "@/components/ui/select-field-search";
-import { dataRawatJalan } from "@/utils/dataPerjanjian";
+import { Col, Row } from "react-bootstrap";
 import DateInput from "@/components/ui/date-input";
 
-const PerjanjianRawatJalan = memo(() => {
+const PerjanjianOdc = memo(() => {
   const methods = useForm();
-  const [filteredData, setFilteredData] = useState(dataRawatJalan); // Gunakan data dummy untuk tabel
+  const [filteredData, setFilteredData] = useState(dataODC); // Gunakan data dummy untuk tabel
   const [searchCriteria, setSearchCriteria] = useState({
     nomorRekamMedis: "",
     nama: "",
     alamat: "",
+    kelasKamar: "",
     dokter: "",
     departemen: "",
     tanggalMulai: "",
     tanggalSelesai: "",
-    penjamin: "",
   });
 
   // Fungsi untuk menangani pencarian
@@ -29,34 +28,35 @@ const PerjanjianRawatJalan = memo(() => {
     const updatedCriteria = { ...searchCriteria, [key]: value };
     setSearchCriteria(updatedCriteria);
 
-    const filtered = dataRawatJalan.filter((item) => {
+    const filtered = dataODC.filter((item) => {
       return Object.keys(updatedCriteria).every((criteriaKey) => {
         const criteriaValue = updatedCriteria[criteriaKey];
         if (!criteriaValue) return true; // Abaikan jika kosong
 
-        // Filter berdasarkan tanggal
         if (
           criteriaKey === "tanggalMulai" ||
           criteriaKey === "tanggalSelesai"
         ) {
-          const itemDate = new Date(item.tanggalInput).getTime(); // Pastikan tanggalInput sesuai format valid
-          const startDate = new Date(
-            updatedCriteria.tanggalMulai || "1970-01-01"
-          ).getTime(); // Default awal waktu
-          const endDate = new Date(
-            updatedCriteria.tanggalSelesai || "9999-12-31"
-          ).getTime(); // Default akhir waktu
-
-          if (criteriaKey === "tanggalMulai") {
+          const itemDate = new Date(item.tanggalInput).getTime();
+          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
+          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
+          if (criteriaKey === "tanggalMulai" && startDate) {
             return itemDate >= startDate;
           }
-          if (criteriaKey === "tanggalSelesai") {
+          if (criteriaKey === "tanggalSelesai" && endDate) {
             return itemDate <= endDate;
           }
         }
 
         if (criteriaKey === "departemenSelect.select") {
           return item.departemen
+            ?.toString()
+            .toLowerCase()
+            .includes(criteriaValue.toLowerCase());
+        }
+
+        if (criteriaKey === "kelasKamarSelect.select") {
+          return item.kelasKamar
             ?.toString()
             .toLowerCase()
             .includes(criteriaValue.toLowerCase());
@@ -93,10 +93,32 @@ const PerjanjianRawatJalan = memo(() => {
           onChange: (e) => handleSearch("nama", e.target.value),
           colSize: 6,
         },
-       
+        // {
+        //   type: "text",
+        //   id: "nomorRekamMedis",
+        //   label: "Medical Record ID",
+        //   name: "nomorRekamMedis",
+        //   placeholder: "Masukkan Medical Record ID...",
+        //   onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
+        //   colSize: 6,
+        // },
+        // {
+        //   type: "select",
+        //   id: "penjamin",
+        //   label: "Penjamin",
+        //   name: "penjamin",
+        //   placeholder: "Pilih Penjamin",
+        //   options: [
+        //     { label: "Pribadi", value: "Pribadi" },
+        //     { label: "BPJS", value: "BPJS" },
+        //     { label: "Mandiri", value: "Mandiri" },
+        //   ],
+        //   onChange: (e) => handleSearch("penjamin", e.target.value),
+        //   colSize: 6,
+        // },
         {
           type: "custom",
-          colSize: 6,
+          colSize: 12,
           customRender: () => (
             <>
               <Row>
@@ -140,10 +162,75 @@ const PerjanjianRawatJalan = memo(() => {
                     }
                   />
                 </Col>
+                <Col>
+                  <SearchableSelectField
+                    name="kelasKamarSelect.select"
+                    label="Kelas Kamar"
+                    options={[
+                      { label: "SUITE", value: "SUITE" },
+                      { label: "LUXURY", value: "LUXURY" },
+                      {
+                        label: "ISOLASI LAVENDER SVIP",
+                        value: "ISOLASI LAVENDER SVIP",
+                      },
+                      { label: "VIP SUPERIOR", value: "VIP SUPERIOR" },
+                      {
+                        label: "ISOLASI CHRISANT SVIP",
+                        value: "ISOLASI CHRISANT SVIP",
+                      },
+                      { label: "CHRISANT SVIP", value: "CHRISANT SVIP" },
+                      { label: "VIP DELUXE", value: "VIP DELUXE" },
+                      { label: "VIP 8.3", value: "VIP 8.3" },
+                      {
+                        label: "ISOLASI CHRISANT VIP DELUXE",
+                        value: "ISOLASI CHRISANT VIP DELUXE",
+                      },
+                      {
+                        label: "CHRISANT VIP DELUXE",
+                        value: "CHRISANT VIP DELUXE",
+                      },
+                      { label: "VVIP", value: "VVIP" },
+                      { label: "GRAND ROYAL", value: "GRAND ROYAL" },
+                      { label: "CHRISANT VIP", value: "CHRISANT VIP" },
+                      { label: "VIP 8.1", value: "VIP 8.1" },
+                      {
+                        label: "ISOLASI LAVENDER VIP",
+                        value: "ISOLASI LAVENDER VIP",
+                      },
+                      {
+                        label: "ISOLASI BOUGENVIL VIP",
+                        value: "ISOLASI BOUGENVIL VIP",
+                      },
+                      {
+                        label: "ISOLASI CHRISANT VIP",
+                        value: "ISOLASI CHRISANT VIP",
+                      },
+                      { label: "VIP", value: "VIP" },
+                      { label: "VIP 8.2", value: "VIP 8.2" },
+                    ]}
+                    placeholder="Pilih Kelas Kamar"
+                    className="mb-3"
+                    onChange={(selectedOption) =>
+                      handleSearch(
+                        "kelasKamarSelect.select",
+                        selectedOption?.value || ""
+                      )
+                    }
+                  />
+                </Col>
               </Row>
             </>
           ),
         },
+        // {
+        //   type: "text",
+        //   id: "alamat",
+        //   label: "Alamat",
+        //   name: "alamat",
+        //   placeholder: "Masukkan Alamat...",
+        //   onChange: (e) => handleSearch("alamat", e.target.value),
+        //   colSize: 6,
+        // },
         {
           type: "custom",
           colSize: 6,
@@ -180,13 +267,14 @@ const PerjanjianRawatJalan = memo(() => {
 
   const headers = [
     "NO LIST",
-    "NO RM",
+    "NOMOR REKAM MEDIS",
     "JAM MASUK",
     "NAMA",
     "PENJAMIN",
     "ALAMAT",
     "TELEPON",
     "DOKTER",
+    "KELAS KAMAR",
     "DEPARTEMEN",
     "USER",
     "USER EDIT",
@@ -194,7 +282,6 @@ const PerjanjianRawatJalan = memo(() => {
     "TANGGAL EDIT",
     "KONTRAK",
     "INFORMASI LAIN",
-    "CATATAN",
   ];
 
   // Format data untuk ditampilkan di tabel
@@ -207,6 +294,7 @@ const PerjanjianRawatJalan = memo(() => {
     alamat: item.alamat,
     telepon: item.telepon,
     dokter: item.dokter,
+    kelasKamar: item.kelasKamar,
     departemen: item.departemen,
     user: item.user,
     userEdit: item.userEdit,
@@ -214,26 +302,22 @@ const PerjanjianRawatJalan = memo(() => {
     tanggalEdit: item.tanggalEdit,
     kontrak: item.kontrak,
     informasiLain: item.informasiLain,
-    catatan: item.catatan,
   }));
 
   return (
     <FormProvider {...methods}>
-      <DynamicFormTable
-        title="Perjanjian Rawat Jalan"
-        formConfig={formFields}
-      />
+      <DynamicFormTable title="Perjanjian ODC" formConfig={formFields} />
 
       <DataTable
         headers={headers}
         data={members}
         id="id"
         rowsPerPage={5}
-        title="Pasien Rawat Jalan"
+        title="Pasien ODC"
       />
     </FormProvider>
   );
 });
 
-PerjanjianRawatJalan.displayName = "PerjanjianRawatJalan";
-export default PerjanjianRawatJalan;
+PerjanjianOdc.displayName = "PerjanjianOdc";
+export default PerjanjianOdc;

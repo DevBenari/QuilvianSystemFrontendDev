@@ -338,6 +338,7 @@ export const dataODC = [
   {
     id: 1,
     nomorRekamMedis: "90-22-12-80-001",
+    date:"2025-01-10",
     jamMasuk: "08:15",
     nama: "Sukaria Dewi",
     penjamin: "Pribadi",
@@ -358,6 +359,7 @@ export const dataODC = [
   {
     id: 2,
     nomorRekamMedis: "90-22-12-80-002",
+    date:"2025-01-11",
     jamMasuk: "10:30",
     nama: "Rama Nugraha",
     penjamin: "BPJS",
@@ -377,6 +379,7 @@ export const dataODC = [
   {
     id: 3,
     nomorRekamMedis: "90-22-12-80-003",
+    date:"2025-01-13",
     jamMasuk: "13:00",
     nama: "Hana Putri",
     penjamin: "Mandiri",
@@ -395,6 +398,7 @@ export const dataODC = [
   {
     id: 4,
     nomorRekamMedis: "90-22-12-80-004",
+    date:"2025-01-15",
     jamMasuk: "09:45",
     nama: "Lina Mariska",
     penjamin: "Pribadi",
@@ -413,6 +417,7 @@ export const dataODC = [
   {
     id: 5,
     nomorRekamMedis: "90-22-12-80-005",
+    date:"2025-01-20",
     jamMasuk: "14:15",
     nama: "Andi Kurniawan",
     penjamin: "BPJS",
@@ -431,6 +436,7 @@ export const dataODC = [
   {
     id: 6,
     nomorRekamMedis: "90-22-12-80-006",
+    date:"2025-01-25",
     jamMasuk: "10:00",
     nama: "Rani Pratiwi",
     penjamin: "Mandiri",
@@ -449,6 +455,7 @@ export const dataODC = [
   {
     id: 7,
     nomorRekamMedis: "90-22-12-80-007",
+    date:"2025-01-12",
     jamMasuk: "12:30",
     nama: "Fadilah Nur",
     penjamin: "BPJS",
@@ -467,6 +474,7 @@ export const dataODC = [
   {
     id: 8,
     nomorRekamMedis: "90-22-12-80-008",
+    date:"2025-01-07",
     jamMasuk: "11:00",
     nama: "Ahmad Faisal",
     penjamin: "Pribadi",

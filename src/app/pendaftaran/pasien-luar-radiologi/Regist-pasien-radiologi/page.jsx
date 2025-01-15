@@ -1,7 +1,11 @@
+const { default: PendaftaranRadiologi } = require("@/components/view/pendaftaran-pasien/pendaftaran-radiologi/add-pasien-radiologi")
+
 const RegistrasiPasienLuarRadiologi = () => {
     return (
         <div>
-            <h1>Registrasi Pasien Luar Radiologi</h1>
+            <PendaftaranRadiologi />
         </div>
     )
 }
+
+export default RegistrasiPasienLuarRadiologi

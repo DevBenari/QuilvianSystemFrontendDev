@@ -9,6 +9,7 @@ import DateInput from "@/components/ui/date-input";
 import TextArea from "@/components/ui/textArea-field";
 import { dataWilayah } from "@/utils/config";
 import UploadPhotoField from "@/components/ui/uploadPhoto-field";
+import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 const PendaftaranPasienBaru = () => {
   const methods = useForm({
     defaultValues: {
@@ -69,84 +70,18 @@ const PendaftaranPasienBaru = () => {
     }
   }, [kewarganegaraan, negara, setValue]);
 
-  const [pasienSelectedProvinsi, setPasienSelectedProvinsi] = useState("");
-  const [pasienFilteredKabupaten, setPasienFilteredKabupaten] = useState([]);
-  const [pasienFilteredKecamatan, setPasienFilteredKecamatan] = useState([]);
-  const [pasienFilteredKelurahan, setPasienFilteredKelurahan] = useState([]);
-
-  const [keluargaSelectedProvinsi, setKeluargaSelectedProvinsi] = useState("");
-  const [keluargaFilteredKabupaten, setKeluargaFilteredKabupaten] = useState(
-    []
-  );
-  const [keluargaFilteredKecamatan, setKeluargaFilteredKecamatan] = useState(
-    []
-  );
-  const [keluargaFilteredKelurahan, setKeluargaFilteredKelurahan] = useState(
-    []
-  );
-
-  // Gunakan useCallback untuk mencegah pembuatan ulang fungsi handleProvinsiChange
-  const handleChange = useCallback(
-    (type, field, value) => {
-      if (type === "pasien") {
-        if (field === "provinsi") {
-          setPasienSelectedProvinsi(value);
-          const selected = dataWilayah.find((item) => item.provinsi === value);
-          setPasienFilteredKabupaten(selected ? selected.kabupaten : []);
-          setValue("pasien_provinsi", value);
-        } else if (field === "kabupaten") {
-          const selectedKabupaten = pasienFilteredKabupaten.find(
-            (item) => item.nama === value
-          );
-          setPasienFilteredKecamatan(
-            selectedKabupaten ? selectedKabupaten.kecamatan : []
-          );
-          setValue("pasien_kabupaten", value);
-        } else if (field === "kecamatan") {
-          const selectedKecamatan = pasienFilteredKecamatan.find(
-            (item) => item.nama === value
-          );
-          setPasienFilteredKelurahan(
-            selectedKecamatan ? selectedKecamatan.kelurahan : []
-          );
-          setValue("pasien_kecamatan", value);
-        }
-      } else if (type === "keluarga") {
-        if (field === "provinsi") {
-          setKeluargaSelectedProvinsi(value);
-          const selected = dataWilayah.find((item) => item.provinsi === value);
-          setKeluargaFilteredKabupaten(selected ? selected.kabupaten : []);
-          setValue("keluarga_provinsi", value);
-        } else if (field === "kabupaten") {
-          const selectedKabupaten = keluargaFilteredKabupaten.find(
-            (item) => item.nama === value
-          );
-          setKeluargaFilteredKecamatan(
-            selectedKabupaten ? selectedKabupaten.kecamatan : []
-          );
-          setValue("keluarga_kabupaten", value);
-        } else if (field === "kecamatan") {
-          const selectedKecamatan = keluargaFilteredKecamatan.find(
-            (item) => item.nama === value
-          );
-          setKeluargaFilteredKelurahan(
-            selectedKecamatan ? selectedKecamatan.kelurahan : []
-          );
-          setValue("keluarga_kecamatan", value);
-        }
-      }
-    },
-    [
-      pasienFilteredKabupaten,
-      pasienFilteredKecamatan,
-      keluargaFilteredKabupaten,
-      keluargaFilteredKecamatan,
-      setValue,
-    ]
-  );
+  const {
+    pasienFilteredKabupaten,
+    pasienFilteredKecamatan,
+    pasienFilteredKelurahan,
+    keluargaFilteredKabupaten,
+    keluargaFilteredKecamatan,
+    keluargaFilteredKelurahan,
+    handleChange,
+  } = UseSelectWilayah(setValue);
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log("Form Data as JSON:", JSON.stringify(data, null, 2));
   };
   return (
     <FormProvider {...methods}>
@@ -569,7 +504,7 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <TextField
                       label="Nomor Telepon Kantor :"
-                      name="kantor"
+                      name="teleponKantor"
                       type="text"
                       placeholder="Enter nomor telepon kantor Pasien..."
                       className="form-control mb-0"
@@ -812,14 +747,17 @@ const PendaftaranPasienBaru = () => {
                     }}
                   />
                 </Col>
-                <Col lg="6">
+                {/* <Col lg="6">
                   <UploadPhotoField
                     name="fotoPasien"
                     label="Upload Photo"
                     rules={{ required: "This field is required" }} // Optional validation rules
                   />
-                </Col>
+                </Col> */}
               </div>
+              <button type="submit" className="btn btn-primary mx-3 my-3">
+                Submit
+              </button>
             </Form>
           </div>
         </div>

@@ -2,6 +2,7 @@ export const pasienBayi = [
   {
     id: 1,
     noRekamMedis: "13212312",
+    date:"2025-01-01",
     kelas: "VVIP ",
     ruang: "VVIP 809",
     nama: `FATIMAH ZAHRO`,
@@ -10,6 +11,7 @@ export const pasienBayi = [
   {
     id: 2,
     noRekamMedis: "99212314",
+    date:"2025-01-10",
     kelas: "kelas 1 ",
     ruang: "ODC 327",
     nama: `ANNA RINA FRIDYANTI`,
@@ -18,6 +20,7 @@ export const pasienBayi = [
   {
     id: 3,
     noRekamMedis: "87357123",
+    date:"2025-01-15",
     kelas: "ISOLASI",
     ruang: "ISOLASI 817",
     nama: "VIRA HANDAYANI",

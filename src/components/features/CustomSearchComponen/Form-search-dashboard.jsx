@@ -24,9 +24,10 @@ const CustomSearchFilter = ({data , setFilteredPatients, onFilteredPatients  }) 
       const applyFilters = (filters) => {
           const query = filters.searchQuery.toLowerCase();
           const filtered = data.filter(patient =>
-              patient.noRekamMedis.toLowerCase().includes(query) ||
+              patient.nomorRekamMedis.toLowerCase().includes(query) ||
               patient.nama.toLowerCase().includes(query) ||
-              patient.noTelp.toLowerCase().includes(query)
+              patient.penjamin.toLowerCase().includes(query) ||
+              patient.dokter.toLowerCase().includes(query)
           );
           setFilteredPatients(filtered);
       };

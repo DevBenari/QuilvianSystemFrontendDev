@@ -17,7 +17,7 @@ import DistanceField from "@/components/ui/distance-filed";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 
-const DynamicForm = ({ title, formConfig, onSubmit }) => {
+const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -159,7 +159,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
   return (
     <FormProvider {...methods}>
       <Row>
-        <div className="iq-card" style={{ marginTop: "50px" }}>
+        <div className="iq-card">
           <div className="iq-card-header d-flex justify-content-between ">
             <div className="iq-header-title ">
               <h3 className="card-title tracking-wide">{title}</h3>
@@ -168,7 +168,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
               <ButtonNav 
                 className="btn btn-primary mx-3 my-3"
                 label="Kembali"
-                path="/pendaftaran/pasien-luar-laboratorium"
+                path={url}
                 icon="ri-arrow-left-line"
               />
             </div>
