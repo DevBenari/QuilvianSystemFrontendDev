@@ -93,29 +93,6 @@ const PerjanjianOdc = memo(() => {
           onChange: (e) => handleSearch("nama", e.target.value),
           colSize: 6,
         },
-        // {
-        //   type: "text",
-        //   id: "nomorRekamMedis",
-        //   label: "Medical Record ID",
-        //   name: "nomorRekamMedis",
-        //   placeholder: "Masukkan Medical Record ID...",
-        //   onChange: (e) => handleSearch("nomorRekamMedis", e.target.value),
-        //   colSize: 6,
-        // },
-        // {
-        //   type: "select",
-        //   id: "penjamin",
-        //   label: "Penjamin",
-        //   name: "penjamin",
-        //   placeholder: "Pilih Penjamin",
-        //   options: [
-        //     { label: "Pribadi", value: "Pribadi" },
-        //     { label: "BPJS", value: "BPJS" },
-        //     { label: "Mandiri", value: "Mandiri" },
-        //   ],
-        //   onChange: (e) => handleSearch("penjamin", e.target.value),
-        //   colSize: 6,
-        // },
         {
           type: "custom",
           colSize: 12,
@@ -222,15 +199,6 @@ const PerjanjianOdc = memo(() => {
             </>
           ),
         },
-        // {
-        //   type: "text",
-        //   id: "alamat",
-        //   label: "Alamat",
-        //   name: "alamat",
-        //   placeholder: "Masukkan Alamat...",
-        //   onChange: (e) => handleSearch("alamat", e.target.value),
-        //   colSize: 6,
-        // },
         {
           type: "custom",
           colSize: 6,

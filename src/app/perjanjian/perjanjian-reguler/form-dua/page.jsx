@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Col, Form, Row, Table, Label, Pagination } from "react-bootstrap";
@@ -8,7 +7,6 @@ import DatePicker from "react-datepicker";
 TextArea;
 import "react-datepicker/dist/react-datepicker.css";
 import TextField from "@/components/ui/text-field";
-
 import DateInput from "@/components/ui/date-input";
 import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
@@ -42,12 +40,10 @@ const AddPerjanjianForm = () => {
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [doctorsPerPage] = useState(3);
-
   const searchDokter = methods.watch("searchDokter");
   const searchDepartemen = methods.watch("searchDepartemen");
 
   // handle filter dokter dan departemen
-
   const filterDoctors = useCallback(
     (doctors) => {
       const filtered = doctors.filter(
@@ -64,7 +60,6 @@ const AddPerjanjianForm = () => {
   );
 
   // pengambilan data jadwal dokter
-
   useEffect(() => {
     const dateKey = selectedDate.toISOString().split("T")[0];
     const doctorsForDate = jadwalDokterByDate[dateKey] || [];
@@ -100,7 +95,6 @@ const AddPerjanjianForm = () => {
   };
 
   // untuk handle layanan
-
   const [selectedLayanan, setSelectedLayanan] = useState("");
   const handleLayananChange = (value) => {
     setSelectedLayanan(value); // Update state lokal

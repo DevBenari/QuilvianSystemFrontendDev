@@ -1,26 +1,9 @@
 "use client";
 
-import DynamicDuaForm from "@/components/features/dynamicDuaForm.jsx/dynamicDuaForm";
+
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
-import DateInput from "@/components/ui/date-input";
-import RadioInput from "@/components/ui/radio-input";
-import SelectField from "@/components/ui/select-field";
-import SearchableSelectField from "@/components/ui/select-field-search";
-import TextField from "@/components/ui/text-field";
-import TextArea from "@/components/ui/textArea-field";
-import { pemeriksaRadiologi } from "@/utils/dataTindakan";
-import {
-  dataDepartemen,
-  dataDokter,
-  dataKelas,
-  paketMcu,
-  ruangOperasi,
-} from "@/utils/SearchSelect";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
-import { Row, Col } from "react-bootstrap";
-import AddPerjanjianForm from "../add-perjanjian/page";
 
 const AddPerjanjianReguler = () => {
   const router = useRouter();

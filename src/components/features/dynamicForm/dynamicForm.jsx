@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Row, Col, Form, Button } from "react-bootstrap";
@@ -133,7 +133,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
       section.fields.forEach((field) => {
         defaults[field.name] = field.value || "";
       });
-      return defaults;
+      return defaults; 
     }, {}),
     mode: "onSubmit",
   });

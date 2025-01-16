@@ -8,8 +8,8 @@ const LayoutDokter = ({children}) => {
     const isMobile = UseIsMobile(1500);
     return (
         <div>
-            <Row className=''>
-                <Col md="2" className=''>
+            <Row >
+                <Col md="2" >
                     <ResponsiveNav module={"dokter"} />
                 </Col>
                 <Col md={isMobile ? "12" : "10"} className={isMobile ? "mt-5" : ""}  >

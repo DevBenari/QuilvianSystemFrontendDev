@@ -2,8 +2,8 @@
 import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard"
 import ButtonNav from "@/components/ui/button-navigation"
 import { daftarPasien } from "@/utils/config"
-import React, { memo, useState} from "react"
-import { Row, Col,Button, Table} from "react-bootstrap"
+import React, {  useState} from "react"
+import { Row, Col,Table} from "react-bootstrap"
 import { FormProvider, useForm } from "react-hook-form"
 const DashboardPendaftaranLab = () => {
      const methods = useForm();
