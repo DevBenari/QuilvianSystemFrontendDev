@@ -4,7 +4,7 @@ import FormValidations from "@/components/features/formValidations/formValidatio
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 
 import dataWilayah from "@/utils/dataWilayah";
-import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicForm";
+import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicFormAnimasi";
 
 export default function PendaftaranRehabilitasiMedik() {
   const formFields = [

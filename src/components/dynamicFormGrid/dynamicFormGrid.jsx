@@ -18,8 +18,11 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import { DevTools } from "@hookform/devtools";
 import NumberField from "@/components/ui/distance-filed";
+import DataTable from "../features/viewDataTables/dataTable";
 
-const DynamicForm = ({ title, formConfig, onSubmit }) => {
+const DynamicFormGrid = ({ title, formConfig, onSubmit, ConfigKanan }) => {
+  const [isSplit, setIsSplit] = useState(false);
+
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -107,8 +110,17 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     const sanitizedProps = { ...commonProps, ...otherProps };
     delete sanitizedProps.hide;
 
+    const handleSplitView = () => {
+      setIsSplit(true);
+      console.log("Split View Activated");
+    };
+
     if (customRender) {
-      return customRender({ key: id, ...sanitizedProps });
+      return customRender({
+        key: id,
+        ...sanitizedProps,
+        handleSplitView,
+      });
     }
 
     const Component = fieldComponents[field.type];
@@ -174,58 +186,91 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
   return (
     <FormProvider {...methods}>
       <Row>
-        <div className="iq-card" style={{ marginTop: "50px" }}>
-          <div className="iq-card-header d-flex justify-content-between ">
-            <div className="iq-header-title ">
-              <h3 className="card-title tracking-wide">{title}</h3>
+        <Col md={isSplit ? 6 : 12}>
+          <div className="iq-card" style={{ marginTop: "50px" }}>
+            <div className="iq-card-header d-flex justify-content-between">
+              <div className="iq-header-title">
+                <h3 className="card-title tracking-wide">{title}</h3>
+              </div>
+              <div>
+                <ButtonNav
+                  className="btn btn-primary mx-3 my-3"
+                  label="Kembali"
+                  path="/pendaftaran/pasien-luar-fasilitas"
+                  icon="ri-arrow-left-line"
+                />
+              </div>
             </div>
-            <div>
-              <ButtonNav
-                className="btn btn-primary mx-3 my-3"
-                label="Kembali"
-                path="/pendaftaran/pasien-luar-fasilitas"
-                icon="ri-arrow-left-line"
-              />
-            </div>
-          </div>
-          <div className="card-body">
-            <Form onSubmit={methods.handleSubmit(handleSubmit)}>
-              {formConfig.map((section, sectionIndex) => (
-                <div
-                  key={`section-${sectionIndex}`}
-                  className="iq-card-header "
-                >
-                  {section.section && (
-                    <div className="iq-header-title">
-                      <h4 className="mb-3">{section.section}</h4>
-                    </div>
-                  )}
-                  <Row
-                    className={
-                      section.layout === "inline"
-                        ? "d-flex align-items-center"
-                        : ""
-                    }
+
+            <div className="card-body">
+              <Form onSubmit={methods.handleSubmit(handleSubmit)}>
+                {formConfig.map((section, sectionIndex) => (
+                  <div
+                    key={`section-${sectionIndex}`}
+                    className="iq-card-header mt-3"
                   >
-                    {section.fields
-                      .filter((field) => !shouldHideField(field))
-                      .map(({ colSize, ...field }, fieldIndex) => (
-                        <Col key={field.id || fieldIndex} lg={colSize || 6}>
-                          {renderField(field)}
-                        </Col>
-                      ))}
-                  </Row>
-                </div>
-              ))}
-              <Button type="submit" className="btn btn-primary mx-3 my-3">
-                Kirim
-              </Button>
-            </Form>
+                    {section.section && (
+                      <div className="iq-header-title mt-3">
+                        <h4 className="mb-3">{section.section}</h4>
+                      </div>
+                    )}
+                    <Row>
+                      {section.fields
+                        .filter((field) => !shouldHideField(field))
+                        .map(({ colSize, ...field }, fieldIndex) => (
+                          <Col key={field.id || fieldIndex} lg={colSize || 6}>
+                            {renderField(field)}
+                          </Col>
+                        ))}
+                    </Row>
+                  </div>
+                ))}
+                <Button type="submit" className="btn btn-primary mx-3 my-3">
+                  Kirim
+                </Button>
+              </Form>
+            </div>
           </div>
-        </div>
+        </Col>
+        {/* Kolom Kanan */}
+        {isSplit && (
+          <>
+            <Col md={6}>
+              <div className="iq-card" style={{ marginTop: "50px" }}>
+                {ConfigKanan.map((section, sectionIndex) => (
+                  <div
+                    key={`section-${sectionIndex}`}
+                    className="iq-card-header mt-3"
+                  >
+                    {section.section && (
+                      <div className="iq-header-title mt-3">
+                        <h4 className="mb-3">{section.section}</h4>
+                      </div>
+                    )}
+                    <Row
+                      className={
+                        section.layout === "inline"
+                          ? "d-flex align-items-center"
+                          : ""
+                      }
+                    >
+                      {section.fields
+                        .filter((field) => !shouldHideField(field))
+                        .map(({ colSize, ...field }, fieldIndex) => (
+                          <Col key={field.id || fieldIndex} lg={colSize || 6}>
+                            {renderField(field)}
+                          </Col>
+                        ))}
+                    </Row>
+                  </div>
+                ))}
+              </div>
+            </Col>
+          </>
+        )}
       </Row>
     </FormProvider>
   );
 };
 
-export default DynamicForm;
+export default DynamicFormGrid;

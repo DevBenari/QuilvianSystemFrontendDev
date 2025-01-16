@@ -1,11 +1,14 @@
 "use client";
 import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
+import DataTable from "@/components/features/viewDataTables/dataTable";
 import { pasienBayi } from "@/utils/dataPasien";
 import React, { memo, useState } from "react";
 import { Row, Col, Button, Table } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 const DashboardPendaftaranBayi = memo(() => {
   const methods = useForm();
+  const router = useRouter();
   const [filteredPatients, setFilteredPatients] = useState(pasienBayi);
 
   const handleRemovePatient = (id) => {
@@ -13,6 +16,35 @@ const DashboardPendaftaranBayi = memo(() => {
       (patient) => patient.id !== id
     );
     setFilteredPatients(updatedPatients);
+  };
+
+  const header = ["NO", "KELAS", "RUANG", "NAMA PASIEN MELAHIRKAN", "DOKTER"];
+
+  const members = filteredPatients.map((item, index) => ({
+    id: item.id, // Tambahkan ID agar bisa dilacak
+    no: index + 1,
+    label: item.label,
+    ruang: item.ruang,
+    namaBayi: item.namaBayi,
+    dokter: item.dokter,
+  }));
+
+  const handleRegistrasi = (row) => {
+    // Cari data lengkap berdasarkan ID
+    const selectedPatient = pasienBayi.find((patient) => patient.id === row.id);
+
+    if (!selectedPatient) {
+      console.error("Patient not found");
+      return;
+    }
+
+    // Encode data lengkap ke query string
+    const encodedData = encodeURIComponent(JSON.stringify(selectedPatient));
+
+    // Navigasi ke halaman tujuan dengan data lengkap
+    router.push(
+      `/pendaftaran/pendaftaran-pasien-bayi/add-pasien-bayi?data=${encodedData}`
+    );
   };
 
   return (
@@ -38,70 +70,19 @@ const DashboardPendaftaranBayi = memo(() => {
       <div className="mt-5">
         <Row>
           <Col sm="12">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-title">
-                  <h4 className="card-title font-widest">
-                    Tabel Registrasi Pasien
-                  </h4>
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <div id="table" className="table-editable">
-                  <span className="table-add float-end mb-3 me-2">
-                    <Button
-                      size="sm"
-                      variant=""
-                      className="btn btn-sm iq-bg-success "
-                    >
-                      <i className="ri-add-fill">
-                        <span className="ps-1">Add New</span>
-                      </i>
-                    </Button>
-                  </span>
-                  <div className="table-responsive-md w-100">
-                    <Table className="text-center" bordered striped>
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>No Rekam Medis</th>
-                          <th>Tanggal</th>
-                          <th>Nama</th>
-                          <th>dokter</th>
-                          <th>kelas</th>
-                          <th>ruang</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredPatients.map((item, index) => (
-                          <tr key={index}>
-                            <td>{item.id}</td>
-                            <td>{item.noRekamMedis}</td>
-                            <td>{item.date}</td>
-                            <td>{item.nama}</td>
-                            <td>{item.dokter}</td>
-                            <td>{item.kelas}</td>
-                            <td>{item.ruang}</td>
-                            <td>
-                              <span className="table-remove">
-                                <button
-                                  type="button"
-                                  className="btn iq-bg-danger btn-rounded btn-sm my-0"
-                                  onClick={() => handleRemovePatient(item.id)}
-                                >
-                                  Remove
-                                </button>
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <DataTable
+              headers={header}
+              data={members}
+              rowsPerPage={5}
+              title="Pasien Bayi"
+              customActions={[
+                {
+                  label: "Registrasi",
+                  onClick: handleRegistrasi,
+                  className: "iq-bg-success",
+                },
+              ]}
+            />
           </Col>
         </Row>
       </div>

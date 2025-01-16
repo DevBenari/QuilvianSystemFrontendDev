@@ -15,7 +15,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TextField from "@/components/ui/text-field";
 import DateInput from "@/components/ui/date-input";
-import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
+
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import {
@@ -34,6 +34,7 @@ import {
 } from "@/utils/SearchSelect";
 import TextArea from "@/components/ui/textArea-field";
 import { motion } from "framer-motion";
+import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
 
 const AddPerjanjianForm = memo(() => {
   const methods = useForm({
@@ -463,7 +464,15 @@ const AddPerjanjianForm = memo(() => {
                               className="mb-3"
                             />
                           </Col>
-                          <TableTindakan tindakan={pemeriksaRadiologi} />,
+                          <TindakanTableHarga
+                            tindakan={pemeriksaRadiologi}
+                            label="Radiologi"
+                            placeholder="Masukkan Nama Pemeriksaan"
+                            labelKey="pemeriksaanRadiologi"
+                            ValueKey="id"
+                            hargaKey="harga"
+                          />
+                          ,
                           <Col lg="12">
                             <SearchableSelectField
                               name="dokter"

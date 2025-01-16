@@ -2,68 +2,86 @@
 
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 
-import { dataFasilitas } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import { Row, Col } from "react-bootstrap";
+
+import { Row, Col, Button, Modal } from "react-bootstrap";
+
 import SearchableSelectField from "@/components/ui/select-field-search";
-import { dataDokter } from "@/utils/SearchSelect";
+import { dataDokter, dataKelas } from "@/utils/SearchSelect";
 import TextField from "@/components/ui/text-field";
 import DataTable from "@/components/features/viewDataTables/dataTable";
+import { dataKelasTersedia } from "@/utils/PasienPerjanjian";
+import DynamicFormAnimasi from "@/components/features/dynamicFormAnimasi/dynamicFormAnimasi";
+import DynamicFormGrid from "@/components/dynamicFormGrid/dynamicFormGrid";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DateInput from "@/components/ui/date-input";
+import TimeField from "@/components/ui/time-input";
+import SelectField from "@/components/ui/select-field";
+import { pasienBayi } from "@/utils/dataPasien";
 
-export const PendaftaranPasienBayi = () => {
-  // =============================Start Kelas ODC dan Rawat Inap ====================
-  // fungsi Untuk Kelas
+import { useSearchParams } from "next/navigation";
 
-  // untuk mencari kelas
-
-  const [filteredData, setFilteredData] = useState(dataKelasTersedia);
-
-  const [selectedKelas, setSelectedKelas] = useState("");
-
-  const [searchKelas, setSearchKelas] = useState({
-    Kelas: "",
+export const AddPasienBayi = () => {
+  const searchParams = useSearchParams();
+  const [formValues, setFormValues] = useState({
+    namaBayi: "",
+    namaKeluarga: "",
+    pilihKelas: "",
+    ruangan: "",
+    dokter: "",
+    nomorTempatTidur: "",
+    noRekamMedis: "",
   });
 
-  const handleSearch = (key, value) => {
-    const updatedKelas = { ...searchKelas, [key]: value };
-    setSearchKelas(updatedKelas);
+  useEffect(() => {
+    // Ambil data dari query string
+    const encodedData = searchParams.get("data");
 
-    const filtered = dataKelasTersedia.filter((item) => {
-      return Object.keys(updatedKelas).every((KelasKey) => {
-        const KelasValue = updatedKelas[KelasKey];
-        if (!KelasValue) return true; // Abaikan jika kosong
+    if (encodedData) {
+      const decodedData = JSON.parse(decodeURIComponent(encodedData));
+      console.log("Decoded Data:", decodedData);
 
-        return item[KelasKey]?.toString()
-          .toLowerCase()
-          .includes(KelasValue.toLowerCase());
+      // Set data ke state
+      setFormValues({
+        namaBayi: decodedData.namaBayi || "",
+        namaKeluarga: decodedData.namaKeluarga || "",
+        pilihKelas: decodedData.label || "",
+        ruangan: decodedData.ruang || "",
+        dokter: decodedData.dokter || "",
+        nomorTempatTidur: decodedData.NoTempatTidur || "",
+        noRekamMedis: decodedData.noRekamMedis || "",
       });
-    });
+    }
+  }, [searchParams]);
 
-    setFilteredData(filtered);
+  // untuk edit
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value, // Perbarui nilai berdasarkan nama field
+    }));
   };
 
-  const header = [
-    "No",
-    "Kelas ",
-    "Keterangan",
-    "Jml Ruang",
-    "JML Tempat Tidur",
-    "jml Terisi",
-    "Jml reservasi",
-  ];
+  const handleSelectChange = (e) => {
+    const { value } = e.target;
 
-  const members = filteredData.map((item, index) => ({
-    no: index + 1,
-    kelas: item.Kelas,
-    keterangan: item.Keterangan,
-    jmlRuang: item.JmlRuang,
-    jmlTempatTidur: item.JmlTempatTidur,
-    jmlTerisi: item.JmlTerisi,
-    jmlReservasi: item.JmlReservasi,
-  }));
+    // Temukan opsi yang sesuai berdasarkan nilai yang dipilih
+    const selectedOption = formFields[0].fields[0].options.find(
+      (option) => option.value === value
+    );
 
-  // =============================END Kelas ODC dan Rawat Inap ====================
+    if (selectedOption) {
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        pilihKelas: selectedOption.value, // Update pilihKelas
+        ruangan: selectedOption.ruang || prevValues.ruangan, // Perbarui ruangan
+        nomorTempatTidur:
+          selectedOption.nomorTempatTidur || prevValues.nomorTempatTidur, // Perbarui nomor tempat tidur
+      }));
+    }
+  };
 
   const formFields = [
     {
@@ -74,8 +92,9 @@ export const PendaftaranPasienBayi = () => {
           label: "Nama Bayi",
           name: "namaBayi",
           placeholder: "Nama Bayi",
-          rules: { required: "Nama Bayi is required" },
+          value: formValues.namaBayi,
           colSize: 6,
+          onChange: handleInputChange, // Tambahkan onChange
         },
         {
           type: "text",
@@ -83,42 +102,21 @@ export const PendaftaranPasienBayi = () => {
           label: "Nama Keluarga",
           name: "namaKeluarga",
           placeholder: "Nama Keluarga",
-          rules: { required: "Nama Keluarga is required" },
+          value: formValues.namaKeluarga,
           colSize: 6,
+          onChange: handleInputChange, // Tambahkan onChange
         },
         {
-          type: "custom",
-          rules: { required: "paketMcu is required" },
-          customRender: () => (
-            <>
-              <Row>
-                <Col lg="6">
-                  <SearchableSelectField
-                    name="dokterPenanggungJawab"
-                    label="Dokter Penanggung Jawab"
-                    options={dataDokter}
-                    placeholder="Pilih Dokter Penanggung Jawab"
-                    rules={{
-                      required: "Dokter Penanggung Jawab harus dipilih",
-                    }}
-                    className={"mb-3"}
-                  />
-                </Col>
-                <Col lg="6">
-                  <SearchableSelectField
-                    name="dokterPenolong"
-                    label="Dokter Penolong"
-                    options={dataDokter}
-                    placeholder="Pilih Dokter Penolong"
-                    rules={{ required: "Dokter Penolong harus dipilih" }}
-                    className={"mb-3"}
-                  />
-                </Col>
-              </Row>
-            </>
-          ),
-          colSize: 12,
+          type: "text",
+          id: "dokteran",
+          label: "dokter",
+          name: "dokter",
+          placeholder: "dokter",
+          value: formValues.dokter,
+          colSize: 6,
+          onChange: handleInputChange, // Tambahkan onChange
         },
+
         {
           type: "text",
           id: "tempatLahir",
@@ -181,69 +179,80 @@ export const PendaftaranPasienBayi = () => {
       section: "Ruangan",
       fields: [
         {
-          type: "custom",
-          customRender: () => (
-            <>
-              {selectedLayanan === "Rawat Inap" && (
-                <>
-                  <div className="iq-card">
-                    <div className="iq-card-header d-flex justify-content-between">
-                      <div className="iq-header-title my-3">
-                        <h4 className="card-title mb-3">Ketersediaan Kelas</h4>
-                        <Col lg="12">
-                          <TextField
-                            name="KelasODC"
-                            label="Kelas"
-                            type="text"
-                            className="form-control"
-                            value={selectedKelas}
-                            readOnly
-                          />
-                        </Col>
-                        <Col lg="12">
-                          <TextField
-                            label="Cari Kelas"
-                            name="kelas"
-                            type="text"
-                            placeholder="Cari Kelas"
-                            className="form-control"
-                            onChange={(e) =>
-                              handleSearch("Kelas", e.target.value)
-                            }
-                          />
-                        </Col>
-                      </div>
-                    </div>
-                    <DataTable
-                      headers={header}
-                      data={members}
-                      rowsPerPage={10}
-                      actions={{
-                        booking: (row) => handleEdit(row.id),
-                      }}
-                      customActions={[
-                        {
-                          label: "Booking Kelas",
-                          onClick: (row) => setSelectedKelas(row.kelas),
-                          className: "iq-bg-success",
-                        },
-                      ]}
-                    />
-                  </div>
-                </>
-              )}
-            </>
-          ),
-          colSize: 12,
+          type: "select",
+          id: "pilihKelas",
+          label: "Pilih Kelas Rawat Bayi",
+          name: "pilihKelas",
+          placeholder: formValues.pilihKelas,
+          options: [
+            {
+              label: formValues.pilihKelas,
+              value: formValues.pilihKelas,
+            },
+            {
+              label: "Kelas 1",
+              value: "Kelas 1",
+            },
+            {
+              label: "Isolasi",
+              value: "Isolasi 1",
+            },
+          ],
+          rules: { required: "Pilih Kelas Rawat Bayi is required" },
+          colSize: 6,
+        },
+        {
+          type: "select",
+          label: "Pilih Kelas Rawat Bayi",
+          name: "ruangan",
+          placeholder: formValues.ruangan,
+          options: [
+            {
+              label: formValues.ruangan,
+              value: formValues.ruangan,
+            },
+            {
+              label: "Kelas 1 101",
+              value: "Kelas 1 101",
+            },
+            {
+              label: "Isolasi 201",
+              value: "Isolasi 201",
+            },
+          ],
+          rules: { required: "Pilih Kelas Rawat Bayi is required" },
+          colSize: 6,
+        },
+
+        {
+          type: "select",
+          label: "Pilih Kelas Rawat Bayi",
+          name: "Nomor Tempat Tidur",
+          placeholder: formValues.nomorTempatTidur,
+          options: [
+            {
+              label: formValues.nomorTempatTidur,
+              value: formValues.nomorTempatTidur,
+            },
+            {
+              label: "107",
+              value: "107",
+            },
+            {
+              label: "205",
+              value: "205",
+            },
+          ],
+          rules: { required: "Pilih Kelas Rawat Bayi is required" },
+          colSize: 6,
         },
       ],
     },
   ];
 
   const handleSubmit = (data) => {
-    console.log("Form Data:", data);
+    console.log("Form Data Dikirim:", { ...formValues, ...data });
   };
-
   return (
     <Fragment>
       <DynamicForm
@@ -255,4 +264,4 @@ export const PendaftaranPasienBayi = () => {
   );
 };
 
-export default PendaftaranPasienBayi;
+export default AddPasienBayi;

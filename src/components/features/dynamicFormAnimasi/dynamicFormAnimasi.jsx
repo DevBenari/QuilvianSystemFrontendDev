@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button, Offcanvas } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -37,27 +37,19 @@ const DynamicFormAnimasi = ({ title, formConfig, onSubmit }) => {
     searchSelect: SearchableSelectField,
   };
 
-  // TypeScript types for form configuration
-  /**
-   * @typedef {Object} FormField
-   * @property {string} id - Unique identifier for the field.
-   * @property {string} name - Name of the field (used in form state).
-   * @property {string} [label] - Label for the field.
-   * @property {"text" | "select" | "radio" | "date" | "textarea"} type - Type of the field.
-   * @property {string} [placeholder] - Placeholder text for the field.
-   * @property {any} [value] - Default value for the field.
-   * @property {Object} [rules] - Validation rules for the field.
-   * @property {Array<{label: string, value: any}>} [options] - Options for select or radio fields.
-   * @property {number} [colSize] - Bootstrap column size.
-   * @property {boolean} [readOnly] - Whether the field is read-only.
-   * @property {boolean} [disabled] - Whether the field is disabled.
-   * @property {(e: any) => void} [onChange] - Custom onChange handler.
-   * @property {(e: any) => void} [onClick] - Custom onClick handler.
-   * @property {(props: any) => React.ReactNode} [customRender] - Custom render function for the field.
-   */
-  /**
-   * Function to render a single form field based on its configuration.
-   */
+  const [showPanel, setShowPanel] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
+
+  const handleShowPanel = (sectionIndex) => {
+    setActiveSection(sectionIndex);
+    setShowPanel(true);
+  };
+
+  const handleClosePanel = () => {
+    setShowPanel(false);
+    setActiveSection(null);
+  };
+
   const renderField = (field) => {
     const {
       id,
@@ -75,10 +67,9 @@ const DynamicFormAnimasi = ({ title, formConfig, onSubmit }) => {
       options,
       rows,
       date,
-      colSize,
-      motion: motionProps, // ✅ Rename dari "motion" ke "motionProps"
+      motion: motionProps,
       customRender,
-      ...otherProps // Capture all other props
+      ...otherProps
     } = field;
 
     const commonProps = {
@@ -95,40 +86,24 @@ const DynamicFormAnimasi = ({ title, formConfig, onSubmit }) => {
       ...(onClick ? { onClick } : {}),
     };
 
-    if (type === "email") {
-      return (
-        <TextField
-          key={id}
-          {...commonProps}
-          type="email" // Ensure the type is set to "email"
-        />
-      );
-    }
-
-    // Remove any props that are not necessary for the DOM, like `hide`
-    const sanitizedProps = { ...commonProps, ...otherProps };
+    const sanitizedProps = { ...commonProps, ...otherProps }; // Mendefinisikan sanitizedProps
     delete sanitizedProps.hide;
 
     if (customRender) {
-      return customRender({ key: id, ...sanitizedProps });
+      return customRender({ key: id, handleShowPanel, ...sanitizedProps });
     }
 
-    const Component = fieldComponents[field.type];
+    const Component = fieldComponents[type];
     if (!Component) {
-      console.warn(`Unsupported field type: ${field.type}`);
+      console.warn(`Unsupported field type: ${type}`);
       return null;
     }
 
     const FieldWrapper = motionProps ? motion.div : "div";
 
     return (
-      <FieldWrapper
-        key={id}
-        {...motionProps} // ✅ Apply motion props jika ada
-        className={className}
-      >
+      <FieldWrapper key={id} {...motionProps} className={className}>
         <Component
-          key={id}
           {...sanitizedProps}
           options={options}
           rows={rows}
@@ -137,14 +112,6 @@ const DynamicFormAnimasi = ({ title, formConfig, onSubmit }) => {
       </FieldWrapper>
     );
   };
-
-  /**
-   * DynamicFormAnimasi Component
-   * @param {Object} props
-   * @param {string} props.title - Title for the form.
-   * @param {Array<{section: string, fields: FormField[], layout?: "inline" | "default"}>} props.formConfig - Configuration for the form.
-   * @param {(data: any) => void} props.onSubmit - Callback for form submission.
-   */
 
   const methods = useForm({
     defaultValues: formConfig.reduce((defaults, section) => {
@@ -156,12 +123,6 @@ const DynamicFormAnimasi = ({ title, formConfig, onSubmit }) => {
     mode: "onSubmit",
   });
 
-  const {
-    watch,
-
-    register,
-    formState: { errors },
-  } = methods;
   const handleSubmit = (data) => {
     try {
       if (onSubmit) {
@@ -176,7 +137,7 @@ const DynamicFormAnimasi = ({ title, formConfig, onSubmit }) => {
 
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
-      return field.hide(watch());
+      return field.hide(methods.watch());
     }
     return field.hide;
   };
@@ -242,6 +203,22 @@ const DynamicFormAnimasi = ({ title, formConfig, onSubmit }) => {
           </div>
         </div>
       </Row>
+
+      <Offcanvas show={showPanel} onHide={handleClosePanel} placement="end">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>
+            Detail {formConfig[activeSection]?.section}
+          </Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {activeSection !== null &&
+            formConfig[activeSection]?.fields.map((field, fieldIndex) => (
+              <div key={`offcanvas-field-${fieldIndex}`}>
+                {renderField(field)}
+              </div>
+            ))}
+        </Offcanvas.Body>
+      </Offcanvas>
     </FormProvider>
   );
 };

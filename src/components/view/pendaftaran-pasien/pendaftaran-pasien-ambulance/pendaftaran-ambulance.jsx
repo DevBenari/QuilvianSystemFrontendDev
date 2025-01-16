@@ -1,6 +1,6 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicForm";
+import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicFormAnimasi";
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { Col, Row } from "react-bootstrap";
 import SearchableSelectField from "@/components/ui/select-field-search";
