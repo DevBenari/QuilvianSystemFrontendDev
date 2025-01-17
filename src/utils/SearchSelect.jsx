@@ -286,3 +286,26 @@ export const dataAmbulance = [
     value: "dokter_rescue_pasien",
   },
 ];
+
+export const dataRuang = [
+  { label: "Kelas 1 101", value: "Kelas 1 101" },
+  { label: "Kelas 2 102", value: "Kelas 2 102" },
+  { label: "Kelas 3 103", value: "Kelas 3 103" },
+  { label: "Kelas 4 104", value: "Kelas 4 104" },
+  { label: "Kelas 5 105", value: "Kelas 5 105" },
+  { label: "Kelas 6 106", value: "Kelas 6 106" },
+  { label: "Kelas 7 107", value: "Kelas 7 107" },
+  { label: "Kelas 8 108", value: "Kelas 8 108" },
+  { label: "Kelas 9 109", value: "Kelas 9 109" },
+  { label: "Kelas 10 110", value: "Kelas 10 110" },
+  { label: "Isolasi 11", value: "Isolasi 11" },
+  { label: "Isolasi 12", value: "Isolasi 12" },
+  { label: "Isolasi 13", value: "Isolasi 13" },
+  { label: "Isolasi 14", value: "Isolasi 14" },
+  { label: "Isolasi 15", value: "Isolasi 15" },
+  { label: "Isolasi 16", value: "Isolasi 16" },
+  { label: "Isolasi 17", value: "Isolasi 17" },
+  { label: "Isolasi 18", value: "Isolasi 18" },
+  { label: "Isolasi 19", value: "Isolasi 19" },
+  { label: "Isolasi 20", value: "Isolasi 20" },
+];

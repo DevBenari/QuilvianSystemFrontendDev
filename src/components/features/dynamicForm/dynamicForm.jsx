@@ -19,7 +19,7 @@ import ButtonNav from "@/components/ui/button-navigation";
 import { DevTools } from "@hookform/devtools";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({ title, formConfig, onSubmit }) => {
+const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -124,6 +124,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
         options={options}
         rows={rows}
         control={methods.control}
+        value={value}
       />
     );
   };
@@ -143,13 +144,12 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
       });
       return defaults;
     }, {}),
-    mode: "onSubmit",
+    mode: "onChange", // Menangani validasi secara dinamis
   });
 
   const {
     watch,
 
-    register,
     formState: { errors },
   } = methods;
   const handleSubmit = (data) => {
@@ -183,7 +183,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
               <ButtonNav
                 className="btn btn-primary mx-3 my-3"
                 label="Kembali"
-                path="/pendaftaran/pasien-luar-fasilitas"
+                path={backPath}
                 icon="ri-arrow-left-line"
               />
             </div>
