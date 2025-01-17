@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import CustomSearchFilter from '@/components/features/CustomSearchComponen/Form-search-dashboard';
 import ButtonNav from '@/components/ui/button-navigation';
-import { dataODC } from '@/utils/dataPerjanjian';
+import { dataPerjanjianOperasi } from '@/utils/dataPerjanjian';
 import { Row, Col } from 'react-bootstrap';
 import { FormProvider, useForm } from 'react-hook-form';
 import CustomTableComponent from '@/components/features/CustomTable/custom-table';
-const DashboardPerjanjianOdc = () => {
-    const methods = useForm();
-    const [filteredPatients, setFilteredPatients] = useState(dataODC);
+const DashboardPerjanjianOperasi = () => {
+     const methods = useForm();
+    const [filteredPatients, setFilteredPatients] = useState(dataPerjanjianOperasi);
     const handleRemovePatient = (id) => {
         const updatedPatients = filteredPatients.filter((patient) => patient.id !== id);
         setFilteredPatients(updatedPatients);
@@ -17,14 +17,14 @@ const DashboardPerjanjianOdc = () => {
         <FormProvider {...methods}>
             <Col lg="12" className="iq-card p-4">
                 <div className="d-flex justify-content-between iq-card-header">
-                    <h2 className="mb-3">Searching Perjanjian ODC</h2>
+                    <h2 className="mb-3">Searching Perjanjian Operasi</h2>
                     <button className="btn btn-dark my-3 mx-3" onClick={() => window.location.reload()}>
                         <i className="ri-refresh-line"></i>
                     </button>
                 </div>
                 <Col lg="12" className="mt-2">
                     <CustomSearchFilter
-                        data={dataODC}
+                        data={dataPerjanjianOperasi}
                         setFilteredPatients={setFilteredPatients}
                         onFilteredPatients={filteredPatients}
                     />
@@ -55,8 +55,10 @@ const DashboardPerjanjianOdc = () => {
                                         { key: 'nomorRekamMedis', label: 'No Rekam Medis' },
                                         { key: 'date', label: 'Tanggal' },
                                         { key: 'nama', label: 'Nama Pasien' },
-                                        { key: 'alamat', label: 'Alamat' },
-                                        { key: 'departemen', label: 'Poli' },
+                                        { key: 'sex', label: 'Jenis Kelamin' },
+                                        { key: 'jamOperasi', label: 'Jam Operasi' },
+                                        { key: 'diagnosis', label: 'Diagnosis' },
+                                        { key: 'tindakan', label: 'Tindakan' },
                                         { key: 'dokter', label: 'Dokter' },
                                         { key: 'penjamin', label: 'Penjamin' },
                                     ]}
@@ -71,5 +73,4 @@ const DashboardPerjanjianOdc = () => {
         </FormProvider>
     )
 }
-
-export default DashboardPerjanjianOdc;
+export default DashboardPerjanjianOperasi;

@@ -13,29 +13,49 @@ import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 const PendaftaranPasienBaru = () => {
   const methods = useForm({
     defaultValues: {
-      title: "",
-      no_rm: "",
-      no_ktp: "",
-      namaLengkapPasien: "",
-      tempatLahir: "",
-      tanggalLahir: "",
-      jenisKelamin: "",
-      pasienPrioritas: "",
-      statusPasien: "",
-      suku: "",
-      agama: "",
-      kewarganegaraan: "",
-      negara: "",
-      pasien_provinsi: "",
-      pasien_kabupaten: "",
-      pasien_kecamatan: "",
-      pasien_kelurahan: "",
-      // Data keluarga
-      keluarga_provinsi: "",
-      keluarga_kabupaten: "",
-      keluarga_kecamatan: "",
-      keluarga_kelurahan: "",
-      photoPasien: "",
+    penjamin: "",
+    title: "",
+    noRekamMedis: "",
+    namaLengkapPasien: "",
+    noIdentitas: "",
+    pasienPrioritas: "",
+    tempatLahir: "",
+    tanggalLahir: "",
+    jenisKelamin: "",
+    statusPasien: "",
+    suku: "",
+    agama: "",
+    kewarganegaraan: "",
+    negara: "",
+    namaPendidikanTerakhir: "",
+    alamatDomisili: "",
+    informasiAlamat: "",
+    pasienProvinsi: "",
+    pasienKabupaten: "",
+    pasienKecamatan: "",
+    pasienKelurahan: "",
+    kodePos: "",
+    noTelepon: "",
+    noHandphone: "",
+    email: "",
+    pekerjaan: "",
+    kantor: "",
+    teleponKantor: "",
+    alamatKantor: "",
+    golonganDarah: "",
+    alergi: "",
+    keluargaTerdekat: "",
+    hubunganKeluarga: "",
+    karyawanRumahSakit: "",
+    alamatKeluargaDomisili: "",
+    keluargaProvinsi: "",
+    keluargaKabupaten: "",
+    keluargaKecamatan: "",
+    keluargaKelurahan: "",
+    ayah: "",
+    ibu: "",
+    sutri: "",
+    indentitasSutri: "",
     },
     mode: "onSubmit",
   });
@@ -46,29 +66,23 @@ const PendaftaranPasienBaru = () => {
   const negara = watch("negara");
 
   useEffect(() => {
-    // Hanya memanggil setValue jika nilai title berubah
     if (title === "Mr" || title === "Tn" || title === "Ms") {
       setValue("jenisKelamin", "Laki-Laki");
-    } else if (
-      title === "Mrs" ||
-      title === "Miss" ||
-      title === "Ny" ||
-      title === "Nn"
-    ) {
+    } else if (title === "Mrs" || title === "Miss" || title === "Ny" || title === "Nn") {
       setValue("jenisKelamin", "Perempuan");
     } else {
       setValue("jenisKelamin", "");
     }
   }, [title, setValue]);
-
+  
   useEffect(() => {
-    // Mengoptimalkan pemanggilan setValue berdasarkan kewarganegaraan dan negara
-    if (kewarganegaraan === "WNI" && negara !== "Indonesia") {
+    if (kewarganegaraan === "WNI") {
       setValue("negara", "Indonesia");
     } else if (kewarganegaraan === "WNA" && negara !== negara) {
       setValue("negara", negara);
     }
   }, [kewarganegaraan, negara, setValue]);
+  
 
   const {
     pasienFilteredKabupaten,
@@ -101,6 +115,7 @@ const PendaftaranPasienBaru = () => {
                 <SelectField
                   name="penjamin"
                   label="Penjamin"
+                  control={methods.control}
                   options={[
                     { label: "BPJS", value: "bpjs" },
                     { label: "Non BPJS", value: "non-bpjs" },
@@ -120,6 +135,7 @@ const PendaftaranPasienBaru = () => {
                       <RadioInput
                         name="title"
                         label="Title *"
+                        control={methods.control}
                         options={[
                           { label: "Tn.", value: "Tn" },
                           { label: "Ny.", value: "Ny" },
@@ -139,7 +155,8 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <TextField
                       label="No.RM Lama :"
-                      name="no_rm"
+                      name="noRekamMedis"
+                      control={methods.control}
                       type="text"
                       placeholder="Enter No RM"
                       className="form-control mb-0"
@@ -156,6 +173,7 @@ const PendaftaranPasienBaru = () => {
                     <TextField
                       label="Nama Lengkap :"
                       name="namaLengkapPasien"
+                      control={methods.control}
                       type="text"
                       placeholder="Enter Nama Lengkap Sendiri"
                       className="form-control mb-0"
@@ -171,7 +189,8 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <TextField
                       label="No Identitas Penduduk :"
-                      name="no_ktp"
+                      control={methods.control}
+                      name="noIdentitas"
                       type="text"
                       placeholder="Enter No Identitas Penduduk "
                       className="form-control mb-0"
@@ -187,6 +206,7 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <SelectField
                       name="pasienPrioritas"
+                      control={methods.control}
                       label="Pasien Prioritas"
                       options={[
                         { label: "Ya", value: "Ya" },
@@ -201,6 +221,7 @@ const PendaftaranPasienBaru = () => {
                     <TextField
                       label="Tempat Lahir :"
                       name="tempatLahir"
+                      control={methods.control}
                       type="text"
                       placeholder="Enter Nama Lengkap Sendiri"
                       className="form-control mb-0"
@@ -216,6 +237,7 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <DateInput
                       name="tanggalLahir"
+                      control={methods.control}
                       label="Tanggal Lahir"
                       placeholder={"Enter Tanggal Lahir"}
                       rules={{ required: "Tanggal lahir harus diisi" }} // Aturan validasi
@@ -224,6 +246,7 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <SelectField
                       name="jenisKelamin"
+                      control={methods.control}
                       label="Jenis Kelamin"
                       options={[
                         { label: "Laki-Laki", value: "Laki-Laki" },
@@ -237,6 +260,7 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <SelectField
                       name="statusPasien"
+                      control={methods.control}
                       label="Status"
                       options={[
                         { label: "Belum Menikah", value: "Belum Menikah" },
@@ -253,6 +277,7 @@ const PendaftaranPasienBaru = () => {
                     <TextField
                       label="Suku :"
                       name="suku"
+                      control={methods.control}
                       type="text"
                       placeholder="Enter Suku"
                       className="form-control mb-0"
@@ -264,6 +289,7 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <SelectField
                       name="agama"
+                      control={methods.control}
                       label="Agama"
                       options={[
                         { label: "Islam", value: "Islam" },
@@ -284,6 +310,7 @@ const PendaftaranPasienBaru = () => {
                     <div className="d-flex gap-5 ">
                       <RadioInput
                         name="kewarganegaraan"
+                        control={methods.control}
                         label="Kewarganegaraan *"
                         options={[
                           { label: "WNI", value: "WNI" },
@@ -297,6 +324,7 @@ const PendaftaranPasienBaru = () => {
                       <Col lg="6">
                         <SelectField
                           name="negara"
+                          control={methods.control}
                           label="Negara"
                           options={[
                             { label: "Amerika", value: "amerika" },
@@ -318,6 +346,7 @@ const PendaftaranPasienBaru = () => {
                     <Col lg="6">
                       <SelectField
                         name="namaPendidikanTerakhir"
+                        control={methods.control}
                         label="Pendidikan Terakhir"
                         options={[
                           { label: "Magister", value: "magister" },
@@ -338,6 +367,7 @@ const PendaftaranPasienBaru = () => {
                         <TextArea
                           label="Alamat Domisili"
                           name="alamatDomisili"
+                          control={methods.control}
                           placeholder="Masukkan alamat Domisili Pasien..."
                           rules={{
                             required: "alamat Domisili Pasien harus diisi",
@@ -349,6 +379,7 @@ const PendaftaranPasienBaru = () => {
                         <TextArea
                           label="Informasi Alamat *"
                           name="informasiAlamat"
+                          control={methods.control}
                           placeholder="Masukkan Informasi Alamat Pasien..."
                           rules={{
                             required: "Informasi Alamat Pasien harus diisi",
@@ -360,7 +391,8 @@ const PendaftaranPasienBaru = () => {
                   </Col>
                   <Col lg="6">
                     <SelectField
-                      name="pasien_provinsi"
+                      name="pasienProvinsi"
+                      control={methods.control}
                       label="Provinsi Pasien"
                       options={dataWilayah.map((item) => ({
                         label: item.provinsi,
@@ -377,7 +409,8 @@ const PendaftaranPasienBaru = () => {
 
                   <Col lg="6">
                     <SelectField
-                      name="pasien_kabupaten"
+                      name="pasienKabupaten"
+                      control={methods.control}
                       label="Kabupaten"
                       options={pasienFilteredKabupaten.map((item) => ({
                         label: item.nama,
@@ -393,7 +426,8 @@ const PendaftaranPasienBaru = () => {
                   </Col>
                   <Col lg="6">
                     <SelectField
-                      name="pasien_kecamatan"
+                      name="pasienKecamatan"
+                      control={methods.control}
                       label="Kecamatan"
                       options={pasienFilteredKecamatan.map((item) => ({
                         label: item.nama,
@@ -409,7 +443,8 @@ const PendaftaranPasienBaru = () => {
                   </Col>
                   <Col lg="6">
                     <SelectField
-                      name="pasien_kelurahan"
+                      name="pasienKelurahan"
+                      control={methods.control}
                       label="Kelurahan"
                       options={pasienFilteredKelurahan.map((item) => ({
                         label: item,
@@ -425,6 +460,7 @@ const PendaftaranPasienBaru = () => {
                       <TextField
                         label="Kode Pos :"
                         name="kodePos"
+                        control={methods.control}
                         type="text"
                         placeholder="Enter Kode Pos..."
                         className="form-control mb-0"
@@ -437,7 +473,8 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <TextField
                       label="No Telp :"
-                      name="noTelp"
+                      name="noTelepon"
+                      control={methods.control}
                       type="text"
                       placeholder="Enter your no Telp..."
                       className="form-control mb-0"
@@ -449,7 +486,8 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <TextField
                       label="No Hp :"
-                      name="noHp"
+                      name="noHandphone"
+                      control={methods.control}
                       type="text"
                       placeholder="Enter your no Hp..."
                       className="form-control mb-0"
@@ -462,6 +500,7 @@ const PendaftaranPasienBaru = () => {
                     <TextField
                       label="Email :"
                       name="email"
+                      control={methods.control}
                       type="email"
                       placeholder="Enter email Pasien..."
                       className="form-control mb-0"
@@ -473,6 +512,7 @@ const PendaftaranPasienBaru = () => {
                   <Col lg="6">
                     <SelectField
                       name="pekerjaan"
+                      control={methods.control}
                       label="Pekerjaan"
                       options={[
                         { label: "Anggota DPR", value: "Anggota DPR" },
@@ -493,6 +533,7 @@ const PendaftaranPasienBaru = () => {
                     <TextField
                       label="Nama Kantor :"
                       name="kantor"
+                      control={methods.control}
                       type="text"
                       placeholder="Enter kantor Pasien..."
                       className="form-control mb-0"
@@ -505,6 +546,7 @@ const PendaftaranPasienBaru = () => {
                     <TextField
                       label="Nomor Telepon Kantor :"
                       name="teleponKantor"
+                      control={methods.control}
                       type="text"
                       placeholder="Enter nomor telepon kantor Pasien..."
                       className="form-control mb-0"
@@ -518,6 +560,7 @@ const PendaftaranPasienBaru = () => {
                       <TextArea
                         label="Alamat Kantor Pasien :"
                         name="alamatKantor"
+                        control={methods.control}
                         placeholder="Masukkan Alamat Kantor Pasien..."
                         rules={{ required: "Alamat Kantor Pasien harus diisi" }}
                         rows={5}
@@ -534,6 +577,7 @@ const PendaftaranPasienBaru = () => {
                   <TextField
                     label="Golongan Darah :"
                     name="golonganDarah"
+                    control={methods.control}
                     type="text"
                     placeholder="Enter Golongan Darah..."
                     className="form-control mb-0"
@@ -546,6 +590,7 @@ const PendaftaranPasienBaru = () => {
                   <TextArea
                     label="Alergi :"
                     name="alergi"
+                    control={methods.control}
                     placeholder="Enter riwayat alergi Pasien..."
                     rules={{
                       required: "data riwayat alergi pasien harus diisi",
@@ -562,6 +607,7 @@ const PendaftaranPasienBaru = () => {
                   <TextField
                     label="Keluarga Terdekat yang dapat dihubungi :"
                     name="keluargaTerdekat"
+                    control={methods.control}
                     type="text"
                     placeholder="Enter Keluarga Terdekat..."
                     className="form-control mb-0"
@@ -573,6 +619,7 @@ const PendaftaranPasienBaru = () => {
                 <Col lg="6">
                   <SelectField
                     name="hubunganKeluarga"
+                    control={methods.control}
                     label="Hubungan Keluarga * : "
                     options={[
                       { label: "Kandung", value: "Kandung" },
@@ -589,6 +636,7 @@ const PendaftaranPasienBaru = () => {
                   <TextField
                     label="Karyawan Rumah Sakit :"
                     name="karyawanRumahSakit"
+                    control={methods.control}
                     type="text"
                     placeholder="Enter Karyawan Rumah Sakit..."
                     className="form-control mb-0"
@@ -601,6 +649,7 @@ const PendaftaranPasienBaru = () => {
                   <TextArea
                     label="Alamat Keluarga / Domisili Sekarang :*"
                     name="alamatKeluargaDomisili"
+                    control={methods.control}
                     placeholder="Masukkan alamatKeluarga Domisili Saat ini..."
                     rules={{ required: "alamat Keluarga Domisili harus diisi" }}
                     rows={5}
@@ -610,7 +659,8 @@ const PendaftaranPasienBaru = () => {
                   <Row>
                     <Col lg="6">
                       <SelectField
-                        name="keluarga_provinsi"
+                        name="keluargaProvinsi"
+                        control={methods.control}
                         label="Provinsi"
                         options={dataWilayah.map((item) => ({
                           label: item.provinsi,
@@ -627,6 +677,7 @@ const PendaftaranPasienBaru = () => {
                     <Col lg="6">
                       <SelectField
                         name="keluarga_kabupaten"
+                        control={methods.control}
                         label="Kabupaten"
                         options={keluargaFilteredKabupaten.map((item) => ({
                           label: item.nama,
@@ -643,6 +694,7 @@ const PendaftaranPasienBaru = () => {
                     <Col lg="6">
                       <SelectField
                         name="keluarga_kecamatan"
+                        control={methods.control}
                         label="Kecamatan"
                         options={keluargaFilteredKecamatan.map((item) => ({
                           label: item.nama,
@@ -659,6 +711,7 @@ const PendaftaranPasienBaru = () => {
                     <Col lg="6">
                       <SelectField
                         name="keluarga_kelurahan"
+                        control={methods.control}
                         label="Kelurahan"
                         options={keluargaFilteredKelurahan.map((item) => ({
                           label: item,
@@ -676,7 +729,8 @@ const PendaftaranPasienBaru = () => {
                     <Col lg="6">
                       <TextField
                         label="No Telp :"
-                        name="noTelp"
+                        name="noTeleponKeluarga"
+                        control={methods.control}
                         type="text"
                         placeholder="Enter your no Telp..."
                         className="form-control mb-0"
@@ -688,7 +742,8 @@ const PendaftaranPasienBaru = () => {
                     <Col lg="6">
                       <TextField
                         label="No Hp :"
-                        name="noHp"
+                        name="noHnoTeleponHp"
+                        control={methods.control}
                         type="text"
                         placeholder="Enter your no Hp..."
                         className="form-control mb-0"
@@ -703,6 +758,7 @@ const PendaftaranPasienBaru = () => {
                   <TextField
                     label="Nama Ayah :"
                     name="ayah"
+                    control={methods.control}
                     type="text"
                     placeholder="Enter your ayah..."
                     className="form-control mb-0"
@@ -714,7 +770,8 @@ const PendaftaranPasienBaru = () => {
                 <Col lg="6">
                   <TextField
                     label="Nama Ibu :"
-                    name="Ibu"
+                    name="ibu"
+                    control={methods.control}
                     type="text"
                     placeholder="Enter your Ibu..."
                     className="form-control mb-0"
@@ -726,7 +783,8 @@ const PendaftaranPasienBaru = () => {
                 <Col lg="6">
                   <TextField
                     label="Nama Sutri :"
-                    name="Sutri"
+                    name="sutri"
+                    control={methods.control}
                     type="text"
                     placeholder="Enter your Sutri..."
                     className="form-control mb-0"
@@ -739,6 +797,7 @@ const PendaftaranPasienBaru = () => {
                   <TextField
                     label="No KTP / Passport Sutri :"
                     name="indentitasSutri"
+                    control={methods.control}
                     type="text"
                     placeholder="Enter your No KTP / Passport Sutri..."
                     className="form-control mb-0"

@@ -2,29 +2,30 @@
 import React, { useState } from 'react';
 import CustomSearchFilter from '@/components/features/CustomSearchComponen/Form-search-dashboard';
 import ButtonNav from '@/components/ui/button-navigation';
-import { dataODC } from '@/utils/dataPerjanjian';
+import { dataRawatInap } from '@/utils/dataPerjanjian';
 import { Row, Col } from 'react-bootstrap';
 import { FormProvider, useForm } from 'react-hook-form';
 import CustomTableComponent from '@/components/features/CustomTable/custom-table';
-const DashboardPerjanjianOdc = () => {
+const DashboardPerjanjianRawatInap = () => {
     const methods = useForm();
-    const [filteredPatients, setFilteredPatients] = useState(dataODC);
-    const handleRemovePatient = (id) => {
-        const updatedPatients = filteredPatients.filter((patient) => patient.id !== id);
-        setFilteredPatients(updatedPatients);
-    };
+        const [filteredPatients, setFilteredPatients] = useState(dataRawatInap);
+    
+        const handleRemovePatient = (id) => {
+            const updatedPatients = filteredPatients.filter((patient) => patient.id !== id);
+            setFilteredPatients(updatedPatients);
+        };
     return (
         <FormProvider {...methods}>
             <Col lg="12" className="iq-card p-4">
                 <div className="d-flex justify-content-between iq-card-header">
-                    <h2 className="mb-3">Searching Perjanjian ODC</h2>
+                    <h2 className="mb-3">Searching Perjanjian Rawat INAP</h2>
                     <button className="btn btn-dark my-3 mx-3" onClick={() => window.location.reload()}>
                         <i className="ri-refresh-line"></i>
                     </button>
                 </div>
                 <Col lg="12" className="mt-2">
                     <CustomSearchFilter
-                        data={dataODC}
+                        data={dataRawatInap}
                         setFilteredPatients={setFilteredPatients}
                         onFilteredPatients={filteredPatients}
                     />
@@ -54,11 +55,14 @@ const DashboardPerjanjianOdc = () => {
                                         { key: 'id', label: 'ID' },
                                         { key: 'nomorRekamMedis', label: 'No Rekam Medis' },
                                         { key: 'date', label: 'Tanggal' },
-                                        { key: 'nama', label: 'Nama Pasien' },
-                                        { key: 'alamat', label: 'Alamat' },
-                                        { key: 'departemen', label: 'Poli' },
+                                        { key: 'nama', label: 'Nama' },
+                                        // { key: 'alamat', label: 'Alamat' },
                                         { key: 'dokter', label: 'Dokter' },
-                                        { key: 'penjamin', label: 'Penjamin' },
+                                        { key: 'ruangan', label: 'Ruangan' },
+                                        { key: 'kelas', label: 'Kelas' },
+                                        { key: 'diagnosis', label: 'Diagnosa' },
+                                        // { key: 'penjamin', label: 'Penjamin' },
+                                        { key: 'telepon', label: 'No Telp' },
                                     ]}
                                     itemsPerPage={10}
                                     onRemove={handleRemovePatient}
@@ -72,4 +76,4 @@ const DashboardPerjanjianOdc = () => {
     )
 }
 
-export default DashboardPerjanjianOdc;
+export default DashboardPerjanjianRawatInap
