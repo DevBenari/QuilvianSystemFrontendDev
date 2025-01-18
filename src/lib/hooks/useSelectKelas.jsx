@@ -1,41 +1,36 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
+import { datakelas } from "@/utils/datakelas";
 
-const UseSelectKelas = (setValue, dataKelas) => {
+const useSelectKelas = () => {
   const [selectedKelas, setSelectedKelas] = useState("");
+  const [selectedRuang, setSelectedRuang] = useState("");
   const [filteredRuang, setFilteredRuang] = useState([]);
   const [filteredTempatTidur, setFilteredTempatTidur] = useState([]);
 
-  const handleChange = useCallback(
-    (field, value) => {
-      if (field === "kelas") {
-        setSelectedKelas(value);
-
-        const selectedKelasObj = dataKelas.find((item) => item.value === value);
-        setFilteredRuang(selectedKelasObj?.ruang || []);
-        setFilteredTempatTidur([]);
-        setValue("kelas", value);
-        setValue("ruang", "");
-        setValue("tempatTidur", "");
-      } else if (field === "ruang") {
-        const selectedRuangObj = filteredRuang.find(
-          (item) => item.value === value
-        );
-        setFilteredTempatTidur(selectedRuangObj?.noTempatTidur || []);
-        setValue("ruang", value);
-        setValue("tempatTidur", "");
-      } else if (field === "tempatTidur") {
-        setValue("tempatTidur", value);
+  const handleChange = (type, value) => {
+    if (type === "kelas") {
+      setSelectedKelas(value);
+      const selectedData = datakelas.find((d) => d.kelas === value);
+      setFilteredRuang(selectedData ? selectedData.ruang : []);
+      setSelectedRuang("");
+      setFilteredTempatTidur([]);
+    } else if (type === "ruang") {
+      setSelectedRuang(value);
+      const selectedData = datakelas.find((d) => d.kelas === selectedKelas);
+      if (selectedData) {
+        const ruangData = selectedData.ruang.find((r) => r.nama === value);
+        setFilteredTempatTidur(ruangData ? ruangData.tempatTidur : []);
       }
-    },
-    [dataKelas, filteredRuang, setValue]
-  );
+    }
+  };
 
   return {
     selectedKelas,
+    selectedRuang,
     filteredRuang,
     filteredTempatTidur,
     handleChange,
   };
 };
 
-export default UseSelectKelas;
+export default useSelectKelas;

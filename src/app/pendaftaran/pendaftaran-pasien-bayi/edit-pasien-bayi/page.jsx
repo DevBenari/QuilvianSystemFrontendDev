@@ -5,10 +5,11 @@ import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getBayiById } from "@/lib/hooks/pasienBayi/getbyid";
 import { BayiEdit } from "@/lib/hooks/pasienBayi/edit";
-import { dataDokter, dataKelas, dataRuang } from "@/utils/SearchSelect";
-import UseSelectKelas from "@/lib/hooks/useSelectKelas";
-import { selectDataKelasTersedia } from "@/utils/dataKelas";
+import { dataDokter } from "@/utils/SearchSelect";
+
 import { useForm } from "react-hook-form";
+import useSelectKelas from "@/lib/hooks/useSelectKelas";
+import { datakelas } from "@/utils/dataKelas";
 
 export const AddPasienBayi = () => {
   const router = useRouter();
@@ -19,8 +20,14 @@ export const AddPasienBayi = () => {
   const [loading, setLoading] = useState(true);
 
   const { setValue } = useForm();
-  const { selectedKelas, filteredRuang, filteredTempatTidur, handleChange } =
-    UseSelectKelas(setValue, selectDataKelasTersedia);
+
+  const {
+    selectedKelas,
+    selectedRuang,
+    filteredRuang,
+    filteredTempatTidur,
+    handleChange,
+  } = useSelectKelas();
 
   // Fetch data bayi berdasarkan ID
   useEffect(() => {
@@ -48,7 +55,7 @@ export const AddPasienBayi = () => {
     try {
       const response = await BayiEdit(bayiData, id);
       alert("Bayi updated successfully!");
-      router.push("/pendaftaran/pendaftaran-pasien-bayi");
+      // router.push("/pendaftaran/pendaftaran-pasien-bayi");
       console.log("Response:", response);
     } catch (error) {
       console.error("Failed to update bayi:", error);
@@ -153,10 +160,13 @@ export const AddPasienBayi = () => {
           id: "kelas",
           label: "Pilih Kelas Rawat Bayi",
           name: "kelas",
-          placeholder: "Pilih Kelas",
-          options: dataKelas,
-          value: bayiEditData?.kelas || "",
-          onChange: (value) => handleChange("kelas", value),
+          placeholder: bayiEditData?.kelas,
+          options: datakelas.map((item) => ({
+            label: item.kelas,
+            value: item.kelas,
+          })),
+          value: bayiEditData?.kelas || selectedKelas,
+          onChangeCallback: (value) => handleChange("kelas", value),
           rules: { required: "Pilih Kelas Rawat Bayi is required" },
           colSize: 6,
         },
@@ -165,28 +175,31 @@ export const AddPasienBayi = () => {
           id: "ruang",
           label: "Pilih Ruang Rawat Bayi",
           name: "ruang",
-          placeholder: "Pilih Ruang",
-          options: dataRuang,
-          value: bayiEditData?.ruang || "",
-          onChange: (value) => handleChange("ruang", value),
+          placeholder: bayiEditData?.ruang,
+          options: filteredRuang.map((item) => ({
+            label: item.nama,
+            value: item.nama,
+          })),
+          value: bayiEditData?.ruang || selectedRuang,
+          onChangeCallback: (value) => handleChange("ruang", value),
           rules: { required: "Pilih Ruang Rawat Bayi is required" },
           colSize: 6,
         },
-        // {
-        //   type: "select",
-        //   id: "tempatTidur",
-        //   label: "Pilih Tempat Tidur Rawat Bayi",
-        //   name: "tempatTidur",
-        //   placeholder: "Pilih Tempat Tidur",
-        //   options: filteredTempatTidur.map((tempat) => ({
-        //     label: tempat,
-        //     value: tempat,
-        //   })),
-        //   value: bayiEditData?.tempatTidur || "",
-        //   onChange: (value) => handleChange("tempatTidur", value),
-        //   rules: { required: "Pilih Tempat Tidur Rawat Bayi is required" },
-        //   colSize: 6,
-        // },
+        {
+          type: "select",
+          id: "tempatTidur",
+          label: "Pilih Tempat Tidur Rawat Bayi",
+          name: "tempatTidur",
+          placeholder: bayiEditData?.tempatTidur,
+          options: filteredTempatTidur.map((item) => ({
+            label: item,
+            value: item,
+          })),
+          value: bayiEditData?.tempatTidur,
+          onChangeCallback: (value) => handleChange("tempatTidur", value),
+          rules: { required: "Pilih Tempat Tidur Rawat Bayi is required" },
+          colSize: 6,
+        },
       ],
     },
   ];

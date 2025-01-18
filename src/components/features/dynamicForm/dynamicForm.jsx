@@ -193,10 +193,10 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
               {formConfig.map((section, sectionIndex) => (
                 <div
                   key={`section-${sectionIndex}`}
-                  className="iq-card-header "
+                  className="iq-card-header mt-2"
                 >
                   {section.section && (
-                    <div className="iq-header-title">
+                    <div className="iq-header-title mt-3">
                       <h4 className="mb-3">{section.section}</h4>
                     </div>
                   )}
