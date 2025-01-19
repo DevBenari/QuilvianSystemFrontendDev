@@ -18,7 +18,7 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import { DevTools } from "@hookform/devtools";
 import NumberField from "@/components/ui/distance-filed";
-import DataTable from "../features/viewDataTables/dataTable";
+import DataTable from "../viewDataTables/dataTable";
 
 const DynamicFormGrid = ({ title, formConfig, onSubmit, ConfigKanan }) => {
   const [isSplit, setIsSplit] = useState(false);

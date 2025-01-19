@@ -6,7 +6,7 @@ import { useFormContext, Controller } from "react-hook-form";
 const TextField = ({
   label,
   name,
-  type = "text",
+  type,
   className,
   placeholder,
   rules,
@@ -16,7 +16,6 @@ const TextField = ({
     control,
     formState: { errors },
   } = useFormContext();
-
   return (
     <Form.Group className="mb-3">
       {/* Label Input */}
@@ -35,8 +34,6 @@ const TextField = ({
             placeholder={placeholder}
             isInvalid={!!errors[name]}
             {...props}
-            value={field.value || ""}
-            onChange={(e) => field.onChange(e.target.value)}
           />
         )}
       />

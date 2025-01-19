@@ -1,4 +1,4 @@
-import PendaftaranPasienLuarMedicalCheckUp from "@/components/view/pendaftaran-pasien/medical-chekup/pendaftaran/pendaftaran-medical-chekup";
+import PendaftaranPasienLuarMedicalCheckUp from "@/components/view/pendaftaran-pasien/medical-chekup/pendaftaran-medical-chekup";
 
 import React, { memo } from "react";
 import styles from "@/app/page.module.css";

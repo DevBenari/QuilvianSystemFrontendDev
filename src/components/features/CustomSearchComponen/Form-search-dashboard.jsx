@@ -29,11 +29,19 @@ const CustomSearchFilter = ({
     const query = filters.searchQuery.toLowerCase();
     const filtered = data.filter(
       (patient) =>
-        patient.noRekamMedis.toLowerCase().includes(query) ||
-        patient.nama.toLowerCase().includes(query) ||
-        patient.noTelp.toLowerCase().includes(query)
+        String(patient.noRekamMedis || "")
+          .toLowerCase()
+          .includes(query) ||
+        patient.nama?.toLowerCase().includes(query) ||
+        patient.namaPasienMelahirkan?.toLowerCase().includes(query) ||
+        patient.dokter?.toLowerCase().includes(query) ||
+        patient.ruang?.toLowerCase().includes(query) ||
+        patient.kelas?.toLowerCase().includes(query) ||
+        patient.tipeMember?.toLowerCase().includes(query) ||
+        patient.statusMember?.toLowerCase().includes(query)
     );
     setFilteredPatients(filtered);
+    console.log(data);
   };
 
   // Filter by time
