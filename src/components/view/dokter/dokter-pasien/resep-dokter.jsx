@@ -94,7 +94,7 @@ const PrescriptionForm = () => {
           <Card.Header as="h5">Input Resep Pasien</Card.Header>
           <Card.Body>
             <Row>
-              <Col md={6}>
+              <Col md="6">
                 <TextField
                   name="noRegistrasi"
                   label="No Registrasi Pasien: *"
@@ -102,7 +102,7 @@ const PrescriptionForm = () => {
                   disabled
                 />
               </Col>
-              <Col md={6}>
+              <Col md="6">
                 <TextField
                   name="instalasiUnit"
                   label="Instalasi Unit Farmasi: *"
@@ -110,7 +110,7 @@ const PrescriptionForm = () => {
                   disabled
                 />
               </Col>
-              <Col md={12} className="mt-3">
+              <Col md="12" className="mt-3">
                 <TextArea
                   label="Resep Manual / Racikan Obat: *"
                   name="resepManual"
@@ -120,7 +120,7 @@ const PrescriptionForm = () => {
               </Col>
             </Row>
             <Row className="mt-4">
-              <Col md={6}>
+              <Col md="6">
                 <SelectField
                   name="selectedMedicine"
                   label="Cari Obat: *"
@@ -128,7 +128,7 @@ const PrescriptionForm = () => {
                   onChange={handleObatChange}
                 />
               </Col>
-              <Col md={6}>
+              <Col md="6">
                 <SelectField 
                     name="selectedMedicineType"
                     label="Cari tipe Obat: *"
@@ -136,7 +136,7 @@ const PrescriptionForm = () => {
                     onChange={(value) => setSelectedTipeObat(value)}
                 />
               </Col>
-              <Col md={4} className="mt-3">
+              <Col md="4" className="mt-3">
                 <SelectField
                   name="frequency"
                   label="Frekuensi: *"
@@ -147,7 +147,7 @@ const PrescriptionForm = () => {
                   ]}
                 />
               </Col>
-              <Col md={4} className="mt-3">
+              <Col md="4" className="mt-3">
                 <Form.Group>
                   <Form.Label>Durasi (Hari): *</Form.Label>
                   <Form.Control
@@ -156,7 +156,7 @@ const PrescriptionForm = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col md={4} className="mt-5">
+              <Col md="4" className="mt-5">
                 <Button type="submit" variant="primary" >
                   <i className='ri-grid-fill'></i>
                   Tambah ke Tabel

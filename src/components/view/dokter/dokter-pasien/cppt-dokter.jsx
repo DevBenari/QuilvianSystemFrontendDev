@@ -116,34 +116,16 @@ const CpptDokter = memo(() => {
                     </div>
                 </div>
             </Col> 
-            {/* <Col xs="12" className="iq-card p-3 mt-4 mb-4">
-                <Row> */}
-                    {/* <Col xs="12" className="mt-3">
-                            <Row className="text-center">
-                                <Col md="6">
-                                    <div className="shadow-sm py-2">
-                                        <h5 className="font-bold text-widest">DOKTER</h5>
-                                    </div>
-                                </Col>
-                                <Col md="6" >
-                                    <div className="shadow-sm py-2">
-                                        <h5 className="font-bold text-widest">PERAWAT</h5>
-                                    </div>
-                                </Col>
-                            </Row>
-                    </Col> */}
-                    <Col xs="12" className="mt-3">
-                        <Row>
-                            <Col md="6">
-                                <CPPTAccordion title={"Dokter"} records={dokterEntries} />
-                            </Col>
-                            <Col md="6">
-                                <CPPTAccordion title={"Perawat"} records={perawatEntries} />
-                            </Col>
-                        </Row>
-                    </Col>
-               {/* </Row>
-            </Col> */}
+            <Col xs="12" className="mt-3">
+              <Row>
+                  <Col md="6">
+                    <CPPTAccordion title={"Dokter"} records={dokterEntries} />
+                  </Col>
+                  <Col md="6">
+                    <CPPTAccordion title={"Perawat"} records={perawatEntries} />
+                  </Col>
+              </Row>
+            </Col>
         </Fragment> 
     )
 })

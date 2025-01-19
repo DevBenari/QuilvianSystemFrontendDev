@@ -1,6 +1,6 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicFormAnimasi";
 import { addAnggota } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";

@@ -1072,7 +1072,7 @@ body.sidebar-main .iq-sidebar:hover .iq-menu li.menu-open>a {
   top: 0;
   left: auto;
   right: 0;
-  width: calc(100% - 320px);
+  width: calc(100% - 10px);
   display: inline-block;
   z-index: 99;
   background: #ffffff;
@@ -2419,7 +2419,7 @@ table.table-box-shadow th {
 .iq-email-to-list ul li {
   list-style-type: none;
   font-size: 20px;
-  color: #777D74;
+  color: #777D74; 
   margin: 0 5px 0 0;
   float: left;
 }

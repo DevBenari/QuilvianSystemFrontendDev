@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getHeaders } from "../../headers/headers";
 
 export const getAnggotaId = async (id) => {
   try {

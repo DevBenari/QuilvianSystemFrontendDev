@@ -1,7 +1,7 @@
-  "use client";
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button, Offcanvas } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -13,11 +13,13 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
-import DistanceField from "@/components/ui/distance-filed";
+
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
+import { DevTools } from "@hookform/devtools";
+import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
+const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -31,7 +33,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
     richText: RichTextEditor,
     signature: SignaturePad,
     time: TimeField,
-    distance: DistanceField,
+    number: NumberField,
     searchSelect: SearchableSelectField,
   };
 
@@ -116,7 +118,14 @@ const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
     }
 
     return (
-      <Component key={id} {...sanitizedProps} options={options} rows={rows} />
+      <Component
+        key={id}
+        {...sanitizedProps}
+        options={options}
+        rows={rows}
+        control={methods.control}
+        value={value}
+      />
     );
   };
 
@@ -135,9 +144,14 @@ const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
       });
       return defaults; 
     }, {}),
-    mode: "onSubmit",
+    mode: "onChange", // Menangani validasi secara dinamis
   });
-  const { watch } = methods;
+
+  const {
+    watch,
+
+    formState: { errors },
+  } = methods;
   const handleSubmit = (data) => {
     try {
       if (onSubmit) {
@@ -149,6 +163,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
       console.error("Error submitting form:", error);
     }
   };
+
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
       return field.hide(watch());
@@ -165,10 +180,10 @@ const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
               <h3 className="card-title tracking-wide">{title}</h3>
             </div>
             <div>
-              <ButtonNav 
+              <ButtonNav
                 className="btn btn-primary mx-3 my-3"
                 label="Kembali"
-                path={url}
+                path={backPath}
                 icon="ri-arrow-left-line"
               />
             </div>
@@ -178,7 +193,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
               {formConfig.map((section, sectionIndex) => (
                 <div
                   key={`section-${sectionIndex}`}
-                  className="iq-card-header mt-3"
+                  className="iq-card-header "
                 >
                   {section.section && (
                     <div className="iq-header-title">
@@ -198,7 +213,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, url }) => {
                         <Col key={field.id || fieldIndex} lg={colSize || 6}>
                           {renderField(field)}
                         </Col>
-                    ))}
+                      ))}
                   </Row>
                 </div>
               ))}

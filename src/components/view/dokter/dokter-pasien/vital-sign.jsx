@@ -88,7 +88,7 @@ const VitalSign = memo(() => {
                     <Col xs="12" className="iq-card-header">
                         <div>
                             <h4 className="mb-3">Vital Sign *</h4>
-                            <Col Col md="7">
+                            <Col md="7">
                                 <Row>
                                     <Col xs="5" className="mb-3">
                                         <TextField 

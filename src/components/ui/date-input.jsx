@@ -1,43 +1,66 @@
-import React, { memo } from 'react';
-import Flatpickr from 'react-flatpickr';
-import { useController, useForm } from 'react-hook-form';
-import { Form } from 'react-bootstrap';
+import React, { memo } from "react";
+import Flatpickr from "react-flatpickr";
+import { useController } from "react-hook-form";
+import { Form } from "react-bootstrap";
 
-const DateInput = memo(({ 
-    name, 
-    label, 
-    rules, 
-    className, 
-    placeholder,    
-    options = {}, 
+const DateInput = memo(
+  ({
+    name,
+    label,
+    rules,
+    control,
+    className,
+    placeholder,
+    options = {},
     onChange,
-    ...props 
-}) => {
-    const { control } = useForm();
-    const { field, fieldState: { error } } = useController({ name, control, rules });
+    ...props
+  }) => {
+    const {
+      field,
+      fieldState: { error },
+    } = useController({ name, control, rules });
+
+    // Fungsi untuk memformat tanggal menjadi "YYYY-MM-DD"
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
 
     return (
-        <Form.Group className={className}>
-            {label && <Form.Label>{label}</Form.Label>}
-            <Flatpickr
-                {...field}
-                {...props}
-                options={{
-                    dateFormat: 'Y-m-d',
-                    allowInput: false,
-                    ...options
-                }}
-                className={`form-control ${error ? 'is-invalid' : ''}`}
-                onChange={([date]) => {
-                    field.onChange(date); // Pastikan hook form tetap bekerja
-                    if (onChange) onChange([date]); // Panggil onChange dari props jika ada
-                }}
-                placeholder={placeholder}
-            />
-            {error && <Form.Control.Feedback type="invalid">{error.message}</Form.Control.Feedback>}
-        </Form.Group>
-    );
-});
+      <Form.Group className={className}>
+        {label && <Form.Label>{label}</Form.Label>}
+        <Flatpickr
+          {...field}
+          {...props}
+          options={{
+            dateFormat: "Y-m-d",
+            allowInput: false,
+            ...options,
+          }}
+          className={`form-control ${error ? "is-invalid" : ""}`}
+          onChange={([date]) => {
+            // Format tanggal sebelum dikirim ke form state
+            const formattedDate = formatDate(date);
 
-DateInput.displayName = 'DateInput';
+            // Update nilai di hook form dengan format yang benar
+            field.onChange(formattedDate);
+
+            // Panggil onChange dari props jika ada
+            if (onChange) onChange(formattedDate);
+          }}
+          placeholder={placeholder}
+        />
+        {error && (
+          <Form.Control.Feedback type="invalid">
+            {error.message}
+          </Form.Control.Feedback>
+        )}
+      </Form.Group>
+    );
+  }
+);
+
+DateInput.displayName = "DateInput";
 export default DateInput;

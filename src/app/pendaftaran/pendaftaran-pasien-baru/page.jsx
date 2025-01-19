@@ -52,6 +52,8 @@ const PendaftaranPasienBaru = () => {
     keluargaKabupaten: "",
     keluargaKecamatan: "",
     keluargaKelurahan: "",
+    noTeleponKeluarga: "",
+    noHpKeluarga: "",
     ayah: "",
     ibu: "",
     sutri: "",
@@ -676,7 +678,7 @@ const PendaftaranPasienBaru = () => {
                     </Col>
                     <Col lg="6">
                       <SelectField
-                        name="keluarga_kabupaten"
+                        name="keluargaKabupaten"
                         control={methods.control}
                         label="Kabupaten"
                         options={keluargaFilteredKabupaten.map((item) => ({
@@ -693,7 +695,7 @@ const PendaftaranPasienBaru = () => {
                     </Col>
                     <Col lg="6">
                       <SelectField
-                        name="keluarga_kecamatan"
+                        name="keluargaKecamatan"
                         control={methods.control}
                         label="Kecamatan"
                         options={keluargaFilteredKecamatan.map((item) => ({
@@ -710,7 +712,7 @@ const PendaftaranPasienBaru = () => {
                     </Col>
                     <Col lg="6">
                       <SelectField
-                        name="keluarga_kelurahan"
+                        name="keluargaKelurahan"
                         control={methods.control}
                         label="Kelurahan"
                         options={keluargaFilteredKelurahan.map((item) => ({
@@ -742,7 +744,7 @@ const PendaftaranPasienBaru = () => {
                     <Col lg="6">
                       <TextField
                         label="No Hp :"
-                        name="noHnoTeleponHp"
+                        name="noHpKeluarga"
                         control={methods.control}
                         type="text"
                         placeholder="Enter your no Hp..."

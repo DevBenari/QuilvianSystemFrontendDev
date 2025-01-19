@@ -185,6 +185,7 @@ export const dataReservasi = [
   {
     id: 1,
     nomorRekamMedis: "90-22-12-80-001",
+    date: "2025-01-01",
     nama: "Ahmad Syafrudin",
     alamat: "Jl. Merpati No.12, Jakarta",
     tempat_lahir: "Jakarta",
@@ -195,6 +196,7 @@ export const dataReservasi = [
   {
     id: 2,
     nomorRekamMedis: "90-22-12-80-002",
+    date: "2025-01-01",
     nama: "Dewi Lestari",
     alamat: "Jl. Anggrek No.7, Bandung",
     tempat_lahir: "Bandung",
@@ -205,6 +207,7 @@ export const dataReservasi = [
   {
     id: 3,
     nomorRekamMedis: "90-22-12-80-003",
+    date: "2025-01-01",
     nama: "Budi Hartono",
     alamat: "Jl. Kenanga No.10, Surabaya",
     tempat_lahir: "Surabaya",
@@ -215,6 +218,7 @@ export const dataReservasi = [
   {
     id: 4,
     nomorRekamMedis: "90-22-12-80-004",
+    date: "2025-01-01",
     nama: "Citra Dewi",
     alamat: "Jl. Melati No.8, Medan",
     tempat_lahir: "Medan",
@@ -225,6 +229,7 @@ export const dataReservasi = [
   {
     id: 5,
     nomorRekamMedis: "90-22-12-80-005",
+    date: "2025-01-01",
     nama: "Siti Aminah",
     alamat: "Jl. Mawar No.3, Bekasi",
     tempat_lahir: "Bekasi",
@@ -235,6 +240,7 @@ export const dataReservasi = [
   {
     id: 6,
     nomorRekamMedis: "90-22-12-80-006",
+    date: "2025-01-01",
     nama: "Hendri Saputra",
     alamat: "Jl. Cendrawasih No.15, Malang",
     tempat_lahir: "Malang",
@@ -245,6 +251,7 @@ export const dataReservasi = [
   {
     id: 7,
     nomorRekamMedis: "90-22-12-80-007",
+    date: "2025-01-01",
     nama: "Lina Mariska",
     alamat: "Jl. Jambu No.21, Tangerang",
     tempat_lahir: "Tangerang",
@@ -255,6 +262,7 @@ export const dataReservasi = [
   {
     id: 8,
     nomorRekamMedis: "90-22-12-80-008",
+    date: "2025-01-01",
     nama: "Agus Supriyanto",
     alamat: "Jl. Mangga No.4, Depok",
     tempat_lahir: "Depok",
@@ -265,6 +273,7 @@ export const dataReservasi = [
   {
     id: 9,
     nomorRekamMedis: "90-22-12-80-009",
+    date: "2025-01-01",
     nama: "Nina Susanti",
     alamat: "Jl. Apel No.8, Bogor",
     tempat_lahir: "Bogor",
@@ -275,6 +284,7 @@ export const dataReservasi = [
   {
     id: 10,
     nomorRekamMedis: "90-22-12-80-010",
+    date: "2025-01-01",
     nama: "Andi Kurniawan",
     alamat: "Jl. Rambutan No.9, Yogyakarta",
     tempat_lahir: "Yogyakarta",
@@ -285,6 +295,7 @@ export const dataReservasi = [
   {
     id: 11,
     nomorRekamMedis: "90-22-12-80-011",
+    date: "2025-01-01",
     nama: "Tina Rahmawati",
     alamat: "Jl. Durian No.2, Semarang",
     tempat_lahir: "Semarang",
@@ -295,6 +306,7 @@ export const dataReservasi = [
   {
     id: 12,
     nomorRekamMedis: "90-22-12-80-012",
+    date: "2025-01-01",
     nama: "Rudi Hartono",
     alamat: "Jl. Sawo No.11, Palembang",
     tempat_lahir: "Palembang",
@@ -305,6 +317,7 @@ export const dataReservasi = [
   {
     id: 13,
     nomorRekamMedis: "90-22-12-80-013",
+    date: "2025-01-01",
     nama: "Fina Ramadhani",
     alamat: "Jl. Duku No.7, Makassar",
     tempat_lahir: "Makassar",
@@ -315,6 +328,7 @@ export const dataReservasi = [
   {
     id: 14,
     nomorRekamMedis: "90-22-12-80-014",
+    date: "2025-01-01",
     nama: "Eka Wijaya",
     alamat: "Jl. Belimbing No.5, Denpasar",
     tempat_lahir: "Denpasar",
@@ -325,6 +339,7 @@ export const dataReservasi = [
   {
     id: 15,
     nomorRekamMedis: "90-22-12-80-015",
+    date: "2025-01-01",
     nama: "Yuni Ariska",
     alamat: "Jl. Nangka No.13, Pontianak",
     tempat_lahir: "Pontianak",

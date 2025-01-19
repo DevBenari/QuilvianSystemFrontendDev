@@ -12,6 +12,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import DateInput from "@/components/ui/date-input";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
+import CustomSearchFilter from "../CustomSearchComponen/Form-search-dashboard";
 
 const DataTable = ({
   headers,
@@ -22,9 +23,13 @@ const DataTable = ({
   onAdd,
   onSearch,
   actions,
+  dataPencarian,
+  setFilteredPatients,
+  filteredPatients,
   customActions = [], // Array of custom actions
   id,
   rowsPerPage = 10, // Default rows per page
+  editLabel = "Edit",
 }) => {
   const [searchValue, setSearchValue] = useState(""); // State for search input value
   const [currentPage, setCurrentPage] = useState(1); // State for current page
@@ -60,48 +65,57 @@ const DataTable = ({
   return (
     <FormProvider {...methods}>
       <Container fluid className={mt}>
-        {/* Search Fields */}
-        <Row className="mt-4">
-          {(Array.isArray(formFields) ? formFields : []).map((field, index) => {
-            if (!field || !field.type || !field.name) {
-              console.warn(`Invalid field at index ${index}:`, field);
-              return null;
-            }
+        <Col lg="12" className=" iq-card p-4">
+          <div className="d-flex justify-content-between iq-card-header">
+            <h2 className="mb-3">Searching Pasien Bayi </h2>
+            <button
+              className="btn btn-dark my-3 mx-3"
+              onClick={() => window.location.reload()}
+            >
+              <i className="ri-refresh-line"></i>
+            </button>
+          </div>
+          <Col lg="12" className="mt-2">
+            <CustomSearchFilter
+              data={dataPencarian}
+              setFilteredPatients={setFilteredPatients}
+              onFilteredPatients={filteredPatients}
+            />
+          </Col>
+          <Row className="mt-4">
+            {(Array.isArray(formFields) ? formFields : []).map(
+              (field, index) => {
+                if (!field || !field.type || !field.name) {
+                  console.warn(`Invalid field at index ${index}:`, field);
+                  return null;
+                }
 
-            return (
-              <Col xs="12" lg="3" className="mb-3" key={index}>
-                {field.type === "date" ? (
-                  <DateInput
-                    name={field.name}
-                    label={field.label}
-                    placeholder={field.placeholder}
-                    rules={field.rules}
-                  />
-                ) : field.type === "select" ? (
-                  <SelectField
-                    name={field.name}
-                    label={field.label}
-                    options={field.options}
-                    placeholder={field.placeholder}
-                    rules={field.rules}
-                    className="form-control mb-0"
-                    onChange={field.onChange}
-                  />
-                ) : (
-                  <TextField
-                    label={field.label}
-                    name={field.name}
-                    type={field.type}
-                    placeholder={field.placeholder}
-                    className="form-control mb-0"
-                    rules={field.rules}
-                    onChange={field.onChange}
-                  />
-                )}
-              </Col>
-            );
-          })}
-        </Row>
+                return (
+                  <Col xs="12" lg="3" className="mb-3" key={index}>
+                    {field.type === "date" ? (
+                      <DateInput
+                        name={field.name}
+                        label={field.label}
+                        placeholder={field.placeholder}
+                        rules={field.rules}
+                      />
+                    ) : (
+                      <TextField
+                        label={field.label}
+                        name={field.name}
+                        type={field.type}
+                        placeholder={field.placeholder}
+                        className="form-control mb-0"
+                        rules={field.rules}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  </Col>
+                );
+              }
+            )}
+          </Row>
+        </Col>
         {/* Editable Table */}
         <Row>
           <Col lg="12">
@@ -165,7 +179,7 @@ const DataTable = ({
                                         className="btn iq-bg-success btn-rounded btn-sm my-0"
                                         onClick={() => actions.edit(row)}
                                       >
-                                        Edit
+                                        {editLabel}
                                       </button>
                                     </span>
                                   )}

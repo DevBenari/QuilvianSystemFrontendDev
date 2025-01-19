@@ -127,3 +127,4 @@ const AddPerjanjianReguler = () => {
 };
 
 export default AddPerjanjianReguler;
+

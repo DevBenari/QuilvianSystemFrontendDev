@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { Form } from "react-bootstrap";
 import { useFormContext, Controller } from "react-hook-form";
@@ -16,6 +15,9 @@ const TextField = ({
     control,
     formState: { errors },
   } = useFormContext();
+
+  const { errorMessage, ...restProps } = props; // Filter out errorMessage
+
   return (
     <Form.Group className="mb-3">
       {/* Label Input */}
@@ -33,7 +35,7 @@ const TextField = ({
             className={className}
             placeholder={placeholder}
             isInvalid={!!errors[name]}
-            {...props}
+            {...restProps} // Pass only valid props
           />
         )}
       />
@@ -41,7 +43,7 @@ const TextField = ({
       {/* Pesan Error */}
       {errors[name] && (
         <Form.Control.Feedback type="invalid">
-          {errors[name]?.message}
+          {errors[name]?.message || errorMessage}
         </Form.Control.Feedback>
       )}
     </Form.Group>

@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import {
   Col,
@@ -13,15 +12,12 @@ import {
 } from "react-bootstrap";
 import SelectField from "@/components/ui/select-field";
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
 import TextField from "@/components/ui/text-field";
-
 import DateInput from "@/components/ui/date-input";
-import TableTindakan from "@/components/features/tindakanTable/tindakantTable";
+
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 import SearchableSelectField from "@/components/ui/select-field-search";
-
 import {
   dataOperasiTersedia,
   jadwalDokterByDate,
@@ -38,8 +34,9 @@ import {
 } from "@/utils/SearchSelect";
 import TextArea from "@/components/ui/textArea-field";
 import { motion } from "framer-motion";
+import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
 
-const AddPerjanjianForm = () => {
+const AddPerjanjianForm = memo(() => {
   const methods = useForm({
     defaultValues: {
       layanan: "",
@@ -59,7 +56,7 @@ const AddPerjanjianForm = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [doctorsPerPage] = useState(3);
+  const [doctorsPerPage] = useState(10);
 
   const searchDokter = methods.watch("searchDokter");
   const searchDepartemen = methods.watch("searchDepartemen");
@@ -344,6 +341,7 @@ const AddPerjanjianForm = () => {
                       ]}
                       placeholder="Pilih tipe penjamin"
                       rules={{ required: "Penjamin harus dipilih" }}
+                      className={"mb-3"}
                     />
                   </Col>
                 </Row>
@@ -406,7 +404,7 @@ const AddPerjanjianForm = () => {
                       </Col>
                       <Col lg="4">
                         <TextField
-                          name="waktuPr aktek"
+                          name="waktuPraktek"
                           label="Waktu Praktek"
                           type="text"
                           className="form-control"
@@ -432,6 +430,7 @@ const AddPerjanjianForm = () => {
                           ]}
                           placeholder="Pilih Pasien Prioritas"
                           rules={{ required: "Penjamin harus dipilih" }}
+                          className={"mb-3"}
                         />
                       </Col>
                       <Col lg="12">
@@ -465,7 +464,15 @@ const AddPerjanjianForm = () => {
                               className="mb-3"
                             />
                           </Col>
-                          <TableTindakan tindakan={pemeriksaRadiologi} />,
+                          <TindakanTableHarga
+                            tindakan={pemeriksaRadiologi}
+                            label="Radiologi"
+                            placeholder="Masukkan Nama Pemeriksaan"
+                            labelKey="pemeriksaanRadiologi"
+                            ValueKey="id"
+                            hargaKey="harga"
+                          />
+                          ,
                           <Col lg="12">
                             <SearchableSelectField
                               name="dokter"
@@ -542,6 +549,7 @@ const AddPerjanjianForm = () => {
                         options={dataDokter}
                         placeholder="Pilih Dokter"
                         rules={{ required: "Dokter harus dipilih" }}
+                        className={"mb-3"}
                       />
                     </Col>
                     <Col lg="6">
@@ -554,6 +562,7 @@ const AddPerjanjianForm = () => {
                         ]}
                         placeholder="Pilih Pasien Prioritas"
                         rules={{ required: "Penjamin harus dipilih" }}
+                        className={"mb-3"}
                       />
                     </Col>
                     <Col lg="12">
@@ -874,7 +883,7 @@ const AddPerjanjianForm = () => {
                       <DataTable
                         headers={header}
                         data={members}
-                        rowsPerPage={4}
+                        rowsPerPage={10}
                         actions={{
                           booking: (row) => handleEdit(row.id),
                         }}
@@ -974,7 +983,7 @@ const AddPerjanjianForm = () => {
                         <DataTable
                           headers={headerOperasi}
                           data={membersOperasi}
-                          rowsPerPage={4}
+                          rowsPerPage={20}
                           customActions={[
                             {
                               label: "Booking Operasi",
@@ -1002,6 +1011,7 @@ const AddPerjanjianForm = () => {
       </Form>
     </FormProvider>
   );
-};
+});
 
+AddPerjanjianForm.displayName = "AddPerjanjianForm";
 export default AddPerjanjianForm;

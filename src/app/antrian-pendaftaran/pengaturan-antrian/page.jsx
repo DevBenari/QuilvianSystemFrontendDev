@@ -1,5 +1,4 @@
-import PengaturanAntrian from "@/components/view/pengaturan-antrian copy/page";
-
+import PengaturanAntrian from "@/components/view/pengaturan-antrian/page";
 import React, { Fragment } from "react";
 
 const DashboardPengaturanAntrian = () => {
