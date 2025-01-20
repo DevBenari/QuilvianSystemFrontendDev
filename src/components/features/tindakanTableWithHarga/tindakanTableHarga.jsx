@@ -2,6 +2,7 @@ import React from "react";
 import { useFormContext, Controller, useFieldArray } from "react-hook-form";
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
 import SearchableSelectField from "@/components/ui/select-field-search";
+import SelectField from "@/components/ui/select-field";
 
 const TindakanTableHarga = ({
   tindakan,
@@ -30,27 +31,27 @@ const TindakanTableHarga = ({
   // Fungsi untuk menambahkan tindakan ke tabel
   const handleAddToTable = () => {
     const dataToAdd = watch("tindakanSelect");
-
+  
     if (dataToAdd?.select && dataToAdd?.qty) {
       const qtyToAdd = parseInt(dataToAdd.qty);
-
-      // Cari harga dari dataFasilitas berdasarkan ID yang dipilih
-      const selectedHarga = tindakan.find(
-        (item) => item.id === dataToAdd.select.value
+  
+      // Cari harga dari tindakan berdasarkan ID yang dipilih
+      const selectedTindakan = tindakanOptions.find(
+        (item) => item.value === dataToAdd.select.value
       );
-
+  
       // Periksa apakah tindakan sudah ada di tabel berdasarkan ID
       const existingIndex = fields.findIndex(
         (item) => item.lab.value === dataToAdd.select.value
       );
-
+  
       if (existingIndex > -1) {
         // Jika tindakan sudah ada, perbarui jumlahnya
         const updatedFields = [...fields];
         updatedFields[existingIndex] = {
           ...updatedFields[existingIndex],
           jumlah: qtyToAdd,
-          harga: selectedHarga?.harga || 0, // Perbarui harga jika tersedia
+          harga: selectedTindakan?.harga || 0,
         };
         setValue("tindakanList", updatedFields);
       } else {
@@ -58,18 +59,17 @@ const TindakanTableHarga = ({
         append({
           lab: dataToAdd.select,
           jumlah: qtyToAdd,
-          harga: selectedHarga?.harga || 0, // Set harga jika tersedia
+          harga: selectedTindakan?.harga || 0,
         });
       }
-
+  
       // Reset input Qty setelah ditambahkan ke tabel
       setValue("tindakanSelect.qty", "1");
     } else {
-      console.error(
-        "ERROR: Data yang ditambahkan tidak lengkap (qty atau tindakan kosong)"
-      );
+      console.error("Data tidak lengkap (qty atau tindakan kosong)");
     }
   };
+  
 
   // Perbarui total keseluruhan di form utama setiap kali data tabel berubah
 
@@ -113,7 +113,7 @@ const TindakanTableHarga = ({
               control={control}
               rules={rules}
               render={({ field, fieldState }) => (
-                <SearchableSelectField
+                <SelectField
                   {...field}
                   label={label}
                   options={tindakanOptions}

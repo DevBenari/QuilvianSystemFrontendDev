@@ -16,7 +16,7 @@ const PendaftaranLayout = ({ children }) => {
           </Col>
         
         {/* Content mengisi seluruh lebar jika ukuran layar < 1500 */}
-        <Col md={isMobile ? "12" : "10"} className={isMobile ? "mt-5" : ""}>{children}</Col>
+        <Col md={isMobile ? "12" : "10"} className={isMobile ? "mt-5" : "" }>{children}</Col>
       </Row>
     </div>
   );

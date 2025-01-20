@@ -119,7 +119,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Provinsi is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("provinsi", value),
+          onChangeCallback: (value) => handleChange("pasien","provinsi", value),
         },
         {
           type: "select",
@@ -133,7 +133,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kabupaten is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("kabupaten", value),
+          onChangeCallback: (value) => handleChange("pasien","kabupaten", value),
         },
         {
           type: "select",
@@ -147,7 +147,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kecamatan is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("kecamatan", value),
+          onChangeCallback: (value) => handleChange("pasien","kecamatan", value),
         },
         {
           type: "select",
@@ -161,7 +161,6 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kelurahan is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("kelurahan", value),
         },
         {
           type: "textarea",

@@ -2,23 +2,21 @@
 import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard"
 import ButtonNav from "@/components/ui/button-navigation"
 import { daftarPasien } from "@/utils/config"
-import React, {  useState} from "react"
-import { Row, Col,Table} from "react-bootstrap"
+import React, { useState} from "react"
+import { Row, Col, Table} from "react-bootstrap"
 import { FormProvider, useForm } from "react-hook-form"
-const DashboardPendaftaranLab = () => {
-     const methods = useForm();
-            const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
-           
-        
-            const handleRemovePatient = (id) => {
-                const updatedPatients = filteredPatients.filter(patient => patient.id !== id);
-                setFilteredPatients(updatedPatients);
-            };
+const DashboardPendaftaranRadiologi = () => {
+    const methods = useForm();
+    const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
+    const handleRemovePatient = (id) => {
+        const updatedPatients = filteredPatients.filter(patient => patient.id !== id);
+        setFilteredPatients(updatedPatients);
+    };
     return (
         <FormProvider {...methods}>
             <Col lg="12" className=" iq-card p-4">
                 <div className="d-flex justify-content-between iq-card-header">
-                    <h2 className="mb-3">Searching Pasien Laboratorium </h2>
+                    <h2 className="mb-3">Searching Pasien Radiologi </h2>
                     <button
                         className="btn btn-dark my-3 mx-3"
                         onClick={() => window.location.reload()}
@@ -47,12 +45,12 @@ const DashboardPendaftaranLab = () => {
                                 <div id="table" className="table-editable">
                                     <span className="table-add float-end mb-3 me-2">
                                         <ButtonNav 
-                                        path="/pendaftaran/pasien-luar-laboratorium/regist-pasien-luar-lab"
-                                        label="Tambah Pasien"
-                                        icon="ri-add-fill"
-                                        size="sm"
-                                        variant=""
-                                        className="btn btn-sm iq-bg-success"
+                                            path="/pendaftaran/pasien-luar-radiologi/regist-pasien-radiologi"
+                                            label="Tambah Pasien"
+                                            icon="ri-add-fill"
+                                            size="sm"
+                                            variant=""
+                                            className="btn btn-sm iq-bg-success"
                                         />
                                     </span>
                                     <div className="table-responsive-md w-100">
@@ -100,4 +98,4 @@ const DashboardPendaftaranLab = () => {
     )
 }
 
-export default DashboardPendaftaranLab
+export default DashboardPendaftaranRadiologi;

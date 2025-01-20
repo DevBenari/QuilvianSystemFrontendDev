@@ -21,27 +21,24 @@ const CustomSearchFilter = ({
   // Filter by search query
   const handleFilterChange = (value) => {
     const newFilters = { ...filters, searchQuery: value };
-    setFilters(newFilters);
-    applyFilters(newFilters);
+    setFilters(newFilters); // Perbarui state filters
+    applyFilters(newFilters); // Terapkan filter ke data
   };
 
   const applyFilters = (filters) => {
     const query = filters.searchQuery.toLowerCase();
     const filtered = data.filter(
       (patient) =>
-        String(patient.noRekamMedis || "")
-          .toLowerCase()
-          .includes(query) ||
+        patient.nomorRekamMedis?.toLowerCase().includes(query) ||
+        "" ||
         patient.nama?.toLowerCase().includes(query) ||
-        patient.namaPasienMelahirkan?.toLowerCase().includes(query) ||
+        "" ||
+        patient.penjamin?.toLowerCase().includes(query) ||
+        "" ||
         patient.dokter?.toLowerCase().includes(query) ||
-        patient.ruang?.toLowerCase().includes(query) ||
-        patient.kelas?.toLowerCase().includes(query) ||
-        patient.tipeMember?.toLowerCase().includes(query) ||
-        patient.statusMember?.toLowerCase().includes(query)
+        ""
     );
     setFilteredPatients(filtered);
-    console.log(data);
   };
 
   // Filter by time
@@ -109,7 +106,7 @@ const CustomSearchFilter = ({
   return (
     <Col lg="12" className="mt-2">
       <Row>
-        <Col xs="3">
+        <Col md="3">
           <TextField
             label="Cari Pasien:"
             name="registrasiPasien"
@@ -118,9 +115,10 @@ const CustomSearchFilter = ({
             className="form-control mb-0"
             value={filters.searchQuery}
             onChange={(e) => handleFilterChange(e.target.value)}
+            // errorMessage={filters.searchQuery === "" ? "Field tidak boleh kosong" : ""}
           />
         </Col>
-        <Col xs="2">
+        <Col md="2">
           <SelectField
             name="ByTime"
             label="Filter By : *"
@@ -134,7 +132,7 @@ const CustomSearchFilter = ({
             onChangeCallback={handleFilterTime}
           />
         </Col>
-        <Col xs="3">
+        <Col md="3">
           <DateInput
             name="startDate"
             label="Tanggal Awal Regist Pasien :"
@@ -142,7 +140,7 @@ const CustomSearchFilter = ({
             onChange={setStartDate}
           />
         </Col>
-        <Col xs="3">
+        <Col md="3">
           <DateInput
             name="endDate"
             label="Tanggal Akhir Regist Pasien :"
@@ -150,7 +148,7 @@ const CustomSearchFilter = ({
             onChange={setEndDate}
           />
         </Col>
-        <Col xs="1" className="mt-2">
+        <Col md="1" className="mt-2">
           <button onClick={handleFilterDate} className="btn btn-info mt-4">
             <i className="ri-search-line"></i>
           </button>

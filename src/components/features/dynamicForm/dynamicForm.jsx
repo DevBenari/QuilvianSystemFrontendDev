@@ -142,7 +142,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
       section.fields.forEach((field) => {
         defaults[field.name] = field.value || "";
       });
-      return defaults;
+      return defaults; 
     }, {}),
     mode: "onChange", // Menangani validasi secara dinamis
   });
@@ -174,7 +174,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   return (
     <FormProvider {...methods}>
       <Row>
-        <div className="iq-card" style={{ marginTop: "50px" }}>
+        <div className="iq-card">
           <div className="iq-card-header d-flex justify-content-between ">
             <div className="iq-header-title ">
               <h3 className="card-title tracking-wide">{title}</h3>
