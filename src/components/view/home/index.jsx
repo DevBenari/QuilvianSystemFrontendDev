@@ -73,7 +73,7 @@ export default function HomeDashboard() {
   return (
     <Fragment>
         <Row>
-            <Col lg='4'>
+            <Col lg='3'>
                 <div className="iq-card iq-user-profile-block">
                 <div className="iq-card-body">
                     <div className="user-details-block">
@@ -114,7 +114,7 @@ export default function HomeDashboard() {
                 </div>
                 </div>
             </Col>
-            <Col lg='8'>
+            <Col lg='9'>
                 <Row>
                 <Col md="6" lg="3">
                     <div className="iq-card">
