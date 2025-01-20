@@ -374,7 +374,15 @@ export default function PendaftaranPasienLab() {
           type: "custom",
           label: "Tindakan Data Table",
           customRender: () => (
-            <TindakanTableHarga tindakan={tindakanDataConfig} />
+            <TindakanTableHarga
+              tindakan={tindakanDataConfig}
+              placeholder="masukkna Nama Tindakan"
+              label="Pemeriksaan Tindakan"
+              labelKey="Pemeriksaan Tindakan"
+              valueKey="id"
+              hargaKey="harga"
+              rules={{ required: "Pemeriksaan Tindakan is required" }}
+            />
           ),
           colSize: 12,
         },
