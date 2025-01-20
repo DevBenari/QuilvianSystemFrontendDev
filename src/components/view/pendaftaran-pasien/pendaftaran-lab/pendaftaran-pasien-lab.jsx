@@ -119,7 +119,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Provinsi is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("pasien","provinsi", value),
+          onChangeCallback: (value) => handleChange("provinsi", value),
         },
         {
           type: "select",
@@ -133,7 +133,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kabupaten is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("pasien","kabupaten", value),
+          onChangeCallback: (value) => handleChange("kabupaten", value),
         },
         {
           type: "select",
@@ -147,7 +147,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kecamatan is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("pasien","kecamatan", value),
+          onChangeCallback: (value) => handleChange("kecamatan", value),
         },
         {
           type: "select",
@@ -161,6 +161,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kelurahan is required" },
           colSize: 6,
+          onChangeCallback: (value) => handleChange("kelurahan", value),
         },
         {
           type: "textarea",
@@ -185,7 +186,7 @@ export default function PendaftaranPasienLab() {
     {
       fields: [
         {
-          type: "select",
+          type: "selectHide",
           id: "penjamin",
           label: "Tipe Pasien",
           name: "penjamin",
@@ -198,7 +199,7 @@ export default function PendaftaranPasienLab() {
           colSize: 8,
         },
         {
-          type: "select",
+          type: "selectHide",
           id: "tipepenjamin",
           name: "tipePenjamin",
           hide: (watchValues) => watchValues.penjamin !== "penjamin",
@@ -226,7 +227,7 @@ export default function PendaftaranPasienLab() {
       section: "Dirujuk",
       fields: [
         {
-          type: "select",
+          type: "selectHide",
           id: "dirujuk",
           name: "dirujuk",
           placeholder: "Pilihan Rujukan ",
@@ -242,7 +243,7 @@ export default function PendaftaranPasienLab() {
           className: "mb-3",
         },
         {
-          type: "select",
+          type: "selectHide",
           id: "dokterPemeriksa",
           name: "dokterPemeriksa",
           label: "Dokter Pemeriksa",
@@ -259,7 +260,7 @@ export default function PendaftaranPasienLab() {
           className: "mb-3",
         },
         {
-          type: "select",
+          type: "selectHide",
           id: "tipeRs",
           name: "tipeRs",
           label: "Tipe RSU/RS/RB",
@@ -297,7 +298,7 @@ export default function PendaftaranPasienLab() {
       section: "Kode Member",
       fields: [
         {
-          type: "select",
+          type: "selectHide",
           id: "pilihPromoo",
           label: "Pilih Promo",
           name: "pilihPromoo",
@@ -312,7 +313,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "select",
+          type: "selectHide",
           id: "tipePemeriksaan",
           label: "Tipe Pemeriksaan",
           name: "tipePemeriksaan",
@@ -326,7 +327,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "select",
+          type: "selectHide",
           id: "suratRujukan",
           label: "Surat Rujukan",
           name: "suratRujukan",
@@ -375,7 +376,7 @@ export default function PendaftaranPasienLab() {
           customRender: () => (
             <TindakanTableHarga
               tindakan={tindakanDataConfig}
-              placeholder="masukkna Nama Tindakan"
+              placeholder="masukkan Nama Tindakan"
               label="Pemeriksaan Tindakan"
               labelKey="Pemeriksaan Tindakan"
               valueKey="id"

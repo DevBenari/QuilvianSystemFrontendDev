@@ -31,20 +31,20 @@ const TindakanTableHarga = ({
   // Fungsi untuk menambahkan tindakan ke tabel
   const handleAddToTable = () => {
     const dataToAdd = watch("tindakanSelect");
-  
+
     if (dataToAdd?.select && dataToAdd?.qty) {
       const qtyToAdd = parseInt(dataToAdd.qty);
-  
+
       // Cari harga dari tindakan berdasarkan ID yang dipilih
       const selectedTindakan = tindakanOptions.find(
         (item) => item.value === dataToAdd.select.value
       );
-  
+
       // Periksa apakah tindakan sudah ada di tabel berdasarkan ID
       const existingIndex = fields.findIndex(
         (item) => item.lab.value === dataToAdd.select.value
       );
-  
+
       if (existingIndex > -1) {
         // Jika tindakan sudah ada, perbarui jumlahnya
         const updatedFields = [...fields];
@@ -62,14 +62,13 @@ const TindakanTableHarga = ({
           harga: selectedTindakan?.harga || 0,
         });
       }
-  
+
       // Reset input Qty setelah ditambahkan ke tabel
       setValue("tindakanSelect.qty", "1");
     } else {
       console.error("Data tidak lengkap (qty atau tindakan kosong)");
     }
   };
-  
 
   // Perbarui total keseluruhan di form utama setiap kali data tabel berubah
 

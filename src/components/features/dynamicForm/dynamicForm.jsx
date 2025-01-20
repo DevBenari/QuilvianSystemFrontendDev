@@ -14,6 +14,7 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
+import SelectFieldHide from "@/components/ui/select-field-hide";
 
 const DynamicForm = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
@@ -29,6 +30,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     slider: SliderInput,
     richText: RichTextEditor,
     signature: SignaturePad,
+    selectHide: SelectFieldHide,
     time: TimeField,
   };
 
