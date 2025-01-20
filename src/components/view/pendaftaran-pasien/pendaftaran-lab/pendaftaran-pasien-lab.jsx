@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 
-import { tindakanDataConfig } from "@/utils/dataTindakan";
+import { pemeriksaRadiologi, tindakanDataConfig } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 export default function PendaftaranPasienLab() {
@@ -186,7 +186,7 @@ export default function PendaftaranPasienLab() {
     {
       fields: [
         {
-          type: "selectHide",
+          type: "select",
           id: "penjamin",
           label: "Tipe Pasien",
           name: "penjamin",
@@ -199,7 +199,7 @@ export default function PendaftaranPasienLab() {
           colSize: 8,
         },
         {
-          type: "selectHide",
+          type: "select",
           id: "tipepenjamin",
           name: "tipePenjamin",
           hide: (watchValues) => watchValues.penjamin !== "penjamin",
@@ -227,7 +227,7 @@ export default function PendaftaranPasienLab() {
       section: "Dirujuk",
       fields: [
         {
-          type: "selectHide",
+          type: "select",
           id: "dirujuk",
           name: "dirujuk",
           placeholder: "Pilihan Rujukan ",
@@ -243,7 +243,7 @@ export default function PendaftaranPasienLab() {
           className: "mb-3",
         },
         {
-          type: "selectHide",
+          type: "select",
           id: "dokterPemeriksa",
           name: "dokterPemeriksa",
           label: "Dokter Pemeriksa",
@@ -260,7 +260,7 @@ export default function PendaftaranPasienLab() {
           className: "mb-3",
         },
         {
-          type: "selectHide",
+          type: "select",
           id: "tipeRs",
           name: "tipeRs",
           label: "Tipe RSU/RS/RB",
@@ -283,7 +283,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "number",
+          type: "text",
           id: "teleponLuarRs",
           name: "teleponLuarRs",
           label: "Nomor Telepon",
@@ -298,7 +298,7 @@ export default function PendaftaranPasienLab() {
       section: "Kode Member",
       fields: [
         {
-          type: "selectHide",
+          type: "select",
           id: "pilihPromoo",
           label: "Pilih Promo",
           name: "pilihPromoo",
@@ -313,7 +313,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "selectHide",
+          type: "select",
           id: "tipePemeriksaan",
           label: "Tipe Pemeriksaan",
           name: "tipePemeriksaan",
@@ -327,7 +327,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "selectHide",
+          type: "select",
           id: "suratRujukan",
           label: "Surat Rujukan",
           name: "suratRujukan",
@@ -376,12 +376,12 @@ export default function PendaftaranPasienLab() {
           customRender: () => (
             <TindakanTableHarga
               tindakan={tindakanDataConfig}
-              placeholder="masukkan Nama Tindakan"
-              label="Pemeriksaan Tindakan"
-              labelKey="Pemeriksaan Tindakan"
-              valueKey="id"
+              placeholder="Masukkan Nama Tindakan"
+              label="Tindakan Laboratorium"
+              labelKey="name"
+              ValueKey="id"
               hargaKey="harga"
-              rules={{ required: "Pemeriksaan Tindakan is required" }}
+              rules={{ required: "Tindakan Laboratorium is required" }}
             />
           ),
           colSize: 12,

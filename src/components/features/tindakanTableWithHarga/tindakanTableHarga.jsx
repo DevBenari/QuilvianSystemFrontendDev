@@ -112,7 +112,7 @@ const TindakanTableHarga = ({
               control={control}
               rules={rules}
               render={({ field, fieldState }) => (
-                <SelectField
+                <SearchableSelectField
                   {...field}
                   label={label}
                   options={tindakanOptions}
