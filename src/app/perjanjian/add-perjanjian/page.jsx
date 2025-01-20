@@ -35,25 +35,161 @@ import {
 import TextArea from "@/components/ui/textArea-field";
 import { motion } from "framer-motion";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
+import DateInputPicker from "@/components/ui/date-picker";
 
 const AddPerjanjianForm = memo(() => {
+  const [defaultValues, setDefaultValues] = useState({});
+  const [selectedLayanan, setSelectedLayanan] = useState("");
+
   const methods = useForm({
-    defaultValues: {
-      layanan: "",
-      tanggalKunjungan: new Date(),
-      dokter: "",
-      departemen: "",
-      waktuPraktek: "",
-      noUrut: "",
-      searchDokter: "",
-      searchDepartemen: "",
-    },
+    defaultValues,
+    mode: "onSubmit",
   });
 
+  useEffect(() => {
+    const layananFields = {
+      Operasi: [
+        "ruangOperasi",
+        "waktuOperasi",
+        "estimasi",
+        "dokterOperasi",
+        "tindakan",
+        "tanggalOperasi",
+        "tipeAnestesi",
+        "informasiLainnyaRawatInap",
+        "diagnosaAwalRawatInap",
+        "dokterPemeriksa",
+      ],
+      MCU: ["janjiTanggalMcu", "paketMcu"],
+      "Rawat Jalan": [
+        "tanggalKunjungan",
+        "noUrut",
+        "dokter",
+        "departemen",
+        "pasienPrioritas",
+        "informasiLainnya",
+      ],
+      Radiologi: [
+        "tglJanji",
+        "dokterRadiologi",
+        "tindakanList",
+        "totalKeseluruhan",
+      ],
+      "Rawat Inap": [
+        "janjiTanggal",
+        "Kelas",
+        "dokter",
+        "pasienPrioritas",
+        "diagnosaAwalRawatInap",
+        "informasiLainnyaRawatInap",
+      ],
+      ODC: [
+        "janjiTanggal",
+        "KelasOdc",
+        "dokter",
+        "diagnosaAwalOdc",
+        "informasiLainnyaOdc",
+      ],
+    };
+
+    const formElements = document.querySelectorAll("form [name]");
+    const defaults = Array.from(formElements).reduce((acc, el) => {
+      if (layananFields[selectedLayanan]?.includes(el.name)) {
+        acc[el.name] = el.value || "";
+      }
+      return acc;
+    }, {});
+
+    // Tambahkan nilai default untuk field umum
+    defaults["nama"] = methods.watch("nama") || "";
+    defaults["alamat"] = methods.watch("alamat") || "";
+    defaults["jenisKelamin"] = methods.watch("jenisKelamin") || "";
+    defaults["noHp"] = methods.watch("noHp") || "";
+    defaults["tempatLahir"] = methods.watch("tempatLahir") || "";
+    defaults["tglLahir"] = methods.watch("tglLahir") || "";
+    defaults["tipePenjamin"] = methods.watch("tipePenjamin") || "";
+
+    setDefaultValues(defaults);
+  }, [selectedLayanan, methods]);
+
+  // Inisialisasi form dengan defaultValues
+
+  const onSubmit = (data) => {
+    const fieldUmum = [
+      "nama",
+      "alamat",
+      "jenisKelamin",
+      "noHp",
+      "tempatLahir",
+      "tglLahir",
+      "tipePenjamin",
+    ];
+
+    const layananFields = {
+      Operasi: [
+        "ruangOperasi",
+        "waktuOperasi",
+        "estimasi",
+        "dokterOperasi",
+        "tindakan",
+        "tanggalOperasi",
+        "tipeAnestesi",
+        "informasiLainnyaRawatInap",
+        "diagnosaAwalRawatInap",
+        "dokterPemeriksa",
+      ],
+      MCU: ["janjiTanggalMcu", "paketMcu"],
+      "Rawat Jalan": [
+        "tanggalKunjungan",
+        "noUrut",
+        "dokter",
+        "departemen",
+        "pasienPrioritas",
+        "informasiLainnya",
+      ],
+      Radiologi: [
+        "tglJanji",
+        "dokterRadiologi",
+        "tindakanList",
+        "totalKeseluruhan",
+      ],
+
+      "Rawat Inap": [
+        "janjiTanggal",
+        "Kelas",
+        "dokter",
+        "pasienPrioritas",
+        "diagnosaAwalRawatInap",
+        "informasiLainnyaRawatInap",
+      ],
+      ODC: [
+        "janjiTanggal",
+        "KelasOdc",
+        "dokter",
+        "diagnosaAwalOdc",
+        "informasiLainnyaOdc",
+      ],
+    };
+
+    const filteredData = Object.keys(data).reduce((acc, key) => {
+      if (
+        fieldUmum.includes(key) || // Sertakan semua field umum
+        layananFields[selectedLayanan]?.includes(key) // Sertakan field relevan berdasarkan layanan
+      ) {
+        acc[key] = data[key];
+      }
+      return acc;
+    }, {});
+
+    console.log("Data Terkirim:", filteredData);
+    alert("Form berhasil disubmit!");
+  };
+
+  const { handleSubmit } = methods;
   // =============================Start Jadwal Dokter (Rawat Jalan )===================
   // inisialiasi use state dokter
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null); // State untuk tanggal
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [doctorsPerPage] = useState(10);
@@ -67,10 +203,12 @@ const AddPerjanjianForm = memo(() => {
     (doctors) => {
       const filtered = doctors.filter(
         (doctor) =>
-          doctor.label.toLowerCase().includes(searchDokter.toLowerCase()) &&
+          doctor.label
+            ?.toLowerCase()
+            .includes(searchDokter?.toLowerCase() || "") &&
           doctor.department
-            .toLowerCase()
-            .includes(searchDepartemen.toLowerCase())
+            ?.toLowerCase()
+            .includes(searchDepartemen?.toLowerCase() || "")
       );
       setFilteredDoctors(filtered);
       setCurrentPage(1);
@@ -81,16 +219,16 @@ const AddPerjanjianForm = memo(() => {
   // pengambilan data jadwal dokter
 
   useEffect(() => {
-    const dateKey = selectedDate.toISOString().split("T")[0];
-    const doctorsForDate = jadwalDokterByDate[dateKey] || [];
-    filterDoctors(doctorsForDate);
-  }, [selectedDate, filterDoctors]);
+    if (selectedDate) {
+      const date =
+        selectedDate instanceof Date ? selectedDate : new Date(selectedDate);
+      const dateKey = date.toISOString().split("T")[0];
+      const doctorsForDate = jadwalDokterByDate[dateKey] || [];
+      setFilteredDoctors(doctorsForDate);
+    }
+  }, [selectedDate]);
 
   // handle tanggal dokter
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    methods.setValue("tanggalKunjungan", date);
-  };
 
   // handle row clich
   const handleDoctorSelection = (doctor) => {
@@ -116,7 +254,6 @@ const AddPerjanjianForm = memo(() => {
 
   // untuk handle layanan
 
-  const [selectedLayanan, setSelectedLayanan] = useState("");
   const handleLayananChange = (value) => {
     setSelectedLayanan(value); // Update state lokal
   };
@@ -136,6 +273,13 @@ const AddPerjanjianForm = memo(() => {
     Kelas: "",
   });
 
+  useEffect(() => {
+    if (selectedKelas) {
+      methods.setValue("Kelas", selectedKelas);
+      methods.setValue("KelasOdc", selectedKelas);
+    }
+  }, [selectedKelas, methods]);
+
   const handleSearch = (key, value) => {
     const updatedKelas = { ...searchKelas, [key]: value };
     setSearchKelas(updatedKelas);
@@ -154,23 +298,12 @@ const AddPerjanjianForm = memo(() => {
     setFilteredData(filtered);
   };
 
-  const header = [
-    "No",
-    "Kelas ",
-    "Keterangan",
-    "Jml Ruang",
-    "JML Tempat Tidur",
-    "jml Terisi",
-    "Jml reservasi",
-  ];
+  const header = ["No", "Kelas ", "Jml Tersedia", "Jml reservasi"];
 
   const members = filteredData.map((item, index) => ({
     no: index + 1,
     kelas: item.Kelas,
-    keterangan: item.Keterangan,
     jmlRuang: item.JmlRuang,
-    jmlTempatTidur: item.JmlTempatTidur,
-    jmlTerisi: item.JmlTerisi,
     jmlReservasi: item.JmlReservasi,
   }));
 
@@ -185,9 +318,14 @@ const AddPerjanjianForm = memo(() => {
   const [searchOperasi, setSearchOperasi] = useState({});
 
   const handleDateChangeOperasi = (date) => {
-    setselectedDateOperasi(date);
-    const formattedDate = date.toISOString().slice(0, 10);
-    filterData(formattedDate, searchOperasi);
+    if (!(date instanceof Date)) {
+      console.error("Invalid date:", date);
+      return;
+    }
+
+    setselectedDateOperasi(date); // Perbarui state dengan objek Date
+    const formattedDate = date.toISOString().slice(0, 10); // Format tanggal menjadi YYYY-MM-DD
+    filterData(formattedDate, searchOperasi); // Filter data berdasarkan tanggal
   };
 
   const handleSearchOperasi = (key, value) => {
@@ -245,18 +383,31 @@ const AddPerjanjianForm = memo(() => {
   const [selectedDokterOperasi, setSelectedDokterOperasi] = useState("");
   const [selectedTindakanOperasi, setSelectedTindakanOperasi] = useState("");
 
+  useEffect(() => {
+    if (selectedLayanan === "Operasi") {
+      methods.setValue("ruangOperasi", selectedRuangOperasi || "");
+      methods.setValue("waktuOperasi", selectedWaktuOperasi || "");
+      methods.setValue("estimasi", selectedEstimasiOperasi || "");
+      methods.setValue("dokterOperasi", selectedDokterOperasi || "");
+      methods.setValue("tindakan", selectedTindakanOperasi || "");
+    }
+  }, [
+    selectedLayanan, // Tambahkan selectedLayanan ke dependensi
+    methods, // Pastikan methods masuk dalam dependensi
+    selectedRuangOperasi,
+    selectedWaktuOperasi,
+    selectedEstimasiOperasi,
+    selectedDokterOperasi,
+    selectedTindakanOperasi,
+  ]);
+
   // End Operasi
 
   // ============================= END Operasi ====================================
-  const handleSubmit = (data) => {
-    console.log("Form Data:", data);
-    alert("Form submitted successfully!");
-    router.push("/perjanjian");
-  };
 
   return (
     <FormProvider {...methods}>
-      <Form onSubmit={methods.handleSubmit(handleSubmit)}>
+      <Form onSubmit={methods.handleSubmit(handleSubmit(onSubmit))}>
         <Row className="mt-3">
           {/* Column Kiri */}
           <Col
@@ -366,23 +517,15 @@ const AddPerjanjianForm = memo(() => {
                 {selectedLayanan === "Rawat Jalan" && (
                   <>
                     <Row>
-                      <Col xs="6" lg="4">
-                        <div className="form-group">
-                          <label
-                            htmlFor="tanggalKunjungan"
-                            className="form-label"
-                          >
-                            Tanggal Kunjungan
-                          </label>
-
-                          <DatePicker
-                            id="tanggalKunjungan"
-                            selected={selectedDate}
-                            onChange={handleDateChange}
-                            dateFormat="MMMM d, yyyy"
-                            className="form-control "
-                          />
-                        </div>
+                      <Col lg="4">
+                        <DateInputPicker
+                          name="tanggalKunjungan"
+                          label="Tanggal Kunjungan"
+                          placeholder="Pilih tanggal kunjungan"
+                          rules={{ required: "Tanggal harus diisi" }}
+                          control={methods.control}
+                          onDateChange={(date) => setSelectedDate(date)} // Update state tanggal di komponen induk
+                        />
                       </Col>
                       <Col lg="4">
                         <TextField
@@ -475,7 +618,7 @@ const AddPerjanjianForm = memo(() => {
                           ,
                           <Col lg="12">
                             <SearchableSelectField
-                              name="dokter"
+                              name="dokterRadiologi"
                               label="Dokter Pemeriksa"
                               options={dataDokter}
                               placeholder="Pilih Dokter"
@@ -597,7 +740,7 @@ const AddPerjanjianForm = memo(() => {
                     </Row>
                     <Col lg="12">
                       <TextField
-                        name="KelasODC"
+                        name="KelasOdc"
                         label="Kelas"
                         type="text"
                         className="form-control"
@@ -662,8 +805,8 @@ const AddPerjanjianForm = memo(() => {
                     </Col>
                     <Col lg="4">
                       <TextField
-                        name="dokter"
-                        label="Dokter"
+                        name="dokterOperasi"
+                        label="Dokter Operasi"
                         value={selectedDokterOperasi}
                         className="mb-3"
                         readOnly
@@ -680,7 +823,7 @@ const AddPerjanjianForm = memo(() => {
                     </Col>
                     <Col lg="6">
                       <SearchableSelectField
-                        name="dokter"
+                        name="dokterPemeriksa"
                         label="Dokter Pemeriksa"
                         options={dataDokter}
                         placeholder="Pilih Dokter"
@@ -746,22 +889,15 @@ const AddPerjanjianForm = memo(() => {
                     <div className="iq-card">
                       <div className="iq-card-body">
                         <Row>
-                          <Col xs="6" lg="3">
-                            <div className="form-group">
-                              <label
-                                htmlFor="tanggalKunjungan"
-                                className="form-label"
-                              >
-                                Tanggal Kunjungan
-                              </label>
-                              <DatePicker
-                                id="tanggalKunjungan"
-                                selected={selectedDate}
-                                onChange={handleDateChange}
-                                dateFormat="MMMM d, yyyy"
-                                className="form-control "
-                              />
-                            </div>
+                          <Col lg="3">
+                            <DateInputPicker
+                              name="tanggalKunjungan"
+                              label="Tanggal Kunjungan"
+                              placeholder="Pilih tanggal kunjungan"
+                              rules={{ required: "Tanggal harus diisi" }}
+                              control={methods.control}
+                              onDateChange={(date) => setSelectedDate(date)} // Update state tanggal
+                            />
                           </Col>
                           <Col lg="3">
                             <TextField
@@ -790,7 +926,9 @@ const AddPerjanjianForm = memo(() => {
                         <div className="Tanggal">
                           <h5 className="my-3 text-center">
                             Dokter Tersedia pada{" "}
-                            {selectedDate.toLocaleDateString()}
+                            {selectedDate
+                              ? new Date(selectedDate).toLocaleDateString() // Konversi string ke Date
+                              : "Pilih Tanggal"}
                           </h5>
                         </div>
                         <Table striped bordered hover>
@@ -949,20 +1087,16 @@ const AddPerjanjianForm = memo(() => {
                         </div>
                         <Row>
                           <Col xs="12" lg="3">
-                            <div className="form-group">
-                              <label
-                                htmlFor="tanggalKunjungan"
-                                className="form-label"
-                              >
-                                Tanggal Kunjungan
-                              </label>
-                              <DatePicker
-                                selected={selectedDateOperasi}
-                                onChange={handleDateChangeOperasi}
-                                dateFormat="yyyy-MM-dd"
-                                className="form-control"
-                              />
-                            </div>
+                            <DateInputPicker
+                              name="tanggalOperasi"
+                              label="Tanggal Operasi"
+                              placeholder="Pilih tanggal operasi"
+                              rules={{ required: "Tanggal harus diisi" }}
+                              control={methods.control}
+                              onDateChange={(date) =>
+                                handleDateChangeOperasi(date)
+                              } // Perbarui state jadwal operasi
+                            />
                           </Col>
                           <Col lg="8">
                             <SearchableSelectField
@@ -1002,8 +1136,6 @@ const AddPerjanjianForm = memo(() => {
                     </div>
                   </>
                 )}
-
-                {/* Tombol Submit */}
               </Row>
             </Col>
           )}

@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button, Offcanvas } from "react-bootstrap";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
+import SearchableSelectField from "@/components/ui/select-field-search";
 import RadioInput from "@/components/ui/radio-input";
 import DateInput from "@/components/ui/date-input";
 import TextArea from "@/components/ui/textArea-field";
@@ -14,16 +15,12 @@ import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
 
-import SearchableSelectField from "@/components/ui/select-field-search";
-import ButtonNav from "@/components/ui/button-navigation";
-import { DevTools } from "@hookform/devtools";
-import NumberField from "@/components/ui/distance-filed";
-
-const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
+const DynamicForm = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
     select: SelectField,
+    select_search: SearchableSelectField,
     radio: RadioInput,
     date: DateInput,
     textarea: TextArea,
@@ -33,8 +30,6 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
     richText: RichTextEditor,
     signature: SignaturePad,
     time: TimeField,
-    number: NumberField,
-    searchSelect: SearchableSelectField,
   };
 
   // TypeScript types for form configuration
@@ -58,7 +53,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   /**
    * Function to render a single form field based on its configuration.
    */
-  const renderField = (field) => {
+  const renderField = (field, index, sectionFields) => {
     const {
       id,
       name,
@@ -74,9 +69,9 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
       onClick,
       options,
       rows,
-      date,
       customRender,
-      ...otherProps // Capture all other props
+      breakAfter = false, // Add this new property
+      ...otherProps
     } = field;
 
     const commonProps = {
@@ -95,20 +90,24 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
 
     if (type === "email") {
       return (
-        <TextField
-          key={id}
-          {...commonProps}
-          type="email" // Ensure the type is set to "email"
-        />
+        <React.Fragment key={id}>
+          <TextField
+            {...commonProps}
+            type="email" // Ensure the type is set to "email"
+          />
+        </React.Fragment>
       );
     }
 
-    // Remove any props that are not necessary for the DOM, like `hide`
     const sanitizedProps = { ...commonProps, ...otherProps };
     delete sanitizedProps.hide;
 
     if (customRender) {
-      return customRender({ key: id, ...sanitizedProps });
+      return (
+        <React.Fragment key={id}>
+          {customRender({ key: id, ...sanitizedProps })}
+        </React.Fragment>
+      );
     }
 
     const Component = fieldComponents[field.type];
@@ -118,14 +117,9 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
     }
 
     return (
-      <Component
-        key={id}
-        {...sanitizedProps}
-        options={options}
-        rows={rows}
-        control={methods.control}
-        value={value}
-      />
+      <React.Fragment key={id}>
+        <Component {...sanitizedProps} options={options} rows={rows} />
+      </React.Fragment>
     );
   };
 
@@ -142,16 +136,11 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
       section.fields.forEach((field) => {
         defaults[field.name] = field.value || "";
       });
-      return defaults; 
+      return defaults;
     }, {}),
-    mode: "onChange", // Menangani validasi secara dinamis
+    mode: "onSubmit",
   });
-
-  const {
-    watch,
-
-    formState: { errors },
-  } = methods;
+  const { watch } = methods;
   const handleSubmit = (data) => {
     try {
       if (onSubmit) {
@@ -163,29 +152,19 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
       console.error("Error submitting form:", error);
     }
   };
-
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
       return field.hide(watch());
     }
     return field.hide;
   };
-
   return (
     <FormProvider {...methods}>
-      <Row>
+      <Col lg="12">
         <div className="iq-card">
-          <div className="iq-card-header d-flex justify-content-between ">
-            <div className="iq-header-title ">
+          <div className="iq-card-header d-flex justify-content-between">
+            <div className="iq-header-title">
               <h3 className="card-title tracking-wide">{title}</h3>
-            </div>
-            <div>
-              <ButtonNav
-                className="btn btn-primary mx-3 my-3"
-                label="Kembali"
-                path={backPath}
-                icon="ri-arrow-left-line"
-              />
             </div>
           </div>
           <div className="card-body">
@@ -193,10 +172,10 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
               {formConfig.map((section, sectionIndex) => (
                 <div
                   key={`section-${sectionIndex}`}
-                  className="iq-card-header mt-2"
+                  className="iq-card-header m-1"
                 >
                   {section.section && (
-                    <div className="iq-header-title mt-3">
+                    <div className="iq-header-title">
                       <h4 className="mb-3">{section.section}</h4>
                     </div>
                   )}
@@ -208,22 +187,30 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
                     }
                   >
                     {section.fields
-                      .filter((field) => !shouldHideField(field))
-                      .map(({ colSize, ...field }, fieldIndex) => (
-                        <Col key={field.id || fieldIndex} lg={colSize || 6}>
-                          {renderField(field)}
-                        </Col>
+                      .filter((field) => !shouldHideField(field)) // Filter out hidden fields
+                      .map((field, fieldIndex) => (
+                        <React.Fragment key={field.id || fieldIndex}>
+                          <Col lg={field.colSize || 6}>
+                            {field.customRender
+                              ? field.customRender({
+                                  methods,
+                                  watchValues: watch(),
+                                })
+                              : renderField(field)}
+                          </Col>
+                          {field.breakAfter && <Col lg={12}></Col>}{" "}
+                        </React.Fragment>
                       ))}
                   </Row>
                 </div>
               ))}
               <Button type="submit" className="btn btn-primary mx-3 my-3">
-                Kirim
+                Submit
               </Button>
             </Form>
           </div>
         </div>
-      </Row>
+      </Col>
     </FormProvider>
   );
 };

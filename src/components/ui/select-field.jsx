@@ -31,7 +31,6 @@ const SelectField = forwardRef(
         borderRadius: "0.25rem",
         boxShadow: "none",
         height: "calc(1.5em + 0.75rem + 2px)",
-        marginTop: "2px",
       }),
       menu: (provided) => ({
         ...provided,
@@ -45,10 +44,12 @@ const SelectField = forwardRef(
 
     // Handle change
     const handleChange = (selected) => {
-      field.onChange(selected); // Tetap mengirimkan seluruh objek ke React Hook Form
+      const value = selected ? selected.value : null;
+      field.onChange(value);
+
+      // Panggil callback dengan value saja (bukan dengan objek selected)
       if (onChangeCallback) {
-        // Panggil callback hanya dengan value
-        onChangeCallback(selected ? selected.value : null);
+        onChangeCallback(value);
       }
     };
 
@@ -60,9 +61,9 @@ const SelectField = forwardRef(
           {...props}
           ref={ref}
           options={options}
-          placeholder={placeholder || "Select option"}
+          placeholder={placeholder || "Select an option"}
           styles={customStyles}
-          value={options.find((option) => option.value === field.value?.value) || null}
+          value={options.find((option) => option.value === field.value) || null}
           onChange={handleChange}
           isClearable
         />
