@@ -218,15 +218,35 @@ const AddPerjanjianForm = memo(() => {
 
   // pengambilan data jadwal dokter
 
+  // useEffect(() => {
+  //   if (selectedDate) {
+  //     const date =
+  //       selectedDate instanceof Date ? selectedDate : new Date(selectedDate);
+  //     const dateKey = date.toISOString().split("T")[0];
+  //     const doctorsForDate = jadwalDokterByDate[dateKey] || [];
+  //     setFilteredDoctors(doctorsForDate);
+  //   }
+  // }, [selectedDate]);
+
   useEffect(() => {
     if (selectedDate) {
       const date =
         selectedDate instanceof Date ? selectedDate : new Date(selectedDate);
       const dateKey = date.toISOString().split("T")[0];
       const doctorsForDate = jadwalDokterByDate[dateKey] || [];
-      setFilteredDoctors(doctorsForDate);
+      filterDoctors(doctorsForDate);
     }
-  }, [selectedDate]);
+  }, [searchDokter, searchDepartemen, selectedDate, filterDoctors]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      const date =
+        selectedDate instanceof Date ? selectedDate : new Date(selectedDate);
+      const dateKey = date.toISOString().split("T")[0];
+      const doctorsForDate = jadwalDokterByDate[dateKey] || [];
+      filterDoctors(doctorsForDate);
+    }
+  }, [searchDokter, searchDepartemen, selectedDate, filterDoctors]);
 
   // handle tanggal dokter
 
