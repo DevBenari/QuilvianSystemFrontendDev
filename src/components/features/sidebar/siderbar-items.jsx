@@ -28,6 +28,13 @@ import {
                     </li>
                     <SidebarMenu
                         isTag="true"
+                        pathname="/MasterData"
+                        title="Master Data"
+                    >
+                        <i className="ri-briefcase-4-fill"></i>
+                    </SidebarMenu>
+                    <SidebarMenu
+                        isTag="true"
                         pathname="/pendaftaran"
                         title="Admisi"
                     >
