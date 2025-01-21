@@ -378,7 +378,6 @@ const AddPerjanjianForm = memo(() => {
   const headerOperasi = [
     "No",
     "Jam Mulai",
-    "Jam Selesai",
     "Estimasi (Menit)",
     "Dokter Operator",
     "Tindakan",
@@ -388,7 +387,6 @@ const AddPerjanjianForm = memo(() => {
   const membersOperasi = filteredDataOperasi.map((item, index) => ({
     no: index + 1,
     jamMulai: item.jamMulai,
-    jamSelesai: item.jamSelesai,
     estimasi: `${item.estimasi} Menit`,
     dokterOperator: item.dokterOperator,
     tindakan: item.tindakan,

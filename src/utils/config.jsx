@@ -121,15 +121,27 @@ export const menus = {
     {
       title: "Perjanjian",
       subItems: [
-        { title: "Data Pasien Perjanjian", href: "/perjanjian/data-pasien" },
-        { title: "Pasien Perjanjian Reguler", href: "/perjanjian/perjanjian-reguler" },
+        { title: "Data Pasien Perjanjian", href: "/perjanjian" },
+        {
+          title: "Pasien Perjanjian Reguler",
+          href: "/perjanjian/perjanjian-reguler",
+        },
         { title: "Pasien Perjanjian ODC", href: "/perjanjian/odc" },
-        {title: "Pasien Perjanjian Rawat Jalan",href: "/perjanjian/rawat-jalan",},
-        {title: "Pasien Perjanjian Rawat Inap",href: "/perjanjian/rawat-inap",},
+        {
+          title: "Pasien Perjanjian Rawat Jalan",
+          href: "/perjanjian/rawat-jalan",
+        },
+        {
+          title: "Pasien Perjanjian Rawat Inap",
+          href: "/perjanjian/rawat-inap",
+        },
         { title: "Pasien Perjanjian Radiologi", href: "/perjanjian/radiologi" },
         { title: "Pasien Perjanjian MCU", href: "/perjanjian/MCU" },
         { title: "Pasien Perjanjian Operasi", href: "/perjanjian/Operasi" },
-        {title: "Pasien Perjanjian Laboratorium",href: "/perjanjian/laboratorium",},
+        {
+          title: "Pasien Perjanjian Laboratorium",
+          href: "/perjanjian/laboratorium",
+        },
       ],
     },
     {

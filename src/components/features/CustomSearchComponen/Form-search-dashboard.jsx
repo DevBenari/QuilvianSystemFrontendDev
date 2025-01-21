@@ -36,6 +36,12 @@ const CustomSearchFilter = ({
         patient.penjamin?.toLowerCase().includes(query) ||
         "" ||
         patient.dokter?.toLowerCase().includes(query) ||
+        "" ||
+        patient.departemen?.toLowerCase().includes(query) ||
+        "" ||
+        patient.tipe_perjanjian?.toLowerCase().includes(query) ||
+        "" ||
+        patient.user?.toLowerCase().includes(query) ||
         ""
     );
     setFilteredPatients(filtered);
