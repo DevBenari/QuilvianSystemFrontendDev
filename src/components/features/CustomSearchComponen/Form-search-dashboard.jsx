@@ -42,6 +42,12 @@ const CustomSearchFilter = ({
         patient.tipe_perjanjian?.toLowerCase().includes(query) ||
         "" ||
         patient.user?.toLowerCase().includes(query) ||
+        "" ||
+        patient.tipeOperasi?.toLowerCase().includes(query) ||
+        "" ||
+        patient.namaTindakan?.toLowerCase().includes(query) ||
+        "" ||
+        patient.jenisOperasi?.toLowerCase().includes(query) ||
         ""
     );
     setFilteredPatients(filtered);

@@ -183,56 +183,87 @@ export const menus = {
     {
       title: "Keanggotaan",
       subItems: [
-        {title: "Tipe Keanggotaan",href: "/master-data/tipe-keanggotaan",},
-      ]
-    },{
+        { title: "Tipe Keanggotaan", href: "/master-data/tipe-keanggotaan" },
+      ],
+    },
+    {
       title: "Data Pegawai",
       subItems: [
-        {title: "Daftar Pegawai",href: "/MasterData/master-pegawai/daftar-pegawai",},
-        {title: "Tambah Data Pegawai", href: "/master-data/tambah-data-pegawai",},
-        {title: "Akses Group Pegawai", href: "/master-data/group-pegawai",},
-        {title: "User Akses", href: "/master-data/akses-pegawai",},
-        {title: "Akses User Login", href: "/master-data/log-aktivitas",},
-      ]
+        {
+          title: "Daftar Pegawai",
+          href: "/MasterData/master-pegawai/daftar-pegawai",
+        },
+        {
+          title: "Tambah Data Pegawai",
+          href: "/master-data/tambah-data-pegawai",
+        },
+        { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
+        { title: "User Akses", href: "/master-data/akses-pegawai" },
+        { title: "Akses User Login", href: "/master-data/log-aktivitas" },
+      ],
     },
     {
-      title:"Asuransi",
+      title: "Asuransi",
       subItems: [
-        {title: "Daftar Asuransi",href: "/master-data/daftar-asuransi",},
-        {title: "Asuransi Rawat Jalan",href: "/master-data/asuransi-rawat-jalan",},
-        {title: "Asuransi Rawat Inap",href: "/master-data/asuransi-rawat-inap",},
-      ]
+        { title: "Daftar Asuransi", href: "/master-data/daftar-asuransi" },
+        {
+          title: "Asuransi Rawat Jalan",
+          href: "/master-data/asuransi-rawat-jalan",
+        },
+        {
+          title: "Asuransi Rawat Inap",
+          href: "/master-data/asuransi-rawat-inap",
+        },
+      ],
     },
     {
-      title:"Peralatan kesehatan",
+      title: "Peralatan kesehatan",
       subItems: [
-        {title: "Data Peralatan Medis",href: "/master-data/data-peralatan-medis",},
-        {title: "Kategori Peralatan Medis",href: "/master-data/kategori-peralatan-medis",},      
-      ]
+        {
+          title: "Data Peralatan Medis",
+          href: "/master-data/data-peralatan-medis",
+        },
+        {
+          title: "Kategori Peralatan Medis",
+          href: "/master-data/kategori-peralatan-medis",
+        },
+      ],
     },
     {
       title: " Manajemen Operasi ",
       subItems: [
-        {title: "Daftar Manajemen Operasi",href: "/master-data/daftar-manajemen-operasi",},
-        {title: "Daftar Tindakan Operasi",href: "/master-data/daftar-tindakan-operasi",},
-        {title: "Daftar Ruangan Operasi",href: "/master-data/daftar-ruangan-operasi",},
-        {title: "About ",href: "/master-data/about",},
-      ]
+        {
+          title: "Daftar Manajemen Operasi",
+          href: "/master-data/daftar-manajemen-operasi",
+        },
+        {
+          title: "Daftar Tindakan Operasi",
+          href: "/master-data/daftar-tindakan-operasi",
+        },
+        {
+          title: "Daftar Ruangan Operasi",
+          href: "/master-data/daftar-ruangan-operasi",
+        },
+        { title: "About ", href: "/master-data/about" },
+      ],
     },
     {
       title: "Admisi",
       subItems: [
-        {title:"Tarif Admisi",href: "/master-data/tarif-admisi",},
-        {title:"Tarif Rawat Jalan",href: "/master-data/tarif-rawat-jalan",},
-        {title:"Tarif Rawat Inap",href: "/master-data/tarif-rawat-inap",},
-      ]
+        { title: "Tarif Admisi", href: "/master-data/tarif-admisi" },
+        { title: "Tarif Rawat Jalan", href: "/master-data/tarif-rawat-jalan" },
+        { title: "Tarif Rawat Inap", href: "/master-data/tarif-rawat-inap" },
+      ],
     },
     {
       title: "Poliklinik",
       subItems: [
-        {title: "Daftar Poliklinik",href: "/master-data/daftar-poliklinik",},
-        {title: "Daftar Tarif Poliklinik",href: "/master-data/daftar-tarif-poliklinik",},
-      ]
-    }
-  ]
+        { title: "Daftar Poliklinik", href: "/master-data/daftar-poliklinik" },
+        {
+          title: "Daftar Tarif Poliklinik",
+          href: "/master-data/daftar-tarif-poliklinik",
+        },
+      ],
+    },
+  ],
 };
