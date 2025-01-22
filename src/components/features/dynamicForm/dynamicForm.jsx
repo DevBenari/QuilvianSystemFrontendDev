@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Row, Col, Form, Button, Offcanvas } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
@@ -13,10 +13,8 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
-
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
-import { DevTools } from "@hookform/devtools";
 import NumberField from "@/components/ui/distance-filed";
 
 const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
@@ -64,7 +62,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
       name,
       label,
       placeholder,
-      type,
+      type, 
       rules,
       className = "mb-3",
       readOnly = false,
@@ -148,10 +146,23 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   });
 
   const {
+    setValue,
     watch,
-
     formState: { errors },
   } = methods;
+
+  const kewarganegaraan = watch("kewarganegaraan");
+  const negara = watch("negara");
+
+  useEffect(() => {
+      if (kewarganegaraan === "WNI") {
+        setValue("negara", "Indonesia");
+      } else if (kewarganegaraan === "WNA" && negara !== negara) {
+        setValue("negara", negara);
+      }
+    }, [kewarganegaraan, negara, setValue]);
+
+
   const handleSubmit = (data) => {
     try {
       if (onSubmit) {
@@ -174,7 +185,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   return (
     <FormProvider {...methods}>
       <Row>
-        <div className="iq-card">
+        <div className="iq-card pt-2">
           <div className="iq-card-header d-flex justify-content-between ">
             <div className="iq-header-title ">
               <h3 className="card-title tracking-wide">{title}</h3>
@@ -197,7 +208,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
                 >
                   {section.section && (
                     <div className="iq-header-title">
-                      <h4 className="mb-3">{section.section}</h4>
+                      <h4 className="my-3 ">{section.section}</h4>
                     </div>
                   )}
                   <Row
@@ -218,7 +229,8 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
                 </div>
               ))}
               <Button type="submit" className="btn btn-primary mx-3 my-3">
-                Kirim
+              <span className="ri-send-plane-fill"> </span>
+                Simpan Data
               </Button>
             </Form>
           </div>

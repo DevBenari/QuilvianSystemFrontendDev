@@ -39,7 +39,7 @@ const TableListDaftarPegawai = () => {
                                     <h4 className="card-title font-widest">Tabel Daftar Pegawai</h4>
                                 </div>
                                 <ButtonNav
-                                    path="/perjanjian/add-perjanjian"
+                                    path="/MasterData/master-pegawai/add-pegawai"
                                     label="Add Pegawai"
                                     icon="ri-add-fill"
                                     size="sm"

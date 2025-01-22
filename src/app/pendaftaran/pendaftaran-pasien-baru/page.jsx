@@ -84,7 +84,6 @@ const PendaftaranPasienBaru = () => {
     }
   }, [kewarganegaraan, negara, setValue]);
   
-
   const {
     pasienFilteredKabupaten,
     pasienFilteredKecamatan,

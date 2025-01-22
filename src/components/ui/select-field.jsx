@@ -43,12 +43,11 @@ const SelectField = forwardRef(
       }),
     };
 
-    // Handle change
+    // Handle change to store only `value`
     const handleChange = (selected) => {
-      field.onChange(selected); // Tetap mengirimkan seluruh objek ke React Hook Form
+      field.onChange(selected ? selected.value : null); // Simpan hanya `value` ke state form
       if (onChangeCallback) {
-        // Panggil callback hanya dengan value
-        onChangeCallback(selected ? selected.value : null);
+        onChangeCallback(selected ? selected.value : null); // Panggil callback dengan value
       }
     };
 
@@ -62,7 +61,7 @@ const SelectField = forwardRef(
           options={options}
           placeholder={placeholder || "Select option"}
           styles={customStyles}
-          value={options.find((option) => option.value === field.value?.value) || null}
+          value={options.find((option) => option.value === field.value) || null} // Sesuaikan untuk hanya `value`
           onChange={handleChange}
           isClearable
         />
