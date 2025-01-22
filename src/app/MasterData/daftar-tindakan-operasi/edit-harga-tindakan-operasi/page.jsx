@@ -1,7 +1,10 @@
 "use client";
 
 import CustomSearchText from "@/components/features/CustomSearchText/custom-search-text";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import EditableTable from "@/components/features/edit-table/edit-table";
+import { getbyidTindakanOperasi } from "@/lib/hooks/tindakan-operasi/getById";
 import {
   DataAnestesi,
   DataAsistenAnestesi,
@@ -11,8 +14,10 @@ import {
   dataResultasi,
   dataruangOperasi,
 } from "@/utils/dataOperasi";
-import React, { useState } from "react";
-import { Col } from "react-bootstrap";
+import { kategoriOperasi } from "@/utils/masterData";
+import { useSearchParams } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { Button, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 
 const EditHargaById = () => {
@@ -108,8 +113,65 @@ const EditHargaById = () => {
     console.log("Submitted Data:", allTableData);
   };
 
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  const [tindakanOperasi, setTindakanOperasi] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (id) {
+      getbyidTindakanOperasi(id)
+        .then((response) => {
+          setTindakanOperasi(response);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch tindakanOperasi:", error);
+          setLoading(false);
+        });
+    }
+  });
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!tindakanOperasi) {
+    return <p>Tindakan Operasi not found</p>;
+  }
+
+  const formFields = [
+    {
+      fields: [
+        {
+          type: "text",
+          id: "kategoriOperasi",
+          label: "Kategori Operasi",
+          name: "kategoriOperasi",
+          value: tindakanOperasi?.kategoriOperasi,
+          rules: { required: "Kategori Operasi is required" },
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "tipeOperasi",
+          label: "Jenis Operasi",
+          name: "tipeOperasi",
+          value: tindakanOperasi?.tipeOperasi,
+          rules: { required: "Jenis Operasi is required" },
+          colSize: 6,
+        },
+      ],
+    },
+  ];
+
   return (
     <FormProvider {...methods}>
+      <DynamicFormTable
+        title="Tarif Tindakan Operasi"
+        formConfig={formFields}
+      />
       <div className="container mt-5">
         {tables.map((table) => (
           <Col lg="12" className="iq-card header p-3" key={table.id}>
@@ -137,9 +199,13 @@ const EditHargaById = () => {
             />
           </Col>
         ))}
-        <button className="btn btn-primary mt-4" onClick={handleSubmit}>
-          Submit Semua Data
-        </button>
+        <div className="iq-card p-3">
+          <div className="container text-center">
+            <Button className="btn btn-primary mx-5" onClick={handleSubmit}>
+              Submit Data
+            </Button>
+          </div>
+        </div>
       </div>
     </FormProvider>
   );

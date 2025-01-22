@@ -2,7 +2,7 @@
 
 import { Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+
 import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
 
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import ButtonNav from "@/components/ui/button-navigation";
 
 import { useRouter } from "next/navigation";
 import { useTindakanOperasi } from "@/lib/hooks/tindakan-operasi";
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const DaftarTindakanOperasi = () => {
   const methods = useForm();
@@ -97,8 +98,9 @@ const DaftarTindakanOperasi = () => {
                     itemsPerPage={10}
                     onRemove={handleRemovePatient}
                     onEdit={handleEdit}
-                    onEdit2={handleEditHarga}
-                    labelEdit2="Edit Harga"
+                    onCustom={handleEditHarga}
+                    labelEdit="Edit"
+                    labelCustom="Edit Harga"
                   />
                 )}
               </div>
