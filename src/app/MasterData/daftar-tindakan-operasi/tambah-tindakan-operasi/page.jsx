@@ -1,7 +1,9 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import { addTindakanOperasi } from "@/lib/hooks/tindakan-operasi/add";
 import { jenisOperasi, kategoriOperasi } from "@/utils/masterData";
+import { useRouter } from "next/navigation";
 import React, { Fragment } from "react";
 
 const TambahTindakanOperasi = () => {
@@ -21,9 +23,9 @@ const TambahTindakanOperasi = () => {
         },
         {
           type: "select",
-          id: "jenisOperasi",
+          id: "tipeOperasi",
           label: "Jenis Operasi",
-          name: "jenisOperasi",
+          name: "tipeOperasi",
           placeholder: "Jenis Operasi",
           options: jenisOperasi,
           rules: { required: "Jenis Operasi is required" },
@@ -87,8 +89,46 @@ const TambahTindakanOperasi = () => {
     },
   ];
 
-  const handleSubmit = (data) => {
-    console.log("Form Data:", data);
+  const router = useRouter();
+
+  const handleSubmit = async (data) => {
+    // Validasi data sebelum submit
+    const errors = validateFormData(data, formFields);
+
+    if (errors.length > 0) {
+      alert(`Form tidak valid:\n${errors.join("\n")}`);
+      return;
+    }
+
+    try {
+      const response = await addTindakanOperasi(data);
+      alert("sukses menambahkan data tindakan operasi");
+      console.log("Response:", response);
+      router.push("/MasterData/daftar-tindakan-operasi");
+    } catch (error) {
+      console.error(error);
+      alert("gagal menambahkan data tindakan operasi");
+    }
+  };
+
+  // Fungsi validasi data
+  const validateFormData = (data, fields) => {
+    const errors = [];
+    fields.forEach((section) => {
+      section.fields.forEach((field) => {
+        const { id, label, rules } = field;
+        const value = data[id];
+
+        if (rules?.required && (!value || value.trim() === "")) {
+          errors.push(`${label} harus diisi`);
+        }
+
+        if (rules?.pattern && !rules.pattern.test(value)) {
+          errors.push(`${label} tidak valid`);
+        }
+      });
+    });
+    return errors;
   };
 
   return (

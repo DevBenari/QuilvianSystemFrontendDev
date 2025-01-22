@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Col, Form, Button } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import NumberField from "@/components/ui/distance-filed";
 
 const EditableTable = ({
   id, // ID unik untuk tabel
-  title = "Editable Table",
+  title,
   columns = [],
   defaultData = [],
   onChange, // Callback untuk melaporkan perubahan data
-  itemsPerPage = 5, // Set jumlah item per halaman menjadi 5
+  itemsPerPage = 10,
 }) => {
   const methods = useForm({
     defaultValues: {
@@ -23,6 +23,10 @@ const EditableTable = ({
   const data = watch("data");
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setValue("data", defaultData); // Perbarui data
+  }, [defaultData, setValue]);
 
   // Calculate pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -68,11 +72,13 @@ const EditableTable = ({
     <FormProvider {...methods}>
       <Col lg="12">
         <div className="iq-card">
-          <div className="iq-card-header d-flex justify-content-between">
-            <div className="iq-header-title">
-              <h4 className="card-title">{title}</h4>
+          {title && (
+            <div className="iq-card-header d-flex justify-content-between">
+              <div className="iq-header-title">
+                <h4 className="card-title">{title}</h4>
+              </div>
             </div>
-          </div>
+          )}
           <div className="iq-card-body">
             <Form>
               <Table

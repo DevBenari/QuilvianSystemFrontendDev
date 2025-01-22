@@ -5,10 +5,12 @@ import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import DateInput from "@/components/ui/date-input";
 
-const CustomSearchFilter = ({
+const CustomSearchText = ({
   data,
   setFilteredPatients,
   onFilteredPatients,
+  placeholderText,
+  labelText,
 }) => {
   // const methods = useForm();
   const [filters, setFilters] = useState({
@@ -122,58 +124,23 @@ const CustomSearchFilter = ({
     setFilteredPatients(filtered);
   };
   return (
-    <Col lg="12" className="mt-2">
+    <Col lg="12" className="mt-2 mx-4">
       <Row>
         <Col md="3">
           <TextField
-            label="Cari Pasien:"
+            label={labelText}
             name="registrasiPasien"
             type="text"
-            placeholder="Cari berdasarkan nama, no rekam medis, atau no telp..."
+            placeholder={placeholderText}
             className="form-control mb-0"
             value={filters.searchQuery}
             onChange={(e) => handleFilterChange(e.target.value)}
             // errorMessage={filters.searchQuery === "" ? "Field tidak boleh kosong" : ""}
           />
         </Col>
-        <Col md="2">
-          <SelectField
-            name="ByTime"
-            label="Filter By : *"
-            options={[
-              { value: "Today", label: "Today" },
-              { value: "Last Day", label: "Last Day" },
-              { value: "Last Week", label: "Last Week" },
-              { value: "This Month", label: "This Month" },
-              { value: "Last Month", label: "Last Month" },
-            ]}
-            onChangeCallback={handleFilterTime}
-          />
-        </Col>
-        <Col md="3">
-          <DateInput
-            name="startDate"
-            label="Tanggal Awal Regist Pasien :"
-            placeholder={"Enter tanggal regist Pasien"}
-            onChange={setStartDate}
-          />
-        </Col>
-        <Col md="3">
-          <DateInput
-            name="endDate"
-            label="Tanggal Akhir Regist Pasien :"
-            placeholder={"Enter tanggal regist Pasien"}
-            onChange={setEndDate}
-          />
-        </Col>
-        <Col md="1" className="mt-2">
-          <button onClick={handleFilterDate} className="btn btn-info mt-4">
-            <i className="ri-search-line"></i>
-          </button>
-        </Col>
       </Row>
     </Col>
   );
 };
 
-export default CustomSearchFilter;
+export default CustomSearchText;

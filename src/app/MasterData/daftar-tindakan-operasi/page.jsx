@@ -7,13 +7,36 @@ import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-
 
 import { useEffect, useState } from "react";
 
-import { dataTindakanOperasi } from "@/utils/masterData";
 import ButtonNav from "@/components/ui/button-navigation";
-dataTindakanOperasi;
+
+import { useRouter } from "next/navigation";
+import { useTindakanOperasi } from "@/lib/hooks/tindakan-operasi";
+
 const DaftarTindakanOperasi = () => {
   const methods = useForm();
+  const { tindakanOperasi, loading, error } = useTindakanOperasi();
   const [filteredTindakanOperasi, setFilteredTindakanOperasi] =
-    useState(dataTindakanOperasi);
+    useState(tindakanOperasi);
+  const router = useRouter();
+
+  // Get Data
+  useEffect(() => {
+    if (tindakanOperasi) {
+      setFilteredTindakanOperasi(tindakanOperasi);
+    }
+  }, [tindakanOperasi]);
+
+  const handleEdit = (id) => {
+    router.push(
+      `/MasterData/daftar-tindakan-operasi/edit-tindakan-operasi?id=${id}`
+    );
+  };
+
+  const handleEditHarga = (id) => {
+    router.push(
+      `/MasterData/daftar-tindakan-operasi/edit-harga-tindakan-operasi?id=${id}`
+    );
+  };
 
   // Hapus Data
   const handleRemovePatient = (id) => {
@@ -21,10 +44,6 @@ const DaftarTindakanOperasi = () => {
       (patient) => patient.id !== id
     );
     setFilteredTindakanOperasi(updatedPatients);
-  };
-
-  const handleEdit = (row) => {
-    console.log(row, "in click");
   };
 
   return (
@@ -41,7 +60,7 @@ const DaftarTindakanOperasi = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={dataTindakanOperasi}
+            data={tindakanOperasi}
             setFilteredPatients={setFilteredTindakanOperasi}
             onFilteredPatients={filteredTindakanOperasi}
           />
@@ -57,7 +76,7 @@ const DaftarTindakanOperasi = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/daftar-tindakan-operasi/tambah-tindakan-operasi"
-                  label="Buat Janji"
+                  label="Tambah Tindakan Operasi"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -65,17 +84,23 @@ const DaftarTindakanOperasi = () => {
                 />
               </div>
               <div className="iq-card-body">
-                <CustomTableComponent
-                  data={filteredTindakanOperasi}
-                  columns={[
-                    { key: "id", label: "NO" },
-                    { key: "namaTindakan", label: "Tindakan Operasi" },
-                    { key: "jenisOperasi", label: "Jenis Operasi" },
-                  ]}
-                  itemsPerPage={10}
-                  onRemove={handleRemovePatient}
-                  onEdit={handleEdit}
-                />
+                {loading && <div>Loading...</div>}
+                {error && <div className="text-danger">{error}</div>}
+                {!loading && !error && (
+                  <CustomTableComponent
+                    data={filteredTindakanOperasi}
+                    columns={[
+                      { key: "id", label: "NO" },
+                      { key: "namaTindakanOperasi", label: "Tindakan Operasi" },
+                      { key: "tipeOperasi", label: "Jenis Operasi" },
+                    ]}
+                    itemsPerPage={10}
+                    onRemove={handleRemovePatient}
+                    onEdit={handleEdit}
+                    onEdit2={handleEditHarga}
+                    labelEdit2="Edit Harga"
+                  />
+                )}
               </div>
             </div>
           </Col>
