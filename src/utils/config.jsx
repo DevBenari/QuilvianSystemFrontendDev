@@ -111,6 +111,10 @@ export const menus = {
           title: "Pendaftaran Pasien Optik",
           href: "/pendaftaran/pendaftaran-pasien-optik",
         },
+        {
+          title: "Pendaftaran Pasien IGD",
+          href: "/pendaftaran/pendaftaran-pasien-igd",
+        },
         { title: "Keanggotaan", href: "/pendaftaran/keanggotaan" },
       ],
     },
@@ -182,7 +186,7 @@ export const menus = {
     {
       title:"Asuransi",
       subItems: [
-        {title: "Daftar Asuransi",href: "/master-data/daftar-asuransi",},
+        {title: "Daftar Asuransi",href: "/MasterData/master-asuransi/daftar-asuransi",},
         {title: "Asuransi Rawat Jalan",href: "/master-data/asuransi-rawat-jalan",},
         {title: "Asuransi Rawat Inap",href: "/master-data/asuransi-rawat-inap",},
       ]

@@ -1,34 +1,30 @@
-export const selectDataKelasTersedia = [
+export const datakelas = [
   {
-    label: "Kelas 1",
-    value: "kelas-1",
+    kelas: "ISOLASI LAVENDER SVIP",
     ruang: [
-      {
-        label: "Ruang 101",
-        value: "ruang-101",
-        noTempatTidur: ["10", "11", "12"],
-      },
-      {
-        label: "Ruang 102",
-        value: "ruang-102",
-        noTempatTidur: ["20", "21", "22"],
-      },
+      { nama: "Isolasi 11", tempatTidur: ["101", "102", "103"] },
+      { nama: "Isolasi 12", tempatTidur: ["104", "105", "106"] },
     ],
   },
   {
-    label: "Isolasi",
-    value: "isolasi",
+    kelas: "KELAS 1",
     ruang: [
-      {
-        label: "Isolasi 201",
-        value: "isolasi-201",
-        noTempatTidur: ["30", "31", "32"],
-      },
-      {
-        label: "Isolasi 202",
-        value: "isolasi-202",
-        noTempatTidur: ["40", "41", "42"],
-      },
+      { nama: "Kelas 1 101", tempatTidur: ["201", "202", "203"] },
+      { nama: "Kelas 1 102", tempatTidur: ["204", "205", "206"] },
+    ],
+  },
+  {
+    kelas: "SUITE",
+    ruang: [
+      { nama: "Suite 1", tempatTidur: ["301", "302", "303"] },
+      { nama: "Suite 2", tempatTidur: ["304", "305", "306"] },
+    ],
+  },
+  {
+    kelas: "VVIP",
+    ruang: [
+      { nama: "VVIP 1", tempatTidur: ["401", "402", "403"] },
+      { nama: "VVIP 2", tempatTidur: ["404", "405", "406"] },
     ],
   },
 ];

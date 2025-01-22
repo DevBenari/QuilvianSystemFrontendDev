@@ -188,7 +188,7 @@ export const ruangOperasi = [
   { label: "STERILIZATION", value: "STERILIZATION" },
 ];
 
-export const dataKelas = [
+export const dataKelasSelect = [
   { label: "SUITE", value: "SUITE" },
   { label: "LUXURY", value: "LUXURY" },
   {

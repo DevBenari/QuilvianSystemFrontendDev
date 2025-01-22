@@ -23,9 +23,6 @@ const DataTable = ({
   onAdd,
   onSearch,
   actions,
-  dataPencarian,
-  setFilteredPatients,
-  filteredPatients,
   customActions = [], // Array of custom actions
   id,
   rowsPerPage = 10, // Default rows per page
@@ -65,57 +62,38 @@ const DataTable = ({
   return (
     <FormProvider {...methods}>
       <Container fluid className={mt}>
-        <Col lg="12" className=" iq-card p-4">
-          <div className="d-flex justify-content-between iq-card-header">
-            <h2 className="mb-3">Searching Pasien Bayi </h2>
-            <button
-              className="btn btn-dark my-3 mx-3"
-              onClick={() => window.location.reload()}
-            >
-              <i className="ri-refresh-line"></i>
-            </button>
-          </div>
-          <Col lg="12" className="mt-2">
-            <CustomSearchFilter
-              data={dataPencarian}
-              setFilteredPatients={setFilteredPatients}
-              onFilteredPatients={filteredPatients}
-            />
-          </Col>
-          <Row className="mt-4">
-            {(Array.isArray(formFields) ? formFields : []).map(
-              (field, index) => {
-                if (!field || !field.type || !field.name) {
-                  console.warn(`Invalid field at index ${index}:`, field);
-                  return null;
-                }
+        <Row className="mt-4">
+          {(Array.isArray(formFields) ? formFields : []).map((field, index) => {
+            if (!field || !field.type || !field.name) {
+              console.warn(`Invalid field at index ${index}:`, field);
+              return null;
+            }
 
-                return (
-                  <Col xs="12" lg="3" className="mb-3" key={index}>
-                    {field.type === "date" ? (
-                      <DateInput
-                        name={field.name}
-                        label={field.label}
-                        placeholder={field.placeholder}
-                        rules={field.rules}
-                      />
-                    ) : (
-                      <TextField
-                        label={field.label}
-                        name={field.name}
-                        type={field.type}
-                        placeholder={field.placeholder}
-                        className="form-control mb-0"
-                        rules={field.rules}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  </Col>
-                );
-              }
-            )}
-          </Row>
-        </Col>
+            return (
+              <Col xs="12" lg="3" className="mb-3" key={index}>
+                {field.type === "date" ? (
+                  <DateInput
+                    name={field.name}
+                    label={field.label}
+                    placeholder={field.placeholder}
+                    rules={field.rules}
+                  />
+                ) : (
+                  <TextField
+                    label={field.label}
+                    name={field.name}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    className="form-control mb-0"
+                    rules={field.rules}
+                    onChange={field.onChange}
+                  />
+                )}
+              </Col>
+            );
+          })}
+        </Row>
+
         {/* Editable Table */}
         <Row>
           <Col lg="12">
@@ -142,108 +120,118 @@ const DataTable = ({
                 </div>
               )}{" "}
               <div className="iq-card-body">
-                <div id="table">
-                  <div className="table-responsive-md w-100">
-                    <Table
-                      className="text-center"
-                      responsive
-                      striped
-                      bordered
-                      hover
+                <div
+                  id="table"
+                  className="table-responsive"
+                  style={{ maxHeight: "400px", overflowX: "auto" }}
+                >
+                  <Table
+                    className="text-center"
+                    responsive="md"
+                    striped
+                    bordered
+                    hover
+                    style={{ tableLayout: "fixed" }}
+                  >
+                    <thead
+                      style={{
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "#f8f9fa",
+                        zIndex: 1,
+                      }}
                     >
-                      <thead>
-                        <tr>
-                          {headers.map((header, index) => (
-                            <th key={index}>{header}</th>
-                          ))}
-                          {(actions || customActions.length > 0) && (
-                            <th>Actions</th>
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {paginatedData.length > 0 ? (
-                          paginatedData.map((row, rowIndex) => (
-                            <tr key={rowIndex}>
-                              {Object.entries(row)
-                                .filter(([key]) => key !== id)
-                                .map(([key, value], colIndex) => (
-                                  <td key={colIndex}>{value || "-"}</td>
-                                ))}
-                              {(actions || customActions.length > 0) && (
-                                <td>
-                                  {actions?.edit && (
-                                    <span className="table-remove me-2">
-                                      <button
-                                        type="button"
-                                        className="btn iq-bg-success btn-rounded btn-sm my-0"
-                                        onClick={() => actions.edit(row)}
-                                      >
-                                        {editLabel}
-                                      </button>
-                                    </span>
-                                  )}
-                                  {actions?.delete && (
-                                    <span className="table-remove me-2">
-                                      <button
-                                        type="button"
-                                        className="btn iq-bg-danger btn-rounded btn-sm my-0"
-                                        onClick={() => actions.delete(row)}
-                                      >
-                                        Remove
-                                      </button>
-                                    </span>
-                                  )}
-                                  {actions?.detail && (
-                                    <span className="table-remove me-2">
-                                      <button
-                                        type="button"
-                                        className="btn iq-bg-danger btn-rounded btn-sm my-0"
-                                        onClick={() => actions.detail(row)}
-                                      >
-                                        Detail
-                                      </button>
-                                    </span>
-                                  )}
-                                  {/* Custom Actions */}
-                                  {customActions.map(
-                                    (customAction, actionIndex) => (
-                                      <span
-                                        key={actionIndex}
-                                        className="table-remove me-2"
-                                      >
-                                        <button
-                                          type="button"
-                                          className={`btn btn-rounded btn-sm my-0 ${customAction.className}`}
-                                          onClick={() =>
-                                            customAction.onClick(row)
-                                          }
-                                        >
-                                          {customAction.label}
-                                        </button>
-                                      </span>
-                                    )
-                                  )}
-                                </td>
-                              )}
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={
-                                headers.length +
-                                (actions || customActions.length > 0 ? 1 : 0)
-                              }
-                              className="text-center"
-                            >
-                              No data available
-                            </td>
-                          </tr>
+                      <tr>
+                        {headers.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
+                        {(actions || customActions.length > 0) && (
+                          <th>Actions</th>
                         )}
-                      </tbody>
-                    </Table>
-                  </div>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedData.length > 0 ? (
+                        paginatedData.map((row, rowIndex) => (
+                          <tr key={rowIndex}>
+                            {Object.entries(row)
+                              .filter(([key]) => key !== id)
+                              .map(([key, value], colIndex) => (
+                                <td key={colIndex}>{value || "-"}</td>
+                              ))}
+                            {(actions || customActions.length > 0) && (
+                              <td>
+                                {actions?.edit && (
+                                  <span className="table-remove me-2">
+                                    <button
+                                      type="button"
+                                      className="btn iq-bg-success btn-rounded btn-sm my-0"
+                                      onClick={() => actions.edit(row)}
+                                    >
+                                      {editLabel}
+                                    </button>
+                                  </span>
+                                )}
+                                {actions?.delete && (
+                                  <span className="table-remove me-2">
+                                    <button
+                                      type="button"
+                                      className="btn iq-bg-danger btn-rounded btn-sm my-0"
+                                      onClick={() => actions.delete(row)}
+                                    >
+                                      Remove
+                                    </button>
+                                  </span>
+                                )}
+                                {actions?.detail && (
+                                  <span className="table-remove me-2">
+                                    <button
+                                      type="button"
+                                      className="btn iq-bg-danger btn-rounded btn-sm my-0"
+                                      onClick={() => actions.detail(row)}
+                                    >
+                                      Detail
+                                    </button>
+                                  </span>
+                                )}
+                                {/* Custom Actions */}
+                                {customActions.map(
+                                  (customAction, actionIndex) => (
+                                    <span
+                                      key={actionIndex}
+                                      className="table-remove me-2"
+                                    >
+                                      <button
+                                        type="button"
+                                        className={`btn btn-rounded btn-sm my-0 ${customAction.className}`}
+                                        onClick={() =>
+                                          customAction.onClick(row)
+                                        }
+                                      >
+                                        {customAction.label}
+                                      </button>
+                                    </span>
+                                  )
+                                )}
+                              </td>
+                            )}
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={
+                              headers.length +
+                              (actions || customActions.length > 0 ? 1 : 0)
+                            }
+                            className="text-center"
+                          >
+                            No data available
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </Table>
 
                   {/* Pagination */}
                   {totalPages > 1 && (

@@ -1,10 +1,18 @@
 "use client";
 
-import React, { Fragment, useState, useEffect, useCallback } from "react";
+import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import useSelectKelas from "@/lib/hooks/useSelectKelas";
+import { datakelas } from "@/utils/dataKelas";
+import React, { Fragment } from "react";
 
-import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicFormAnimasi";
-
-export default function PendaftaranRehabilitasiMedik() {
+const PendaftaranPasienIgd = () => {
+  const {
+    selectedKelas,
+    selectedRuang,
+    filteredRuang,
+    filteredTempatTidur,
+    handleChange,
+  } = useSelectKelas();
   const formFields = [
     {
       fields: [
@@ -91,7 +99,6 @@ export default function PendaftaranRehabilitasiMedik() {
           },
           colSize: 6,
         },
-
         {
           type: "textarea",
           id: "alamatRumah",
@@ -101,68 +108,35 @@ export default function PendaftaranRehabilitasiMedik() {
           rules: { required: "Alamat Rumah is required" },
           colSize: 12,
         },
+        {
+          type: "text",
+          id: "afiliasi",
+          label: "Afiliasi",
+          name: "afiliasi",
+          placeholder: "Afiliasi",
+          rules: { required: "Afiliasi is required" },
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "polisAsuransi",
+          label: "Polis Asuransi",
+          name: "polisAsuransi",
+          placeholder: "Polis Asuransi",
+          rules: { required: "Polis Asuransi is required" },
+          colSize: 6,
+        },
       ],
     },
     {
-      section: "Detatil Konsultasi ",
+      section: "Informasi Dokter",
       fields: [
         {
           type: "select",
-          id: "penjamin",
-          label: "Tipe Pasien",
-          name: "penjamin",
-          placeholder: "Tipe Penjamin",
-          options: [
-            { label: "Umum", value: "umum" },
-            { label: "Penjamin", value: "penjamin" },
-          ],
-          rules: { required: "Penjamin is required" },
-          colSize: 6,
-        },
-        {
-          type: "select",
-          id: "tipepenjamin",
-          name: "tipePenjamin",
-          hide: (watchValues) => watchValues.penjamin !== "penjamin",
-
-          label: "Tipe penjamin",
-          placeholder: "Penjamin",
-          options: [
-            { label: "BPJS", value: "bpjs" },
-            { label: "Non BPJS", value: "non-bpjs" },
-          ],
-          rules: { required: "Penjamin is required" },
-          colSize: 6,
-        },
-        {
-          type: "date",
-          id: "tglRegistrasi",
-          label: "Tanggal Registrasi",
-          name: "tglRegistrasi",
-          rules: { required: "Tanggal Registrasi is required" },
-          colSize: 6,
-        },
-        {
-          type: "select",
-          id: "tindakanMedik",
-          name: "tindakanMedik",
-          label: "Daftar Tindakan Rehabilitasi Medik",
-          placeholder: "Daftar Tindakan Rehabilitasi Medik",
-          options: [
-            { label: "jasa suntik", value: "jasaSuntik" },
-            { label: "jasa medik", value: "jasaMedik" },
-            { label: "latihan ambulasi", value: "latihanAmbulasi" },
-            { label: "latihan lingkup gerak", value: "latihanLingkupGerak" },
-          ],
-          rules: { required: "Daftar Tindakan Rehabilitasi Medik is required" },
-          colSize: 6,
-        },
-        {
-          type: "select",
           id: "dokterPemeriksa",
-          label: "Dokter Pemeriksa",
+          label: "Nama Dokter",
           name: "dokterPemeriksa",
-          placeholder: "Dokter Pemeriksa",
+          placeholder: "Nama Dokter",
           options: [
             { label: "Dr. Sarah Johnson", value: "dr_sarah_johnson" },
             { label: "Dr. Michael Brown", value: "dr_michael_brown" },
@@ -173,9 +147,17 @@ export default function PendaftaranRehabilitasiMedik() {
           rules: { required: "Dokter Lab is required" },
           colSize: 6,
         },
+        {
+          type: "textarea",
+          id: "diagnosa",
+          label: "Diagnosa",
+          name: "diagnosa",
+          placeholder: "Diagnosa",
+          rules: { required: "Diagnosa is required" },
+          colSize: 12,
+        },
       ],
     },
-
     {
       section: "Dirujuk",
       fields: [
@@ -260,14 +242,63 @@ export default function PendaftaranRehabilitasiMedik() {
           rules: { required: "Surat Rujukan is required" },
           colSize: 6,
         },
+      ],
+    },
+    {
+      section: "Biaya",
+      fields: [
         {
-          type: "textarea",
-          id: "diagnosaAwal",
-          label: "Diagnosa Awal",
-          name: "diagnosaAwal",
-          placeholder: "Diagnosa Awal",
-          rules: { required: "Diagnosa Awal is required" },
-          colSize: 12,
+          type: "text",
+          id: "biaya",
+          label: "Biaya",
+          name: "biaya",
+          placeholder: "Biaya",
+          rules: { required: "Biaya is required" },
+          colSize: 6,
+        },
+        {
+          type: "select",
+          id: "kelas",
+          label: "Pilih Kelas ",
+          name: "kelas",
+          placeholder: "Pilih Kelas ",
+          options: datakelas.map((item) => ({
+            label: item.kelas,
+            value: item.kelas,
+          })),
+          value: selectedKelas,
+          onChangeCallback: (value) => handleChange("kelas", value),
+          rules: { required: "Pilih Kelas  is required" },
+          colSize: 6,
+        },
+        {
+          type: "select",
+          id: "ruang",
+          label: "Pilih Ruang ",
+          name: "ruang",
+          placeholder: "Pilih Ruang ",
+          options: filteredRuang.map((item) => ({
+            label: item.nama,
+            value: item.nama,
+          })),
+          value: selectedRuang,
+          onChangeCallback: (value) => handleChange("ruang", value),
+          rules: { required: "Pilih Ruang  is required" },
+          colSize: 6,
+        },
+        {
+          type: "select",
+          id: "tempatTidur",
+          label: "Pilih Tempat Tidur ",
+          name: "tempatTidur",
+          placeholder: "Pilih Tempat Tidur ",
+          options: filteredTempatTidur.map((item) => ({
+            label: item,
+            value: item,
+          })),
+          onChangeCallback: (value) => handleChange("tempatTidur", value),
+          rules: { required: "Pilih Tempat Tidur  is required" },
+          colSize: 6,
         },
       ],
     },
@@ -286,4 +317,6 @@ export default function PendaftaranRehabilitasiMedik() {
       />
     </Fragment>
   );
-}
+};
+
+export default PendaftaranPasienIgd;

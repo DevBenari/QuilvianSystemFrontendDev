@@ -15,9 +15,6 @@ const TextField = ({
     control,
     formState: { errors },
   } = useFormContext();
-
-  const { errorMessage, ...restProps } = props; // Filter out errorMessage
-
   return (
     <Form.Group className="mb-3">
       {/* Label Input */}
@@ -35,7 +32,7 @@ const TextField = ({
             className={className}
             placeholder={placeholder}
             isInvalid={!!errors[name]}
-            {...restProps} // Pass only valid props
+            {...props}
           />
         )}
       />
