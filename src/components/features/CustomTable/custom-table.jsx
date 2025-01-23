@@ -6,7 +6,7 @@ const CustomTableComponent = memo(({
     data, 
     columns, 
     itemsPerPage = 10, 
-    onRemove 
+    actionButtons = [] // Array of action buttons
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -37,7 +37,7 @@ const CustomTableComponent = memo(({
                             {columns.map((col, index) => (
                                 <th key={index}>{col.label}</th>
                             ))}
-                            {onRemove && <th>Action</th>}
+                            {actionButtons.length > 0 && <th>Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -46,15 +46,19 @@ const CustomTableComponent = memo(({
                                 {columns.map((col, i) => (
                                     <td key={i}>{item[col.key]}</td>
                                 ))}
-                                {onRemove && (
+                                {actionButtons.length > 0 && (
                                     <td>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => onRemove(item.id)}
-                                        >
-                                            Remove
-                                        </Button>
+                                        {actionButtons.map((button, idx) => (
+                                            <Button
+                                                key={idx}
+                                                variant={button.variant || 'primary'}
+                                                size="sm"
+                                                className="me-2"
+                                                onClick={() => button.onClick(item)}
+                                            >
+                                                {button.label}
+                                            </Button>
+                                        ))}
                                     </td>
                                 )}
                             </tr>

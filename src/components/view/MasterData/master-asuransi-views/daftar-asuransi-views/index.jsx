@@ -13,6 +13,10 @@ const TableListDaftarAsuransi = () => {
         const updatedPatients = filteredPatients.filter((patient) => patient.id !== id);
         setFilteredPatients(updatedPatients);
     };
+
+    const handleEditPatient = (patient) => {
+        alert(`Edit Patient: ${patient.nama}`);
+    };
     return (
         <FormProvider {...methods}>
             <Col lg="12" className="iq-card p-4">
@@ -39,7 +43,7 @@ const TableListDaftarAsuransi = () => {
                                     <h4 className="card-title font-widest">Tabel List Daftar Pegawai</h4>
                                 </div>
                                 <ButtonNav
-                                    path="/MasterData/master-pegawai/add-pegawai"
+                                    path="/MasterData/master-asuransi/daftar-asuransi/add-asuransi"
                                     label="Add Pegawai"
                                     icon="ri-add-fill"
                                     size="sm"
@@ -60,7 +64,10 @@ const TableListDaftarAsuransi = () => {
                                         { key: 'telepon', label: 'No Telp' },
                                     ]}
                                     itemsPerPage={10}
-                                    onRemove={handleRemovePatient}
+                                    actionButtons={[
+                                        { label: 'edit', variant: 'info', onClick: handleEditPatient },
+                                        { label: 'Remove', variant: 'danger', onClick: (item) => handleRemovePatient(item.id) },
+                                    ]}
                                 />
                             </div>
                         </div>

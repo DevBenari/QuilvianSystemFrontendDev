@@ -194,7 +194,7 @@ export const menus = {
     {
       title:"Peralatan kesehatan",
       subItems: [
-        {title: "Data Peralatan Medis",href: "/master-data/data-peralatan-medis",},
+        {title: "Data Peralatan Medis",href: "/MasterData/master-peralatan-medis/list-peralatan-medis",},
         {title: "Kategori Peralatan Medis",href: "/master-data/kategori-peralatan-medis",},      
       ]
     },

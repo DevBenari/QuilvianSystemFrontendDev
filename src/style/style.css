@@ -146,6 +146,14 @@ a:hover {
   letter-spacing: 2px;
 }
 
+.action-column {
+  max-width: 1050px; /* Atur lebar maksimum */
+  overflow: hidden; /* Sembunyikan konten yang melebihi batas */
+  text-overflow: ellipsis; /* Tambahkan "..." jika konten dipotong */
+  white-space: nowrap; /* Mencegah konten menjadi multi-baris */
+}
+
+
 /*---------------------------------------------------------------------
                                   Badge
 -----------------------------------------------------------------------*/

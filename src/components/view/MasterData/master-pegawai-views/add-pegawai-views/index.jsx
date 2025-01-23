@@ -1,14 +1,13 @@
 "use client";
 
-import React, {Fragment, useEffect} from "react";
+import React, {Fragment,memo, useEffect} from "react";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useForm } from "react-hook-form";
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import { type } from "@amcharts/amcharts5";
 
-const FormAddPegawai = () => {
+const FormAddPegawai = memo(() => {
     const router = useRouter();
     const { setValue } = useForm();
     // fungsi untuk melakukan select provinsi
@@ -374,13 +373,14 @@ const FormAddPegawai = () => {
    return (
     <Fragment>
       <DynamicForm
-        title="Tambah Data Pegawai"
+        title="Form Penambahan Data Pegawai"
         formConfig={formFields}
         onSubmit={handleSubmit}
         backPath={`/MasterData/master-pegawai/daftar-pegawai`}
       />
     </Fragment>
    ) 
-}
+})
 
+FormAddPegawai.displayName = "FormAddPegawai"
 export default FormAddPegawai

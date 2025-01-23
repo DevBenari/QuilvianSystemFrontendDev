@@ -6,22 +6,22 @@ import { dataPasienRadiologi } from '@/utils/dataPerjanjian';
 import { Row, Col } from 'react-bootstrap';
 import { FormProvider, useForm } from 'react-hook-form';
 import CustomTableComponent from '@/components/features/CustomTable/custom-table';
-const TableListDaftarPegawai = () => {
+const ListTablePeralatanMedis = () => {
     const methods = useForm();
     const [filteredPatients, setFilteredPatients] = useState(dataPasienRadiologi);
-    const handleRemovePatient = (id) => {
-        const updatedPatients = filteredPatients.filter((patient) => patient.id !== id);
-        setFilteredPatients(updatedPatients);
-    };
 
     const handleEditPatient = (patient) => {
         alert(`Edit Patient: ${patient.nama}`);
     };
+    const handleSetTarif = (patient) => {
+        alert(`Edit Patient: ${patient.nama}`);
+    };
+
     return (
         <FormProvider {...methods}>
             <Col lg="12" className="iq-card p-4">
                 <div className="d-flex justify-content-between iq-card-header">
-                    <h2 className="mb-3">Master Data <br></br> <span className='letter-spacing fw-bold'>List Daftar Pegawai</span></h2>
+                    <h2 className="mb-3">Master Data <br></br> <span className='letter-spacing fw-bold'>List Daftar Peralatan Medis</span></h2>
                     <button className="btn btn-dark my-3 mx-3" onClick={() => window.location.reload()}>
                         <i className="ri-refresh-line"></i>
                     </button>
@@ -40,10 +40,10 @@ const TableListDaftarPegawai = () => {
                         <div className="iq-card p-3">
                             <div className="iq-card-header d-flex justify-content-between">
                                 <div className="iq-header-title">
-                                    <h4 className="card-title font-widest">Tabel Daftar Pegawai</h4>
+                                    <h4 className="card-title font-widest">Tabel Daftar Peralatan Medis</h4>
                                 </div>
                                 <ButtonNav
-                                    path="/MasterData/master-pegawai/add-pegawai"
+                                    path="/MasterData/master-peralatan-medis/add-peralatan-medis"
                                     label="Add Pegawai"
                                     icon="ri-add-fill"
                                     size="sm"
@@ -65,8 +65,8 @@ const TableListDaftarPegawai = () => {
                                     ]}
                                     itemsPerPage={10}
                                     actionButtons={[
+                                        { label: 'Tarif', variant: 'primary', onClick: (item) => handleSetTarif(item) },
                                         { label: 'edit', variant: 'info', onClick: handleEditPatient },
-                                        { label: 'Remove', variant: 'danger', onClick: (item) => handleRemovePatient(item.id) },
                                     ]}
                                 />
                             </div>
@@ -75,6 +75,7 @@ const TableListDaftarPegawai = () => {
                 </Row>
             </div>
         </FormProvider>
-    )
+    );
 }
-export default TableListDaftarPegawai;
+
+export default ListTablePeralatanMedis;
