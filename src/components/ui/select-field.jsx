@@ -42,14 +42,11 @@ const SelectField = forwardRef(
       }),
     };
 
-    // Handle change
+    // Handle change to store only `value`
     const handleChange = (selected) => {
-      const value = selected ? selected.value : null;
-      field.onChange(value);
-
-      // Panggil callback dengan value saja (bukan dengan objek selected)
+      field.onChange(selected ? selected.value : null); // Simpan hanya `value` ke state form
       if (onChangeCallback) {
-        onChangeCallback(value);
+        onChangeCallback(selected ? selected.value : null); // Panggil callback dengan value
       }
     };
 
@@ -63,7 +60,7 @@ const SelectField = forwardRef(
           options={options}
           placeholder={placeholder || "Select an option"}
           styles={customStyles}
-          value={options.find((option) => option.value === field.value) || null}
+          value={options.find((option) => option.value === field.value) || null} // Sesuaikan untuk hanya `value`
           onChange={handleChange}
           isClearable
         />

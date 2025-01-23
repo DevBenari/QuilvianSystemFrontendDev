@@ -75,21 +75,6 @@ const CpptDokter = memo(() => {
         },
       ];
 
-
-    //   const dokterEntries = [
-    //     {
-    //       name: 'Dr. John Doe',
-    //       role: 'Dokter Spesialis',
-    //       time: '31 Dec 2024 09:00',
-    //       color: 'text-primary',
-    //       content: [
-    //         { title: 'Subjective', details: 'Pasien mengeluh nyeri kepala' },
-    //         { title: 'Objective', details: 'TD: 120/80 mmHg, Nadi: 80x/menit, Suhu: 36.5°C' },
-    //         { title: 'Assessment', details: 'Hipertensi Grade 1' },
-    //         { title: 'Planning', details: 'Pemberian obat anti hipertensi' },
-    //       ],
-    //     },
-    //   ];
     return (
         <Fragment>
             <Col xs="12" className="iq-card p-3 mt-4">

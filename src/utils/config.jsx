@@ -195,7 +195,7 @@ export const menus = {
         },
         {
           title: "Tambah Data Pegawai",
-          href: "/master-data/tambah-data-pegawai",
+          href: "/MasterData/master-pegawai/add-pegawai",
         },
         { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
         { title: "User Akses", href: "/master-data/akses-pegawai" },
@@ -205,7 +205,10 @@ export const menus = {
     {
       title: "Asuransi",
       subItems: [
-        { title: "Daftar Asuransi", href: "/master-data/daftar-asuransi" },
+        {
+          title: "Daftar Asuransi",
+          href: "/MasterData/master-asuransi/daftar-asuransi",
+        },
         {
           title: "Asuransi Rawat Jalan",
           href: "/master-data/asuransi-rawat-jalan",

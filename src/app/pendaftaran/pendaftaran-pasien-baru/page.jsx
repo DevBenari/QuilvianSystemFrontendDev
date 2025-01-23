@@ -830,6 +830,4 @@ const PendaftaranPasienBaru = () => {
   );
 };
 
-PendaftaranPasienBaru.displayName = "PendaftaranPasienBaru";
-
 export default PendaftaranPasienBaru;
