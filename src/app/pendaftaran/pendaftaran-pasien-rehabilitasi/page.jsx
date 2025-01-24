@@ -4,7 +4,7 @@ import PendaftaranRehabilitasiMedik from "@/components/view/pendaftaran-pasien/p
 
 const RehabilitasiMedik = memo(() => {
   return (
-    <div className={styles.page}>
+    <div >
       <PendaftaranRehabilitasiMedik />
     </div>
   );

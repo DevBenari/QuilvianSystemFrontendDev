@@ -1,15 +1,15 @@
-import PendaftaranPasienLuarFasilitas from "@/components/view/pendaftaran-pasien/pendaftaran-luar-fasilitas/page";
 import React, { memo } from "react";
 import styles from "@/app/page.module.css";
+import DashboardAdmisiFasilitas from "@/components/view/pendaftaran-pasien/pendaftaran-luar-fasilitas/dashboardPasienFasilitas";
 
-const PendaftaranLuarFasilitas = memo(() => {
+const PagesAdmisiPendaftaranFasilitas = memo(() => {
   return (
     <div className={styles.page}>
-      <PendaftaranPasienLuarFasilitas />
+      <DashboardAdmisiFasilitas />
     </div>
   );
 });
 
-PendaftaranLuarFasilitas.displayName = "PendaftaranLuarFasilitas";
+PagesAdmisiPendaftaranFasilitas.displayName = "PagesAdmisiPendaftaranFasilitas";
 
-export default PendaftaranLuarFasilitas;
+export default PagesAdmisiPendaftaranFasilitas;

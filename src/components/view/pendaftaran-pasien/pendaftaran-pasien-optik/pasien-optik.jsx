@@ -149,6 +149,7 @@ export const PendaftaranPasienLuarOptik = memo(() => {
         title="Registrasi Optik"
         formConfig={formFields}
         onSubmit={handleSubmit}
+        backPath={"/pendaftaran/pendaftaran-pasien-optik"}
       />
     </Fragment>
   );

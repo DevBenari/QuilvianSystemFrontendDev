@@ -332,6 +332,7 @@ const PendaftaranPasienLuarMedicalCheckUp = () => {
         title="Registrasi Pasien Medical CheckUp"
         formConfig={formFields}
         onSubmit={handleSubmit}
+        backPath={"/pendaftaran/pendaftaran-pasien-medical-check-up"}
       />
     </Fragment>
   );

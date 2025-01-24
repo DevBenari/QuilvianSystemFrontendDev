@@ -124,13 +124,20 @@ a:hover {
 }
 
 #sidebar-scrollbar {
-  overflow-y: auto;
+  height: 100vh; /* Use full viewport height */
+  overflow-y: auto; 
   scrollbar-color: #089bab #eff7f8;
   scrollbar-width: thin;
+  position: relative; /* Ensure proper positioning */
+}
+
+#sidebar-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Explicitly define scrollbar width */
 }
 
 #sidebar-scrollbar::-webkit-scrollbar-thumb {
   background-color: #089bab;
+  border-radius: 4px;
 }
 
 #sidebar-scrollbar::-webkit-scrollbar-track {
@@ -145,14 +152,6 @@ a:hover {
 .letter-spacing {
   letter-spacing: 2px;
 }
-
-.action-column {
-  max-width: 1050px; /* Atur lebar maksimum */
-  overflow: hidden; /* Sembunyikan konten yang melebihi batas */
-  text-overflow: ellipsis; /* Tambahkan "..." jika konten dipotong */
-  white-space: nowrap; /* Mencegah konten menjadi multi-baris */
-}
-
 
 /*---------------------------------------------------------------------
                                   Badge
@@ -1049,6 +1048,14 @@ body.sidebar-main .iq-sidebar:hover .iq-menu li.menu-open>a {
 
 .sidebar-main .iq-sidebar:hover .iq-submenu li a {
   font-size: 14px;
+}
+
+.iq-side {
+  border-bottom: 1px solid #ffff;
+}
+
+.iq-submenu-item{
+  border-bottom: 1px solid #ffff;
 }
 
 /*---------------------------------------------------------------------

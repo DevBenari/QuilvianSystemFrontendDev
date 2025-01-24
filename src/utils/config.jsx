@@ -195,7 +195,7 @@ export const menus = {
       title:"Peralatan kesehatan",
       subItems: [
         {title: "Data Peralatan Medis",href: "/MasterData/master-peralatan-medis/list-peralatan-medis",},
-        {title: "Kategori Peralatan Medis",href: "/master-data/kategori-peralatan-medis",},      
+        {title: "Kategori Peralatan Medis",href: "/MasterData/master-peralatan-medis/kategori-peralatan-medis",},      
       ]
     },
     {
@@ -224,3 +224,28 @@ export const menus = {
     }
   ]
 };
+
+export   const menuItems = [
+  {
+    
+    label: 'Pelayanan Kesehatan',
+    key: 'ManajemenKesehatan',
+    pathname: '/',
+    subMenu: [
+      { pathname: '/MasterData', label: 'Master Data', },
+      { pathname: '/pendaftaran', label: 'Admisi', },
+      { pathname: '/dokter', label: 'Pelayanan Dokter', },
+      { pathname: '/IGD', label: 'IGD', },
+    ]
+  },
+  {
+    
+    label: 'Pelayanan Medis',
+    key: 'pelayananMedis',
+    pathname: '/pelayanan-medik',
+    subMenu: [
+      { pathname: '/pelayanan-medik/instalasi-medik', label: 'Instalasi Rawat Intensif', },
+      { pathname: '/app/List Pasien', label: 'List Pasien', }
+    ]
+  }
+];

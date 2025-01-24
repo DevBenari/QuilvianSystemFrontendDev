@@ -404,6 +404,7 @@ const PendaftaranPasienRadiologi = () => {
         title="Registrasi Radiologi"
         formConfig={formFields}
         onSubmit={handleSubmit}
+        backPath={"/pendaftaran/pendaftaran-pasien-radiologi"}
       />
     </Fragment>
   );

@@ -206,6 +206,7 @@ export default function PendaftaranPasienAmbulance() {
         title="Registrasi Ambulance"
         formConfig={formFields}
         onSubmit={handleSubmit}
+        backPath={'/pendaftaran/pendaftaran-pasien-ambulance'}
       />
     </Fragment>
   );

@@ -1,15 +1,14 @@
 import React, { memo } from "react";
 import styles from "@/app/page.module.css";
-import PendaftaranPasienLuarOptik from "@/components/view/pendaftaran-pasien/pendaftaran-pasien-optik/pasien-optik";
-PendaftaranPasienLuarOptik;
-const PendaftaranOptik = memo(() => {
+import DashboardAdmisiOptik from "@/components/view/pendaftaran-pasien/pendaftaran-pasien-optik/dashboard-pendaftaran-optik";
+const PagesAdmisiOptik = memo(() => {
   return (
     <div className={styles.page}>
-      <PendaftaranPasienLuarOptik />
+      <DashboardAdmisiOptik />
     </div>
   );
 });
 
-PendaftaranOptik.displayName = "PendaftaranOptik";
+PagesAdmisiOptik.displayName = "PagesAdmisiOptik";
 
-export default PendaftaranOptik;
+export default PagesAdmisiOptik;

@@ -1,16 +1,15 @@
-import PendaftaranPasienLuarMedicalCheckUp from "@/components/view/pendaftaran-pasien/medical-chekup/pendaftaran-medical-chekup";
-
 import React, { memo } from "react";
 import styles from "@/app/page.module.css";
+import DashboardAdmisiMCU from "@/components/view/pendaftaran-pasien/medical-chekup/dashboard-mcu";
 
-const PendaftaranMedicalCheckUp = memo(() => {
+const PagesFormAdmisiMCU = memo(() => {
   return (
     <div className={styles.page}>
-      <PendaftaranPasienLuarMedicalCheckUp />
+      <DashboardAdmisiMCU />
     </div>
   );
 });
 
-PendaftaranMedicalCheckUp.displayName = "PendaftaranMedicalCheckUp";
+PagesFormAdmisiMCU.displayName = "PagesFormAdmisiMCU";
 
-export default PendaftaranMedicalCheckUp;
+export default PagesFormAdmisiMCU;
