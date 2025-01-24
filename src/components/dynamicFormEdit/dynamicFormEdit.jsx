@@ -17,7 +17,7 @@ import TimeField from "@/components/ui/time-input";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
+const DynamicFormEdit = ({ title, formConfig, onSubmit, backPath }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -193,4 +193,4 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   );
 };
 
-export default DynamicForm;
+export default DynamicFormEdit;

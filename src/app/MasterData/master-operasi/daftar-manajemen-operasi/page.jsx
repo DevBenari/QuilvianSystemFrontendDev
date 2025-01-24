@@ -4,10 +4,14 @@ import { Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
-import { useManajemenOperasi } from "@/lib/hooks/manajemenOperasi";
+
 import { useEffect, useState } from "react";
-import { addOperasi } from "@/lib/hooks/manajemenOperasi/add";
-import { OperasiEdit } from "@/lib/hooks/manajemenOperasi/edit";
+
+import { useManajemenOperasi } from "@/lib/hooks/manajemen-operasi/manajemenOperasi";
+import { addOperasi } from "@/lib/hooks/manajemen-operasi/manajemenOperasi/add";
+import { OperasiEdit } from "@/lib/hooks/manajemen-operasi/manajemenOperasi/edit";
+import TextField from "@/components/ui/text-field";
+import NumberField from "@/components/ui/distance-filed";
 
 const DashboardManajemenOperasi = () => {
   const methods = useForm();
@@ -19,65 +23,40 @@ const DashboardManajemenOperasi = () => {
 
   useEffect(() => {
     setFilteredOperasi(operasi);
-    console.log("Data yang diterima ", operasi);
   }, [operasi]);
 
-  // Tambah Data
   const handleSubmit = async (data) => {
     try {
-      if (isEditMode && currentEditData) {
-        // Edit Data
-        const response = await OperasiEdit(data, currentEditData.id);
-        alert("Operasi berhasil diperbarui!");
-        console.log("Edit Response:", response);
-
-        // Update data di state
-        setFilteredOperasi((prev) =>
-          prev.map((item) =>
-            item.id === currentEditData.id ? { ...item, ...response } : item
-          )
-        );
+      if (isEditMode && currentEditData?.id) {
+        // Edit existing data
+        await OperasiEdit(data, currentEditData.id);
       } else {
-        // Tambah Data
-        const response = await addOperasi(data);
-        alert("Operasi berhasil ditambahkan!");
-        console.log("Add Response:", response);
-
-        // Tambahkan data baru ke state
-        setFilteredOperasi((prev) => [...prev, response]);
+        // Add new data
+        await addOperasi(data);
       }
-
-      setShowModal(false); // Tutup modal
+      setShowModal(false);
+      methods.reset();
+      window.location.reload(); // Reload to reflect changes
     } catch (error) {
-      console.error(error);
-      alert("Gagal menyimpan data.");
+      console.error("Error submitting data:", error);
     }
   };
 
-  // Edit Data
   const handleEdit = (id) => {
     const selectedData = filteredOperasi.find((item) => item.id === id);
     if (selectedData) {
       setCurrentEditData(selectedData);
-      methods.reset(selectedData); // Isi form dengan data yang dipilih
+      methods.reset(selectedData);
       setIsEditMode(true);
       setShowModal(true);
     }
-  };
-
-  // Hapus Data
-  const handleRemovePatient = (id) => {
-    const updatedPatients = filteredOperasi.filter(
-      (patient) => patient.id !== id
-    );
-    setFilteredOperasi(updatedPatients);
   };
 
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Searching </h2>
+          <h2 className="mb-3">Searching</h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -106,7 +85,7 @@ const DashboardManajemenOperasi = () => {
                   onClick={() => {
                     setShowModal(true);
                     setIsEditMode(false);
-                    methods.reset(); // Reset form untuk mode tambah
+                    methods.reset();
                   }}
                 >
                   Tambah
@@ -121,8 +100,13 @@ const DashboardManajemenOperasi = () => {
                       { key: "tipeOperasi", label: "Tipe Operasi" },
                     ]}
                     itemsPerPage={10}
-                    onRemove={handleRemovePatient}
+                    onRemove={(id) =>
+                      setFilteredOperasi((prev) =>
+                        prev.filter((item) => item.id !== id)
+                      )
+                    }
                     onEdit={handleEdit}
+                    labelEdit="Edit"
                   />
                 )}
               </div>
@@ -140,24 +124,22 @@ const DashboardManajemenOperasi = () => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={methods.handleSubmit(handleSubmit)}>
-            <Form.Group controlId="tipeOperasi">
-              <Form.Label>Tipe Operasi</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Masukkan Tipe Operasi"
-                {...methods.register("tipeOperasi", { required: true })}
-                className="mb-3"
-              />
-            </Form.Group>
-            <Form.Group controlId="urutan">
-              <Form.Label>Urutan</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Masukkan Urutan"
-                {...methods.register("urutan", { required: true })}
-                className="mb-3"
-              />
-            </Form.Group>
+            <TextField
+              name="tipeOperasi"
+              label="Tipe Operasi"
+              type="text"
+              placeholder="Masukkan Tipe Operasi"
+              rules={{ required: "Tipe Operasi harus diisi" }}
+              className="mb-3"
+            />
+            <NumberField
+              name="urutan"
+              label="Urutan"
+              type="number"
+              placeholder="Masukkan Urutan"
+              rules={{ required: "Urutan harus diisi" }}
+              className="mb-3"
+            />
             <div className="d-flex justify-content-end mt-3">
               <Button variant="secondary" onClick={() => setShowModal(false)}>
                 Batal

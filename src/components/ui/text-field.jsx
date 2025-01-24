@@ -6,7 +6,6 @@ const TextField = ({
   label,
   name,
   type,
-
   className,
   placeholder,
   rules,

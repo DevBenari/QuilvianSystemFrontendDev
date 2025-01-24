@@ -1,8 +1,9 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import { editByIdTindakanOperasi } from "@/lib/hooks/tindakan-operasi/edit";
-import { getbyidTindakanOperasi } from "@/lib/hooks/tindakan-operasi/getById";
+import DynamicFormEdit from "@/components/dynamicFormEdit/dynamicFormEdit";
+import { editByIdTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi/edit";
+import { getbyidTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi/getById";
+
 import { jenisOperasi, kategoriOperasi } from "@/utils/masterData";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -141,7 +142,7 @@ const EditTindakanOperasi = () => {
 
   return (
     <Fragment>
-      <DynamicForm
+      <DynamicFormEdit
         title="Edit Tindakan Operasi"
         formConfig={formFields}
         onSubmit={handleSubmit}

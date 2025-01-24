@@ -1,7 +1,8 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import { addTindakanOperasi } from "@/lib/hooks/tindakan-operasi/add";
+import { addTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi/add";
+
 import { jenisOperasi, kategoriOperasi } from "@/utils/masterData";
 import { useRouter } from "next/navigation";
 import React, { Fragment } from "react";

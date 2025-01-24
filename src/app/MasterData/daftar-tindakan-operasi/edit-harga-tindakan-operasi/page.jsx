@@ -4,7 +4,8 @@ import CustomSearchText from "@/components/features/CustomSearchText/custom-sear
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import EditableTable from "@/components/features/edit-table/edit-table";
-import { getbyidTindakanOperasi } from "@/lib/hooks/tindakan-operasi/getById";
+import { getbyidTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi/getById";
+
 import {
   DataAnestesi,
   DataAsistenAnestesi,

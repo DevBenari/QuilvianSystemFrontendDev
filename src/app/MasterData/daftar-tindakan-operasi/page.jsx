@@ -10,8 +10,9 @@ import { useEffect, useState } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
 
 import { useRouter } from "next/navigation";
-import { useTindakanOperasi } from "@/lib/hooks/tindakan-operasi";
+
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import { useTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi";
 
 const DaftarTindakanOperasi = () => {
   const methods = useForm();

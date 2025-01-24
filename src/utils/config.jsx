@@ -237,34 +237,34 @@ export const menus = {
       subItems: [
         {
           title: "Daftar Manajemen Operasi",
-          href: "/master-data/daftar-manajemen-operasi",
+          href: "/MasterData/master-operasi/daftar-manajemen-operasi",
         },
         {
           title: "Daftar Tindakan Operasi",
-          href: "/master-data/daftar-tindakan-operasi",
+          href: "/MasterData/daftar-tindakan-operasi",
         },
         {
           title: "Daftar Ruangan Operasi",
-          href: "/master-data/daftar-ruangan-operasi",
+          href: "/MasterData/master-operasi/ruangan-operasi",
         },
-        { title: "About ", href: "/master-data/about" },
+        { title: "About ", href: "/MasterData/master-operasi/about-operasi" },
       ],
     },
     {
       title: "Admisi",
       subItems: [
-        { title: "Tarif Admisi", href: "/master-data/tarif-admisi" },
-        { title: "Tarif Rawat Jalan", href: "/master-data/tarif-rawat-jalan" },
-        { title: "Tarif Rawat Inap", href: "/master-data/tarif-rawat-inap" },
+        { title: "Tarif Admisi", href: "/MasterData/tarif-admisi" },
+        { title: "Tarif Rawat Jalan", href: "/MasterData/tarif-rawat-jalan" },
+        { title: "Tarif Rawat Inap", href: "/MasterData/tarif-rawat-inap" },
       ],
     },
     {
       title: "Poliklinik",
       subItems: [
-        { title: "Daftar Poliklinik", href: "/master-data/daftar-poliklinik" },
+        { title: "Daftar Poliklinik", href: "/MasterData/daftar-poliklinik" },
         {
           title: "Daftar Tarif Poliklinik",
-          href: "/master-data/daftar-tarif-poliklinik",
+          href: "/MasterData/daftar-tarif-poliklinik",
         },
       ],
     },

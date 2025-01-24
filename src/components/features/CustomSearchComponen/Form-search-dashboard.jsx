@@ -54,6 +54,8 @@ const CustomSearchFilter = ({
         patient.kategoriOperasi?.toLowerCase().includes(query) ||
         "" ||
         patient.namaKelas?.toLowerCase().includes(query) ||
+        "" ||
+        patient.tipe_penggunaan_operasi?.toLowerCase().includes(query) ||
         ""
     );
     setFilteredPatients(filtered);
