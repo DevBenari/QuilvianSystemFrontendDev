@@ -53,9 +53,17 @@ const CustomSearchFilter = ({
         "" ||
         patient.kategoriOperasi?.toLowerCase().includes(query) ||
         "" ||
-        patient.namaKelas?.toLowerCase().includes(query) ||
+        patient.namaDepartemen?.toLowerCase().includes(query) ||
         "" ||
-        patient.tipe_penggunaan_operasi?.toLowerCase().includes(query) ||
+        patient.penanggungJawab?.toLowerCase().includes(query) ||
+        "" ||
+        patient.ruangan?.toLowerCase().includes(query) ||
+        "" ||
+        patient.namaAdministrasi?.toLowerCase().includes(query) ||
+        "" ||
+        patient.tipeRawat?.toLowerCase().includes(query) ||
+        "" ||
+        patient.tipeAdministrasi?.toLowerCase().includes(query) ||
         ""
     );
     setFilteredPatients(filtered);

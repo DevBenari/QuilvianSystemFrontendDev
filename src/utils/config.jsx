@@ -241,7 +241,7 @@ export const menus = {
         },
         {
           title: "Daftar Tindakan Operasi",
-          href: "/MasterData/daftar-tindakan-operasi",
+          href: "/MasterData//master-operasi/daftar-tindakan-operasi",
         },
         {
           title: "Daftar Ruangan Operasi",
@@ -253,9 +253,21 @@ export const menus = {
     {
       title: "Admisi",
       subItems: [
-        { title: "Tarif Admisi", href: "/MasterData/tarif-admisi" },
+        {
+          title: "Tarif Admisi",
+          href: "/MasterData/master-administrasi/tables-administrasi",
+        },
         { title: "Tarif Rawat Jalan", href: "/MasterData/tarif-rawat-jalan" },
         { title: "Tarif Rawat Inap", href: "/MasterData/tarif-rawat-inap" },
+      ],
+    },
+    {
+      title: "Departemen",
+      subItems: [
+        {
+          title: "Manajemen Departemen",
+          href: "/MasterData/master-departemen/manajemen-departemen/tables-departemen",
+        },
       ],
     },
     {

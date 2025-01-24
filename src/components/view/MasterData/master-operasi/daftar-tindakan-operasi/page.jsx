@@ -1,27 +1,21 @@
 "use client";
 
-import { Row, Col, Button, Modal, Form } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 
-import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
-
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import { useEffect, useState } from "react";
-
-import ButtonNav from "@/components/ui/button-navigation";
-
 import { useRouter } from "next/navigation";
-
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import CustomTableComponent from "@/components/features/custom-table/CustomTable/custom-table";
 import { useTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi";
 
-const DaftarTindakanOperasi = () => {
+const TableTindakanOperasi = () => {
   const methods = useForm();
   const { tindakanOperasi, loading, error } = useTindakanOperasi();
-  const [filteredTindakanOperasi, setFilteredTindakanOperasi] =
-    useState(tindakanOperasi);
+  const [filteredTindakanOperasi, setFilteredTindakanOperasi] = useState([]);
   const router = useRouter();
 
-  // Get Data
+  // Fetch data and set filtered data
   useEffect(() => {
     if (tindakanOperasi) {
       setFilteredTindakanOperasi(tindakanOperasi);
@@ -30,29 +24,34 @@ const DaftarTindakanOperasi = () => {
 
   const handleEdit = (id) => {
     router.push(
-      `/MasterData/daftar-tindakan-operasi/edit-tindakan-operasi?id=${id}`
+      `/MasterData/master-operasi/daftar-tindakan-operasi/edit-add-tindakan-operasi?id=${id}`
     );
   };
 
   const handleEditHarga = (id) => {
     router.push(
-      `/MasterData/daftar-tindakan-operasi/edit-harga-tindakan-operasi?id=${id}`
+      `/MasterData/master-operasi/daftar-tindakan-operasi/edit-harga-tindakan-operasi?id=${id}`
     );
   };
 
-  // Hapus Data
-  const handleRemovePatient = (id) => {
-    const updatedPatients = filteredTindakanOperasi.filter(
-      (patient) => patient.id !== id
+  const handleTambah = () => {
+    router.push(
+      `/MasterData/master-operasi/daftar-tindakan-operasi/edit-add-tindakan-operasi`
     );
-    setFilteredTindakanOperasi(updatedPatients);
+  };
+
+  const handleRemovePatient = (id) => {
+    const updatedData = filteredTindakanOperasi.filter(
+      (item) => item.id !== id
+    );
+    setFilteredTindakanOperasi(updatedData);
   };
 
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Searching </h2>
+          <h2 className="mb-3">Searching</h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -76,14 +75,12 @@ const DaftarTindakanOperasi = () => {
                 <div className="iq-header-title">
                   <h4 className="card-title font-widest">Tabel Operasi</h4>
                 </div>
-                <ButtonNav
-                  path="/MasterData/daftar-tindakan-operasi/tambah-tindakan-operasi"
-                  label="Tambah Tindakan Operasi"
-                  icon="ri-add-fill"
-                  size="sm"
-                  variant=""
+                <Button
+                  onClick={handleTambah}
                   className="btn btn-sm iq-bg-success"
-                />
+                >
+                  Tambah Tindakan Operasi
+                </Button>
               </div>
               <div className="iq-card-body">
                 {loading && <div>Loading...</div>}
@@ -99,8 +96,8 @@ const DaftarTindakanOperasi = () => {
                     itemsPerPage={10}
                     onRemove={handleRemovePatient}
                     onEdit={handleEdit}
-                    onCustom={handleEditHarga}
                     labelEdit="Edit"
+                    onCustom={handleEditHarga}
                     labelCustom="Edit Harga"
                   />
                 )}
@@ -109,10 +106,8 @@ const DaftarTindakanOperasi = () => {
           </Col>
         </Row>
       </div>
-
-      {/* Modal Bootstrap */}
     </FormProvider>
   );
 };
 
-export default DaftarTindakanOperasi;
+export default TableTindakanOperasi;

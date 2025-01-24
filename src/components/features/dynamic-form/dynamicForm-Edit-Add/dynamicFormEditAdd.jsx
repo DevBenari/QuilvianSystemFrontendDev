@@ -17,7 +17,7 @@ import TimeField from "@/components/ui/time-input";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
+const DynamicFormEditAdd = ({ title, formConfig, onSubmit, backPath }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -50,18 +50,6 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
     watch,
     formState: { errors },
   } = methods;
-
-  // Tambahkan logika khusus untuk "kewarganegaraan" dan "negara"
-  const kewarganegaraan = watch("kewarganegaraan"); // Pantau perubahan kewarganegaraan
-  const negara = watch("negara"); // Pantau nilai negara
-
-  useEffect(() => {
-    if (kewarganegaraan === "WNI") {
-      setValue("negara", "Indonesia"); // Otomatis set negara ke Indonesia
-    } else if (kewarganegaraan === "WNA") {
-      setValue("negara", ""); // Biarkan negara bisa diisi manual
-    }
-  }, [kewarganegaraan, setValue]);
 
   /**
    * Fungsi untuk merender setiap field berdasarkan konfigurasi
@@ -164,25 +152,36 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
               {formConfig.map((section, sectionIndex) => (
                 <div key={`section-${sectionIndex}`} className="mb-4">
                   {section.section && (
-                    <div className="mb-3">
-                      <h4>{section.section}</h4>
+                    <div className="iq-header-title">
+                      <h4 className="mb-3">{section.section}</h4>
                     </div>
                   )}
-                  <Row>
+                  <Row
+                    className={
+                      section.layout === "inline"
+                        ? "d-flex align-items-center"
+                        : ""
+                    }
+                  >
                     {section.fields
-                      .filter((field) => !shouldHideField(field))
-                      .map((field) => (
+                      .filter((field) => !shouldHideField(field)) // Filter out hidden fields
+                      .map((field, fieldIndex) => (
                         <Col
-                          key={field.id || field.name}
+                          key={field.id || fieldIndex}
                           lg={field.colSize || 6}
                         >
-                          {renderField(field)}
+                          {field.customRender
+                            ? field.customRender({
+                                methods,
+                                watchValues: watch(),
+                              })
+                            : renderField(field)}
                         </Col>
                       ))}
                   </Row>
                 </div>
               ))}
-              <Button type="submit" className="btn btn-primary mt-3">
+              <Button type="submit" className="btn btn-primary my-3 mx-3">
                 Simpan Data
               </Button>
             </Form>
@@ -193,4 +192,4 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   );
 };
 
-export default DynamicForm;
+export default DynamicFormEditAdd;

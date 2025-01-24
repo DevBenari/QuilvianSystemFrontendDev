@@ -1,9 +1,9 @@
 "use client";
 
-import CustomSearchText from "@/components/features/CustomSearchText/custom-search-text";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
-import EditableTable from "@/components/features/edit-table/edit-table";
+import CustomSearchText from "@/components/features/custom-search/CustomSearchText/custom-search-text";
+import EditableTable from "@/components/features/custom-table/edit-table/edit-table";
+import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";
+
 import { getbyidTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi/getById";
 
 import {
@@ -21,7 +21,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 
-const EditHargaById = () => {
+const EditHargaTindakanOperasi = () => {
   const methods = useForm();
 
   // Data dan konfigurasi tabel
@@ -212,4 +212,4 @@ const EditHargaById = () => {
   );
 };
 
-export default EditHargaById;
+export default EditHargaTindakanOperasi;
