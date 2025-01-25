@@ -25,7 +25,7 @@ const TableAnggota = memo(() => {
     router.push("/pendaftaran/keanggotaan/addAnggota");
   };
 
-  const headers = ["NO", "NAMA", "NO RM", "TANGGAL START", "JENIS", "STATUS"];
+  const headers = ["NO", "NAMA", "NO RM", "TANGGAL MULAI", "JENIS", "STATUS"];
 
   // Format data untuk ditampilkan di tabel
   const members = filteredAnggota.map((anggota, index) => ({

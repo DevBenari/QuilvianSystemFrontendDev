@@ -1,3 +1,5 @@
+"use client";
+
 import React, { memo } from "react";
 import { useController, useFormContext } from "react-hook-form";
 import { Form } from "react-bootstrap";

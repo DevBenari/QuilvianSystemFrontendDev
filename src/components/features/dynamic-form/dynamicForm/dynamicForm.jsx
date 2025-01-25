@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button,} from "react-bootstrap";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -13,11 +13,10 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
+import DistanceField from "@/components/ui/distance-filed";
 import SearchableSelectField from "@/components/ui/select-field-search";
-import ButtonNav from "@/components/ui/button-navigation";
-import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
+const DynamicForm = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -31,7 +30,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
     richText: RichTextEditor,
     signature: SignaturePad,
     time: TimeField,
-    number: NumberField,
+    distance: DistanceField,
     searchSelect: SearchableSelectField,
   };
 
@@ -62,7 +61,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
       name,
       label,
       placeholder,
-      type, 
+      type,
       rules,
       className = "mb-3",
       readOnly = false,
@@ -116,14 +115,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
     }
 
     return (
-      <Component
-        key={id}
-        {...sanitizedProps}
-        options={options}
-        rows={rows}
-        control={methods.control}
-        value={value}
-      />
+      <Component key={id} {...sanitizedProps} options={options} rows={rows} />
     );
   };
 
@@ -140,29 +132,11 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
       section.fields.forEach((field) => {
         defaults[field.name] = field.value || "";
       });
-      return defaults; 
+      return defaults;
     }, {}),
-    mode: "onChange", // Menangani validasi secara dinamis
+    mode: "onSubmit",
   });
-
-  const {
-    setValue,
-    watch,
-    formState: { errors },
-  } = methods;
-
-  const kewarganegaraan = watch("kewarganegaraan");
-  const negara = watch("negara");
-
-  useEffect(() => {
-      if (kewarganegaraan === "WNI") {
-        setValue("negara", "Indonesia");
-      } else if (kewarganegaraan === "WNA" && negara !== negara) {
-        setValue("negara", negara);
-      }
-    }, [kewarganegaraan, negara, setValue]);
-
-
+  const { watch } = methods;
   const handleSubmit = (data) => {
     try {
       if (onSubmit) {
@@ -174,7 +148,6 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
       console.error("Error submitting form:", error);
     }
   };
-
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
       return field.hide(watch());
@@ -185,18 +158,10 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
   return (
     <FormProvider {...methods}>
       <Row>
-        <div className="iq-card pt-2">
+        <div className="iq-card" style={{ marginTop: "50px" }}>
           <div className="iq-card-header d-flex justify-content-between ">
             <div className="iq-header-title ">
               <h3 className="card-title tracking-wide">{title}</h3>
-            </div>
-            <div>
-              <ButtonNav
-                className="btn btn-primary mx-3 my-3"
-                label="Kembali"
-                path={backPath}
-                icon="ri-arrow-left-line"
-              />
             </div>
           </div>
           <div className="card-body">
@@ -204,10 +169,10 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
               {formConfig.map((section, sectionIndex) => (
                 <div
                   key={`section-${sectionIndex}`}
-                  className="iq-card-header mt-2"
+                  className="iq-card-header mt-3"
                 >
                   {section.section && (
-                    <div className="iq-header-title mt-3">
+                    <div className="iq-header-title">
                       <h4 className="mb-3">{section.section}</h4>
                     </div>
                   )}
@@ -219,18 +184,25 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath }) => {
                     }
                   >
                     {section.fields
-                      .filter((field) => !shouldHideField(field))
-                      .map(({ colSize, ...field }, fieldIndex) => (
-                        <Col key={field.id || fieldIndex} lg={colSize || 6}>
-                          {renderField(field)}
+                      .filter((field) => !shouldHideField(field)) // Filter out hidden fields
+                      .map((field, fieldIndex) => (
+                        <Col
+                          key={field.id || fieldIndex}
+                          lg={field.colSize || 6}
+                        >
+                          {field.customRender
+                            ? field.customRender({
+                                methods,
+                                watchValues: watch(),
+                              })
+                            : renderField(field)}
                         </Col>
                       ))}
                   </Row>
                 </div>
               ))}
               <Button type="submit" className="btn btn-primary mx-3 my-3">
-              <span className="ri-send-plane-fill"> </span>
-                Simpan Data
+                Kirim
               </Button>
             </Form>
           </div>

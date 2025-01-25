@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 
-import { tindakanDataConfig } from "@/utils/dataTindakan";
+import { pemeriksaRadiologi, tindakanDataConfig } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 export default function PendaftaranPasienLab() {
@@ -119,7 +119,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Provinsi is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("pasien","provinsi", value),
+          onChangeCallback: (value) => handleChange("provinsi", value),
         },
         {
           type: "select",
@@ -133,7 +133,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kabupaten is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("pasien","kabupaten", value),
+          onChangeCallback: (value) => handleChange("kabupaten", value),
         },
         {
           type: "select",
@@ -147,7 +147,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kecamatan is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("pasien","kecamatan", value),
+          onChangeCallback: (value) => handleChange("kecamatan", value),
         },
         {
           type: "select",
@@ -161,6 +161,7 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Kelurahan is required" },
           colSize: 6,
+          onChangeCallback: (value) => handleChange("kelurahan", value),
         },
         {
           type: "textarea",
@@ -282,7 +283,7 @@ export default function PendaftaranPasienLab() {
           colSize: 6,
         },
         {
-          type: "number",
+          type: "text",
           id: "teleponLuarRs",
           name: "teleponLuarRs",
           label: "Nomor Telepon",
@@ -373,7 +374,15 @@ export default function PendaftaranPasienLab() {
           type: "custom",
           label: "Tindakan Data Table",
           customRender: () => (
-            <TindakanTableHarga tindakan={tindakanDataConfig} />
+            <TindakanTableHarga
+              tindakan={tindakanDataConfig}
+              placeholder="Masukkan Nama Tindakan"
+              label="Tindakan Laboratorium"
+              labelKey="name"
+              ValueKey="id"
+              hargaKey="harga"
+              rules={{ required: "Tindakan Laboratorium is required" }}
+            />
           ),
           colSize: 12,
         },

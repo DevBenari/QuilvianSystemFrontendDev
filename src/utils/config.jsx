@@ -121,15 +121,27 @@ export const menus = {
     {
       title: "Perjanjian",
       subItems: [
-        { title: "Data Pasien Perjanjian", href: "/perjanjian/data-pasien" },
-        { title: "Pasien Perjanjian Reguler", href: "/perjanjian/perjanjian-reguler" },
+        { title: "Data Pasien Perjanjian", href: "/perjanjian" },
+        {
+          title: "Pasien Perjanjian Reguler",
+          href: "/perjanjian/perjanjian-reguler",
+        },
         { title: "Pasien Perjanjian ODC", href: "/perjanjian/odc" },
-        {title: "Pasien Perjanjian Rawat Jalan",href: "/perjanjian/rawat-jalan",},
-        {title: "Pasien Perjanjian Rawat Inap",href: "/perjanjian/rawat-inap",},
+        {
+          title: "Pasien Perjanjian Rawat Jalan",
+          href: "/perjanjian/rawat-jalan",
+        },
+        {
+          title: "Pasien Perjanjian Rawat Inap",
+          href: "/perjanjian/rawat-inap",
+        },
         { title: "Pasien Perjanjian Radiologi", href: "/perjanjian/radiologi" },
         { title: "Pasien Perjanjian MCU", href: "/perjanjian/MCU" },
         { title: "Pasien Perjanjian Operasi", href: "/perjanjian/Operasi" },
-        {title: "Pasien Perjanjian Laboratorium",href: "/perjanjian/laboratorium",},
+        {
+          title: "Pasien Perjanjian Laboratorium",
+          href: "/perjanjian/laboratorium",
+        },
       ],
     },
     {
@@ -171,58 +183,104 @@ export const menus = {
     {
       title: "Keanggotaan",
       subItems: [
-        {title: "Tipe Keanggotaan",href: "/master-data/tipe-keanggotaan",},
-      ]
-    },{
+        { title: "Tipe Keanggotaan", href: "/master-data/tipe-keanggotaan" },
+      ],
+    },
+    {
       title: "Data Pegawai",
       subItems: [
-        {title: "Daftar Pegawai",href: "/MasterData/master-pegawai/daftar-pegawai",},
-        {title: "Tambah Data Pegawai", href: "/MasterData/master-pegawai/add-pegawai",},
-        {title: "Akses Group Pegawai", href: "/master-data/group-pegawai",},
-        {title: "User Akses", href: "/master-data/akses-pegawai",},
-        {title: "Akses User Login", href: "/master-data/log-aktivitas",},
-      ]
+        {
+          title: "Daftar Pegawai",
+          href: "/MasterData/master-pegawai/daftar-pegawai",
+        },
+        {
+          title: "Tambah Data Pegawai",
+          href: "/MasterData/master-pegawai/add-pegawai",
+        },
+        { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
+        { title: "User Akses", href: "/master-data/akses-pegawai" },
+        { title: "Akses User Login", href: "/master-data/log-aktivitas" },
+      ],
     },
     {
-      title:"Asuransi",
+      title: "Asuransi",
       subItems: [
-        {title: "Daftar Asuransi",href: "/MasterData/master-asuransi/daftar-asuransi",},
-        {title: "Asuransi Rawat Jalan",href: "/master-data/asuransi-rawat-jalan",},
-        {title: "Asuransi Rawat Inap",href: "/master-data/asuransi-rawat-inap",},
-      ]
+        {
+          title: "Daftar Asuransi",
+          href: "/MasterData/master-asuransi/daftar-asuransi",
+        },
+        {
+          title: "Asuransi Rawat Jalan",
+          href: "/master-data/asuransi-rawat-jalan",
+        },
+        {
+          title: "Asuransi Rawat Inap",
+          href: "/master-data/asuransi-rawat-inap",
+        },
+      ],
     },
     {
-      title:"Peralatan kesehatan",
+      title: "Peralatan kesehatan",
       subItems: [
-        {title: "Data Peralatan Medis",href: "/MasterData/master-peralatan-medis/list-peralatan-medis",},
-        {title: "Kategori Peralatan Medis",href: "/MasterData/master-peralatan-medis/kategori-peralatan-medis",},      
-      ]
+        {
+          title: "Data Peralatan Medis",
+          href: "/master-data/data-peralatan-medis",
+        },
+        {
+          title: "Kategori Peralatan Medis",
+          href: "/master-data/kategori-peralatan-medis",
+        },
+      ],
     },
     {
       title: " Manajemen Operasi ",
       subItems: [
-        {title: "Daftar Manajemen Operasi",href: "/master-data/daftar-manajemen-operasi",},
-        {title: "Daftar Tindakan Operasi",href: "/master-data/daftar-tindakan-operasi",},
-        {title: "Daftar Ruangan Operasi",href: "/master-data/daftar-ruangan-operasi",},
-        {title: "About ",href: "/master-data/about",},
-      ]
+        {
+          title: "Daftar Manajemen Operasi",
+          href: "/MasterData/master-operasi/daftar-manajemen-operasi",
+        },
+        {
+          title: "Daftar Tindakan Operasi",
+          href: "/MasterData//master-operasi/daftar-tindakan-operasi",
+        },
+        {
+          title: "Daftar Ruangan Operasi",
+          href: "/MasterData/master-operasi/ruangan-operasi",
+        },
+        { title: "About ", href: "/MasterData/master-operasi/about-operasi" },
+      ],
     },
     {
       title: "Admisi",
       subItems: [
-        {title:"Tarif Admisi",href: "/master-data/tarif-admisi",},
-        {title:"Tarif Rawat Jalan",href: "/master-data/tarif-rawat-jalan",},
-        {title:"Tarif Rawat Inap",href: "/master-data/tarif-rawat-inap",},
-      ]
+        {
+          title: "Tarif Admisi",
+          href: "/MasterData/master-administrasi/tables-administrasi",
+        },
+        { title: "Tarif Rawat Jalan", href: "/MasterData/tarif-rawat-jalan" },
+        { title: "Tarif Rawat Inap", href: "/MasterData/tarif-rawat-inap" },
+      ],
+    },
+    {
+      title: "Departemen",
+      subItems: [
+        {
+          title: "Manajemen Departemen",
+          href: "/MasterData/master-departemen/manajemen-departemen/tables-departemen",
+        },
+      ],
     },
     {
       title: "Poliklinik",
       subItems: [
-        {title: "Daftar Poliklinik",href: "/master-data/daftar-poliklinik",},
-        {title: "Daftar Tarif Poliklinik",href: "/master-data/daftar-tarif-poliklinik",},
-      ]
-    }
-  ]
+        { title: "Daftar Poliklinik", href: "/MasterData/daftar-poliklinik" },
+        {
+          title: "Daftar Tarif Poliklinik",
+          href: "/MasterData/daftar-tarif-poliklinik",
+        },
+      ],
+    },
+  ],
 };
 
 export   const menuItems = [

@@ -27,6 +27,7 @@ const DataTable = ({
   id,
   rowsPerPage = 10, // Default rows per page
   editLabel = "Edit",
+  labelAdd,
 }) => {
   const [searchValue, setSearchValue] = useState(""); // State for search input value
   const [currentPage, setCurrentPage] = useState(1); // State for current page
@@ -112,7 +113,7 @@ const DataTable = ({
                         onClick={() => onAdd()}
                       >
                         <i className="ri-add-fill">
-                          <span className="ps-1">Tambah</span>
+                          <span className="ps-1">{labelAdd}</span>
                         </i>
                       </Button>
                     )}

@@ -3,7 +3,7 @@ import { useController, useFormContext } from "react-hook-form";
 import { Form } from "react-bootstrap";
 import Select from "react-select";
 
-const SelectField = forwardRef(
+const SelectFieldHide = forwardRef(
   (
     {
       name,
@@ -42,11 +42,14 @@ const SelectField = forwardRef(
       }),
     };
 
-    // Handle change to store only `value`
+    // Handle change
     const handleChange = (selected) => {
-      field.onChange(selected ? selected.value : null); // Simpan hanya `value` ke state form
+      const value = selected ? selected.value : null;
+      field.onChange(value);
+
+      // Panggil callback dengan value saja (bukan dengan objek selected)
       if (onChangeCallback) {
-        onChangeCallback(selected ? selected.value : null); // Panggil callback dengan value
+        onChangeCallback(value);
       }
     };
 
@@ -60,7 +63,7 @@ const SelectField = forwardRef(
           options={options}
           placeholder={placeholder || "Select an option"}
           styles={customStyles}
-          value={options.find((option) => option.value === field.value) || null} // Sesuaikan untuk hanya `value`
+          value={options.find((option) => option.value === field.value) || null}
           onChange={handleChange}
           isClearable
         />
@@ -74,6 +77,6 @@ const SelectField = forwardRef(
   }
 );
 
-SelectField.displayName = "SelectField";
+SelectFieldHide.displayName = "SelectFieldHide";
 
-export default SelectField;
+export default SelectFieldHide;

@@ -12,51 +12,51 @@ import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 const PendaftaranPasienBaru = () => {
   const methods = useForm({
     defaultValues: {
-    penjamin: "",
-    title: "",
-    noRekamMedis: "",
-    namaLengkapPasien: "",
-    noIdentitas: "",
-    pasienPrioritas: "",
-    tempatLahir: "",
-    tanggalLahir: "",
-    jenisKelamin: "",
-    statusPasien: "",
-    suku: "",
-    agama: "",
-    kewarganegaraan: "",
-    negara: "",
-    namaPendidikanTerakhir: "",
-    alamatDomisili: "",
-    informasiAlamat: "",
-    pasienProvinsi: "",
-    pasienKabupaten: "",
-    pasienKecamatan: "",
-    pasienKelurahan: "",
-    kodePos: "",
-    noTelepon: "",
-    noHandphone: "",
-    email: "",
-    pekerjaan: "",
-    kantor: "",
-    teleponKantor: "",
-    alamatKantor: "",
-    golonganDarah: "",
-    alergi: "",
-    keluargaTerdekat: "",
-    hubunganKeluarga: "",
-    karyawanRumahSakit: "",
-    alamatKeluargaDomisili: "",
-    keluargaProvinsi: "",
-    keluargaKabupaten: "",
-    keluargaKecamatan: "",
-    keluargaKelurahan: "",
-    noTeleponKeluarga: "",
-    noHpKeluarga: "",
-    ayah: "",
-    ibu: "",
-    sutri: "",
-    indentitasSutri: "",
+      penjamin: "",
+      title: "",
+      noRekamMedis: "",
+      namaLengkapPasien: "",
+      noIdentitas: "",
+      pasienPrioritas: "",
+      tempatLahir: "",
+      tanggalLahir: "",
+      jenisKelamin: "",
+      statusPasien: "",
+      suku: "",
+      agama: "",
+      kewarganegaraan: "",
+      negara: "",
+      namaPendidikanTerakhir: "",
+      alamatDomisili: "",
+      informasiAlamat: "",
+      pasienProvinsi: "",
+      pasienKabupaten: "",
+      pasienKecamatan: "",
+      pasienKelurahan: "",
+      kodePos: "",
+      noTelepon: "",
+      noHandphone: "",
+      email: "",
+      pekerjaan: "",
+      kantor: "",
+      teleponKantor: "",
+      alamatKantor: "",
+      golonganDarah: "",
+      alergi: "",
+      keluargaTerdekat: "",
+      hubunganKeluarga: "",
+      karyawanRumahSakit: "",
+      alamatKeluargaDomisili: "",
+      keluargaProvinsi: "",
+      keluargaKabupaten: "",
+      keluargaKecamatan: "",
+      keluargaKelurahan: "",
+      noTeleponKeluarga: "",
+      noHpKeluarga: "",
+      ayah: "",
+      ibu: "",
+      sutri: "",
+      indentitasSutri: "",
     },
     mode: "onSubmit",
   });
@@ -69,13 +69,18 @@ const PendaftaranPasienBaru = () => {
   useEffect(() => {
     if (title === "Mr" || title === "Tn" || title === "Ms") {
       setValue("jenisKelamin", "Laki-Laki");
-    } else if (title === "Mrs" || title === "Miss" || title === "Ny" || title === "Nn") {
+    } else if (
+      title === "Mrs" ||
+      title === "Miss" ||
+      title === "Ny" ||
+      title === "Nn"
+    ) {
       setValue("jenisKelamin", "Perempuan");
     } else {
       setValue("jenisKelamin", "");
     }
   }, [title, setValue]);
-  
+
   useEffect(() => {
     if (kewarganegaraan === "WNI") {
       setValue("negara", "Indonesia");
@@ -83,7 +88,7 @@ const PendaftaranPasienBaru = () => {
       setValue("negara", negara);
     }
   }, [kewarganegaraan, negara, setValue]);
-  
+
   const {
     pasienFilteredKabupaten,
     pasienFilteredKecamatan,
@@ -823,7 +828,6 @@ const PendaftaranPasienBaru = () => {
       </Col>
     </FormProvider>
   );
-} 
-
+};
 
 export default PendaftaranPasienBaru;
