@@ -8,7 +8,7 @@ import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 
 import { pemeriksaRadiologi, tindakanDataConfig } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 export default function PendaftaranPasienLab() {
   const { setValue } = useForm();
   // fungsi untuk melakukan select provinsi

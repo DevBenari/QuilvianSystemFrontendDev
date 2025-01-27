@@ -1,8 +1,7 @@
 "use client";
 
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import React, { Fragment, useState, useEffect, useCallback } from "react";
-
-import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicFormAnimasi";
 
 export default function PendaftaranRehabilitasiMedik() {
   const formFields = [

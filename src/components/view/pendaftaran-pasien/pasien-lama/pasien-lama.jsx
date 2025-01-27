@@ -3,10 +3,9 @@
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import DataTable from "@/components/features/viewDataTables/dataTable";
-import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
-
 import { useRouter } from "next/navigation";
 import { pasienLama } from "@/utils/dataPasien";
+import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";
 
 const PasienLama = () => {
   const methods = useForm();

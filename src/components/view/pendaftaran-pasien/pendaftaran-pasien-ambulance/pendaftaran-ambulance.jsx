@@ -1,10 +1,10 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicFormAnimasi/dynamicFormAnimasi";
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { Col, Row } from "react-bootstrap";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import { dataAmbulance, dataDepartemen } from "@/utils/SearchSelect";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 export default function PendaftaranPasienAmbulance() {
   const formFields = [
@@ -206,7 +206,7 @@ export default function PendaftaranPasienAmbulance() {
         title="Registrasi Ambulance"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={'/pendaftaran/pendaftaran-pasien-ambulance'}
+        backPath={"/pendaftaran/pendaftaran-pasien-ambulance"}
       />
     </Fragment>
   );

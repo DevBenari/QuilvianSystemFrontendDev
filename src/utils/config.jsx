@@ -121,7 +121,7 @@ export const menus = {
     {
       title: "Perjanjian",
       subItems: [
-        { title: "Data Pasien Perjanjian", href: "/perjanjian" },
+        { title: "Data Pasien Perjanjian", href: "/perjanjian/data-pasien" },
         {
           title: "Pasien Perjanjian Reguler",
           href: "/perjanjian/perjanjian-reguler",
@@ -257,7 +257,10 @@ export const menus = {
           title: "Tarif Admisi",
           href: "/MasterData/master-administrasi/tables-administrasi",
         },
-        { title: "Tarif Rawat Jalan", href: "/MasterData/tarif-rawat-jalan" },
+        {
+          title: "Tarif Rawat Jalan",
+          href: "/MasterData/master-administrasi/administrasi-rawat-inap",
+        },
         { title: "Tarif Rawat Inap", href: "/MasterData/tarif-rawat-inap" },
       ],
     },
@@ -280,6 +283,7 @@ export const menus = {
         },
       ],
     },
+    ,
   ],
 };
 

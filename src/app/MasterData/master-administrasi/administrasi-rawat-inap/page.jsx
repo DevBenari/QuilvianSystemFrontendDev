@@ -1,22 +1,38 @@
 "use client";
 import React, { useState } from "react";
-
+import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
 import ButtonNav from "@/components/ui/button-navigation";
-import { daftarPasien } from "@/utils/config";
+
 import { Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-const DashboardAdmisiAmbulance = () => {
+import { group_tarif } from "@/utils/masterData";
+
+const TableListDaftarRawatInap = () => {
   const methods = useForm();
-  const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
+  const [filteredPatients, setFilteredPatients] = useState(group_tarif);
+
+  const handleRemovePatient = (id) => {
+    const updatedPatients = filteredPatients.filter(
+      (patient) => patient.id !== id
+    );
+    setFilteredPatients(updatedPatients);
+  };
+
+  const handleEditPatient = (patient) => {
+    alert(`Edit Patient: ${patient.nama}`);
+  };
 
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Table Admisi Ambulance</h2>
+          <h2 className="mb-3">
+            Master Data <br></br>{" "}
+            <span className="letter-spacing fw-bold">
+              List Daftar RawatInap
+            </span>
+          </h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -26,7 +42,7 @@ const DashboardAdmisiAmbulance = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={daftarPasien}
+            data={group_tarif}
             setFilteredPatients={setFilteredPatients}
             onFilteredPatients={filteredPatients}
           />
@@ -39,12 +55,12 @@ const DashboardAdmisiAmbulance = () => {
               <div className="iq-card-header d-flex justify-content-between">
                 <div className="iq-header-title">
                   <h4 className="card-title font-widest">
-                    Tabel Perjanjian Pasien
+                    Tabel Daftar RawatInap
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/pendaftaran/pendaftaran-pasien-ambulance/add-pendaftaran-ambulance"
-                  label="Tambah Pasien"
+                  path="/MasterData/master-RawatInap/add-RawatInap"
+                  label="Add RawatInap"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -53,16 +69,28 @@ const DashboardAdmisiAmbulance = () => {
               </div>
               <div className="iq-card-body">
                 <CustomTableComponent
-                  data={filteredPatients}
+                  data={group_tarif}
                   columns={[
                     { key: "id", label: "ID" },
-                    { key: "nomorRekamMedis", label: "No Rekam Medis" },
-                    { key: "date", label: "Tanggal" },
-                    { key: "nama", label: "Nama Pasien" },
-                    { key: "jenisKelamin", label: "Jenis Kelamin" },
-                    { key: "umur", label: "Umur" },
+                    { key: "setup_tarif_id", label: "Set Up Tarif ID" },
+                    { key: "group_perusahaan", label: "Group Perusahaan" },
+                    { key: "persentase", label: "Persentase (%)" },
+                    { key: "nilai_minimum", label: "Nilai Minimum" },
+                    { key: "nilai_maksimum", label: "Nilai Maksimum" },
                   ]}
                   itemsPerPage={10}
+                  actionButtons={[
+                    {
+                      label: "Edit",
+                      variant: "info",
+                      onClick: (item) => handleEdit(item.id),
+                    },
+                    {
+                      label: "Remove",
+                      variant: "danger",
+                      onClick: (item) => handleRemove(item.id),
+                    },
+                  ]}
                 />
               </div>
             </div>
@@ -72,5 +100,4 @@ const DashboardAdmisiAmbulance = () => {
     </FormProvider>
   );
 };
-
-export default DashboardAdmisiAmbulance;
+export default TableListDaftarRawatInap;

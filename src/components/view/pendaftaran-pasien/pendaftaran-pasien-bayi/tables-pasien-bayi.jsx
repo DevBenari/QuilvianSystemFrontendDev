@@ -1,12 +1,13 @@
 "use client";
-import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
-import DataTable from "@/components/features/viewDataTables/dataTable";
+
 import React, { Fragment, memo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useBayi } from "@/lib/hooks/pasienBayi";
 import { deleteBayi } from "@/lib/hooks/pasienBayi/delete";
 import { Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
+import DataTable from "@/components/features/custom-table/viewDataTables/dataTable";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 const DashboardPendaftaranBayi = memo(() => {
   const router = useRouter();
   const { bayi, loading, error } = useBayi(); // Fetch promo data
