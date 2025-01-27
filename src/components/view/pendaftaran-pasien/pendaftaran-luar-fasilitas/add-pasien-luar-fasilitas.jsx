@@ -6,7 +6,7 @@ import { dataFasilitas } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
 import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
 
-export const PendaftaranPasienLuarFasilitas = () => {
+export const FormAdmisiFasilitas = () => {
   const formFields = [
     {
       fields: [
@@ -150,9 +150,10 @@ export const PendaftaranPasienLuarFasilitas = () => {
         title="Registrasi Pasien Luar Fasilitas"
         formConfig={formFields}
         onSubmit={handleSubmit}
+        backPath={"/pendaftaran/pendaftaran-pasien-fasilitas"}
       />
     </Fragment>
   );
 };
 
-export default PendaftaranPasienLuarFasilitas;
+export default FormAdmisiFasilitas;

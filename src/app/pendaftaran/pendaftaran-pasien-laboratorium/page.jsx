@@ -1,15 +1,11 @@
-import PendaftaranPasienLab from "@/components/view/pendaftaran-pasien/pendaftaran-lab/pendaftaran-pasien-lab";
-import React, { memo } from "react";
-import styles from "@/app/page.module.css";
-
-const PendaftaranPasienLaboratorium = memo(() => {
+import DashboardAdmisiLab from "@/components/view/pendaftaran-pasien/pendaftaran-lab/dashboard-lab"
+import React from "react"
+const PagesAdmisiLaboratorium = ( ) => {
   return (
-    <div className={styles.page}>
-      <PendaftaranPasienLab />
+    <div>
+      <DashboardAdmisiLab />
     </div>
-  );
-});
+  )
+}
 
-PendaftaranPasienLaboratorium.displayName = "PendaftaranPasienLaboratorium";
-
-export default PendaftaranPasienLaboratorium;
+export default PagesAdmisiLaboratorium

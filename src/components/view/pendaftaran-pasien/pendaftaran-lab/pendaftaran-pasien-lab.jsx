@@ -434,6 +434,7 @@ export default function PendaftaranPasienLab() {
         title="Registrasi laboratorium"
         formConfig={formFields}
         onSubmit={handleSubmit}
+        backPath={"/pendaftaran/pendaftaran-pasien-medical-check-up"}
       />
     </Fragment>
   );

@@ -13,6 +13,10 @@ const TableListDaftarPegawai = () => {
         const updatedPatients = filteredPatients.filter((patient) => patient.id !== id);
         setFilteredPatients(updatedPatients);
     };
+
+    const handleEditPatient = (patient) => {
+        alert(`Edit Patient: ${patient.nama}`);
+    };
     return (
         <FormProvider {...methods}>
             <Col lg="12" className="iq-card p-4">
@@ -60,7 +64,10 @@ const TableListDaftarPegawai = () => {
                                         { key: 'telepon', label: 'No Telp' },
                                     ]}
                                     itemsPerPage={10}
-                                    onRemove={handleRemovePatient}
+                                    actionButtons={[
+                                        { label: 'edit', variant: 'info', onClick: handleEditPatient },
+                                        { label: 'Remove', variant: 'danger', onClick: (item) => handleRemovePatient(item.id) },
+                                    ]}
                                 />
                             </div>
                         </div>
