@@ -1,12 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
+
 import ButtonNav from "@/components/ui/button-navigation";
 
-import { Row, Col } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+
 import { group_tarif } from "@/utils/masterData";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import TableEditSave from "@/components/features/custom-table/edit-table/table-edit-save-cancel";
 
 const TableListDaftarRawatInap = () => {
   const methods = useForm();
@@ -19,9 +21,29 @@ const TableListDaftarRawatInap = () => {
     setFilteredPatients(updatedPatients);
   };
 
-  const handleEditPatient = (patient) => {
-    alert(`Edit Patient: ${patient.nama}`);
+  const ColumnTarif = [
+    {
+      headerName: "Group Perusahaan",
+      field: "group_perusahaan",
+      isEditable: false,
+    },
+    { headerName: "Persentase", field: "persentase", isEditable: true },
+    { headerName: "Nilai Minimum", field: "nilai_minimum", isEditable: true },
+    { headerName: "Nilai Maksimum", field: "nilai_maksimum", isEditable: true },
+  ];
+
+  const [allTableData, setAllTableData] = useState({
+    groupTarif: group_tarif,
+  });
+
+  const handleTableChange = (tableId, updatedData) => {
+    setAllTableData((prev) => ({
+      ...prev,
+      [tableId]: updatedData,
+    }));
   };
+
+  // console.log(filteredDokter);
 
   return (
     <FormProvider {...methods}>
@@ -30,7 +52,7 @@ const TableListDaftarRawatInap = () => {
           <h2 className="mb-3">
             Master Data <br></br>{" "}
             <span className="letter-spacing fw-bold">
-              List Daftar RawatInap
+              List Daftar Rawat Inap
             </span>
           </h2>
           <button
@@ -55,42 +77,25 @@ const TableListDaftarRawatInap = () => {
               <div className="iq-card-header d-flex justify-content-between">
                 <div className="iq-header-title">
                   <h4 className="card-title font-widest">
-                    Tabel Daftar RawatInap
+                    Tabel Daftar Rawat Inap
                   </h4>
                 </div>
-                <ButtonNav
-                  path="/MasterData/master-RawatInap/add-RawatInap"
-                  label="Add RawatInap"
+                {/* <ButtonNav
+                  path="/MasterData/master-administrasi/administrasi-rawat-inap/add-rawat-inap"
+                  label="Add Rawat Inap"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
                   className="btn btn-sm iq-bg-success"
-                />
+                /> */}
               </div>
               <div className="iq-card-body">
-                <CustomTableComponent
-                  data={group_tarif}
-                  columns={[
-                    { key: "id", label: "ID" },
-                    { key: "setup_tarif_id", label: "Set Up Tarif ID" },
-                    { key: "group_perusahaan", label: "Group Perusahaan" },
-                    { key: "persentase", label: "Persentase (%)" },
-                    { key: "nilai_minimum", label: "Nilai Minimum" },
-                    { key: "nilai_maksimum", label: "Nilai Maksimum" },
-                  ]}
-                  itemsPerPage={10}
-                  actionButtons={[
-                    {
-                      label: "Edit",
-                      variant: "info",
-                      onClick: (item) => handleEdit(item.id),
-                    },
-                    {
-                      label: "Remove",
-                      variant: "danger",
-                      onClick: (item) => handleRemove(item.id),
-                    },
-                  ]}
+                <TableEditSave
+                  id="groupTarif"
+                  columns={ColumnTarif}
+                  defaultData={filteredPatients}
+                  onChange={handleTableChange}
+                  itemsPerPage={5}
                 />
               </div>
             </div>

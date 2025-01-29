@@ -2,7 +2,8 @@
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import useSelectKelas from "@/lib/hooks/useSelectKelas";
-import { datakelas } from "@/utils/dataKelas";
+import { datakelassss } from "@/utils/dataKelasss";
+
 import React, { Fragment } from "react";
 
 const PendaftaranPasienIgd = () => {

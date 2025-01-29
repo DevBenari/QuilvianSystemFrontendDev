@@ -71,7 +71,7 @@ const CustomTableComponent = memo(
                           key={idx}
                           variant={button.variant || "primary"}
                           size="sm"
-                          className="me-2"
+                          className="me-2 my-1"
                           onClick={() => button.onClick(item)}
                         >
                           {button.label}

@@ -8,7 +8,7 @@ import { dataDokter } from "@/utils/SearchSelect";
 
 import { useForm } from "react-hook-form";
 import useSelectKelas from "@/lib/hooks/useSelectKelas";
-import { datakelas } from "@/utils/dataKelas";
+import { datakelas } from "@/utils/dataKelasss";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 export const RegisPasienBayi = () => {

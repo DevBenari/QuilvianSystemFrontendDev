@@ -153,12 +153,18 @@ const DynamicFormTable = ({ title, formConfig, onSubmit }) => {
   return (
     <FormProvider {...methods}>
       <Col lg="12">
-        <div className="iq-card" style={{ marginTop: "50px" }}>
-          <div className="iq-card-header d-flex justify-content-between">
-            <div className="iq-header-title">
-              <h3 className="card-title tracking-wide">{title}</h3>
+        <div className="iq-card p-4">
+          {title && (
+            <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+              <h2 className="mt-1"> {title} </h2>
+              <button
+                className="btn btn-dark my-3 mx-3"
+                onClick={() => window.location.reload()}
+              >
+                <i className="ri-refresh-line"></i>
+              </button>
             </div>
-          </div>
+          )}
           <div className="card-body">
             <Form onSubmit={methods.handleSubmit(handleSubmit)}>
               {formConfig.map((section, sectionIndex) => (

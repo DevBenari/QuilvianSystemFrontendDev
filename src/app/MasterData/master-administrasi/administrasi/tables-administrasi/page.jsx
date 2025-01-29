@@ -54,7 +54,7 @@ const TableListDaftarAdministrasi = () => {
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-administrasi/add-administrasi"
+                  path="/MasterData/master-administrasi/administrasi/add-administrasi"
                   label="Add Administrasi"
                   icon="ri-add-fill"
                   size="sm"

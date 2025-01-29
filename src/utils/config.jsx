@@ -255,13 +255,16 @@ export const menus = {
       subItems: [
         {
           title: "Tarif Admisi",
-          href: "/MasterData/master-administrasi/tables-administrasi",
+          href: "/MasterData/master-administrasi/administrasi/tables-administrasi",
         },
         {
           title: "Tarif Rawat Jalan",
           href: "/MasterData/master-administrasi/administrasi-rawat-inap",
         },
-        { title: "Tarif Rawat Inap", href: "/MasterData/tarif-rawat-inap" },
+        {
+          title: "Tarif Rawat Inap",
+          href: "/MasterData/master-administrasi/administrasi-rawat-inap",
+        },
       ],
     },
     {
@@ -276,7 +279,10 @@ export const menus = {
     {
       title: "Poliklinik",
       subItems: [
-        { title: "Daftar Poliklinik", href: "/MasterData/daftar-poliklinik" },
+        {
+          title: "Data Tindakan Poliklinik",
+          href: "/MasterData/master-poli-klinik/data-tindakan-poli-klinik",
+        },
         {
           title: "Daftar Tarif Poliklinik",
           href: "/MasterData/daftar-tarif-poliklinik",

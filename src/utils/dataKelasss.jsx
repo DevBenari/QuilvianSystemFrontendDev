@@ -1,4 +1,4 @@
-export const datakelas = [
+export const datakelassss = [
   {
     kelas: "ISOLASI LAVENDER SVIP",
     ruang: [

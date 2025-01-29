@@ -125,6 +125,7 @@ const EditableTable = ({
                 </tbody>
               </Table>
             </Form>
+            <Button className="btn btn-primary my-2">Edit</Button>
           </div>
 
           {/* Pagination Controls */}
