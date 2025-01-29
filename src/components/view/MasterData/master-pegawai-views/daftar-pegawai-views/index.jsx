@@ -1,11 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import CustomSearchFilter from '@/components/features/CustomSearchComponen/Form-search-dashboard';
 import ButtonNav from '@/components/ui/button-navigation';
 import { dataPasienRadiologi } from '@/utils/dataPerjanjian';
 import { Row, Col } from 'react-bootstrap';
 import { FormProvider, useForm } from 'react-hook-form';
 import CustomTableComponent from '@/components/features/CustomTable/custom-table';
+import CustomSearchFilter from '@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard';
 const TableListDaftarPegawai = () => {
     const methods = useForm();
     const [filteredPatients, setFilteredPatients] = useState(dataPasienRadiologi);
@@ -31,6 +31,7 @@ const TableListDaftarPegawai = () => {
                         data={dataPasienRadiologi}
                         setFilteredPatients={setFilteredPatients}
                         onFilteredPatients={filteredPatients}
+
                     />
                 </Col>
             </Col>
@@ -63,11 +64,9 @@ const TableListDaftarPegawai = () => {
                                         { key: 'penjamin', label: 'Penjamin' },
                                         { key: 'telepon', label: 'No Telp' },
                                     ]}
+                                    slugConfig={{ textField: 'nama', idField: 'id' }}
+                                    basePath="/MasterData/master-pegawai"
                                     itemsPerPage={10}
-                                    actionButtons={[
-                                        { label: 'edit', variant: 'info', onClick: handleEditPatient },
-                                        { label: 'Remove', variant: 'danger', onClick: (item) => handleRemovePatient(item.id) },
-                                    ]}
                                 />
                             </div>
                         </div>

@@ -1,22 +1,15 @@
 'use client';
 import React, { useState } from 'react';
-import CustomSearchFilter from '@/components/features/CustomSearchComponen/Form-search-dashboard';
 import ButtonNav from '@/components/ui/button-navigation';
 import { dataPasienRadiologi } from '@/utils/dataPerjanjian';
 import { Row, Col } from 'react-bootstrap';
 import { FormProvider, useForm } from 'react-hook-form';
 import CustomTableComponent from '@/components/features/CustomTable/custom-table';
+import CustomSearchFilter from '@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard';
 const TableListDaftarAsuransi = () => {
     const methods = useForm();
     const [filteredPatients, setFilteredPatients] = useState(dataPasienRadiologi);
-    const handleRemovePatient = (id) => {
-        const updatedPatients = filteredPatients.filter((patient) => patient.id !== id);
-        setFilteredPatients(updatedPatients);
-    };
 
-    const handleEditPatient = (patient) => {
-        alert(`Edit Patient: ${patient.nama}`);
-    };
     return (
         <FormProvider {...methods}>
             <Col lg="12" className="iq-card p-4">
@@ -43,7 +36,7 @@ const TableListDaftarAsuransi = () => {
                                     <h4 className="card-title font-widest">Tabel List Daftar Pegawai</h4>
                                 </div>
                                 <ButtonNav
-                                    path="/MasterData/master-asuransi/daftar-asuransi/add-asuransi"
+                                    path="/MasterData/master-asuransi/add-asuransi"
                                     label="Add Pegawai"
                                     icon="ri-add-fill"
                                     size="sm"
@@ -61,13 +54,11 @@ const TableListDaftarAsuransi = () => {
                                         { key: 'nama', label: 'Nama' },
                                         { key: 'dokter', label: 'Dokter' },
                                         { key: 'penjamin', label: 'Penjamin' },
-                                        { key: 'telepon', label: 'No Telp' },
+                                        { key: 'telepon', label: 'No Telp' }, 
                                     ]}
                                     itemsPerPage={10}
-                                    actionButtons={[
-                                        { label: 'edit', variant: 'info', onClick: handleEditPatient },
-                                        { label: 'Remove', variant: 'danger', onClick: (item) => handleRemovePatient(item.id) },
-                                    ]}
+                                    slugConfig={{ textField: 'nama', idField: 'id' }}
+                                    basePath="/MasterData/master-asuransi/edit-asuransi"
                                 />
                             </div>
                         </div>

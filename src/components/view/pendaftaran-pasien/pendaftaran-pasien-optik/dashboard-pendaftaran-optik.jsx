@@ -1,7 +1,7 @@
 
 'use client';
 import React, { useState } from 'react';
-import CustomSearchFilter from '@/components/features/CustomSearchComponen/Form-search-dashboard';
+import CustomSearchFilter from '@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard';
 import ButtonNav from '@/components/ui/button-navigation';
 import { daftarPasien } from '@/utils/config';
 import { Row, Col } from 'react-bootstrap';

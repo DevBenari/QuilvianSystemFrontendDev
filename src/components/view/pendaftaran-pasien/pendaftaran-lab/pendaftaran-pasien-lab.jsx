@@ -1,14 +1,12 @@
 "use client";
 
 import React, { Fragment, useState, useCallback } from "react";
-
 import { useForm } from "react-hook-form";
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
-
 import { pemeriksaRadiologi, tindakanDataConfig } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 export default function PendaftaranPasienLab() {
   const { setValue } = useForm();
   // fungsi untuk melakukan select provinsi
@@ -119,49 +117,48 @@ export default function PendaftaranPasienLab() {
           })),
           rules: { required: "Provinsi is required" },
           colSize: 6,
-          onChangeCallback: (value) => handleChange("provinsi", value),
+          onChangeCallback: (value) => handleChange("pasien","provinsi", value),
         },
         {
-          type: "select",
-          id: "pasien_kabupaten",
-          label: "Kabupaten Pasien",
-          name: "pasien_kabupaten",
-          placeholder: "Pilih Kabupaten",
-          options: pasienFilteredKabupaten.map((item) => ({
-            label: item.nama,
-            value: item.nama,
-          })),
-          rules: { required: "Kabupaten is required" },
-          colSize: 6,
-          onChangeCallback: (value) => handleChange("kabupaten", value),
+            type: "select",
+            id: "pasien_kabupaten",
+            label: "Kabupaten Pasien",
+            name: "pasien_kabupaten",
+            placeholder: "Pilih Kabupaten",
+            options: pasienFilteredKabupaten.map((item) => ({
+              label: item.nama,
+              value: item.nama,
+            })),
+            rules: { required: "Kabupaten is required" },
+            colSize: 6,
+            onChangeCallback: (value) => handleChange("pasien","kabupaten", value),
         },
         {
-          type: "select",
-          id: "pasien_kecamatan",
-          label: "Kecamatan Pasien",
-          name: "pasien_kecamatan",
-          placeholder: "Pilih Kecamatan",
-          options: pasienFilteredKecamatan.map((item) => ({
-            label: item.nama,
-            value: item.nama,
-          })),
-          rules: { required: "Kecamatan is required" },
-          colSize: 6,
-          onChangeCallback: (value) => handleChange("kecamatan", value),
+            type: "select",
+            id: "pasien_kecamatan",
+            label: "Kecamatan Pasien",
+            name: "pasien_kecamatan",
+            placeholder: "Pilih Kecamatan",
+            options: pasienFilteredKecamatan.map((item) => ({
+              label: item.nama,
+              value: item.nama,
+            })),
+            rules: { required: "Kecamatan is required" },
+            colSize: 6,
+            onChangeCallback: (value) => handleChange("pasien","kecamatan", value),
         },
         {
-          type: "select",
-          id: "pasien_kelurahan",
-          label: "Kelurahan Pasien",
-          name: "pasien_kelurahan",
-          placeholder: "Pilih Kelurahan",
-          options: pasienFilteredKelurahan.map((item) => ({
-            label: item,
-            value: item,
-          })),
-          rules: { required: "Kelurahan is required" },
-          colSize: 6,
-          onChangeCallback: (value) => handleChange("kelurahan", value),
+            type: "select",
+            id: "pasien_kelurahan",
+            label: "Kelurahan Pasien",
+            name: "pasien_kelurahan",
+            placeholder: "Pilih Kelurahan",
+            options: pasienFilteredKelurahan.map((item) => ({
+              label: item,
+              value: item,
+            })),
+            rules: { required: "Kelurahan is required" },
+            colSize: 6,
         },
         {
           type: "textarea",
@@ -434,7 +431,8 @@ export default function PendaftaranPasienLab() {
         title="Registrasi laboratorium"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={"/pendaftaran/pendaftaran-pasien-medical-check-up"}
+        backPath={"/pendaftaran/pendaftaran-pasien-laboratorium"}
+        isAddMode={true}
       />
     </Fragment>
   );

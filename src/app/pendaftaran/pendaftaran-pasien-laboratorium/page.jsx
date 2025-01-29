@@ -1,8 +1,9 @@
-import DashboardAdmisiLab from "@/components/view/pendaftaran-pasien/pendaftaran-lab/dashboard-lab"
 import React from "react"
+import DashboardAdmisiLab from "@/components/view/pendaftaran-pasien/pendaftaran-lab/dashboard-lab";
+import styles from "@/app/page.module.css";
 const PagesAdmisiLaboratorium = ( ) => {
   return (
-    <div>
+    <div className={styles.page}>
       <DashboardAdmisiLab />
     </div>
   )

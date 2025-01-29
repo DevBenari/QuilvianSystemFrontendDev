@@ -2,7 +2,7 @@
 import React, { Fragment, memo } from "react";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useForm } from "react-hook-form";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 const FormAddAsuransiViews = () => {
     const router = useRouter();
@@ -371,6 +371,7 @@ const FormAddAsuransiViews = () => {
                 formConfig={formFields}
                 onSubmit={handleSubmit}
                 backPath={`/MasterData/master-asuransi/daftar-asuransi`}
+                isAddMode={true}
             />
         </Fragment>
     )

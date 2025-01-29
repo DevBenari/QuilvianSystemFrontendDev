@@ -1,9 +1,9 @@
 "use client";
 
-import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
+import React, { Fragment,memo } from "react";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 export const PendaftaranPasienLuarOptik = memo(() => {
   const formFields = [

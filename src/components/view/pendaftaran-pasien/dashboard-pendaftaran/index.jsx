@@ -1,5 +1,5 @@
 'use client'
-import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard"
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard"
 import { daftarPasien } from "@/utils/config"
 import React, { memo, useState} from "react"
 import { Row, Col,Button, Table} from "react-bootstrap"

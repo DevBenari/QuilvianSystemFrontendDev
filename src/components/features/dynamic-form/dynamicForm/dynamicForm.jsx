@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button,} from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -13,10 +13,11 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
-import DistanceField from "@/components/ui/distance-filed";
 import SearchableSelectField from "@/components/ui/select-field-search";
+import ButtonNav from "@/components/ui/button-navigation";
+import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({ title, formConfig, onSubmit }) => {
+const DynamicForm = ({ title, formConfig, onSubmit, backPath, isAddMode = false }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -30,7 +31,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     richText: RichTextEditor,
     signature: SignaturePad,
     time: TimeField,
-    distance: DistanceField,
+    number: NumberField,
     searchSelect: SearchableSelectField,
   };
 
@@ -61,7 +62,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
       name,
       label,
       placeholder,
-      type,
+      type, 
       rules,
       className = "mb-3",
       readOnly = false,
@@ -73,6 +74,7 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
       rows,
       date,
       customRender,
+      colSize,
       ...otherProps // Capture all other props
     } = field;
 
@@ -115,7 +117,21 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
     }
 
     return (
-      <Component key={id} {...sanitizedProps} options={options} rows={rows} />
+      <Component
+        key={id}
+        {...sanitizedProps}
+        options={options}
+        rows={rows}
+        control={methods.control}
+        value={value}
+        id={id}
+        name={name}
+        label={label}
+        placeholder={placeholder}
+        rules={rules}
+        disabled={!isEditing || disabled} // Disabled jika bukan mode edit
+        {...otherProps}
+      />
     );
   };
 
@@ -127,83 +143,106 @@ const DynamicForm = ({ title, formConfig, onSubmit }) => {
    * @param {(data: any) => void} props.onSubmit - Callback for form submission.
    */
 
+  const [isEditing, setIsEditing] = useState(isAddMode); // Mulai editable jika add mode
+
   const methods = useForm({
     defaultValues: formConfig.reduce((defaults, section) => {
       section.fields.forEach((field) => {
         defaults[field.name] = field.value || "";
       });
-      return defaults;
+      return defaults; 
     }, {}),
-    mode: "onSubmit",
+    mode: "onChange", // Menangani validasi secara dinamis
   });
-  const { watch } = methods;
-  const handleSubmit = (data) => {
-    try {
-      if (onSubmit) {
-        onSubmit(data);
-      } else {
-        console.log("Form data:", data);
+
+  const handleEdit = () => setIsEditing(true);
+  const handleCancel = () => setIsEditing(false);
+
+
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+    handleSubmit: formSubmit,
+  } = methods;
+
+  const kewarganegaraan = watch("kewarganegaraan");
+  const negara = watch("negara");
+
+  useEffect(() => {
+      if (kewarganegaraan === "WNI") {
+        setValue("negara", "Indonesia");
+      } else if (kewarganegaraan === "WNA" && negara !== negara) {
+        setValue("negara", negara);
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
-  const shouldHideField = (field) => {
-    if (typeof field.hide === "function") {
-      return field.hide(watch());
-    }
-    return field.hide;
-  };
+    }, [kewarganegaraan, negara, setValue]);
+
+    const shouldHideField = (field) => {
+      if (typeof field.hide === "function") {
+        return field.hide(watch());
+      }
+      return field.hide;
+    };
 
   return (
     <FormProvider {...methods}>
       <Row>
-        <div className="iq-card" style={{ marginTop: "50px" }}>
-          <div className="iq-card-header d-flex justify-content-between ">
-            <div className="iq-header-title ">
+        <div className="iq-card pt-2">
+          <div className="iq-card-header d-flex justify-content-between">
+            <div className="iq-header-title">
               <h3 className="card-title tracking-wide">{title}</h3>
             </div>
+            <div className="d-flex gap-2">
+              <ButtonNav
+                className="btn btn-secondary"
+                label="Kembali"
+                path={backPath}
+                icon="ri-arrow-left-line"
+              />
+              {!isAddMode && !isEditing && ( // Hanya tampil jika bukan add mode dan belum edit
+                <Button className="btn btn-primary" onClick={handleEdit}>
+                  <i className="ri-edit-2-line"></i>
+                  Edit
+                </Button>
+              )}
+              {!isAddMode && isEditing && ( // Tombol cancel hanya tampil di mode edit
+                <Button className="btn btn-danger" onClick={handleCancel}>
+                  Cancel
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="card-body">
-            <Form onSubmit={methods.handleSubmit(handleSubmit)}>
-              {formConfig.map((section, sectionIndex) => (
-                <div
-                  key={`section-${sectionIndex}`}
-                  className="iq-card-header mt-3"
-                >
+          <div className="card-body py-3">
+            <Form onSubmit={formSubmit(onSubmit)}>
+              {formConfig.map((section, index) => (
+                <div key={`section-${index}`} className="iq-card-header mt-3">
                   {section.section && (
                     <div className="iq-header-title">
                       <h4 className="mb-3">{section.section}</h4>
                     </div>
                   )}
-                  <Row
-                    className={
-                      section.layout === "inline"
-                        ? "d-flex align-items-center"
-                        : ""
+                  <Row 
+                    className={section.layout === "inline"
+                    ? "d-flex align-items-center"
+                    : ""
                     }
                   >
                     {section.fields
-                      .filter((field) => !shouldHideField(field)) // Filter out hidden fields
-                      .map((field, fieldIndex) => (
-                        <Col
-                          key={field.id || fieldIndex}
-                          lg={field.colSize || 6}
-                        >
-                          {field.customRender
-                            ? field.customRender({
-                                methods,
-                                watchValues: watch(),
-                              })
-                            : renderField(field)}
+                      .filter((field) => !shouldHideField(field))
+                      .map(({ colSize, ...field }, fieldIndex) => (
+                        <Col key={field.id || fieldIndex} lg={colSize || 6}>
+                          {renderField(field)}
                         </Col>
                       ))}
                   </Row>
                 </div>
               ))}
-              <Button type="submit" className="btn btn-primary mx-3 my-3">
-                Kirim
-              </Button>
+              {(isAddMode || isEditing) && ( // Tombol simpan hanya tampil di add mode atau mode edit
+                <Button type="submit" className="btn btn-primary m-3">
+                  <i className="ri-save-line"></i>
+                  Simpan
+                </Button>
+              )}
             </Form>
           </div>
         </div>

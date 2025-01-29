@@ -1,8 +1,6 @@
 "use client"
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
-import { type } from "@amcharts/amcharts5";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm";
 import React, {memo} from "react";
-import { FormProvider, useForm } from "react-hook-form";
 const AddPerjanjianPasien = memo(() => {
     // const {setValue} = useForm();
     const formFields = [

@@ -224,11 +224,11 @@ export const menus = {
       subItems: [
         {
           title: "Data Peralatan Medis",
-          href: "/master-data/data-peralatan-medis",
+          href: "/MasterData/master-peralatan-medis/list-peralatan-medis",
         },
         {
           title: "Kategori Peralatan Medis",
-          href: "/master-data/kategori-peralatan-medis",
+          href: "/MasterData/master-peralatan-medis/kategori-peralatan-medis",
         },
       ],
     },

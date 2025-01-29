@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useForm } from "react-hook-form";
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 const FormAddPegawai = memo(() => {
     const router = useRouter();
@@ -373,10 +373,11 @@ const FormAddPegawai = memo(() => {
    return (
     <Fragment>
       <DynamicForm
-        title="Form Penambahan Data Pegawai"
+        title="Tambah Data Pegawai"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={`/MasterData/master-pegawai/daftar-pegawai`}
+        backPath="/MasterData/master-pegawai/daftar-pegawai"
+        isAddMode={true}
       />
     </Fragment>
    ) 

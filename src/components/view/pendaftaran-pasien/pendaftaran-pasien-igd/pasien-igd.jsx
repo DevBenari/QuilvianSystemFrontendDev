@@ -1,6 +1,6 @@
 "use client";
 
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import useSelectKelas from "@/lib/hooks/useSelectKelas";
 import { datakelas } from "@/utils/dataKelas";
 import React, { Fragment } from "react";

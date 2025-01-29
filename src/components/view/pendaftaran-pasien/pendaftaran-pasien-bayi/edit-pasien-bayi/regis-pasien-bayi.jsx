@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useState, useEffect } from "react";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getBayiById } from "@/lib/hooks/pasienBayi/getbyid";
 import { BayiEdit } from "@/lib/hooks/pasienBayi/edit";

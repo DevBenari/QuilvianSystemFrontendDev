@@ -1,5 +1,5 @@
 'use client'
-import DynamicForm from '@/components/features/dynamicForm/dynamicForm';
+import DynamicForm from '@/components/features/dynamic-form/dynamicForm/dynamicForm';
 import React, {Fragment, memo} from 'react'
 import { useForm } from 'react-hook-form';
 const FormAddKategoriPeralatanMedis = memo(() => {
@@ -149,6 +149,7 @@ const FormAddKategoriPeralatanMedis = memo(() => {
                     placeholder:"COA Other In Patient",
                     rules:{required:"COA Other In Patient is required"},
                     colSize:6, 
+                    className: "mt-3"
                 },
                 {
                     type:"select",
@@ -162,6 +163,7 @@ const FormAddKategoriPeralatanMedis = memo(() => {
                     placeholder:"COA Other Out Patient",
                     rules:{required:"COA Other Out Patient is required"},
                     colSize:6,
+                    className: "mt-3"
                 },
 
             ]
@@ -179,6 +181,7 @@ const FormAddKategoriPeralatanMedis = memo(() => {
                 formConfig={formFields}
                 onSubmit={handleSubmit}
                 backPath={`/MasterData/master-peralatan-medis/kategori-peralatan-medis`}
+                isAddMode={true}
             />
         </Fragment>
     )

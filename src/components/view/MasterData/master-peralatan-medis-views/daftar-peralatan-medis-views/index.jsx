@@ -1,11 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import CustomSearchFilter from '@/components/features/CustomSearchComponen/Form-search-dashboard';
 import ButtonNav from '@/components/ui/button-navigation';
 import { dataPasienRadiologi } from '@/utils/dataPerjanjian';
 import { Row, Col } from 'react-bootstrap';
 import { FormProvider, useForm } from 'react-hook-form';
 import CustomTableComponent from '@/components/features/CustomTable/custom-table';
+import CustomSearchFilter from '@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard';
 const ListTablePeralatanMedis = () => {
     const methods = useForm();
     const [filteredPatients, setFilteredPatients] = useState(dataPasienRadiologi);
@@ -64,10 +64,8 @@ const ListTablePeralatanMedis = () => {
                                         { key: 'telepon', label: 'No Telp' },
                                     ]}
                                     itemsPerPage={10}
-                                    actionButtons={[
-                                        { label: 'Tarif', variant: 'primary', onClick: (item) => handleSetTarif(item) },
-                                        { label: 'edit', variant: 'info', onClick: handleEditPatient },
-                                    ]}
+                                    slugConfig={{ textField: 'nama', idField: 'id' }}
+                                    basePath="/MasterData/master-peralatan-medis/edit-peralatan-medis"
                                 />
                             </div>
                         </div>
