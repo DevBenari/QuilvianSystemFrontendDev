@@ -65,7 +65,7 @@ const TableListDaftarPegawai = () => {
                                         { key: 'telepon', label: 'No Telp' },
                                     ]}
                                     slugConfig={{ textField: 'nama', idField: 'id' }}
-                                    basePath="/MasterData/master-pegawai"
+                                    basePath="/MasterData/master-pegawai/edit-pegawai"
                                     itemsPerPage={10}
                                 />
                             </div>

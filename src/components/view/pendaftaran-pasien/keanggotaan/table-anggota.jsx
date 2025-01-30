@@ -2,11 +2,11 @@
 
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import DataTable from "@/components/features/viewDataTables/dataTable";
 import { useAnggota } from "@/lib/hooks/keanggotaan";
 import { useRouter } from "next/navigation";
 import { Col } from "react-bootstrap";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const TableAnggota = memo(() => {
   const methods = useForm();
@@ -60,13 +60,19 @@ const TableAnggota = memo(() => {
         {loading && <div>Loading...</div>}
         {error && <div className="text-danger">{error}</div>}
         {!loading && !error && (
-          <DataTable
-            headers={headers}
-            data={members}
-            id="id"
-            onAdd={handleAdd}
-            rowsPerPage={5}
-            title="Anggota"
+          <CustomTableComponent
+            data={filteredPatients}
+            columns={[
+                { key: 'id', label: 'ID' },
+                { key: 'nomorRekamMedis', label: 'No Rekam Medis' },
+                { key: 'date', label: 'Tanggal' },
+                { key: 'nama', label: 'Nama Pasien' },
+                { key: 'jenisKelamin', label: 'Jenis Kelamin' },
+                { key: 'umur', label: 'Umur' },
+            ]}
+            itemsPerPage={10}
+            slugConfig={{ textField: 'nama', idField: 'id' }}
+            basePath="/pendaftaran/pendaftaran-pasien-laboratorium/edit-pasien-lab"
           />
         )}
       </>
