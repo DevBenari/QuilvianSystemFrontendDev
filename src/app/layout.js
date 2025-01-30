@@ -1,27 +1,28 @@
-
 // import "./globals.css";
-import '../style/bootstrap.min.css'
-import '../style/typography.css'
-import '../style/style.css'
-import '../style/style-rtl.css'
-import '../style/responsive.css'
+import "../style/bootstrap.min.css";
+import "../style/typography.css";
+import "../style/style.css";
+import "../style/style-rtl.css";
+import "../style/responsive.css";
 // import './assets/fullcalendar/core/main.css'
 // import './assets/fullcalendar/daygrid/main.css'
 // import './assets/fullcalendar/timegrid/main.css'
 // import './assets/fullcalendar/list/main.css'
-import '../style/flatpickr.min.css'
-import dynamic from 'next/dynamic'
-import { Fragment } from 'react'
-import { Container } from 'react-bootstrap'
-import SideBarWrapper from '@/components/features/sidebar/sidebar-wrapper'
-import NavbarsWrapper from '@/components/features/navbars/navbars-wrapper'
-import FooterWrapper from '@/components/features/footers/footer-wrapper'
-import Sidebar from '@/components/features/sidebar/sidebar'
-import ContentPage from '@/components/ui/content-page'
+import "../style/flatpickr.min.css";
+import dynamic from "next/dynamic";
+import { Fragment } from "react";
+import { Container } from "react-bootstrap";
+import SideBarWrapper from "@/components/features/sidebar/sidebar-wrapper";
+import NavbarsWrapper from "@/components/features/navbars/navbars-wrapper";
+import FooterWrapper from "@/components/features/footers/footer-wrapper";
+import Sidebar from "@/components/features/sidebar/sidebar";
+import ContentPage from "@/components/ui/content-page";
 // import "choices.js/public/assets/styles/choices.min.css";
 // import "flatpickr/dist/flatpickr.css";
 
-const ScrollLayout = dynamic(() => import('../components/ui/scrollLayout'), {ssr: false});
+const ScrollLayout = dynamic(() => import("../components/ui/scrollLayout"), {
+  ssr: false,
+});
 
 export const metadata = {
   title: "Quilvian System",
@@ -31,17 +32,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={''}>
+      <body className={""}>
         <ScrollLayout>
           <Fragment>
             <SideBarWrapper>
               <ContentPage>
                 <NavbarsWrapper />
-                    <Container fluid>
-                      {children}
-                    </Container>
-                    <FooterWrapper />  
-              </ContentPage>          
+                <Container fluid>{children}</Container>
+                <FooterWrapper />
+              </ContentPage>
             </SideBarWrapper>
           </Fragment>
         </ScrollLayout>
