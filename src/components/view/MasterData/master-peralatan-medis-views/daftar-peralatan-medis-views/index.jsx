@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-
 import ButtonNav from "@/components/ui/button-navigation";
 import { dataPasienRadiologi } from "@/utils/dataPerjanjian";
 import { Row, Col } from "react-bootstrap";
@@ -76,18 +74,8 @@ const ListTablePeralatanMedis = () => {
                     { key: "telepon", label: "No Telp" },
                   ]}
                   itemsPerPage={10}
-                  actionButtons={[
-                    {
-                      label: "Tarif",
-                      variant: "primary",
-                      onClick: (item) => handleSetTarif(item),
-                    },
-                    {
-                      label: "edit",
-                      variant: "info",
-                      onClick: handleEditPatient,
-                    },
-                  ]}
+                  slugConfig={{ textField: "nama", idField: "id" }}
+                  basePath="/MasterData/master-peralatan-medis/edit-peralatan-medis"
                 />
               </div>
             </div>

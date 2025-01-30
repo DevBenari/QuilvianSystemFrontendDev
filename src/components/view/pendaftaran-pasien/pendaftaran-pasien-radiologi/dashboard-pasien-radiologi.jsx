@@ -1,12 +1,11 @@
 "use client";
 import React, { useState } from "react";
-
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import ButtonNav from "@/components/ui/button-navigation";
 import { daftarPasien } from "@/utils/config";
 import { Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 const DashBoardAdmisiRadiologi = () => {
   const methods = useForm();
   const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
@@ -61,6 +60,8 @@ const DashBoardAdmisiRadiologi = () => {
                     { key: "umur", label: "Umur" },
                   ]}
                   itemsPerPage={10}
+                  slugConfig={{ textField: "nama", idField: "id" }}
+                  basePath="/pendaftaran/pendaftaran-pasien-radiologi/edit-pasien-radiologi"
                 />
               </div>
             </div>

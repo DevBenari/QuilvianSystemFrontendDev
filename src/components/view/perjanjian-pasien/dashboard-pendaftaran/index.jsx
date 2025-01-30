@@ -2,47 +2,15 @@
 
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import DataTable from "@/components/features/viewDataTables/dataTable";
-import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { dataSemuaPerjanjian } from "@/utils/dataPerjanjian";
 import { Col, Row } from "react-bootstrap";
-import DateInput from "@/components/ui/date-input";
-import SearchableSelectField from "@/components/ui/select-field-search";
 import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
-import { useRouter } from "next/navigation";
 import ButtonNav from "@/components/ui/button-navigation";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const DashboardPerjanjian = memo(() => {
   const methods = useForm();
   const [filteredData, setFilteredData] = useState(dataSemuaPerjanjian); // Gunakan data dummy untuk tabel
-  // const router = useRouter();
-  // const headers = [
-  //   "NO",
-  //   "NO RM",
-  //   "NAMA",
-  //   "NO REGISTRASI",
-  //   "PENJAMIN",
-  //   "TIPE PERJANJIAN",
-  //   "TEL REGIS",
-  //   "DOKTER",
-  //   "DEPARTEMEN",
-  //   "USER",
-  // ];
-
-  // // Format data untuk ditampilkan di tabel
-  // const members = filteredData.map((item, index) => ({
-  //   no: index + 1,
-  //   nomorRekamMedis: item.nomorRekamMedis,
-  //   nama: item.nama,
-  //   no_registrasi: item.no_registrasi,
-  //   penjamin: item.penjamin,
-  //   tipe_perjanjian: item.tipe_perjanjian,
-  //   tanggal_regis: item.tanggal_regis,
-  //   dokter: item.dokter,
-  //   departemen: item.departemen,
-  //   user: item.user,
-  // }));
 
   const handleRemovePatient = (id) => {
     const updatedPatients = filteredData.filter((patient) => patient.id !== id);

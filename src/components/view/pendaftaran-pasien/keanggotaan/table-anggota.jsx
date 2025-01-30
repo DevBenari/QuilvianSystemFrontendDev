@@ -2,12 +2,10 @@
 
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-
+import DataTable from "@/components/features/viewDataTables/dataTable";
 import { useAnggota } from "@/lib/hooks/keanggotaan";
 import { useRouter } from "next/navigation";
 import { Col } from "react-bootstrap";
-
-import DataTable from "@/components/features/custom-table/viewDataTables/dataTable";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 
 const TableAnggota = memo(() => {

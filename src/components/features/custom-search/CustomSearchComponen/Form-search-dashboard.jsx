@@ -150,6 +150,7 @@ const CustomSearchFilter = ({
           <SelectField
             name="ByTime"
             label="Filter By : *"
+            placeholder="Select Option"
             options={[
               { value: "Today", label: "Today" },
               { value: "Last Day", label: "Last Day" },

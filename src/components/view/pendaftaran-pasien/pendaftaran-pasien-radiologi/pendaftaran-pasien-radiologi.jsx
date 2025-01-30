@@ -7,7 +7,7 @@ import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 const PendaftaranPasienRadiologi = () => {
   const router = useRouter();
@@ -405,6 +405,7 @@ const PendaftaranPasienRadiologi = () => {
         formConfig={formFields}
         onSubmit={handleSubmit}
         backPath={"/pendaftaran/pendaftaran-pasien-radiologi"}
+        isAddMode={true}  
       />
     </Fragment>
   );

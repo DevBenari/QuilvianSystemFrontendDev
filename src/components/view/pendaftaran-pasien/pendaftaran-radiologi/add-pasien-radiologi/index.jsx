@@ -1,5 +1,5 @@
 "use client"
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm";
 import React, { memo, useState } from "react"
 import { addPromo } from "@/lib/hooks/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook

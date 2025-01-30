@@ -4,7 +4,6 @@ import { Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/custom-table/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-
 import { useEffect, useState } from "react";
 
 import TextField from "@/components/ui/text-field";
@@ -24,7 +23,6 @@ const TableAboutOperasi = () => {
   });
 
   const { aboutOperasi, loading, error } = useAboutOperasi();
-
   const [filteredOperasi, setFilteredOperasi] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);

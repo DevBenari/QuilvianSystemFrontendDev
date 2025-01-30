@@ -4,7 +4,6 @@ import React, { Fragment, memo, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useForm } from "react-hook-form";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-
 const FormAddPeralatanMedis = memo(() => {
   const router = useRouter();
   const { setValue } = useForm();
@@ -264,6 +263,7 @@ const FormAddPeralatanMedis = memo(() => {
         formConfig={formFields}
         onSubmit={handleSubmit}
         backPath={`/MasterData/master-peralatan-medis/list-peralatan-medis`}
+        isAddMode={true}
       />
     </Fragment>
   );

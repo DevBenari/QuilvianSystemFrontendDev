@@ -4,7 +4,7 @@ import React, { Fragment, useState, useEffect, useCallback } from "react";
 
 import { dataFasilitas } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import DynamicForm from "@/components/features/dynamicForm/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 export const FormAdmisiFasilitas = () => {
   const formFields = [

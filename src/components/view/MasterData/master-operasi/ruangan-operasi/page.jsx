@@ -1,18 +1,10 @@
 "use client";
-
 import { Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-
 import { useEffect, useState } from "react";
-
-import ButtonNav from "@/components/ui/button-navigation";
 import CustomTableComponent from "@/components/features/custom-table/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-
-import { useRouter } from "next/navigation";
-
 import { useRuanganOperasi } from "@/lib/hooks/manajemen-operasi/ruangan-operasi";
-import { getbyidRuanganOperasi } from "@/lib/hooks/manajemen-operasi/ruangan-operasi/getById";
 import { RuanganOperasiEdit } from "@/lib/hooks/manajemen-operasi/ruangan-operasi/edit";
 import { addRuanganOperasi } from "@/lib/hooks/manajemen-operasi/ruangan-operasi/add";
 

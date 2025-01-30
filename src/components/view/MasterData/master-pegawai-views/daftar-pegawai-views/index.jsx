@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-
 import ButtonNav from "@/components/ui/button-navigation";
 import { dataPasienRadiologi } from "@/utils/dataPerjanjian";
 import { Row, Col } from "react-bootstrap";
@@ -74,19 +73,9 @@ const TableListDaftarPegawai = () => {
                     { key: "penjamin", label: "Penjamin" },
                     { key: "telepon", label: "No Telp" },
                   ]}
+                  slugConfig={{ textField: "nama", idField: "id" }}
+                  basePath="/MasterData/master-pegawai"
                   itemsPerPage={10}
-                  actionButtons={[
-                    {
-                      label: "edit",
-                      variant: "info",
-                      onClick: handleEditPatient,
-                    },
-                    {
-                      label: "Remove",
-                      variant: "danger",
-                      onClick: (item) => handleRemovePatient(item.id),
-                    },
-                  ]}
                 />
               </div>
             </div>

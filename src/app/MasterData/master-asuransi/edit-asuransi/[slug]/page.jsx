@@ -1,60 +1,94 @@
-'use client'
-import React, { Fragment, memo } from "react";
-import { useRouter } from "next/navigation"; // Import the useRouter hook
-import { useForm } from "react-hook-form";
-import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+'use client';
+import React, { useState, useEffect, Fragment } from 'react';
+import { useRouter } from 'next/navigation';
+import DynamicForm from '@/components/features/dynamic-form/dynamicForm/dynamicForm';
+import { extractIdFromSlug } from '@/utils/slug';
+import { dataPasienRadiologi } from '@/utils/dataPerjanjian';
 
-const FormAddAsuransiViews = () => {
-    const router = useRouter();
-    const { setValue } = useForm();
-    const formFields = [
+const AsuransiEditPage = ({params}) => {
+  const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
+  const [userData, setUserData] = useState(dataPasienRadiologi);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log('Fetching data for slug:', params.slug);
+        const id = extractIdFromSlug(params.slug);
+        console.log('Extracted ID:', id);
+    
+        const user = dataPasienRadiologi.find((u) => u.id === parseInt(id, 10));
+        console.log('Found User:', user);
+    
+        if (!user) {
+          throw new Error('User not found');
+        }
+    
+        setUserData(user);
+      } catch (error) {
+          console.error('Error fetching user:', error);
+          router.push('/404');
+      } finally {
+          setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [params.slug, router]);
+    
+  const handleSubmit = async (data) => {
+    console.log("data", data);
+  };
+  
+
+  const formFields = [
+    {
+      fields:
+      [
         {
-            fields:
-            [
-                {
-                    type: "text",
-                    id: "kodePerusahaan",
-                    label: "Kode Perusahaan",
-                    name: "kodePerusahaan",
-                    placeholder: "Kode Perusahaan",
-                    rules: { required: "Kode Perusahaan is required" },
-                    colSize: 6,
-                },
-                {
-                    type: "text",
-                    id: "namaPerusahaan",
-                    label: "Nama Perusahaan",
-                    name: "namaPerusahaan",
-                    placeholder: "Nama Perusahaan",
-                    rules: { required: "Nama Perusahaan is required" },
-                    colSize: 6,
-                },
-                {
-                    type:"text",
-                    id: "tarifGolongan",
-                    label: "Tarif Golongan Perusahaan",
-                    name: "tarifGolongan",
-                    placeholder: "Tarif Golongan Perusahaan",
-                    rules: { required: "Tarif Golongan Perusahaan is required" },
-                    colSize: 6,
-                },
-                {
-                    type:"select",
-                    id: "bankAccount",
-                    label:"Nama Bank",
-                    name: "bankAccount",
-                    placeholder: "Nama Bank",
-                    options:[
-                        {label:"BCA",value:"bca"},
-                        {label:"BNI",value:"bni"},
-                        {label:"BRI",value:"bri"},
-                        {label:"Mandiri",value:"mandiri"},
-                        {label:"Permata",value:"permata"},
-
-                    ],
-                    rules: { required: "Nama Bank is required" },
-                    colSize: 6,
-                },
+          type: "text",
+          id: "kodePerusahaan",
+          label: "Kode Perusahaan",
+          name: "kodePerusahaan",
+          placeholder: "Kode Perusahaan",
+          rules: { required: "Kode Perusahaan is required" },
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "namaPerusahaan",
+          label: "Nama Perusahaan",
+          name: "namaPerusahaan",
+          placeholder: "Nama Perusahaan",
+          rules: { required: "Nama Perusahaan is required" },
+          colSize: 6,
+        },
+        {
+          type:"text",
+          id: "tarifGolongan",
+          label: "Tarif Golongan Perusahaan",
+          name: "tarifGolongan",
+          placeholder: "Tarif Golongan Perusahaan",
+          rules: { required: "Tarif Golongan Perusahaan is required" },
+          colSize: 6,
+        },
+        {
+          type:"select",
+          id: "bankAccount",
+          label:"Nama Bank",
+          name: "bankAccount",
+          placeholder: "Nama Bank",
+          options:[
+            {label:"BCA",value:"bca"},
+            {label:"BNI",value:"bni"},
+            {label:"BRI",value:"bri"},
+            {label:"Mandiri",value:"mandiri"},
+            {label:"Permata",value:"permata"},
+          ],
+          rules: { required: "Nama Bank is required" },
+          colSize: 6,
+      },
                 {
                     type:"number",
                     id : "discount",
@@ -358,24 +392,48 @@ const FormAddAsuransiViews = () => {
                  }
             ]
         }
-    ]
-    const handleSubmit = (data) => {
-    
-        console.log("Form Data:", data);
-      ;
-    };
+  ]
+      if (isLoading) {
+        return (
+            <div className="iq-card">
+                <div className="card-body text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!userData) {
+        return (
+            <div className="iq-card">
+                <div className="card-body">
+                    <div className="alert alert-danger">
+                        User not found or error loading data
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <Fragment>
-            <DynamicForm
-                title="Form Penambahan Data Asuransi"
-                formConfig={formFields}
-                onSubmit={handleSubmit}
-                backPath={`/MasterData/master-asuransi/daftar-asuransi`}
-                isAddMode={true}
-            />
-        </Fragment>
+      <Fragment>
+        <DynamicForm
+            title="Edit Data Asuransi"
+            formConfig={formFields.map((section) => ({
+                ...section,
+                fields: section.fields.map((field) => ({
+                ...field,
+                value: userData[field.name] || "", // Data dari userData sesuai dengan key di name
+                })),
+            }))} 
+            onSubmit={handleSubmit}
+            backPath={`/MasterData/master-asuransi/daftar-asuransi`}
+            isAddMode={false}
+        />
+      </Fragment>
     )
 }
 
-
-export default FormAddAsuransiViews;
+export default AsuransiEditPage
