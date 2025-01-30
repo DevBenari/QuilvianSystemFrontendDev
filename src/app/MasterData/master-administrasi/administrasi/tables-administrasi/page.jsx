@@ -3,14 +3,14 @@ import React, { useState } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
 import { Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import { administrasiMasterData } from "@/utils/masterData";
+import { administrasiRawatJalan } from "@/utils/masterData";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import CustomTableComponent from "@/components/features/custom-table/CustomTable/custom-table";
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const TableListDaftarAdministrasi = () => {
   const methods = useForm();
   const [filteredPatients, setFilteredPatients] = useState(
-    administrasiMasterData
+    administrasiRawatJalan
   );
   const handleRemovePatient = (id) => {
     const updatedPatients = filteredPatients.filter(
@@ -37,7 +37,7 @@ const TableListDaftarAdministrasi = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={administrasiMasterData}
+            data={administrasiRawatJalan}
             setFilteredPatients={setFilteredPatients}
             onFilteredPatients={filteredPatients}
           />
@@ -54,7 +54,7 @@ const TableListDaftarAdministrasi = () => {
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-administrasi/add-administrasi"
+                  path="/MasterData/master-administrasi/administrasi/add-administrasi"
                   label="Add Administrasi"
                   icon="ri-add-fill"
                   size="sm"
@@ -75,6 +75,8 @@ const TableListDaftarAdministrasi = () => {
                   ]}
                   itemsPerPage={10}
                   onRemove={handleRemovePatient}
+                  slugConfig={{ textField: "namaAdministrasi", idField: "id" }}
+                  basePath="/MasterData/master-administrasi/administrasi/edit-rawat-jalan"
                 />
               </div>
             </div>

@@ -255,10 +255,16 @@ export const menus = {
       subItems: [
         {
           title: "Tarif Admisi",
-          href: "/MasterData/master-administrasi/tables-administrasi",
+          href: "/MasterData/master-administrasi/administrasi/tables-administrasi",
         },
-        { title: "Tarif Rawat Jalan", href: "/MasterData/tarif-rawat-jalan" },
-        { title: "Tarif Rawat Inap", href: "/MasterData/tarif-rawat-inap" },
+        {
+          title: "Tarif Rawat Jalan",
+          href: "/MasterData/master-administrasi/administrasi-rawat-jalan",
+        },
+        {
+          title: "Tarif Rawat Inap",
+          href: "/MasterData/master-administrasi/administrasi-rawat-inap",
+        },
       ],
     },
     {
@@ -273,7 +279,10 @@ export const menus = {
     {
       title: "Poliklinik",
       subItems: [
-        { title: "Daftar Poliklinik", href: "/MasterData/daftar-poliklinik" },
+        {
+          title: "Data Tindakan Poliklinik",
+          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik",
+        },
         {
           title: "Daftar Tarif Poliklinik",
           href: "/MasterData/daftar-tarif-poliklinik",
@@ -283,27 +292,28 @@ export const menus = {
   ],
 };
 
-export   const menuItems = [
+export const menuItems = [
   {
-    
-    label: 'Pelayanan Kesehatan',
-    key: 'ManajemenKesehatan',
-    pathname: '/',
+    label: "Pelayanan Kesehatan",
+    key: "ManajemenKesehatan",
+    pathname: "/",
     subMenu: [
-      { pathname: '/MasterData', label: 'Master Data', },
-      { pathname: '/pendaftaran', label: 'Admisi', },
-      { pathname: '/dokter', label: 'Pelayanan Dokter', },
-      { pathname: '/IGD', label: 'IGD', },
-    ]
+      { pathname: "/MasterData", label: "Master Data" },
+      { pathname: "/pendaftaran", label: "Admisi" },
+      { pathname: "/dokter", label: "Pelayanan Dokter" },
+      { pathname: "/IGD", label: "IGD" },
+    ],
   },
   {
-    
-    label: 'Pelayanan Medis',
-    key: 'pelayananMedis',
-    pathname: '/pelayanan-medik',
+    label: "Pelayanan Medis",
+    key: "pelayananMedis",
+    pathname: "/pelayanan-medik",
     subMenu: [
-      { pathname: '/pelayanan-medik/instalasi-medik', label: 'Instalasi Rawat Intensif', },
-      { pathname: '/app/List Pasien', label: 'List Pasien', }
-    ]
-  }
+      {
+        pathname: "/pelayanan-medik/instalasi-medik",
+        label: "Instalasi Rawat Intensif",
+      },
+      { pathname: "/app/List Pasien", label: "List Pasien" },
+    ],
+  },
 ];
