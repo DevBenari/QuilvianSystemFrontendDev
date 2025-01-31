@@ -46,7 +46,7 @@ const RawatJalanEdit = ({ params }) => {
           label: "Nama Administrasi",
           name: "namaAdministrasi",
           placeholder: "Masukkan nama administrasi",
-          value: selectedData?.namaAdministrasi || "",
+
           rules: { required: "Nama administrasi wajib diisi" },
           colSize: 6,
         },
@@ -61,7 +61,7 @@ const RawatJalanEdit = ({ params }) => {
             { label: "Pasien Lama", value: "pasienLama" },
             { label: "Pasien OTC", value: "pasienOTC" },
           ],
-          value: selectedData?.tipeAdministrasi || "",
+
           placeholder: "Pilih tipe administrasi",
           rules: { required: "Tipe administrasi wajib dipilih" },
           colSize: 6,
@@ -76,7 +76,7 @@ const RawatJalanEdit = ({ params }) => {
             { label: "Rawat Jalan", value: "rawatJalan" },
             { label: "Rawat Inap", value: "rawatInap" },
           ],
-          value: selectedData?.tipeRawat || "",
+
           placeholder: "Pilih tipe rawat",
           rules: { required: "Tipe rawat wajib dipilih" },
           colSize: 6,
@@ -91,7 +91,7 @@ const RawatJalanEdit = ({ params }) => {
             { label: "Dewasa", value: "dewasa" },
             { label: "Bayi", value: "bayi" },
           ],
-          value: selectedData?.berlaku || "",
+
           placeholder: "Pilih status berlaku",
           rules: { required: "Status berlaku wajib dipilih" },
           colSize: 6,
@@ -107,7 +107,7 @@ const RawatJalanEdit = ({ params }) => {
           label: "Kode C.O.A Rawat Jalan",
           name: "kodeCOARawatJalan",
           placeholder: "Masukkan kode C.O.A untuk rawat jalan",
-          value: selectedData?.kodeCOARawatJalan || "",
+
           colSize: 6,
         },
         {
@@ -116,7 +116,7 @@ const RawatJalanEdit = ({ params }) => {
           label: "Kode C.O.A Rawat Inap",
           name: "kodeCOARawatInap",
           placeholder: "Masukkan kode C.O.A untuk rawat inap",
-          value: selectedData?.kodeCOARawatInap || "",
+
           colSize: 6,
         },
       ],
@@ -182,7 +182,7 @@ const RawatJalanEdit = ({ params }) => {
           title="Edit Data Tindakan"
           formConfig={formFields}
           onSubmit={handleSubmit}
-          backPath={`/MasterData/master-administrasi/administrasi/`}
+          backPath={`/MasterData/master-administrasi/administrasi/tables-administrasi`}
           isAddMode={false}
         />
       </Fragment>

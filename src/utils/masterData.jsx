@@ -268,9 +268,9 @@ export const administrasiRawatJalan = [
     kelompokUsia: "Dewasa",
     departement: "Poli Anak",
     dataTarif: [
-      { groupPerusahaan: "standard", tarif: 20000, skb: 0 },
-      { groupPerusahaan: "asuransi", tarif: 75000, skb: 0 },
-      { groupPerusahaan: "YKKBI", tarif: 65000, skb: 0 },
+      { id: 1, groupPerusahaan: "standard", tarif: 20000, skb: 5000 },
+      { id: 2, groupPerusahaan: "asuransi", tarif: 75000, skb: 10000 },
+      { id: 3, groupPerusahaan: "YKKBI", tarif: 65000, skb: 8000 },
     ],
   },
   {
@@ -281,8 +281,8 @@ export const administrasiRawatJalan = [
     kelompokUsia: "Anak-anak",
     departement: "Farmasi",
     dataTarif: [
-      { groupPerusahaan: "standard", tarif: 30000, skb: 0 },
-      { groupPerusahaan: "asuransi", tarif: 90000, skb: 0 },
+      { id: 4, groupPerusahaan: "standard", tarif: 30000, skb: 7000 },
+      { id: 5, groupPerusahaan: "asuransi", tarif: 90000, skb: 15000 },
     ],
   },
   {
@@ -293,8 +293,8 @@ export const administrasiRawatJalan = [
     kelompokUsia: "Lansia",
     departement: "Radiologi",
     dataTarif: [
-      { groupPerusahaan: "standard", tarif: 40000, skb: 0 },
-      { groupPerusahaan: "YKKBI", tarif: 85000, skb: 0 },
+      { id: 6, groupPerusahaan: "standard", tarif: 40000, skb: 10000 },
+      { id: 7, groupPerusahaan: "YKKBI", tarif: 85000, skb: 20000 },
     ],
   },
 ];

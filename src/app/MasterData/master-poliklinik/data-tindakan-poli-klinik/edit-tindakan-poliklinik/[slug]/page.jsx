@@ -15,12 +15,6 @@ const PoliEditPage = ({ params }) => {
   const [filteredTindakan, setFilteredTindakan] = useState(tarifTindakan);
 
   // Fungsi untuk menangani pengambilan data dari URL slug
-  useEffect(() => {
-    const id = extractIdFromSlug(params.slug); // Ekstrak ID dari slug
-    const data = tarifPoliKlinik.find((item) => item.id === id);
-    setSelectedTarif(data || null); // Simpan data yang ditemukan
-    setIsLoading(false);
-  }, [params.slug]);
 
   // Fungsi untuk menangani perubahan data di tabel
   const handleTableChange = (tableId, updatedData) => {

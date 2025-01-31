@@ -289,6 +289,15 @@ export const menus = {
         },
       ],
     },
+    {
+      title: "Title",
+      subItems: [
+        {
+          title: "Data Title",
+          href: "/MasterData/master-title/table-title",
+        },
+      ],
+    },
   ],
 };
 

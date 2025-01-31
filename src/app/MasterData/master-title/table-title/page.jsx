@@ -1,31 +1,31 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
 
 import { Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import { ManajemenDepartemen } from "@/utils/masterData";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import { useTitle } from "@/lib/hooks/title";
 
-const TableListManajemenDepartemen = () => {
+const TableDataTitle = () => {
   const methods = useForm();
-  const [filteredPatients, setFilteredPatients] = useState(ManajemenDepartemen);
-  const handleRemovePatient = (id) => {
-    const updatedPatients = filteredPatients.filter(
-      (patient) => patient.id !== id
-    );
-    setFilteredPatients(updatedPatients);
-  };
+  const { title, loading, error } = useTitle();
+  const [filteredPatients, setFilteredPatients] = useState(title.data || []);
+
+  useEffect(() => {
+    if (title && Array.isArray(title.data)) {
+      setFilteredPatients(title.data);
+    }
+  }, [title]);
+
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">
             Master Data <br></br>{" "}
-            <span className="letter-spacing fw-bold">
-              List Daftar Departemen
-            </span>
+            <span className="letter-spacing fw-bold">List Daftar Title</span>
           </h2>
           <button
             className="btn btn-dark my-3 mx-3"
@@ -36,7 +36,7 @@ const TableListManajemenDepartemen = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={ManajemenDepartemen}
+            data={title.data}
             setFilteredPatients={setFilteredPatients}
             onFilteredPatients={filteredPatients}
           />
@@ -49,12 +49,12 @@ const TableListManajemenDepartemen = () => {
               <div className="iq-card-header d-flex justify-content-between">
                 <div className="iq-header-title">
                   <h4 className="card-title font-widest">
-                    Tabel Daftar Departemen
+                    Tabel List Daftar Title
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/manajemen-departemen/add-departemen"
-                  label="Add Departemen"
+                  path="/MasterData/master-title/add-title"
+                  label="Add Title"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -65,21 +65,13 @@ const TableListManajemenDepartemen = () => {
                 <CustomTableComponent
                   data={filteredPatients}
                   columns={[
-                    { key: "id", label: "ID" },
-                    { key: "namaDepartemen", label: "Nama Departemen" },
-                    { key: "penanggungJawab", label: "Penanggung Jawab" },
-                    { key: "jamOperasional", label: "Jam Operasional" },
-                    { key: "ruangan", label: "Ruangan" },
-                    { key: "lineTelp", label: "No Telp" },
-                    { key: "tanggalPembuatan", label: "Tanggal Pembuatan" },
-                    { key: "deskripsi", label: "Deskripsi" },
+                    { key: "no", label: "No" }, // Tambahkan kolom nomor urut
+                    { key: "kodeTitle", label: "Kode Title" },
+                    { key: "namaTitle", label: "Nama Title" },
                   ]}
                   itemsPerPage={10}
-                  slugConfig={{
-                    textField: "namaDepartemen",
-                    idField: "id",
-                  }}
-                  basePath="/MasterData/master-departemen/manajemen-departemen/edit-departemen"
+                  slugConfig={{ textField: "namaTitle", idField: "titleId" }} // Menggunakan titleId untuk slug
+                  basePath="/MasterData/master-title/edit-title"
                 />
               </div>
             </div>
@@ -89,4 +81,5 @@ const TableListManajemenDepartemen = () => {
     </FormProvider>
   );
 };
-export default TableListManajemenDepartemen;
+
+export default TableDataTitle;

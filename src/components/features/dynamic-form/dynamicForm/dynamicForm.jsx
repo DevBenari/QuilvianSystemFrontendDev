@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button,} from "react-bootstrap";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -17,7 +17,13 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({ title, formConfig, onSubmit, backPath, isAddMode = false }) => {
+const DynamicForm = ({
+  title,
+  formConfig,
+  onSubmit,
+  backPath,
+  isAddMode = false,
+}) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -62,7 +68,7 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath, isAddMode = false 
       name,
       label,
       placeholder,
-      type, 
+      type,
       rules,
       className = "mb-3",
       readOnly = false,
@@ -150,14 +156,13 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath, isAddMode = false 
       section.fields.forEach((field) => {
         defaults[field.name] = field.value || "";
       });
-      return defaults; 
+      return defaults;
     }, {}),
     mode: "onChange", // Menangani validasi secara dinamis
   });
 
   const handleEdit = () => setIsEditing(true);
   const handleCancel = () => setIsEditing(false);
-
 
   const {
     setValue,
@@ -170,19 +175,19 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath, isAddMode = false 
   const negara = watch("negara");
 
   useEffect(() => {
-      if (kewarganegaraan === "WNI") {
-        setValue("negara", "Indonesia");
-      } else if (kewarganegaraan === "WNA" && negara !== negara) {
-        setValue("negara", negara);
-      }
-    }, [kewarganegaraan, negara, setValue]);
+    if (kewarganegaraan === "WNI") {
+      setValue("negara", "Indonesia");
+    } else if (kewarganegaraan === "WNA" && negara !== negara) {
+      setValue("negara", negara);
+    }
+  }, [kewarganegaraan, negara, setValue]);
 
-    const shouldHideField = (field) => {
-      if (typeof field.hide === "function") {
-        return field.hide(watch());
-      }
-      return field.hide;
-    };
+  const shouldHideField = (field) => {
+    if (typeof field.hide === "function") {
+      return field.hide(watch());
+    }
+    return field.hide;
+  };
 
   return (
     <FormProvider {...methods}>
@@ -199,17 +204,19 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath, isAddMode = false 
                 path={backPath}
                 icon="ri-arrow-left-line"
               />
-              {!isAddMode && !isEditing && ( // Hanya tampil jika bukan add mode dan belum edit
-                <Button className="btn btn-primary" onClick={handleEdit}>
-                  <i className="ri-edit-2-line"></i>
-                  Edit
-                </Button>
-              )}
-              {!isAddMode && isEditing && ( // Tombol cancel hanya tampil di mode edit
-                <Button className="btn btn-danger" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              )}
+              {!isAddMode &&
+                !isEditing && ( // Hanya tampil jika bukan add mode dan belum edit
+                  <Button className="btn btn-primary" onClick={handleEdit}>
+                    <i className="ri-edit-2-line"></i>
+                    Edit
+                  </Button>
+                )}
+              {!isAddMode &&
+                isEditing && ( // Tombol cancel hanya tampil di mode edit
+                  <Button className="btn btn-danger" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                )}
             </div>
           </div>
           <div className="card-body py-3">
@@ -221,10 +228,11 @@ const DynamicForm = ({ title, formConfig, onSubmit, backPath, isAddMode = false 
                       <h4 className="mb-3">{section.section}</h4>
                     </div>
                   )}
-                  <Row 
-                    className={section.layout === "inline"
-                    ? "d-flex align-items-center"
-                    : ""
+                  <Row
+                    className={
+                      section.layout === "inline"
+                        ? "d-flex align-items-center"
+                        : ""
                     }
                   >
                     {section.fields
