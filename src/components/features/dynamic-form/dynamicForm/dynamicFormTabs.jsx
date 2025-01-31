@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState,memo } from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Row, Col, Form, Button,} from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
@@ -16,8 +16,9 @@ import TimeField from "@/components/ui/time-input";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
+import ReusableTabs from "@/components/ui/tabs-ui";
 
-const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = false }) => {
+const DyanamicFormWithTabs = ({title,mainFields, formConfig, onSubmit, backPath, isAddMode = false }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -136,7 +137,7 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
   };
 
   /**
-   * DynamicForm Component
+   * DyanamicFormWithTabs Component
    * @param {Object} props
    * @param {string} props.title - Title for the form.
    * @param {Array<{section: string, fields: FormField[], layout?: "inline" | "default"}>} props.formConfig - Configuration for the form.
@@ -146,14 +147,20 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
   const [isEditing, setIsEditing] = useState(isAddMode); // Mulai editable jika add mode
 
   const methods = useForm({
-    defaultValues: formConfig.reduce((defaults, section) => {
-      section.fields.forEach((field) => {
-        defaults[field.name] = field.value || "";
-      });
-      return defaults; 
-    }, {}),
-    mode: "onChange", // Menangani validasi secara dinamis
-  });
+      defaultValues: {
+        ...mainFields.reduce((defaults, field) => {
+          defaults[field.name] = field.value || "";
+          return defaults;
+        }, {}),
+        ...formConfig.reduce((defaults, section) => {
+          section.fields.forEach((field) => {
+            defaults[field.name] = field.value || "";
+          });
+          return defaults;
+        }, {}),
+      },
+      mode: "onChange",
+    });
 
   const handleEdit = () => setIsEditing(true);
   const handleCancel = () => setIsEditing(false);
@@ -166,16 +173,32 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
     handleSubmit: formSubmit,
   } = methods;
 
+  const titles = watch("title");
+  const statusKewarganegaraan = watch("statusKewarganegaraan");
   const kewarganegaraan = watch("kewarganegaraan");
-  const negara = watch("negara");
+
+    useEffect(() => {
+        if (titles === "Mr" || titles === "Tn" || titles === "Ms") {
+        setValue("jenisKelamin", "Laki-Laki");
+        } else if (
+        titles === "Mrs" ||
+        titles === "Miss" ||
+        titles === "Ny" ||
+        titles === "Nn"
+        ) {
+        setValue("jenisKelamin", "Perempuan");
+        } else {
+        setValue("jenisKelamin", "");
+        }
+    }, [titles, setValue]);
 
   useEffect(() => {
-      if (kewarganegaraan === "WNI") {
-        setValue("negara", "Indonesia");
-      } else if (kewarganegaraan === "WNA" && negara !== negara) {
-        setValue("negara", negara);
+      if (statusKewarganegaraan === "WNI") {
+        setValue("kewarganegaraan", "Indonesia");
+      } else if (statusKewarganegaraan === "WNA" && kewarganegaraan !== kewarganegaraan) {
+        setValue("kewarganegaraan", kewarganegaraan);
       }
-    }, [kewarganegaraan, negara, setValue]);
+    }, [statusKewarganegaraan, kewarganegaraan  , setValue]);
 
     const shouldHideField = (field) => {
       if (typeof field.hide === "function") {
@@ -214,42 +237,54 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
           </div>
           <div className="card-body py-3">
             <Form onSubmit={formSubmit(onSubmit)}>
-              {formConfig.map((section, index) => (
-                <div key={`section-${index}`} className="iq-card-header mt-3">
-                  {section.section && (
-                    <div className="iq-header-title">
-                      <h4 className="mb-3">{section.section}</h4>
-                    </div>
-                  )}
-                  <Row 
-                    className={section.layout === "inline"
-                    ? "d-flex align-items-center"
-                    : ""
-                    }
-                  >
-                    {section.fields
-                      .filter((field) => !shouldHideField(field))
-                      .map(({ colSize, ...field }, fieldIndex) => (
-                        <Col key={field.id || fieldIndex} lg={colSize || 6}>
-                          {renderField(field)}
-                        </Col>
-                      ))}
-                  </Row>
+                <div className="mb-4">
+                <Row>
+                    {mainFields.map((field, index) =>  (
+                            <Col key={`section-${index}`} lg={field.colSize || 6}>
+                                {renderField(field)}
+                            </Col>
+                        )
+                    )}
+                </Row>
                 </div>
-              ))}
-              {(isAddMode || isEditing) && ( // Tombol simpan hanya tampil di add mode atau mode edit
-                <Button type="submit" className="btn btn-primary m-3">
-                  <i className="ri-save-line"></i>
-                  Simpan
-                </Button>
-              )}
+                <ReusableTabs>
+                    {formConfig.map((section, index) => (
+                        <ReusableTabs.TabItem 
+                            key={`section-${index}`}
+                            eventKey={`tab-${index}`}
+                            title={section.section}
+                        >
+                            <Row 
+                                className=
+                                {
+                                    section.layout === "inline"
+                                    ? "d-flex align-items-center"
+                                    : ""
+                                }
+                            >
+                                {section.fields
+                                .filter((field) => !shouldHideField(field))
+                                .map(({ colSize, ...field }, fieldIndex) => (
+                                    <Col key={field.id || fieldIndex} lg={colSize || 6}>
+                                    {renderField(field)}
+                                    </Col>
+                                ))}
+                            </Row>
+                        </ReusableTabs.TabItem>
+                    ))}
+                </ReusableTabs>
+                {(isAddMode || isEditing) && ( // Tombol simpan hanya tampil di add mode atau mode edit
+                    <Button type="submit" className="btn btn-primary m-3">
+                    <i className="ri-save-line"></i>
+                    Simpan
+                    </Button>
+                )}
             </Form>
           </div>
         </div>
       </Row>
     </FormProvider>
   );
-});
+};
 
-DynamicForm.displayName = "DynamicForm";
-export default DynamicForm;
+export default DyanamicFormWithTabs;
