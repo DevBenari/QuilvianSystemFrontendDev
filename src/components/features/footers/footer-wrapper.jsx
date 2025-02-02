@@ -5,7 +5,7 @@ import Footer from "./footer";
 
 const FooterWrapper = () => {
     const pathname = usePathname();
-    const showFooter = pathname !== "/Login";
+    const showFooter = pathname !== "/Login" && pathname !== "/kiosk";
     return showFooter ? <Footer /> : null;
 }
 

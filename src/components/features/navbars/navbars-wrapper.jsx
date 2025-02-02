@@ -5,7 +5,7 @@ import Navbars from "./navbars";
 
 const NavbarsWrapper = () => {
     const pathname = usePathname();
-    const showNabars = pathname !== "/Login";
+    const showNabars = pathname !== "/Login" && pathname !== "/kiosk";
     return showNabars ? <Navbars /> : null;
 }
 

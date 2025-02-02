@@ -687,6 +687,56 @@ a:hover {
 }
 
 /*---------------------------------------------------------------------
+                               kiosk-page
+-----------------------------------------------------------------------*/
+.kiosk-page {
+  margin-top: -70px;
+  margin-left: 1px;
+  height: 100%;
+}
+
+.kiosk-page .kiosk-page-bg {
+  position: relative;
+  overflow: hidden;
+  z-index: 100px;
+}
+
+.kiosk-page .kiosk-page-bg::after {
+  position: relative;
+  content: "";
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 270px;
+  z-index: 1;
+  border-radius: 40px;
+  margin-bottom: 30px;
+  background: rgba(8, 56, 64, 1);
+  background: -moz-linear-gradient(left, rgba(8, 56, 64, 1) 0%, rgba(8, 56, 64, 1) 100%);
+  background: -webkit-gradient(left top, right top, color-stop(0%, rgba(8, 56, 64, 1)), color-stop(100%, rgba(8, 56, 64, 1)));
+  background: -webkit-linear-gradient(left, rgba(8, 56, 64, 1) 0%, rgba(8, 56, 64, 1) 100%);
+  background: -o-linear-gradient(left, rgba(8, 56, 64, 1) 0%, rgba(8, 56, 64, 1) 100%);
+  background: -ms-linear-gradient(left, rgba(8, 56, 64, 1) 0%, rgba(8, 56, 64, 1) 100%);
+  background: linear-gradient(to right, rgba(8, 56, 64, 1) 0%, rgba(8, 56, 64, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#089bab', endColorstr='#0db5c8', GradientType=1);
+}
+
+.kiosk-logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1px; /* Memberi jarak antara logo dan heading */
+}
+.kiosk-logo img {
+  max-width: 350px; /* Atur ukuran logo */
+  height: auto;
+  object-fit: contain;
+}
+
+
+
+
+/*---------------------------------------------------------------------
                                Dash Hover
 -----------------------------------------------------------------------*/
 .dash-hover-blank {
