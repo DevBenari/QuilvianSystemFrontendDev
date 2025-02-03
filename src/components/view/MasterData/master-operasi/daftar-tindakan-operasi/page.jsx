@@ -7,7 +7,7 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi";
+import { useTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi";
 import CustomTableComponent from "@/components/features/custom-table/custom-table/custom-table-edit-remove";
 // import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 

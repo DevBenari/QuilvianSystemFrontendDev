@@ -58,6 +58,16 @@ const CustomTableComponent = memo(
       }
     };
 
+    // Fungsi format tanggal
+    const formatDate = (dateString) => {
+      if (!dateString) return "-";
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
     return (
       <div>
         <div
@@ -97,7 +107,10 @@ const CustomTableComponent = memo(
                     <td key={i}>
                       {/* Display nomor urut when key is 'no', otherwise show the corresponding field */}
                       {col.key === "no"
-                        ? indexOfFirstItem + index + 1
+                        ? (currentPage - 1) * itemsPerPage + index + 1
+                        : col.key === "tanggalLahir" ||
+                          col.key === "createDateTime"
+                        ? formatDate(item[col.key])
                         : item[col.key]}
                     </td>
                   ))}

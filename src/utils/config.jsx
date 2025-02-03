@@ -290,11 +290,27 @@ export const menus = {
       ],
     },
     {
-      title: "Title",
+      title: "Master Informasi",
       subItems: [
         {
           title: "Data Title",
-          href: "/MasterData/master-title/table-title",
+          href: "/MasterData/master-informasi/master-title/table-title",
+        },
+        {
+          title: "Data Pendidikan",
+          href: "/MasterData/master-informasi/master-pendidikan/table-pendidikan",
+        },
+        {
+          title: "Data Agama",
+          href: "/MasterData/master-informasi/master-agama/table-agama",
+        },
+        {
+          title: "Data Golongan",
+          href: "/MasterData/master-informasi/master-golongan/table-golongan",
+        },
+        {
+          title: "Data Pekerjaan",
+          href: "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan",
         },
       ],
     },

@@ -4,9 +4,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import { useRuanganOperasi } from "@/lib/hooks/manajemen-operasi/ruangan-operasi";
-import { RuanganOperasiEdit } from "@/lib/hooks/manajemen-operasi/ruangan-operasi/edit";
-import { addRuanganOperasi } from "@/lib/hooks/manajemen-operasi/ruangan-operasi/add";
+import { useRuanganOperasi } from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi";
+import { RuanganOperasiEdit } from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi/edit";
+import { addRuanganOperasi } from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi/add";
 // import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomTableComponent from "@/components/features/custom-table/custom-table/custom-table-edit-remove";
 
