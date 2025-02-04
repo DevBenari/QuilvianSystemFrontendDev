@@ -58,13 +58,16 @@ const titleSlice = createSlice({
         }
       })
       .addCase(updateTitle.fulfilled, (state, action) => {
-        const index = state.data.findIndex(
-          (title) => title.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.data[index] = action.payload;
+        if (Array.isArray(state.data.data)) {
+          const index = state.data.data.findIndex(
+            (title) => title.titleId === action.payload.titleId
+          );
+          if (index !== -1) {
+            state.data.data[index] = action.payload;
+          }
         }
       })
+
       .addCase(deleteTitle.fulfilled, (state, action) => {
         state.data = state.data.filter((title) => title.id !== action.payload);
       });

@@ -30,7 +30,8 @@ const TitleEditPage = ({ params }) => {
   const handleSubmit = (data) => {
     if (!titleData) return;
     dispatch(updateTitle({ id: titleData.titleId, data }));
-    router.push("/MasterData/master-informasi/master-title/table-title");
+    console.log("Submitted data:", data);
+    // router.push("/MasterData/master-informasi/master-title/table-title");
   };
 
   if (loading) {
@@ -76,7 +77,7 @@ const TitleEditPage = ({ params }) => {
           colSize: 6,
 
           defaultValue: titleData.kodeTitle, // Default value dari state
-          onChange: (e) =>
+          onChangeCallback: (e) =>
             setTitleData({ ...titleData, kodeTitle: e.target.value }),
         },
         {
@@ -86,7 +87,7 @@ const TitleEditPage = ({ params }) => {
           colSize: 6,
 
           defaultValue: titleData.namaTitle, // Default value dari state
-          onChange: (e) =>
+          onChangeCallback: (e) =>
             setTitleData({ ...titleData, namaTitle: e.target.value }),
         },
       ],
