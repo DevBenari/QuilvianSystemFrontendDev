@@ -55,6 +55,7 @@
     "react-signature-canvas": "^1.0.6",
     "react-webcam": "^7.2.0",
     "sass": "^1.82.0",
+    "sharp": "^0.33.5",
     "smooth-scrollbar": "^8.8.4",
     "smooth-scrollbar-react": "^2.4.1",
     "swiper": "^11.1.15"
