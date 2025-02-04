@@ -1,12 +1,26 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import { addTitle } from "@/lib/hooks/masterData/title";
+import { createTitle } from "@/lib/state/slice/TitleSlice";
 
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
+import { useDispatch } from "react-redux";
 
 const PenambahanTitle = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleSubmit = async (data) => {
+    try {
+      await dispatch(createTitle(data)).unwrap(); // Tunggu hasil dari dispatch
+      alert("Title berhasil ditambahkan!");
+      router.push("/MasterData/master-informasi/master-title/table-title");
+    } catch (error) {
+      console.error("Gagal menambahkan title:", error);
+      alert("Gagal menambahkan title.");
+    }
+  };
   const formFields = [
     {
       fields: [
@@ -30,46 +44,44 @@ const PenambahanTitle = () => {
     },
   ];
 
-  const router = useRouter();
+  // const handleSubmit = async (data) => {
+  //   // Validasi data sebelum submit
+  //   const errors = validateFormData(data, formFields);
 
-  const handleSubmit = async (data) => {
-    // Validasi data sebelum submit
-    const errors = validateFormData(data, formFields);
+  //   if (errors.length > 0) {
+  //     alert(`Form tidak valid:\n${errors.join("\n")}`);
+  //     return;
+  //   }
 
-    if (errors.length > 0) {
-      alert(`Form tidak valid:\n${errors.join("\n")}`);
-      return;
-    }
+  //   try {
+  //     const response = await addTitle(data);
+  //     alert("Title added successfully!");
+  //     console.log("Response:", response);
+  //     router.push("/MasterData/master-informasi/master-title");
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Failed to add Title.");
+  //   }
+  // };
 
-    try {
-      const response = await addTitle(data);
-      alert("Title added successfully!");
-      console.log("Response:", response);
-      router.push("/MasterData/master-informasi/master-title");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add Title.");
-    }
-  };
+  // const validateFormData = (data, fields) => {
+  //   const errors = [];
+  //   fields.forEach((section) => {
+  //     section.fields.forEach((field) => {
+  //       const { name, label, rules } = field; // Ganti id dengan name
+  //       const value = data[name]; // Ambil value berdasarkan name
 
-  const validateFormData = (data, fields) => {
-    const errors = [];
-    fields.forEach((section) => {
-      section.fields.forEach((field) => {
-        const { name, label, rules } = field; // Ganti id dengan name
-        const value = data[name]; // Ambil value berdasarkan name
+  //       if (rules?.required && (!value || value.trim() === "")) {
+  //         errors.push(`${label} harus diisi`);
+  //       }
 
-        if (rules?.required && (!value || value.trim() === "")) {
-          errors.push(`${label} harus diisi`);
-        }
-
-        if (rules?.pattern && !rules.pattern.test(value)) {
-          errors.push(`${label} tidak valid`);
-        }
-      });
-    });
-    return errors;
-  };
+  //       if (rules?.pattern && !rules.pattern.test(value)) {
+  //         errors.push(`${label} tidak valid`);
+  //       }
+  //     });
+  //   });
+  //   return errors;
+  // };
 
   return (
     <Fragment>

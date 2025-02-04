@@ -1,23 +1,35 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
 
 import { Row, Col, Spinner } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import { useTitle } from "@/lib/hooks/masterData/master-informasi/title";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTitles } from "@/lib/state/slice/TitleSlice";
 
 const TableDataTitle = () => {
   const methods = useForm();
-  const { title, loading, error } = useTitle();
-  const [filteredPatients, setFilteredPatients] = useState(title.data || []);
+  const dispatch = useDispatch();
+  const {
+    data: titlesData,
+    loading,
+    error,
+  } = useSelector((state) => state.titles);
+
+  // Gunakan useMemo untuk menghitung ulang titles hanya ketika titlesData berubah
+  const titles = useMemo(() => titlesData?.data || [], [titlesData]);
+
+  const [filteredTitles, setFilteredTitles] = useState(titles);
 
   useEffect(() => {
-    if (title && Array.isArray(title.data)) {
-      setFilteredPatients(title.data);
-    }
-  }, [title]);
+    dispatch(fetchTitles());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setFilteredTitles(titles); // Update filteredTitles setelah titles diubah
+  }, [titles]);
 
   return (
     <FormProvider {...methods}>
@@ -36,9 +48,9 @@ const TableDataTitle = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={title.data}
-            setFilteredPatients={setFilteredPatients}
-            onFilteredPatients={filteredPatients}
+            data={titles}
+            setFilteredPatients={setFilteredTitles}
+            onFilteredPatients={filteredTitles}
           />
         </Col>
       </Col>
@@ -75,7 +87,7 @@ const TableDataTitle = () => {
               {!loading && !error && (
                 <div className="iq-card-body">
                   <CustomTableComponent
-                    data={filteredPatients}
+                    data={filteredTitles}
                     columns={[
                       { key: "no", label: "No" }, // Tambahkan kolom nomor urut
                       { key: "kodeTitle", label: "Kode Title" },

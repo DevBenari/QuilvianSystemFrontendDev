@@ -1,9 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit"
-import authLogin from "@/lib/state/slice/LoginSlice"
-const store = configureStore({
-    reducer:{
-        token:authLogin,
-    }
-})
+import { configureStore } from "@reduxjs/toolkit";
+import authLogin from "@/lib/state/slice/LoginSlice";
+import titleReducer from "@/lib/state/slice/TitleSlice";
 
-export default store
+const store = configureStore({
+  reducer: {
+    token: authLogin,
+    titles: titleReducer,
+  },
+});
+
+export default store;

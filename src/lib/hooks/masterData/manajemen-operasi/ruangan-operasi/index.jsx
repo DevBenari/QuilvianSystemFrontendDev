@@ -26,3 +26,43 @@ export const useRuanganOperasi = () => {
 
   return { ruanganOperasi, loading, error };
 };
+
+export const getbyidRuanganOperasi = async (id) => {
+  try {
+    const response = await axios.get(
+      `https://rumahsakit.free.beeceptor.com/ruanganOperasi/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error adding tindakan operasi:", error);
+    throw new Error("Failed to add tindakan operasi. Please try again.");
+  }
+};
+
+export const RuanganOperasiEdit = async (Data, id) => {
+  try {
+    const response = await axios.put(
+      `https://rumahsakit.free.beeceptor.com/ruanganOperasi/${id}`,
+      Data
+    );
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error("Gagal Mengedit RuanganOperasi", error);
+    throw new Error("Gagal Mengedit RuanganOperasi , Coba Lagi");
+  }
+};
+
+export const addRuanganOperasi = async (data) => {
+  try {
+    const response = await axios.post(
+      "https://rumahsakit.free.beeceptor.com/ruanganOperasi",
+      data
+    );
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error("Error menambahkan ruangan operasi:", error);
+    throw new Error(
+      "Gagal dalam menambahkan ruangan operasi. Please try again."
+    );
+  }
+};

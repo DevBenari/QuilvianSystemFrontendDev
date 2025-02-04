@@ -26,3 +26,41 @@ export const useManajemenOperasi = () => {
 
   return { operasi, loading, error };
 };
+
+export const getbyidManajemenOperasi = async (id) => {
+  try {
+    const response = await axios.get(
+      `https://671641c033bc2bfe40bd1f2a.mockapi.io/manajemenOperasi/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error adding tindakan operasi:", error);
+    throw new Error("Failed to add tindakan operasi. Please try again.");
+  }
+};
+
+export const OperasiEdit = async (OperasiData, id) => {
+  try {
+    const response = await axios.put(
+      `https://671641c033bc2bfe40bd1f2a.mockapi.io/manajemenOperasi/${id}`,
+      OperasiData
+    );
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error("Gagal Mengedit Operasi", error);
+    throw new Error("Gagal Mengedit Operasi , Coba Lagi");
+  }
+};
+
+export const addOperasi = async (OperasiData) => {
+  try {
+    const response = await axios.post(
+      "https://671641c033bc2bfe40bd1f2a.mockapi.io/manajemenOperasi/",
+      OperasiData
+    );
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error("Error menambahkan operasi:", error);
+    throw new Error("Gagal dalam menambahkan operasi. Please try again.");
+  }
+};

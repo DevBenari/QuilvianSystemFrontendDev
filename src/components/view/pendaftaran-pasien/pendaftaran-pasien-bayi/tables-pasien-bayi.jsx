@@ -2,7 +2,7 @@
 
 import React, { Fragment, memo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useBayi } from "@/lib/hooks/pasienBayi";
+import { useBayi } from "@/lib/hooks/admisi/pasienBayi";
 import { deleteBayi } from "@/lib/hooks/pasienBayi/delete";
 import { Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";

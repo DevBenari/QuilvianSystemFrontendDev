@@ -1,94 +1,39 @@
 "use client";
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
-import { editTitle, titleById } from "@/lib/hooks/masterData/title";
+
+import { useSelector, useDispatch } from "react-redux";
+import { updateTitle } from "@/lib/state/slice/TitleSlice";
 
 const TitleEditPage = ({ params }) => {
   const router = useRouter();
-  const [userData, setUserData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const {
+    data: titlesData,
+    loading,
+    error,
+  } = useSelector((state) => state.titles);
 
-  // Fetch title data based on the slug
+  // Gunakan useMemo agar titles hanya dihitung ulang saat titlesData berubah
+  const titles = useMemo(() => titlesData?.data || [], [titlesData]);
+
+  const [titleData, setTitleData] = useState(null);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log("Received slug:", params.slug);
+    const id = extractIdFromSlug(params.slug);
+    const title = titles.find((item) => item.titleId === id);
+    if (title) setTitleData(title);
+  }, [params.slug, titles]);
 
-        // Extract ID from slug
-        const id = extractIdFromSlug(params.slug);
-        console.log("Extracted ID:", id);
-
-        if (!id) {
-          throw new Error("Invalid ID extracted from slug");
-        }
-
-        // Fetch data by ID
-        const user = await titleById(id);
-        console.log("Fetched user data:", user);
-
-        if (!user) {
-          throw new Error("User not found");
-        }
-
-        // Set user data
-        setUserData(user);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        router.push("/404");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [params.slug, router]);
-
-  // Handle form submission
-  const handleSubmit = async (data) => {
-    try {
-      // Sertakan ID di URL dan di body data
-      const updatedData = {
-        ...data,
-        titleId: userData.titleId, // Masukkan ID ke body request
-      };
-
-      console.log("Submitting update with data:", updatedData);
-
-      const response = await editTitle(updatedData, userData.titleId);
-      alert("Title updated successfully!");
-      router.push("/MasterData/master-title/table-title");
-    } catch (error) {
-      console.error("Failed to update title:", error);
-      alert("Failed to update title.");
-    }
+  const handleSubmit = (data) => {
+    if (!titleData) return;
+    dispatch(updateTitle({ id: titleData.titleId, data }));
+    router.push("/MasterData/master-informasi/master-title/table-title");
   };
 
-  // Form configuration
-  const formFields = [
-    {
-      fields: [
-        {
-          type: "text",
-          label: "Kode Title",
-          name: "kodeTitle",
-          colSize: 6,
-          rules: { required: "Kode Title harus diisi" },
-        },
-        {
-          type: "text",
-          label: "Nama Title",
-          name: "namaTitle",
-          colSize: 6,
-          rules: { required: "Nama Title harus diisi" },
-        },
-      ],
-    },
-  ];
-
-  // Loading state
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="iq-card">
         <div className="card-body text-center">
@@ -100,18 +45,53 @@ const TitleEditPage = ({ params }) => {
     );
   }
 
-  // Error state (if userData is not found)
-  if (!userData) {
+  if (error) {
     return (
       <div className="iq-card">
         <div className="card-body">
-          <div className="alert alert-danger">
-            Data title tidak ditemukan atau terjadi kesalahan saat memuat data.
-          </div>
+          <div className="alert alert-danger">Terjadi kesalahan: {error}</div>
         </div>
       </div>
     );
   }
+
+  if (!titleData) {
+    return (
+      <div className="iq-card">
+        <div className="card-body">
+          <div className="alert alert-warning">Data title tidak ditemukan.</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Form configuration
+  const formFields = [
+    {
+      fields: [
+        {
+          type: "text",
+          label: "Kode Title",
+          name: "kodeTitle",
+          colSize: 6,
+
+          defaultValue: titleData.kodeTitle, // Default value dari state
+          onChange: (e) =>
+            setTitleData({ ...titleData, kodeTitle: e.target.value }),
+        },
+        {
+          type: "text",
+          label: "Nama Title",
+          name: "namaTitle",
+          colSize: 6,
+
+          defaultValue: titleData.namaTitle, // Default value dari state
+          onChange: (e) =>
+            setTitleData({ ...titleData, namaTitle: e.target.value }),
+        },
+      ],
+    },
+  ];
 
   // Render form
   return (
