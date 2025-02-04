@@ -1,17 +1,26 @@
 "use client";
-
-import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import ReusableAlert from "@/components/ui/reusable-alert";
-import { addAgama } from "@/lib/hooks/masterData/agama";
+import React, { Fragment, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import { createAgama } from "@/lib/state/slices/MasterData/master-informasi/AgamaSlice";
 
 const FormAddAgama = () => {
-  const [alertMessage, setAlertMessage] = useState(null);
-  const [alertVariant, setAlertVariant] = useState("success");
-
+  const dispatch = useDispatch();
   const router = useRouter();
+
+  const handleSubmit = async (data) => {
+    try {
+      await dispatch(createAgama(data)).unwrap(); // Tunggu hasil dari dispatch
+      alert("Agama berhasil ditambahkan!");
+      router.push("/MasterData/master-informasi/master-agama/table-agama");
+    } catch (error) {
+      console.error("Gagal menambahkan Agama:", error);
+      alert("Gagal menambahkan Agama.");
+    }
+    console.log("Submitted data:", data);
+  };
 
   const formFields = [
     {
@@ -36,64 +45,13 @@ const FormAddAgama = () => {
     },
   ];
 
-  const handleSubmit = async (data) => {
-    const errors = validateFormData(data, formFields);
-
-    if (errors.length > 0) {
-      alert(`Form tidak valid:\n${errors.join("\n")}`);
-      return;
-    }
-
-    try {
-      const response = await addAgama(data);
-      setAlertMessage("Agama added successfully!");
-      setAlertVariant("success");
-
-      // Navigasi setelah beberapa detik
-      setTimeout(() => {
-        router.push("/MasterData/master-informasi/master-agama/table-agama");
-      }, 500);
-    } catch (error) {
-      console.error(error);
-      // Menampilkan alert error tanpa auto-close
-      setAlertMessage("Failed to add Agama.");
-      setAlertVariant("danger");
-    }
-  };
-
-  const validateFormData = (data, fields) => {
-    const errors = [];
-    fields.forEach((section) => {
-      section.fields.forEach((field) => {
-        const { name, label, rules } = field; // Ganti id dengan name
-        const value = data[name]; // Ambil value berdasarkan name
-
-        if (rules?.required && (!value || value.trim() === "")) {
-          errors.push(`${label} harus diisi`);
-        }
-
-        if (rules?.pattern && !rules.pattern.test(value)) {
-          errors.push(`${label} tidak valid`);
-        }
-      });
-    });
-    return errors;
-  };
-
   return (
     <Fragment>
-      <ReusableAlert
-        message={alertMessage}
-        variant={alertVariant}
-        onClose={() => setAlertMessage(null)}
-        autoClose={alertVariant === "success" ? 3000 : null}
-      />
-
       <DynamicForm
         title="Tambah Data Agama"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={"/MasterData/master-informasi/master-agama/table-agama"}
+        backPath="/MasterData/master-informasi/master-agama/table-agama"
         isAddMode={true}
       />
     </Fragment>

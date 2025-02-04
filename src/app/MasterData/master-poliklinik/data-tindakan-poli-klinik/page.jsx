@@ -8,7 +8,7 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { tarifPoliKlinik } from "@/utils/masterData";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import TableEditSave from "@/components/features/custom-table/edit-table/table-edit-save-cancel";
+import TableEditSave from "@/components/features/edit-table/edit-table/table-edit-save-cancel";
 import { components } from "react-select";
 import SelectField from "@/components/ui/select-field";
 import { useRouter, useSearchParams } from "next/navigation";

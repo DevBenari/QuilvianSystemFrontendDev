@@ -2,7 +2,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import TableEditSave from "@/components/features/custom-table/edit-table/table-edit-save-cancel";
+import TableEditSave from "@/components/features/edit-table/edit-table/table-edit-save-cancel";
 import { extractIdFromSlug } from "@/utils/slug";
 import { administrasiRawatJalan } from "@/utils/masterData";
 import { FormProvider, useForm } from "react-hook-form";

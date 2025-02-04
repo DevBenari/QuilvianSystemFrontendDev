@@ -36,7 +36,7 @@ import TextArea from "@/components/ui/textArea-field";
 import { motion } from "framer-motion";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
 import DateInputPicker from "@/components/ui/date-picker";
-import DataTable from "@/components/features/custom-table/viewDataTables/dataTable";
+import DataTable from "@/components/features/edit-table/dataTable/page";
 
 const AddPerjanjianForm = memo(() => {
   const [defaultValues, setDefaultValues] = useState({});

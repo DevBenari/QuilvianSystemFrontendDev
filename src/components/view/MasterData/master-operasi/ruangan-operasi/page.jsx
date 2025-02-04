@@ -8,7 +8,7 @@ import { useRuanganOperasi } from "@/lib/hooks/masterData/manajemen-operasi/ruan
 import { RuanganOperasiEdit } from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi/edit";
 import { addRuanganOperasi } from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi/add";
 // import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomTableComponent from "@/components/features/custom-table/custom-table/custom-table-edit-remove";
+import CustomTableComponent from "@/components/features/edit-table/custom-table/custom-table-edit-remove";
 
 const TableRuanganOperasi = () => {
   const methods = useForm();

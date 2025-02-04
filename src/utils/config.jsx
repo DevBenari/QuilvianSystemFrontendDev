@@ -138,18 +138,18 @@ export const menus = {
         { title: "Pasien Perjanjian Radiologi", href: "/perjanjian/radiologi" },
         { title: "Pasien Perjanjian MCU", href: "/perjanjian/MCU" },
         { title: "Pasien Perjanjian Operasi", href: "/perjanjian/Operasi" },
-        {
-          title: "Pasien Perjanjian Laboratorium",
-          href: "/perjanjian/laboratorium",
-        },
       ],
     },
     {
       title: "Antrian",
       subItems: [
+        { title: "Display Antrian", href: "/Antrian" },
         { title: "Pengaturan Antrian", href: "/Antrian/pengaturan-antrian" },
-        { title: "Display Antrian", href: "/Antrian/display-antrian" },
       ],
+    },
+    {
+      title: "Pemesanan Bed",
+      subItems: [{ title: "Pemesanan Bed", href: "/pemesanan-bed" }],
     },
   ],
   dokter: [

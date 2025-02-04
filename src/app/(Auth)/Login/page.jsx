@@ -5,7 +5,7 @@ import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
 import { useForm, FormProvider } from "react-hook-form";
 import TextField from "@/components/ui/text-field";
 import { useDispatch } from "react-redux";
-import { LoginUser } from "@/lib/state/slice/LoginSlice";
+import { LoginUser } from "@/lib/state/slices/auth/LoginSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();

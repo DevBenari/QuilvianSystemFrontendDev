@@ -1,8 +1,8 @@
 "use client";
 
 import CustomSearchText from "@/components/features/custom-search/CustomSearchText/custom-search-text";
-import EditableTable from "@/components/features/custom-table/edit-table/edit-table";
-import TableEditSave from "@/components/features/custom-table/edit-table/table-edit-save-cancel";
+import EditableTable from "@/components/features/edit-table/edit-table/edit-table";
+import TableEditSave from "@/components/features/edit-table/edit-table/table-edit-save-cancel";
 import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";
 
 import { tarifPoliKlinik, tarifTindakan } from "@/utils/masterData";

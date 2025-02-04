@@ -1,7 +1,7 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import { createTitle } from "@/lib/state/slice/TitleSlice";
+import { createTitle } from "@/lib/state/slices/MasterData/master-informasi/TitleSlice";
 
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
@@ -43,45 +43,6 @@ const PenambahanTitle = () => {
       ],
     },
   ];
-
-  // const handleSubmit = async (data) => {
-  //   // Validasi data sebelum submit
-  //   const errors = validateFormData(data, formFields);
-
-  //   if (errors.length > 0) {
-  //     alert(`Form tidak valid:\n${errors.join("\n")}`);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await addTitle(data);
-  //     alert("Title added successfully!");
-  //     console.log("Response:", response);
-  //     router.push("/MasterData/master-informasi/master-title");
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Failed to add Title.");
-  //   }
-  // };
-
-  // const validateFormData = (data, fields) => {
-  //   const errors = [];
-  //   fields.forEach((section) => {
-  //     section.fields.forEach((field) => {
-  //       const { name, label, rules } = field; // Ganti id dengan name
-  //       const value = data[name]; // Ambil value berdasarkan name
-
-  //       if (rules?.required && (!value || value.trim() === "")) {
-  //         errors.push(`${label} harus diisi`);
-  //       }
-
-  //       if (rules?.pattern && !rules.pattern.test(value)) {
-  //         errors.push(`${label} tidak valid`);
-  //       }
-  //     });
-  //   });
-  //   return errors;
-  // };
 
   return (
     <Fragment>

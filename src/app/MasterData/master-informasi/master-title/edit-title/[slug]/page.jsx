@@ -5,7 +5,7 @@ import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicF
 import { extractIdFromSlug } from "@/utils/slug";
 
 import { useSelector, useDispatch } from "react-redux";
-import { updateTitle } from "@/lib/state/slice/TitleSlice";
+import { updateTitle } from "@/lib/state/slices/MasterData/master-informasi/TitleSlice";
 
 const TitleEditPage = ({ params }) => {
   const router = useRouter();
@@ -31,7 +31,7 @@ const TitleEditPage = ({ params }) => {
     if (!titleData) return;
     dispatch(updateTitle({ id: titleData.titleId, data }));
     console.log("Submitted data:", data);
-    // router.push("/MasterData/master-informasi/master-title/table-title");
+    router.push("/MasterData/master-informasi/master-title/table-title");
   };
 
   if (loading) {
@@ -75,7 +75,6 @@ const TitleEditPage = ({ params }) => {
           label: "Kode Title",
           name: "kodeTitle",
           colSize: 6,
-
           defaultValue: titleData.kodeTitle, // Default value dari state
           onChangeCallback: (e) =>
             setTitleData({ ...titleData, kodeTitle: e.target.value }),
@@ -85,7 +84,6 @@ const TitleEditPage = ({ params }) => {
           label: "Nama Title",
           name: "namaTitle",
           colSize: 6,
-
           defaultValue: titleData.namaTitle, // Default value dari state
           onChangeCallback: (e) =>
             setTitleData({ ...titleData, namaTitle: e.target.value }),

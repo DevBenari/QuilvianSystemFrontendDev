@@ -15,6 +15,11 @@ const CustomTableComponent = memo(
       idField: "id", // Field containing the actual ID
     },
     basePath = "/", // Default path (can be overridden)
+    onRemove,
+    onEdit,
+    onCustom,
+    labelEdit = "Edit",
+    labelCustom = "Custom",
   }) => {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
@@ -68,6 +73,8 @@ const CustomTableComponent = memo(
       return `${year}-${month}-${day}`;
     };
 
+    const hasActions = onRemove || onEdit || onCustom;
+
     return (
       <div>
         <div
@@ -94,6 +101,7 @@ const CustomTableComponent = memo(
                 {columns.map((col, index) => (
                   <th key={index}>{col.label}</th>
                 ))}
+                {hasActions && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -109,11 +117,46 @@ const CustomTableComponent = memo(
                       {col.key === "no"
                         ? (currentPage - 1) * itemsPerPage + index + 1
                         : col.key === "tanggalLahir" ||
-                          col.key === "createDateTime"
+                          col.key === "createDateTime" ||
+                          col.key === "tanggalDaftar"
                         ? formatDate(item[col.key])
                         : item[col.key]}
                     </td>
                   ))}
+                  {hasActions && (
+                    <td>
+                      {onEdit && (
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          onClick={() => onEdit(item.id)}
+                          className="mx-1"
+                        >
+                          {labelEdit}
+                        </Button>
+                      )}
+                      {onRemove && (
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => onRemove(item.id)}
+                          className="mx-1"
+                        >
+                          Remove
+                        </Button>
+                      )}
+                      {onCustom && (
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={() => onCustom(item.id)}
+                          className="mx-1"
+                        >
+                          {labelCustom}
+                        </Button>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

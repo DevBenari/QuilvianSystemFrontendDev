@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi";
-import CustomTableComponent from "@/components/features/custom-table/custom-table/custom-table-edit-remove";
+import CustomTableComponent from "@/components/features/edit-table/custom-table/custom-table-edit-remove";
 // import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const TableTindakanOperasi = () => {

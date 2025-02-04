@@ -1,59 +1,42 @@
 "use client";
-import React, { useState, useEffect, Fragment } from "react";
+import React, { Fragment, useEffect, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
-import { AgamaById } from "@/lib/hooks/masterData/agama";
+import { updateAgama } from "@/lib/state/slices/MasterData/master-informasi/AgamaSlice";
 
 const AgamaEditPage = ({ params }) => {
   const router = useRouter();
-  const [userData, setUserData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
 
-  // Fetch Agama data based on the slug
+  // Mengambil data dari Redux store
+  const {
+    data: agamaData,
+    loading,
+    error,
+  } = useSelector((state) => state.agama);
+
+  // Memoize data untuk mengurangi proses hitung ulang
+  const agama = useMemo(() => agamaData?.data || [], [agamaData]);
+
+  const [agamaaData, setAgamaaData] = useState(null);
+
+  // Menggunakan useEffect untuk mengambil data berdasarkan slug
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log("Fetching data for slug:", params.slug);
-        const id = extractIdFromSlug(params.slug);
-        console.log("Extracted ID:", id);
+    const id = extractIdFromSlug(params.slug);
+    const selectedAgama = agama.find((item) => item.agamaId === id);
+    if (selectedAgama) setAgamaaData(selectedAgama);
+  }, [agama, params.slug]);
 
-        const user = await AgamaById(id);
-        console.log("Found User:", user);
-
-        if (!user) {
-          throw new Error("User not found");
-        }
-
-        setUserData(user);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        router.push("/404");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [params.slug, router]);
-
-  // Handle form submission
-  const handleSubmit = async (data) => {
-    console.log("form data ", data);
-
-    // try {
-    //   // Pastikan userData dan AgamaId ada
-
-    //   const response = await editAgama(data, userData.AgamaId);
-    //   alert("Agama updated successfully!");
-    //   router.push("/MasterData/master-Agama/table-Agama");
-    // } catch (error) {
-    //   console.error("Failed to update Agama:", error);
-    //   alert("Failed to update Agama.");
-    // }
+  const handleSubmit = (data) => {
+    if (!agamaaData) return;
+    dispatch(updateAgama({ id: agamaaData.agamaId, data }));
+    console.log("Submitted data:", data);
+    // router.push("/MasterData/master-informasi/master-agama/table-agama");
   };
 
-  // Form configuration
+  // Konfigurasi form
   const formFields = [
     {
       fields: [
@@ -61,24 +44,28 @@ const AgamaEditPage = ({ params }) => {
           type: "text",
           label: "Kode Agama",
           name: "agamaKode",
-          placeholder: "Masukkan Kode Agama...",
+          defaultValue: agamaaData?.agamaKode || "",
           colSize: 6,
           rules: { required: "Kode Agama harus diisi" },
+          onChangeCallback: (e) =>
+            setAgamaaData({ ...agamaaData, agamaKode: e.target.value }),
         },
         {
           type: "text",
           label: "Nama Agama",
           name: "jenisAgama",
-          placeholder: "Masukkan Nama Agama...",
+          defaultValue: agamaaData?.jenisAgama || "",
           colSize: 6,
           rules: { required: "Nama Agama harus diisi" },
+          onChangeCallback: (e) =>
+            setAgamaaData({ ...agamaaData, jenisAgama: e.target.value }),
         },
       ],
     },
   ];
 
-  // Loading state
-  if (isLoading) {
+  // Loading dan error handling
+  if (loading) {
     return (
       <div className="iq-card">
         <div className="card-body text-center">
@@ -90,14 +77,21 @@ const AgamaEditPage = ({ params }) => {
     );
   }
 
-  // Error state (if userData is not found)
-  if (!userData) {
+  if (error) {
     return (
       <div className="iq-card">
         <div className="card-body">
-          <div className="alert alert-danger">
-            Data Agama tidak ditemukan atau terjadi kesalahan saat memuat data.
-          </div>
+          <div className="alert alert-danger">Terjadi kesalahan: {error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!agamaaData) {
+    return (
+      <div className="iq-card">
+        <div className="card-body">
+          <div className="alert alert-warning">Data agama tidak ditemukan.</div>
         </div>
       </div>
     );
@@ -110,7 +104,7 @@ const AgamaEditPage = ({ params }) => {
         title="Edit Data Agama"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={`/MasterData/master-Agama/table-Agama`}
+        backPath="/MasterData/master-informasi/master-agama/table-agama"
         isAddMode={false}
       />
     </Fragment>

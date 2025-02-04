@@ -7,7 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTitles } from "@/lib/state/slice/TitleSlice";
+import { fetchTitles } from "@/lib/state/slices/MasterData/master-informasi/TitleSlice";
 
 const TableDataTitle = () => {
   const methods = useForm();

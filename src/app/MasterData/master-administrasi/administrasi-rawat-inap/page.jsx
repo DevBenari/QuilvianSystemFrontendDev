@@ -8,7 +8,7 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { group_tarif } from "@/utils/masterData";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import TableEditSave from "@/components/features/custom-table/edit-table/table-edit-save-cancel";
+import TableEditSave from "@/components/features/edit-table/edit-table/table-edit-save-cancel";
 
 const TableListDaftarRawatInap = () => {
   const methods = useForm();
