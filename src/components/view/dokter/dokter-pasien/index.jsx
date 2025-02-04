@@ -136,7 +136,7 @@ const DokterPage = () => {
                                     </ReusableTabs.TabItem>
                                     <ReusableTabs.TabItem eventKey="tab7" title="PENUNJANG">
                                         <div>Konten Tab 7</div>
-                                    </ReusableTabs.TabItem>
+                                    </ReusableTabs.TabItem>     
                                 </ReusableTabs>
                             </div>
                             </Col>

@@ -5,8 +5,11 @@ import Navbars from "./navbars";
 
 const NavbarsWrapper = () => {
     const pathname = usePathname();
-    const showNabars = pathname !== "/Login" && pathname !== "/kiosk";
-    return showNabars ? <Navbars /> : null;
+
+    // Cek apakah navbar perlu ditampilkan
+    const showNavbars = !(pathname === "/Login" || pathname.startsWith("/kiosk"));
+
+    return showNavbars ? <Navbars /> : null;
 }
 
-export default NavbarsWrapper
+export default NavbarsWrapper;

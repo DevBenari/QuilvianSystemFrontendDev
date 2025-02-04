@@ -4,9 +4,10 @@ const FormPendaftaranPasienBaru = memo(() => {
 
     const {setValue} = useForm();
 
+
     return (
         <div>
-
+            
         </div>
     )
 })

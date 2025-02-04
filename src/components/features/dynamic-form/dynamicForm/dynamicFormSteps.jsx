@@ -1,163 +1,251 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+"use client";
+import React, { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { Row, Col, Form, Button, ProgressBar, Card, Image } from "react-bootstrap";
+import TextField from "@/components/ui/text-field";
+import SelectField from "@/components/ui/select-field";
+import RadioInput from "@/components/ui/radio-input";
+import DateInput from "@/components/ui/date-input";
+import TextArea from "@/components/ui/textArea-field";
+import UploadPhotoField from "@/components/ui/uploadPhoto-field";
+import ToggleCustom from "@/components/ui/ToggleCustom";
+import SliderInput from "@/components/ui/slider-input";
+import RichTextEditor from "@/components/ui/rich-text-editor";
+import SignaturePad from "@/components/ui/signature-canvas-input";
+import TimeField from "@/components/ui/time-input";
+import SearchableSelectField from "@/components/ui/select-field-search";
+import ButtonNav from "@/components/ui/button-navigation";
+import NumberField from "@/components/ui/distance-filed";
 
-const DynamicStepForm = ({ formConfig, onSubmit }) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({});
-  const [error, setError] = useState('');
+const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmited, backPath, isAddMode = false }) => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isEditing, setIsEditing] = useState(isAddMode);
+  const [submittedData, setSubmittedData] = useState(null);
 
-  const totalSteps = formConfig.length;
+  const steps = [
+    { section: "Main Information", fields: mainFields },
+    ...formConfig,
+  ];
 
-  const handleInputChange = (sectionIndex, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field.name]: value
-    }));
+  const fieldComponents = {
+    text: TextField,
+    email: TextField,
+    select: SelectField,
+    radio: RadioInput,
+    date: DateInput,
+    textarea: TextArea,
+    file: UploadPhotoField,
+    toggle: ToggleCustom,
+    slider: SliderInput,
+    richText: RichTextEditor,
+    signature: SignaturePad,
+    time: TimeField,
+    number: NumberField,
+    searchSelect: SearchableSelectField,
   };
 
-  const validateStep = (stepIndex) => {
-    const currentSection = formConfig[stepIndex - 1];
-    const requiredFields = currentSection.fields.filter(field => field.rules?.required);
-    
-    for (const field of requiredFields) {
-      if (!formData[field.name]) {
-        setError(`${field.label || field.name} is required`);
-        return false;
-      }
+  const methods = useForm({
+    defaultValues: {
+      ...mainFields.reduce((defaults, field) => {
+        defaults[field.name] = field.value || "";
+        return defaults;
+      }, {}),
+      ...formConfig.reduce((defaults, section) => {
+        section.fields.forEach((field) => {
+          defaults[field.name] = field.value || "";
+        });
+        return defaults;
+      }, {}),
+    },
+    mode: "onChange",
+  });
+
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+    handleSubmit: formSubmit,
+    trigger,
+  } = methods;
+
+  const titles = watch("title");
+  const statusKewarganegaraan = watch("statusKewarganegaraan");
+  const kewarganegaraan = watch("kewarganegaraan");
+
+  useEffect(() => {
+    if (titles === "Mr" || titles === "Tn" || titles === "Ms") {
+      setValue("jenisKelamin", "Laki-Laki");
+    } else if (["Mrs", "Miss", "Ny", "Nn"].includes(titles)) {
+      setValue("jenisKelamin", "Perempuan");
+    } else {
+      setValue("jenisKelamin", "");
     }
-    
-    setError('');
-    return true;
+  }, [titles, setValue]);
+
+  useEffect(() => {
+    if (statusKewarganegaraan === "WNI") {
+      setValue("kewarganegaraan", "Indonesia");
+    } else if (statusKewarganegaraan === "WNA" && kewarganegaraan !== kewarganegaraan) {
+      setValue("kewarganegaraan", kewarganegaraan);
+    }
+  }, [statusKewarganegaraan, kewarganegaraan, setValue]);
+
+  const renderField = (field) => {
+    const {
+      id,
+      name,
+      label,
+      placeholder,
+      type,
+      rules,
+      className = "mb-3",
+      readOnly = false,
+      value,
+      disabled = false,
+      onChange,
+      onClick,
+      options,
+      rows,
+      customRender,
+      colSize,
+      ...otherProps
+    } = field;
+
+    const commonProps = {
+      id,
+      name,
+      label,
+      placeholder,
+      rules,
+      className,
+      readOnly,
+      value,
+      disabled,
+      ...(onChange ? { onChange } : {}),
+      ...(onClick ? { onClick } : {}),
+    };
+
+    const Component = fieldComponents[field.type];
+    if (!Component) {
+      console.warn(`Unsupported field type: ${field.type}`);
+      return null;
+    }
+
+    return (
+      <Component
+        key={id}
+        {...commonProps}
+        options={options}
+        rows={rows}
+        control={methods.control}
+        value={value}
+        disabled={!isEditing || disabled}
+        {...otherProps}
+      />
+    );
   };
 
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+  const handleNext = async () => {
+    const currentFields = steps[currentStep].fields.map(field => field.name);
+    const isValid = await trigger(currentFields);
+
+    if (isValid) {
+      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
     }
   };
 
-  const handleBack = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-    setError('');
+  const handlePrevious = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateStep(currentStep)) {
-      onSubmit(formData);
+  const handleEdit = () => setIsEditing(true);
+  const handleCancel = () => {
+    setIsEditing(false);
+    setCurrentStep(0);
+  };
+
+  const handleFormSubmit = (data) => {
+    setSubmittedData(data);
+    onFormSubmited?.(data)
+    onSubmit(data);
+  };
+
+  const shouldHideField = (field) => {
+    if (typeof field.hide === "function") {
+      return field.hide(watch());
     }
+    return field.hide;
   };
 
-  const renderField = (field, sectionIndex) => {
-    const { type, name, label, placeholder, options, rules } = field;
+  const progress = ((currentStep + 1) / steps.length) * 100;
 
-    switch (type) {
-      case 'select':
-        return (
-          <div className="mb-4" key={name}>
-            <label className="block text-sm font-medium mb-1">{label}</label>
-            <select
-              name={name}
-              value={formData[name] || ''}
-              onChange={(e) => handleInputChange(sectionIndex, field, e.target.value)}
-              className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">{placeholder}</option>
-              {options?.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        );
-      
-      case 'textarea':
-        return (
-          <div className="mb-4" key={name}>
-            <label className="block text-sm font-medium mb-1">{label}</label>
-            <textarea
-              name={name}
-              value={formData[name] || ''}
-              onChange={(e) => handleInputChange(sectionIndex, field, e.target.value)}
-              placeholder={placeholder}
-              className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-              rows={4}
-            />
-          </div>
-        );
-
-      default:
-        return (
-          <div className="mb-4" key={name}>
-            <label className="block text-sm font-medium mb-1">{label}</label>
-            <input
-              type={type}
-              name={name}
-              value={formData[name] || ''}
-              onChange={(e) => handleInputChange(sectionIndex, field, e.target.value)}
-              placeholder={placeholder}
-              className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        );
-    }
-  };
+  
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 flex items-center justify-center">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">
-            {formConfig[currentStep - 1].section}
-          </CardTitle>
-          <div className="text-center text-sm text-gray-500">
-            Step {currentStep} of {totalSteps}
-          </div>
-        </CardHeader>
-
-        <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              {formConfig[currentStep - 1].fields.map((field, index) =>
-                renderField(field, currentStep - 1)
+    <FormProvider {...methods}>
+      <Row>
+        <div className="pt-2">
+          <div className="d-flex justify-content-between m-3 px-5">
+            <h3 className="tracking-wide">{title}</h3>
+            <div className="d-flex gap-2">
+              <ButtonNav
+                className="btn btn-secondary"
+                label="Kembali"
+                path={backPath}
+                icon="ri-arrow-left-line"
+              />
+              {!isAddMode && !isEditing && (
+                <Button className="btn btn-primary" onClick={handleEdit}>
+                  <i className="ri-edit-2-line"></i>
+                  Edit
+                </Button>
+              )}
+              {!isAddMode && isEditing && (
+                <Button className="btn btn-danger" onClick={handleCancel}>
+                  Cancel
+                </Button>
               )}
             </div>
-          </form>
-        </CardContent>
+          </div>
 
-        <CardFooter className="flex justify-between">
-          {currentStep > 1 && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleBack}
-              className="text-lg h-12 px-8"
-            >
-              Back
-            </Button>
-          )}
-          <Button
-            type="button"
-            onClick={currentStep === totalSteps ? handleSubmit : handleNext}
-            className="text-lg h-12 px-8 ml-auto"
-          >
-            {currentStep === totalSteps ? 'Submit' : 'Next'}
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+          <div className="px-5">
+            <ProgressBar now={progress} className="mb-4" />
+            <h4 className="mb-4">Step {currentStep + 1}: {steps[currentStep].section}</h4>
+
+            <Form onSubmit={formSubmit(handleFormSubmit)}>
+              <Row>
+                {steps[currentStep].fields
+                  .filter((field) => !shouldHideField(field))
+                  .map(({ colSize, ...field }, index) => (
+                    <Col key={field.id || index} lg={colSize || 6}>
+                      {renderField(field)}
+                    </Col>
+                  ))}
+              </Row>
+
+              <div className="d-flex justify-content-between mt-4">
+                <Button type="button" className="btn btn-secondary" onClick={handlePrevious} disabled={currentStep === 0}>
+                  <i className="ri-arrow-left-line me-2"></i> Previous
+                </Button>
+
+                {currentStep === steps.length - 1 ? (
+                  (isAddMode || isEditing) && (
+                    <Button type="submit" className="btn btn-primary">
+                      <i className="ri-save-line me-2"></i> Submit
+                    </Button>
+                  )
+                ) : (
+                  <Button className="btn btn-primary" onClick={handleNext}>
+                    Next <i className="ri-arrow-right-line ms-2"></i>
+                  </Button>
+                )}
+              </div>
+            </Form>
+          </div>
+        </div>
+      </Row>
+    </FormProvider>
   );
 };
 
-export default DynamicStepForm; 
+export default DynamicStepForm;

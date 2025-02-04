@@ -1,12 +1,16 @@
-"use client"
-import DyanamicFormWithTabs from '@/components/features/dynamic-form/dynamicForm/dynamicFormTabs'
-import React, { Fragment, memo } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+'use client'
+import React, {  memo, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
-const PendaftaranPasienBaru = memo(() => {
+import DynamicStepForm from '@/components/features/dynamic-form/dynamicForm/dynamicFormSteps';
+import { Button, Card, Image } from 'react-bootstrap';
+import ButtonNav from '@/components/ui/button-navigation';
 
+const KioskPendaftaranPasien = memo(() => {
     const { setValue } = useForm();
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [submittedData, setSubmittedData] = useState(null);
     // fungsi untuk melakukan select provinsi
     const {
         pasienSelectedProvinsi,
@@ -557,22 +561,75 @@ const PendaftaranPasienBaru = memo(() => {
         }
     ]
     const handleSubmit = (data) => {
-        console.log("Form Data:", data);
-      };
+        setSubmittedData(data);
+        setIsSubmitted(true);
+        
+    };
+
+    if (submittedData) {
+        // Ambil data pasien dari hasil submit
+        const { namaPasien, noRekamMedis, noRegistrasi } = submittedData;
+      
+        return (
+          <Card className="m-5 p-4">
+            <div className="kiosk-logo">
+              <Image src="/Images/pngwing-com.png" className="img-fluid"  alt="logo" />
+            </div>
+            <h4 className="mb-4 text-success text-center mt-4">Data Pendaftaran Pasien Berhasil Disimpan</h4>
     
+      
+            {/* Tampilkan informasi pasien dalam format tabel */}
+            <table className="table table-bordered">
+              <tbody>
+                <tr>
+                  <th>Nama Pasien</th>
+                  <td>{namaPasien || "Tidak tersedia"}</td>
+                </tr>
+                <tr>
+                  <th>No. Rekam Medis</th>
+                  <td>{noRekamMedis || "Tidak tersedia"}</td>
+                </tr>
+                <tr>
+                  <th>No. Registrasi</th>
+                  <td>{noRegistrasi || "Tidak tersedia"}</td>
+                </tr>
+              </tbody>
+            </table>
+      
+            {/* Tombol navigasi */}
+            <div className="d-flex justify-content-between mt-4">
+              <ButtonNav
+                label="Kembali ke Halaman Utama"
+                className="btn btn-secondary"
+                path={"/kiosk"}
+              />
+              <Button className="btn btn-primary" onClick={() => window.print()}>
+                Cetak Kartu Pasien
+              </Button>
+            </div>
+          </Card>
+        );
+      }
+
+    const handleFormSubmit = (data) => {
+        setIsSubmitted(true);
+        setSubmittedData(data);
+    }
+
     return (
-        <Fragment>
-            <DyanamicFormWithTabs 
-                title="Form Pendaftaran Pasien Baru"
+        <div className=" iq-card p-5 mx-5 mt-5">
+            <DynamicStepForm
+                title="Pendaftaran Pasien"
                 mainFields={mainFields}
                 formConfig={formFields}
                 onSubmit={handleSubmit}
+                onFormSubmit={handleFormSubmit}
+                backPath={"/kiosk"}
                 isAddMode={true}
-                backPath="/pendaftaran/pendaftaran-pasien-baru"
             />
-        </Fragment>
+        </div>
     )
-});
+})
 
-PendaftaranPasienBaru.displayName = "PendaftaranPasienBaru";
-export default PendaftaranPasienBaru
+KioskPendaftaranPasien.displayName = "KioskPendaftaranPasien"
+export default KioskPendaftaranPasien;
