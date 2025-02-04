@@ -1,8 +1,8 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getHeaders } from "@/lib/headers/headers";
 
-const lastEducationId = (id) => {
+const LastEducationId = (id) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,4 +30,4 @@ const lastEducationId = (id) => {
   return { data, isLoading, error };
 };
 
-export default lastEducationId;
+export default LastEducationId;

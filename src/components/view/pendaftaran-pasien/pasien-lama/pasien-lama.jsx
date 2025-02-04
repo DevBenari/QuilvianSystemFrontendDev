@@ -1,9 +1,8 @@
 "use client";
-
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import DataTable from "@/components/features/viewDataTables/dataTable";
-import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+import DataTable from "@/components/features/custom-table/viewDataTables/dataTable";
+import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";
 
 import { useRouter } from "next/navigation";
 import { pasienLama } from "@/utils/dataPasien";

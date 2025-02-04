@@ -1,11 +1,7 @@
 "use client";
-
-import axios from "axios";
-import Link from "next/link";
 import {
   Container,
 } from "react-bootstrap";
-
 import React, { memo, useState } from "react";
 import { Row, Col, Table } from "react-bootstrap";
 const DisplayAntrian = memo(() => {

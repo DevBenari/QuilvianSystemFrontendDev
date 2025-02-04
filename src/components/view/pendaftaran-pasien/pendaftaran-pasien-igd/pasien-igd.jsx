@@ -2,7 +2,7 @@
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import useSelectKelas from "@/lib/hooks/useSelectKelas";
-import { datakelas } from "@/utils/dataKelas";
+import { dataKelas } from "@/utils/dataKelas";
 import React, { Fragment } from "react";
 
 const PendaftaranPasienIgd = () => {
@@ -262,7 +262,7 @@ const PendaftaranPasienIgd = () => {
           label: "Pilih Kelas ",
           name: "kelas",
           placeholder: "Pilih Kelas ",
-          options: datakelas.map((item) => ({
+          options: dataKelas.map((item) => ({
             label: item.kelas,
             value: item.kelas,
           })),

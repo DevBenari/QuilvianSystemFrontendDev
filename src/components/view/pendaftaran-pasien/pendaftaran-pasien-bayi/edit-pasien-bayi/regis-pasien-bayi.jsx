@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useState, useEffect } from "react";
-import DynamicForm from "@/components/features/dynamic-form/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getBayiById } from "@/lib/hooks/pasienBayi/getbyid";
 import { BayiEdit } from "@/lib/hooks/pasienBayi/edit";
@@ -9,7 +9,7 @@ import { dataDokter } from "@/utils/SearchSelect";
 
 import { useForm } from "react-hook-form";
 import useSelectKelas from "@/lib/hooks/useSelectKelas";
-import { datakelas } from "@/utils/dataKelas";
+import { dataKelas } from "@/utils/dataKelas";
 
 export const RegisPasienBayi = () => {
   const router = useRouter();
@@ -161,7 +161,7 @@ export const RegisPasienBayi = () => {
           label: "Pilih Kelas Rawat Bayi",
           name: "kelas",
           placeholder: bayiEditData?.kelas,
-          options: datakelas.map((item) => ({
+          options: dataKelas.map((item) => ({
             label: item.kelas,
             value: item.kelas,
           })),

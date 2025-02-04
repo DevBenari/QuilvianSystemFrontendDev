@@ -1,8 +1,8 @@
 import { getHeaders } from "@/lib/headers/headers";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import React,{ useState, useEffect } from "react";
 
-const getLastEducation = () => {
+const GetLastEducation = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,4 +28,4 @@ const getLastEducation = () => {
   return { data, isLoading, error, refetch: fetchData }; // Tambahkan refetch
 };
 
-export default getLastEducation;
+export default GetLastEducation;

@@ -1,6 +1,6 @@
 "use client";
-import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
-import DataTable from "@/components/features/viewDataTables/dataTable";
+import CustomSearchFilter from "@/components/features/custom-search//CustomSearchComponen/Form-search-dashboard";
+import DataTable from "@/components/features/custom-table/viewDataTables/dataTable";
 import React, { Fragment, memo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useBayi } from "@/lib/hooks/pasienBayi";
