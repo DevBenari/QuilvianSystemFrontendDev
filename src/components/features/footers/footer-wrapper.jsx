@@ -5,8 +5,10 @@ import Footer from "./footer";
 
 const FooterWrapper = () => {
     const pathname = usePathname();
-    const showFooter = pathname !== "/Login";
-    return showFooter ? <Footer /> : null;
+      // Cek apakah navbar perlu ditampilkan
+    const showNavbars = !(pathname === "/Login" || pathname.startsWith("/kiosk"));
+
+    return showNavbars ? <Footer /> : null;
 }
 
 export default FooterWrapper;
