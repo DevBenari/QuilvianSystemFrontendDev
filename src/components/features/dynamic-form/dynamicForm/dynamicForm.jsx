@@ -158,7 +158,7 @@ const DynamicForm = ({
       });
       return defaults;
     }, {}),
-    mode: "onChange", // Menangani validasi secara dinamis
+    mode: "onSubmit", // Menangani validasi secara dinamis
   });
 
   const handleEdit = () => setIsEditing(true);

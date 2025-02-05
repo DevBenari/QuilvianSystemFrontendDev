@@ -315,6 +315,28 @@ export const menus = {
       ],
     },
   ],
+  instalasiRawatJalan: [
+    {
+      title: "Daftar Poli",
+      subItems: [
+        {
+          title: "Daftar Poli",
+          href: "/instalasi-rawat-jalan/antrean-data-poli/table-poli",
+        },
+      ],
+    },
+  ],
+  instalasiRawatInap: [
+    {
+      title: "Daftar Rawat Inap",
+      subItems: [
+        {
+          title: "Daftar Rawat Inap",
+          href: "/instalasi-rawat-inap/antrean-data-poli/table-poli",
+        },
+      ],
+    },
+  ],
 };
 
 export const menuItems = [
@@ -327,6 +349,7 @@ export const menuItems = [
       { pathname: "/pendaftaran", label: "Admisi" },
       { pathname: "/dokter", label: "Pelayanan Dokter" },
       { pathname: "/IGD", label: "IGD" },
+      { pathname: "/instalasi-poli", label: "Poli" },
     ],
   },
   {

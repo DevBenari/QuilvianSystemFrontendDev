@@ -15,11 +15,9 @@ const CustomTableComponent = memo(
       idField: "id", // Field containing the actual ID
     },
     basePath = "/", // Default path (can be overridden)
-    onRemove,
-    onEdit,
-    onCustom,
-    labelEdit = "Edit",
-    labelCustom = "Custom",
+    onCustomAction,
+    actions = [],
+    showActions = false,
   }) => {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
@@ -73,8 +71,6 @@ const CustomTableComponent = memo(
       return `${year}-${month}-${day}`;
     };
 
-    const hasActions = onRemove || onEdit || onCustom;
-
     return (
       <div>
         <div
@@ -101,7 +97,7 @@ const CustomTableComponent = memo(
                 {columns.map((col, index) => (
                   <th key={index}>{col.label}</th>
                 ))}
-                {hasActions && <th>Actions</th>}
+                {showActions && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -123,38 +119,19 @@ const CustomTableComponent = memo(
                         : item[col.key]}
                     </td>
                   ))}
-                  {hasActions && (
+                  {showActions && (
                     <td>
-                      {onEdit && (
+                      {actions.map((action) => (
                         <Button
-                          variant="warning"
+                          key={action.type}
+                          variant={action.variant}
                           size="sm"
-                          onClick={() => onEdit(item.id)}
+                          onClick={() => onCustomAction(item.id, action.type)}
                           className="mx-1"
                         >
-                          {labelEdit}
+                          {action.label}
                         </Button>
-                      )}
-                      {onRemove && (
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => onRemove(item.id)}
-                          className="mx-1"
-                        >
-                          Remove
-                        </Button>
-                      )}
-                      {onCustom && (
-                        <Button
-                          variant="success"
-                          size="sm"
-                          onClick={() => onCustom(item.id)}
-                          className="mx-1"
-                        >
-                          {labelCustom}
-                        </Button>
-                      )}
+                      ))}
                     </td>
                   )}
                 </tr>
