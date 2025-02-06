@@ -1,269 +1,356 @@
 "use client";
 
-import React from "react";
-import { Container, Row, Col, Card, Table, Badge, Form } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Badge,
+  Form,
+  Button,
+} from "react-bootstrap";
 import {
-  FaBed,
-  FaUserInjured,
-  FaChartLine,
-  FaClipboardCheck,
+  FaUserMd,
+  FaUsers,
+  FaCalendarCheck,
+  FaChartBar,
+  FaSearch,
+  FaHospital,
+  FaClock,
+  FaUserClock,
 } from "react-icons/fa";
 
-// Sample data untuk grafik
-const occupancyData = [
-  { name: "Jan", occupancy: 75 },
-  { name: "Feb", occupancy: 82 },
-  { name: "Mar", occupancy: 68 },
-  { name: "Apr", occupancy: 85 },
-  { name: "May", occupancy: 72 },
-  { name: "Jun", occupancy: 78 },
+import Chart from "react-apexcharts";
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import { aktivitasPasien, PasienRawatInap } from "@/utils/dataPasien";
+
+// Data grafik kunjungan rawat inap
+const visitDataInap = [
+  { name: "Jan", kunjungan: 540 },
+  { name: "Feb", kunjungan: 620 },
+  { name: "Mar", kunjungan: 580 },
+  { name: "Apr", kunjungan: 700 },
+  { name: "May", kunjungan: 650 },
+  { name: "Jun", kunjungan: 600 },
 ];
 
-const Dashboard = () => {
+const DashboardRawatInap = () => {
+  // State untuk teks pencarian dan data pasien rawat inap
+  const [searchText, setSearchText] = useState("");
+  const [filteredPatients, setFilteredPatients] = useState(PasienRawatInap);
+
+  // Fungsi untuk menangani perubahan input pencarian
+  const handleSearchChange = (e) => {
+    const text = e.target.value.toLowerCase();
+    setSearchText(text);
+
+    // Filter data berdasarkan teks pencarian
+    const filtered = PasienRawatInap.filter((patient) =>
+      patient.nama.toLowerCase().includes(text)
+    );
+    setFilteredPatients(filtered);
+  };
+
+  const chartOptions = {
+    options: {
+      chart: {
+        type: "bar",
+        height: 350,
+        stacked: true,
+        toolbar: {
+          show: true,
+        },
+        zoom: {
+          enabled: true,
+        },
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: "bottom",
+              offsetX: -10,
+              offsetY: 0,
+            },
+          },
+        },
+      ],
+      plotOptions: {
+        bar: {
+          horizontal: false,
+        },
+      },
+      xaxis: {
+        type: "datetime",
+        categories: [
+          "01/01/2023 GMT",
+          "01/02/2023 GMT",
+          "01/03/2023 GMT",
+          "01/04/2023 GMT",
+          "01/05/2023 GMT",
+          "01/06/2023 GMT",
+        ],
+      },
+      legend: {
+        position: "right",
+        offsetY: 40,
+      },
+      fill: {
+        opacity: 1,
+      },
+      colors: ["#6a9fca", "#f8b94c", "#d67ab1"],
+    },
+    series: [
+      {
+        name: "Kamar A",
+        data: [24, 35, 41, 57, 32, 43],
+      },
+      {
+        name: "Kamar B",
+        data: [13, 20, 25, 30, 18, 27],
+      },
+      {
+        name: "Kamar C",
+        data: [17, 14, 19, 23, 21, 14],
+      },
+    ],
+  };
+
   return (
-    <div className="iq-card">
-      <div className="iq-card-body iq-bg-primary rounded-4">
-        <Container fluid className="p-4">
-          {/* Header */}
-          <Row className="mb-4">
-            <Col>
-              <h2 className="mb-0">Dashboard Rawat Inap</h2>
-              <small className="text-muted">
-                Last updated: {new Date().toLocaleString()}
-              </small>
-            </Col>
-            <Col xs="auto">
-              <Form.Select className="mb-2">
-                <option>Hari Ini</option>
-                <option>Minggu Ini</option>
-                <option>Bulan Ini</option>
-              </Form.Select>
-            </Col>
-          </Row>
-
-          <Row className="g-4 mb-4">
-            <Col md={3}>
-              <Card className="h-100">
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <h6 className="text-muted mb-2">Total Bed</h6>
-                      <h3 className="mb-0">120</h3>
-                    </div>
-                    <div className=" p-3 rounded">
-                      <FaBed size={24} className="text-primary" />
-                    </div>
+    <>
+      <Col md="12">
+        {/* Header */}
+        <Row>
+          <Col md="6" lg="3">
+            <div className="iq-card">
+              <div className="iq-card-body iq-bg-primary rounded-4">
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="rounded-circle iq-card-icon bg-primary">
+                    <i className="ri-group-fill"></i>
                   </div>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            <Col md={3}>
-              <Card className="h-100">
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <h6 className="text-muted mb-2">Pasien Dirawat</h6>
-                      <h3 className="mb-0">85</h3>
-                    </div>
-                    <div className="-25 p-3 rounded">
-                      <FaUserInjured size={24} className="text-success" />
-                    </div>
+                  <div className="text-end mx-2">
+                    <h2 className="mb-0">
+                      <span className="counter">75</span>
+                    </h2>
+                    <h5 className=""> Pasien Rawat Inap</h5>
+                    <small className="text-success">↑ 8% dari kemarin</small>
                   </div>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            <Col md={3}>
-              <Card className="h-100">
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <h6 className="text-muted mb-2">BOR</h6>
-                      <h3 className="mb-0">70.8%</h3>
-                    </div>
-                    <div className="p-3 rounded">
-                      <FaChartLine size={24} className="text-warning" />
-                    </div>
+                </div>
+              </div>
+            </div>
+          </Col>
+          <Col md="6" lg="3">
+            <div className="iq-card">
+              <div className="iq-card-body iq-bg-warning rounded-4">
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="rounded-circle iq-card-icon bg-warning">
+                    <i className="ri-hotel-line"></i>
                   </div>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            <Col md={3}>
-              <Card className="h-100">
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <h6 className="text-muted mb-2">Bed Tersedia</h6>
-                      <h3 className="mb-0">35</h3>
-                    </div>
-                    <div className=" p-3 rounded">
-                      <FaClipboardCheck size={24} className="text-danger" />
-                    </div>
+                  <div className="text-end mx-2">
+                    <h2 className="mb-0">
+                      <span className="counter">30</span>
+                    </h2>
+                    <h5 className=""> Kamar Terisi</h5>
                   </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+                </div>
+              </div>
+            </div>
+          </Col>
+          <Col md="6" lg="3">
+            <div className="iq-card">
+              <div className="iq-card-body iq-bg-danger rounded-4">
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="rounded-circle iq-card-icon bg-danger">
+                    <i class="ri-door-open-fill"></i>
+                  </div>
+                  <div className="text-end mx-2">
+                    <h2 className="mb-0">
+                      <span className="counter">20</span>
+                    </h2>
+                    <h5 className="">Kamar Kosong</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Col>
+          <Col md="6" lg="3">
+            <div className="iq-card">
+              <div className="iq-card-body iq-bg-info rounded-4">
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="rounded-circle iq-card-icon bg-info">
+                    <i className="ri-time-line"></i>
+                  </div>
+                  <div className="text-end mx-2">
+                    <h5 className="mb-0">rata rata</h5>
+                    <h2 className="mb-0 mt-0">
+                      <span className="counter">48</span>
+                    </h2>
+                    <small className="text-success">Jam</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Col>
+        </Row>
 
-          {/* Status Kamar */}
-          <Row className="mb-4">
-            <Col>
-              <Card>
-                <Card.Header className="bg-white">
-                  <h5 className="mb-0">Status Ketersediaan Kamar</h5>
-                </Card.Header>
-                <Card.Body>
+        {/* Status Rawat Inap per Kamar */}
+        <Row className="mb-4">
+          <Col lg="12">
+            <div className="iq-card">
+              <div className="iq-card-header d-flex justify-content-between">
+                <div className="d-flex align-items-center">
+                  <FaUserClock className="text-primary me-2" size={20} />
+                  <h5 className="mb-0">Status Pasien per Kamar</h5>
+                </div>
+              </div>
+              <div className="iq-card-body">
+                <Row>
+                  <Col md={3} className="text-center mb-3">
+                    <h6>Kamar 101</h6>
+                    <Badge bg="primary" className="px-3 py-2">
+                      Pasien: 2
+                    </Badge>
+                  </Col>
+                  <Col md={3} className="text-center mb-3">
+                    <h6>Kamar 102</h6>
+                    <Badge bg="success" className="px-3 py-2">
+                      Pasien: 3
+                    </Badge>
+                  </Col>
+                  <Col md={3} className="text-center mb-3">
+                    <h6>Kamar 103</h6>
+                    <Badge bg="warning" className="px-3 py-2">
+                      Pasien: 1
+                    </Badge>
+                  </Col>
+                  <Col md={3} className="text-center mb-3">
+                    <h6>Kamar 104</h6>
+                    <Badge bg="info" className="px-3 py-2">
+                      Pasien: 0
+                    </Badge>
+                  </Col>
+                </Row>
+              </div>
+            </div>
+          </Col>
+        </Row>
+
+        {/* Grafik Kunjungan */}
+        <Row className="mb-4">
+          <Col lg="8">
+            <div className="iq-card ">
+              <div className="iq-card-header d-flex justify-content-between">
+                <h4 className="card-title">
+                  Grafik Kunjungan Pasien Rawat Inap
+                </h4>
+              </div>
+              <div className="iq-card-body">
+                <Chart
+                  options={chartOptions.options}
+                  series={chartOptions.series}
+                  type="bar"
+                  height={350}
+                />
+              </div>
+            </div>
+          </Col>
+
+          <Col lg="4">
+            <div className="iq-card ">
+              <div className="iq-card-header d-flex justify-content-between">
+                <h4 className="text-lg font-semibold">Aktivitas Terkini</h4>
+                <span className="px-2 py-1 text-xs font-semibold bg-blue-500 rounded">
+                  Hari Ini
+                </span>
+              </div>
+              <div className="iq-card-body">
+                <div>
                   <Row>
-                    <Col md={3} className="text-center mb-3">
-                      <h6>Kelas VIP</h6>
-                      <Badge bg="success" className="px-3 py-2">
-                        Tersedia: 5
-                      </Badge>
-                    </Col>
-                    <Col md={3} className="text-center mb-3">
-                      <h6>Kelas 1</h6>
-                      <Badge bg="warning" className="px-3 py-2">
-                        Tersedia: 3
-                      </Badge>
-                    </Col>
-                    <Col md={3} className="text-center mb-3">
-                      <h6>Kelas 2</h6>
-                      <Badge bg="danger" className="px-3 py-2">
-                        Tersedia: 0
-                      </Badge>
-                    </Col>
-                    <Col md={3} className="text-center mb-3">
-                      <h6>Kelas 3</h6>
-                      <Badge bg="info" className="px-3 py-2">
-                        Tersedia: 8
-                      </Badge>
-                    </Col>
+                    {aktivitasPasien.map((aktivitasPasien, index) => (
+                      <>
+                        <Col lg="6" key={index} className="p-3">
+                          <div>
+                            <div>
+                              <div className="mr-3">{aktivitasPasien.icon}</div>
+                              <div className="flex-1">
+                                <div className="flex justify-between items-center">
+                                  <h6 className="font-medium">
+                                    {aktivitasPasien.title}
+                                  </h6>
+                                  <div className="flex items-center text-gray-500 text-sm">
+                                    <i className="ri-time-line mr-1"></i>
+                                    {aktivitasPasien.time}
+                                  </div>
+                                </div>
+                                <span className="text-sm text-gray-500 block">
+                                  {aktivitasPasien.patient}
+                                </span>
+                                <span className="text-sm text-blue-500">
+                                  {aktivitasPasien.info}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </Col>
+                      </>
+                    ))}
                   </Row>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+                </div>
+                <div className="text-center mb-3">
+                  <Button className="text-blue-500 hover:text-blue-600 text-sm font-medium">
+                    Lihat Semua Aktivitas
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Col>
+        </Row>
 
-          {/* Grafik dan Tabel */}
-          <Row className="g-4">
-            <Col md={8}>
-              <Card className="h-100">
-                <Card.Header className="bg-white">
-                  <h5 className="mb-0">Grafik Okupansi Bed</h5>
-                </Card.Header>
-                <Card.Body>
-                  <div style={{ height: "300px" }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={occupancyData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey="occupancy"
-                          stroke="#0d6efd"
-                          name="Okupansi (%)"
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            <Col md={4}>
-              <Card className="h-100">
-                <Card.Header className="bg-white">
-                  <h5 className="mb-0">Statistik Perawatan</h5>
-                </Card.Header>
-                <Card.Body>
-                  <div className="mb-3">
-                    <h6>Rata-rata Lama Rawat</h6>
-                    <h3>4.5 Hari</h3>
-                  </div>
-                  <div className="mb-3">
-                    <h6>Tingkat Kepuasan</h6>
-                    <h3>89%</h3>
-                  </div>
-                  <div>
-                    <h6>Total Pasien Bulan Ini</h6>
-                    <h3>245</h3>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-
-          {/* Tabel Pasien */}
-          <Row className="mt-4">
-            <Col>
-              <Card>
-                <Card.Header className="bg-white d-flex justify-content-between align-items-center">
-                  <h5 className="mb-0">Daftar Pasien Terkini</h5>
+        {/* Daftar Pasien */}
+        <Row className="mb-4">
+          <Col lg="12">
+            <div className="iq-card ">
+              <div className="iq-card-header d-flex justify-content-between">
+                <div className="d-flex align-items-center">
+                  <FaUsers className="text-primary me-2" size={20} />
+                  <h5 className="mb-0">Daftar Pasien Rawat Inap</h5>
+                </div>
+                <div className="d-flex align-items-center">
+                  <FaSearch className="text-muted me-2" />
                   <Form.Control
                     type="search"
                     placeholder="Cari pasien..."
                     className="w-auto"
+                    value={searchText}
+                    onChange={handleSearchChange}
                   />
-                </Card.Header>
-                <Card.Body>
-                  <Table responsive hover>
-                    <thead>
-                      <tr>
-                        <th>No. RM</th>
-                        <th>Nama Pasien</th>
-                        <th>Ruangan</th>
-                        <th>Dokter</th>
-                        <th>Tanggal Masuk</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>RM-001</td>
-                        <td>John Doe</td>
-                        <td>VIP-101</td>
-                        <td>dr. Smith</td>
-                        <td>2024-02-01</td>
-                        <td>
-                          <Badge bg="success">Stabil</Badge>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>RM-002</td>
-                        <td>Jane Smith</td>
-                        <td>K1-203</td>
-                        <td>dr. Johnson</td>
-                        <td>2024-02-03</td>
-                        <td>
-                          <Badge bg="warning">Observasi</Badge>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    </div>
+                </div>
+              </div>
+              <div className="iq-card-body">
+                <CustomTableComponent
+                  data={filteredPatients}
+                  columns={[
+                    { key: "id", label: "ID Pasien" },
+                    { key: "nama", label: "Nama Pasien" },
+                    { key: "kamar", label: "Kamar" },
+                    { key: "jenisKelamin", label: "Jenis Kelamin" },
+                    { key: "status", label: "Status Perawatan" },
+                    { key: "waktuMasuk", label: "Waktu Masuk" },
+                  ]}
+                  itemsPerPage={5}
+                  slugConfig={{ textField: "nama", idField: "id" }}
+                  basePath="/instalasi-rawat-inap/data-pasien/detail-pasien"
+                />
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Col>
+    </>
   );
 };
 
-export default Dashboard;
+export default DashboardRawatInap;

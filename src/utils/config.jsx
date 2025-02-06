@@ -337,6 +337,17 @@ export const menus = {
       ],
     },
   ],
+  instalasiOperasi: [
+    {
+      title: "Daftar Operasi",
+      subItems: [
+        {
+          title: "Daftar Operasi",
+          href: "/instalasi-rawat-inap/antrean-data-poli/table-poli",
+        },
+      ],
+    },
+  ],
 };
 
 export const menuItems = [
