@@ -52,8 +52,8 @@ const CustomTableComponent = memo(({
 
     return (
         <div>
-            <div className="table-responsive" style={{ maxHeight: '400px', overflowX: 'auto' }}>
-                <Table bordered striped hover responsive="md" className="text-center" style={{ tableLayout: 'fixed' }}>
+            <div className="table-responsive-md" style={{ maxHeight: '400px', overflowX: 'auto' }}>
+                <Table bordered striped hover responsive  className="text-center" >
                     <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
                         <tr>
                             {columns.map((col, index) => (
