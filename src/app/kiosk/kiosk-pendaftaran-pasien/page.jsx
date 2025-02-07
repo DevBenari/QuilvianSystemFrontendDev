@@ -617,16 +617,20 @@ const KioskPendaftaranPasien = memo(() => {
     }
 
     return (
-        <div className=" iq-card p-5 mx-5 mt-5">
-            <DynamicStepForm
-                title="Pendaftaran Pasien"
-                mainFields={mainFields}
-                formConfig={formFields}
-                onSubmit={handleSubmit}
-                onFormSubmit={handleFormSubmit}
-                backPath={"/kiosk"}
-                isAddMode={true}
-            />
+        <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+            <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md">
+                <div className="p-4 md:p-6">
+                    <DynamicStepForm
+                        title="Pendaftaran Pasien"
+                        mainFields={mainFields}
+                        formConfig={formFields}
+                        onSubmit={handleSubmit}
+                        onFormSubmit={handleFormSubmit}
+                        backPath="/kiosk"
+                        isAddMode={true}
+                    />
+                </div>
+            </div>
         </div>
     )
 })
