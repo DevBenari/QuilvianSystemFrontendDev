@@ -281,7 +281,7 @@ export const menus = {
       subItems: [
         {
           title: "Data Tindakan Poliklinik",
-          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik",
+          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik/table-tindakan-poliklinik",
         },
         {
           title: "Daftar Tarif Poliklinik",
@@ -294,7 +294,7 @@ export const menus = {
       subItems: [
         {
           title: "Data Title",
-          href: "/MasterData/master-informasi/master-title/table-title",
+          href: "/MasterData/master-informasi/title/table-title",
         },
         {
           title: "Data Pendidikan",
@@ -302,11 +302,11 @@ export const menus = {
         },
         {
           title: "Data Agama",
-          href: "/MasterData/master-informasi/master-agama/table-agama",
+          href: "/MasterData/master-informasi/agama/table-agama",
         },
         {
           title: "Data Golongan",
-          href: "/MasterData/master-informasi/master-golongan/table-golongan",
+          href: "/MasterData/master-informasi/golongan-darah/table-golongan",
         },
         {
           title: "Data Pekerjaan",
