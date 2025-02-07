@@ -1,5 +1,5 @@
 'use client'
-import React, {  Fragment, memo, useState } from 'react'
+import React, {  Fragment, memo, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
@@ -8,6 +8,9 @@ import { Button, Card, Col, Image, Row } from 'react-bootstrap';
 import ButtonNav from '@/components/ui/button-navigation';
 import PrintPatientCard from './patientCard';
 import PrintableQueueNumber from './patientAntrian';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddPasienSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice';
+import { GetAgamaSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/agamaSlice';
 
 const KioskPendaftaranPasien = memo(() => {
     const { setValue } = useForm();
@@ -23,6 +26,26 @@ const KioskPendaftaranPasien = memo(() => {
         handleChange,
     } = UseSelectWilayah(setValue, dataWilayah);
 
+
+    const dispatch = useDispatch();
+
+    const {data: agamaData, loading, error} = useSelector((state) => state.pasien)
+
+    useEffect(() => {
+        dispatch(GetAgamaSlice());
+
+    },[dispatch])
+
+    if (loading) {
+        return <div>Loading data pasien...</div>;
+    }
+
+    // Tampilkan pesan error jika ada kesalahan
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
+
     const formFields = 
     [
         {
@@ -31,9 +54,9 @@ const KioskPendaftaranPasien = memo(() => {
             [
                 {
                     type: "select",
-                    id: "title",
+                    id: "titleId",
                     label: "Title",
-                    name: "title",
+                    name: "titleId",
                     placeholder: "Title",
                     options: [
                         { label: "Tn. ", value: "Tn" },
@@ -44,18 +67,18 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "text",
-                    id: "namaPasien",
+                    id: "namaLengkap",
                     label: "Nama Pasien",
-                    name: "namaPasien",
+                    name: "namaLengkap",
                     placeholder: "Nama Pasien",
                     rules: { required: "Nama Pasien is required" },
                     colSize: 6,
                 },
                 {
                      type:"select",
-                     id: "indetitas",
+                     id: "identitasId",
                      label: "Identitas",
-                     name:"indetitas",
+                     name:"identitasId",
                      placeholder: "Identitas",
                      options: [ 
                          { label: "KTP", value: "KTP" },
@@ -85,9 +108,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "date",
-                    id: "tglLahir",
+                    id: "tanggalLahir",
                     label: "Tanggal Lahir",
-                    name: "tglLahir",
+                    name: "tanggalLahir",
                     rules: { required: "Tanggal Lahir is required" },
                     colSize: 6
                 },
@@ -106,9 +129,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type:"select",
-                    id: "statusPernikahan",
+                    id: "status",
                     label: "Status Pernikahan",
-                    name:"statusPernikahan",
+                    name:"status",
                     placeholder: "Status Pernikahan",
                     options: [
                         { label: "Belum Menikah", value: "Belum Menikah" },
@@ -121,26 +144,19 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type:"select",
-                    id: "agama",
+                    id: "agamaId",
                     label: "Agama",
-                    name:"agama",
+                    name:"agamaId",
                     placeholder: "Agama",
-                    options: [
-                        { label: "Islam", value: "Islam" },
-                        { label: "Kristen", value: "Kristen" },
-                        { label: "Katolik", value: "Katolik" },
-                        { label: "Hindu", value: "Hindu" },
-                        { label: "Budha", value: "Budha" },
-                        { label: "Konghucu", value: "Konghucu" },
-                    ],
+                    options: agamaData?.map(item => ({ label: item.jenisAgama, value: item.agamaId })) || [],
                     rules: { required: "Agama is required" },
                     colSize: 6
                 },
                 {
                     type: "select",
-                    id: "pendidikanTerakhir",
+                    id: "pendidikanTerakhirId",
                     label: "Pendidikan Terakhir",
-                    name: "pendidikanTerakhir",
+                    name: "pendidikanTerakhirId",
                     placeholder: "Pendidikan Terakhir",
                     options: [
                         { label: "SD", value: "SD" },
@@ -169,9 +185,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "textarea",
-                    id: "alamat",
-                    label: "Alamat Sesuai Identitas",
-                    name: "alamat",
+                    id: "alamatIdentitas",
+                    label: "alamat Sesuai Identitas",
+                    name: "alamatIdentitas",
                     placeholder: "Alamat",
                     colSize: 6
                 },
@@ -185,9 +201,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "select",
-                    id: "negara",
+                    id: "negaraId",
                     label: "Negara",
-                    name: "negara",
+                    name: "negaraId",
                     placeholder: "Negara",
                     options: [
                         { label: "Indonesia", value: "Indonesia" },
@@ -202,9 +218,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "select",
-                    id: "pasien_provinsi",
+                    id: "provinsiId",
                     label: "Provinsi Pasien",
-                    name: "pasien_provinsi",
+                    name: "provinsiId",
                     placeholder: "Pilih Provinsi",
                     options: dataWilayah.map((item) => ({
                       label: item.provinsi,
@@ -216,10 +232,10 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "select",
-                    id: "pasien_kabupaten",
-                    label: "Kabupaten Pasien",
-                    name: "pasien_kabupaten",
-                    placeholder: "Pilih Kabupaten",
+                    id: "kotaId",
+                    label: "Kota Pasien",
+                    name: "kotaId",
+                    placeholder: "Pilih Kota",
                     options: pasienFilteredKabupaten.map((item) => ({
                     label: item.nama,
                     value: item.nama,
@@ -230,9 +246,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "select",
-                    id: "pasien_kecamatan",
+                    id: "kecamatanId",
                     label: "Kecamatan Pasien",
-                    name: "pasien_kecamatan",
+                    name: "kecamatanId",
                     placeholder: "Pilih Kecamatan",
                     options: pasienFilteredKecamatan.map((item) => ({
                     label: item.nama,
@@ -244,9 +260,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "select",
-                    id: "pasien_kelurahan",
+                    id: "kelurahanId",
                     label: "Kelurahan Pasien",
-                    name: "pasien_kelurahan",
+                    name: "kelurahanId",
                     placeholder: "Pilih Kelurahan",
                     options: pasienFilteredKelurahan.map((item) => ({
                       label: item,
@@ -266,9 +282,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "email",
-                    id: "emailPasien",
+                    id: "email",
                     label: "Email Pasien",
-                    name: "emailPasien",
+                    name: "email",
                     placeholder: "Email Pasien",
                     rules: { required: "Email is required", email: "Email is invalid" },
                     colSize: 6
@@ -295,9 +311,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type:"select",
-                    id:"kewarganegaraan",
+                    id:"kewarganegaraanId",
                     label:"kewarganegaraan",
-                    name:"kewarganegaraan",
+                    name:"kewarganegaraanId",
                     placeholder:"kewarganegaraan",
                     options:[
                         { label: "Amerika", value: "Amerika" },
@@ -372,23 +388,9 @@ const KioskPendaftaranPasien = memo(() => {
             [
                 {
                     type: "select",
-                    id: "asuransi",
-                    label: "Asuransi Kesehatan",
-                    name: "asuransi",
-                    placeholder: "Asuransi Kesehatan",
-                    options: [
-                        { label: "Askes", value: "Askes" },
-                        { label: "JKN", value: "JKN" },
-                        { label: "BPJS", value: "BPJS" },
-                        { label: "Lain-lain", value: "Lain-lain" },
-                    ],
-                    colSize: 6
-                },
-                {
-                    type: "select",
-                    id: "golonganDarah",
+                    id: "golonganDarahId",
                     label: "Golongan Darah",
-                    name: "golonganDarah",
+                    name: "golonganDarahId",
                     placeholder: "Pilih Golongan Darah",
                     options: [
                         { label: "A", value: "A" },
@@ -454,9 +456,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "text",
-                    id: "noIdentitasKontakDarurat",
+                    id: "noIdentitasDarurat",
                     label: "No Identitas Darurat",
-                    name: "noIdentitasKontakDarurat",
+                    name: "noIdentitasDarurat",
                     placeholder: "Alamat Darurat",
                     colSize: 6
                 },
@@ -470,9 +472,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "textarea",
-                    id: "alamatKontakDarurat",
-                    label: "Alamat Kontak Darurat",
-                    name: "alamatKontakDarurat",
+                    id: "alamatDarurat",
+                    label: "Alamat Darurat",
+                    name: "alamatDarurat",
                     placeholder: "Alamat Darurat",
                     colSize: 12
                 }
@@ -492,9 +494,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "text",
-                    id: "noIdentitasOrangtua",
+                    id: "identitasOrangtua",
                     label: "No Identitas Orang Tua / Wali",
-                    name: "noIdentitasOrangtua",
+                    name: "identitasOrangtua",
                     placeholder: "No Identitas Orang Tua",
                     colSize: 6
                 },
@@ -508,9 +510,9 @@ const KioskPendaftaranPasien = memo(() => {
                 },
                 {
                     type: "select",
-                    id: "hubungandenganPasien",
+                    id: "hubunganAnak",
                     label: "Hubungan Dengan Pasien",
-                    name: "hubungandenganPasien",
+                    name: "hubunganAnak",
                     placeholder: "Hubungan Dengan Pasien",
                     options: [
                         { label: "Ayah", value: "Ayah" },
@@ -526,17 +528,34 @@ const KioskPendaftaranPasien = memo(() => {
             ]
         }
     ]
+
+
     const handleSubmit = (data) => {
+        dispatch(AddPasienSlice(data))
+            .then((result) => {
+                if (AddPasienSlice.fulfilled.match(result)) {
+                    console.log("Data pasien berhasil dikirim:", result.payload);
+                    alert("Data pasien berhasil dikirim!");
+                } else {
+                    console.error("Gagal mengirim data:", result.error.message);
+                    alert("Gagal mengirim data pasien!");
+                }
+            })
+            .catch((error) => {
+                console.error("Error saat dispatch:", error);
+                alert("Terjadi kesalahan saat mengirim data pasien!");
+            });
+
         const enhancedData = {
-          ...data,
-          noRekamMedis: `RM-${new Date().getTime()}`,
-          queueNumber: `A-${Math.floor(Math.random() * 100)}`,
-          registrationDate: new Date().toLocaleDateString('id-ID')
+            ...data,
+            noRekamMedis: `RM-${new Date().getTime()}`,
+            queueNumber: `A-${Math.floor(Math.random() * 100)}`,
+            registrationDate: new Date().toLocaleDateString('id-ID'),
         };
-        
+
         setSubmittedData(enhancedData);
         setIsSubmitted(true);
-      };
+    };
 
       const handlePrint = (type) => {
         setSelectedPrintType(type);
@@ -587,7 +606,7 @@ const KioskPendaftaranPasien = memo(() => {
                 <ButtonNav
                   label="Kembali ke Halaman Utama"
                   variant="primary"
-                  path="/kiosk"
+                  path="/kiosk" 
 
                 />
                 <Button variant="primary" onClick={() => handlePrint('card')} className="text-center mt-3 ml-5">

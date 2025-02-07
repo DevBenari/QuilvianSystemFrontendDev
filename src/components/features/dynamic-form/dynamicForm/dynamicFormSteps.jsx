@@ -64,7 +64,7 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     trigger,
   } = methods;
 
-  const titles = watch("title");
+  const titles = watch("titleId");
   const statusKewarganegaraan = watch("statusKewarganegaraan");
   const kewarganegaraan = watch("kewarganegaraan");
 
@@ -120,6 +120,14 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
       ...(onChange ? { onChange } : {}),
       ...(onClick ? { onClick } : {}),
     };
+
+    if (type === "custom" && typeof customRender === "function") {
+    return (
+      <div key={id} className={className}>
+        {customRender({ field, commonProps, methods })}
+      </div>
+    );
+  }
 
     const Component = fieldComponents[field.type];
     if (!Component) {
