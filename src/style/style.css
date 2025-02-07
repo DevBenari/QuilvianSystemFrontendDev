@@ -448,6 +448,69 @@ a:hover {
   box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
 }
 
+.iq-card-form {
+  margin: 0;
+  padding: 0;
+  background: #ceebee;
+  font-size: 13px;
+  top: 20px !important;
+  border-radius: 10px;
+  border-color: #eef0f4;
+  -webkit-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+  -moz-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+  box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+}
+
+/* styles/patientKiosk.css */
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+
+}
+
+/* Screen styles */
+@media screen {
+  .print-only {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Card styles */
+.patient-card {
+  width: 340px;
+  height: 210px;
+}
+
+.queue-card {
+  width: 580px;
+  height: 380px;
+}
+
+.queue-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  border: 2px dashed #dee2e6;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.hospital-header {
+  margin-bottom: 1rem;
+}
+
+.patient-info-row {
+  margin-bottom: 0.25rem;
+}
+
+.patient-label {
+  font-weight: bold;
+}
+
 .iq-card-header .dropdown-menu .dropdown-item {
   padding: 8px 15px;
   color: #777D74;
@@ -708,6 +771,7 @@ a:hover {
 }
 
 .particle {
+  margin-top: 20px;
   position: absolute;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 50%;
@@ -730,11 +794,13 @@ a:hover {
 
 /* Glow Effects */
 .glow-effect {
-  position: absolute;
-  width: 16rem;
-  height: 16rem;
+  position: fixed;
+  width: 200px; /* Adjust size as needed */
+  height: 200px;
+  opacity: 0.2; /* Makes it subtle in the background */
+  pointer-events: none;
   border-radius: 50%;
-  filter: blur-3xl;
+  z-index: 1;
 }
 
 .glow-effect-1 {
@@ -765,7 +831,7 @@ a:hover {
 }
 
 .kiosk-logo img {
-  max-width: 350px;
+  max-width: 250px;
   height: auto;
   object-fit: contain;
 }

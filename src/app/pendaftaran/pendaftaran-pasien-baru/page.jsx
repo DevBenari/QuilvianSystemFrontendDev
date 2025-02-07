@@ -1,15 +1,34 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetPasienSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice';
 import CustomSearchFilter from '@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard';
 import ButtonNav from '@/components/ui/button-navigation';
-import { daftarPasien } from '@/utils/config';
 import { Row, Col } from 'react-bootstrap';
 import { FormProvider, useForm } from 'react-hook-form';
 import CustomTableComponent from '@/components/features/CustomTable/custom-table';
 
 const ListPasienBaruPage = () => {
+  const dispatch = useDispatch();
   const methods = useForm();
-  const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
+  const [filteredPatients, setFilteredPatients] = useState([]);
+  
+  // Ambil data dari Redux store
+  const { data: pasienData, loading, error } = useSelector((state) => state.pasien);
+
+  useEffect(() => {
+    dispatch(GetPasienSlice());
+  }, [dispatch]);
+
+  // Tampilkan loading jika data sedang dimuat
+  if (loading) {
+    return <div>Loading data pasien...</div>;
+  }
+
+  // Tampilkan pesan error jika ada kesalahan
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <FormProvider {...methods}>
@@ -22,7 +41,7 @@ const ListPasienBaruPage = () => {
           </div>
           <Col lg="12" className="mt-2">
             <CustomSearchFilter
-              data={daftarPasien}
+              data={pasienData}
               setFilteredPatients={setFilteredPatients}
               onFilteredPatients={filteredPatients}
             />
@@ -47,18 +66,16 @@ const ListPasienBaruPage = () => {
                 </div>
                   <div className="iq-card-body">
                     <CustomTableComponent
-                      data={filteredPatients}
+                      data={filteredPatients.length > 0 ? filteredPatients : pasienData}
                       columns={[
-                          { key: 'id', label: 'ID' },
-                          { key: 'nomorRekamMedis', label: 'No Rekam Medis' },
-                          { key: 'date', label: 'Tanggal' },
-                          { key: 'nama', label: 'Nama Pasien' },
+                          { key: 'kodePasien', label: 'kodePasien' },
+                          { key: 'noRekamMedis', label: 'No Rekam Medis' },
+                          // { key: 'date', label: 'Tanggal' },
+                          { key: 'namaLengkap', label: 'Nama Pasien' },
                           { key: 'jenisKelamin', label: 'Jenis Kelamin' },
-                          { key: 'umur', label: 'Umur' },
+                          { key: 'tempatLahir', label: 'Tempat Lahir' },
                       ]}
                       itemsPerPage={10}
-                      // slugConfig={{ textField: 'nama', idField: 'id' }}
-                      // basePath="/pendaftaran/pendaftaran-pasien-laboratorium/edit-pasien-lab"
                     />
                   </div>
               </div>
@@ -69,4 +86,4 @@ const ListPasienBaruPage = () => {
   )
 }
 
-export default ListPasienBaruPage
+export default ListPasienBaruPage;

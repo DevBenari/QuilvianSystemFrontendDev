@@ -7,7 +7,7 @@ module.exports = {
         exec_mode: 'fork',
         env: {
           NODE_ENV: 'production',
-          PORT: 3111
+          PORT: 3000
         },
         watch: true,
         restart_delay: 5000
