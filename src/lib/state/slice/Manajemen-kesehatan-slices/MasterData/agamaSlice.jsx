@@ -1,5 +1,5 @@
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
-import { createAsyncThunk, createSlice, isRejectedWithValue } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const GetAgamaSlice = createAsyncThunk("pasien/getPasien", async(_, {isRejectedWithValue}) => {
     try{
@@ -10,14 +10,13 @@ export const GetAgamaSlice = createAsyncThunk("pasien/getPasien", async(_, {isRe
             },
         })
         const response = await request.data;
+        console.log(response.data);
 
         return response.data;
     }catch(error){
         return isRejectedWithValue(error.response.data)
     }
 })
-
-
 
 const AgamaSlice = createSlice({
     name:"agama",

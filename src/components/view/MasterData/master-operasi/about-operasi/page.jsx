@@ -2,12 +2,14 @@
 
 import { Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import CustomTableComponent from "@/components/features/custom-table/CustomTable/custom-table";
+
+// import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import { useEffect, useState } from "react";
 
 import TextField from "@/components/ui/text-field";
-import { useAboutOperasi } from "@/lib/hooks/manajemen-operasi/about-operasi";
+import { useAboutOperasi } from "@/lib/hooks/masterData/manajemen-operasi/about-operasi";
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const TableAboutOperasi = () => {
   const methods = useForm({

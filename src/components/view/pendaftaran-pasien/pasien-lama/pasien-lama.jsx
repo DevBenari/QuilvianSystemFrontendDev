@@ -1,146 +1,80 @@
 "use client";
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import DataTable from "@/components/features/custom-table/viewDataTables/dataTable";
-import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";
-
-import { useRouter } from "next/navigation";
+import { Col, Row, Spinner } from "react-bootstrap";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { pasienLama } from "@/utils/dataPasien";
 
-const PasienLama = () => {
+const PasienLama = memo(() => {
   const methods = useForm();
-  const [filteredData, setFilteredData] = useState(pasienLama); // Gunakan data dummy untuk tabel
-  const [searchCriteria, setSearchCriteria] = useState({
-    noRm: "",
-    alamat: "",
-    tempatTanggalLahir: "",
-  });
+  const [filteredData, setFilteredData] = useState(pasienLama);
 
-  const router = useRouter();
-  //   const handleAdd = () => {
-  //     router.push("/perjanjian/perjanjian-reguler/add-perjanjian-reguler");
-  //   };
-
-  // Fungsi untuk menangani pencarian dengan kriteria
-  const handleSearch = (key, value) => {
-    const updatedCriteria = { ...searchCriteria, [key]: value };
-    setSearchCriteria(updatedCriteria);
-
-    const filtered = pasienLama.filter((item) => {
-      return Object.keys(updatedCriteria).every((criteriaKey) => {
-        const criteriaValue = updatedCriteria[criteriaKey];
-        if (!criteriaValue) return true; // Abaikan jika kriteria kosong
-
-        if (
-          criteriaKey === "tanggalMulai" ||
-          criteriaKey === "tanggalSelesai"
-        ) {
-          const itemDate = new Date(item.tanggal_lahir).getTime(); // Gunakan `tanggal_lahir` sebagai referensi
-          const startDate = new Date(updatedCriteria.tanggalMulai).getTime();
-          const endDate = new Date(updatedCriteria.tanggalSelesai).getTime();
-          if (criteriaKey === "tanggalMulai" && startDate) {
-            return itemDate >= startDate;
-          }
-          if (criteriaKey === "tanggalSelesai" && endDate) {
-            return itemDate <= endDate;
-          }
-        }
-
-        return item[criteriaKey]
-          ?.toString()
-          .toLowerCase()
-          .includes(criteriaValue.toLowerCase());
-      });
-    });
-
-    setFilteredData(filtered);
-  };
-
-  const formFields = [
-    {
-      fields: [
-        {
-          type: "text",
-          id: "nomorRekamMedis",
-          label: "Medical Record ID",
-          name: "nomorRekamMedis",
-          placeholder: "Masukkan Medical Record ID...",
-          onChange: (e) => handleSearch("noRm", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "text",
-          id: "nama",
-          label: "Nama",
-          name: "nama",
-          placeholder: "Masukkan nama pasien...",
-          onChange: (e) => handleSearch("nama", e.target.value),
-          colSize: 6,
-        },
-        {
-          type: "text",
-          id: "alamat",
-          label: "Alamat",
-          name: "alamat",
-          placeholder: "Masukkan alamat pasien...",
-          onChange: (e) => handleSearch("alamat", e.target.value),
-          colSize: 6,
-        },
-        // {
-        //   type: "text",
-        //   id: "nomorTelepon",
-        //   label: "No. HP",
-        //   name: "nomorTelepon",
-        //   placeholder: "Masukkan nomor HP pasien...",
-        //   onChange: (e) => handleSearch("nomorTelepon", e.target.value),
-        //   colSize: 6,
-        // },
-        {
-          type: "date",
-          id: "tanggal_lahir",
-          label: "Tgl. Lahir",
-          name: "tanggal_lahir",
-          placeholder: "Masukkan tanggal lahir pasien...",
-          onChange: (e) => handleSearch("tanggal_lahir", e.target.value),
-          colSize: 6,
-        },
-      ],
-    },
-  ];
-
-  const headers = [
-    "NO",
-    "NO RM",
-    "OLD RM",
-    "NAMA",
-    "ALAMAT",
-    "TEMPAT TANGGAL LAHIR",
-  ];
-
-  // Format data untuk ditampilkan di tabel
-  const members = filteredData.map((item, index) => ({
-    no: index + 1,
-    noRm: item.noRm,
-    oldRm: item.oldRm,
-    nama: item.nama,
-    alamat: item.alamat,
-    tempatTanggalLahir: item.tempatTanggalLahir,
-  }));
+  // Sinkronisasi data awal
+  useEffect(() => {
+    setFilteredData(pasienLama);
+  }, []);
 
   return (
     <FormProvider {...methods}>
-      <DynamicFormTable title="Pencarian Pasien Lama" formConfig={formFields} />
+      <DynamicFormTable title="Pencarian Pasien Lama" />
 
-      <DataTable
-        headers={headers}
-        data={members}
-        id="id"
-        rowsPerPage={5}
-        title="Pasien Lama"
-        // onAdd={handleAdd}
-      />
+      <Col lg="12" className="iq-card p-4 mt-3">
+        <div className="d-flex justify-content-between iq-card-header">
+          <h2 className="mb-3">Searching Pasien Lama</h2>
+          <button
+            className="btn btn-dark my-3 mx-3"
+            onClick={() => window.location.reload()}
+          >
+            <i className="ri-refresh-line"></i>
+          </button>
+        </div>
+        <Col lg="12" className="mt-2">
+          <CustomSearchFilter
+            data={pasienLama}
+            setFilteredPatients={setFilteredData}
+            onFilteredPatients={filteredData}
+          />
+        </Col>
+      </Col>
+
+      <div className="mt-3">
+        <Row>
+          <Col sm="12" className="p-3">
+            <div className="iq-card p-3">
+              <div className="iq-card-header d-flex justify-content-between">
+                <h4 className="card-title font-widest">Tabel Pasien Lama</h4>
+              </div>
+              <div className="iq-card-body">
+                <CustomTableComponent
+                  data={filteredData}
+                  columns={[
+                    { key: "no", label: "No" },
+                    { key: "noRm", label: "No RM" },
+                    { key: "oldRm", label: "Old RM" },
+                    { key: "nama", label: "Nama" },
+                    { key: "alamat", label: "Alamat" },
+                    {
+                      key: "tempatTanggalLahir",
+                      label: "Tempat Tanggal Lahir",
+                    },
+                  ]}
+                  slugConfig={{
+                    textField: "nama",
+                    idField: "id",
+                  }}
+                  basePath="/pendaftaran/pasien-lama/edit-pasien-lama"
+                  itemsPerPage={5}
+                />
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </div>
     </FormProvider>
   );
-};
+});
 
+PasienLama.displayName = "PasienLama";
 export default PasienLama;
