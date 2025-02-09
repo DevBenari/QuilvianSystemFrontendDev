@@ -104,9 +104,10 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
       rows,
       customRender,
       colSize,
+      hide,  // Exclude `hide` from being passed to the component
       ...otherProps
     } = field;
-
+  
     const commonProps = {
       id,
       name,
@@ -120,21 +121,21 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
       ...(onChange ? { onChange } : {}),
       ...(onClick ? { onClick } : {}),
     };
-
+  
     if (type === "custom" && typeof customRender === "function") {
-    return (
-      <div key={id} className={className}>
-        {customRender({ field, commonProps, methods })}
-      </div>
-    );
-  }
-
+      return (
+        <div key={id} className={className}>
+          {customRender({ field, commonProps, methods })}
+        </div>
+      );
+    }
+  
     const Component = fieldComponents[field.type];
     if (!Component) {
       console.warn(`Unsupported field type: ${field.type}`);
       return null;
     }
-
+  
     return (
       <Component
         key={id}
@@ -144,10 +145,11 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
         control={methods.control}
         value={value}
         disabled={!isEditing || disabled}
-        {...otherProps}
+        {...otherProps}  // Pass other props except `hide`
       />
     );
   };
+  
 
   const handleNext = async () => {
     const currentFields = steps[currentStep].fields.map(field => field.name);
