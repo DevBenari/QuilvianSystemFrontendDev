@@ -10,7 +10,7 @@ import PrintPatientCard from './patientCard';
 import PrintableQueueNumber from './patientAntrian';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddPasienSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice';
-import { GetAgamaSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/agamaSlice';
+import { GetAgamaSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/agamaSlice';
 
 const KioskPendaftaranPasien = memo(() => {
     const { setValue } = useForm();

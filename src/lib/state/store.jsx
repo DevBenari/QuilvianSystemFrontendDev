@@ -1,12 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authLogin from "@/lib/state/slice/auth/LoginSlice";
-import titleReducer from "@/lib/state/slices/masterData/master-informasi/TitleSlice";
-import AgamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/agamaSlice" // Import AgamaSlice reducer
-import pekerjaanReducer from "@/lib/state/slices/masterData/master-informasi/pekerjaanSlice"; // Import pekerjaanSlice reducer
-import identitasSlice from "@/lib/state/slices/masterData/master-informasi/identitasSlice";
-import golonganSlice from "@/lib/state/slices/masterData/master-informasi/golonganSlice";
-import pendidikanSlice from "@/lib/state/slices/masterData/master-informasi/pendidikanSlice";
+import titleReducer from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
+import AgamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+import pekerjaanReducer from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice"; 
+import identitasSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import golonganSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
+import pendidikanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 import pasien from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
+import NegaraSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice"
 
 const store = configureStore({
   reducer: {
@@ -14,10 +15,11 @@ const store = configureStore({
     titles: titleReducer,
     pasien: pasien,
     agama: AgamaSlice,
-    pekerjaan: pekerjaanReducer, // Tambahkan reducer pekerjaan di sini
-    identitas: identitasSlice, // Tambahkan reducer pekerjaan di sini
+    pekerjaan: pekerjaanReducer,
+    identitas: identitasSlice, 
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
+    Negara: NegaraSlice,
   },
 });
 
