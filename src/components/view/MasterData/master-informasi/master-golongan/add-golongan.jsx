@@ -2,10 +2,11 @@
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import ReusableAlert from "@/components/ui/reusable-alert";
+import { createGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
 
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
-import { createGolongan } from "../../../../../../lib/state/slices/masterData/master-informasi/golonganSlice";
+
 import { useDispatch } from "react-redux";
 
 const FormAddGolongan = () => {
@@ -42,8 +43,8 @@ const FormAddGolongan = () => {
           label: "Kode Golongan",
           name: "kodeGolonganDarah",
           placeholder: "Masukkan Kode Golongan...",
+          defaultValue: "",
           colSize: 6,
-          rules: { required: "Kode Golongan harus diisi" },
         },
         {
           type: "text",
@@ -56,32 +57,6 @@ const FormAddGolongan = () => {
       ],
     },
   ];
-
-  // const handleSubmit = async (data) => {
-  //   // Validasi data sebelum submit
-  //   const errors = validateFormData(data, formFields);
-
-  //   if (errors.length > 0) {
-  //     alert(`Form tidak valid:\n${errors.join("\n")}`);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await addGolongan(data);
-  //     setAlertMessage("Agama added successfully!");
-  //     setAlertVariant("success");
-
-  //     // Navigasi setelah beberapa detik
-  //     setTimeout(() => {
-  //       router.push(
-  //         "/MasterData/master-informasi/master-golongan/table-golongan"
-  //       );
-  //     }, 500);
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Failed to add Golongan.");
-  //   }
-  // };
 
   const validateFormData = (data, fields) => {
     const errors = [];

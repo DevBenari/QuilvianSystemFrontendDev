@@ -77,13 +77,7 @@ const CustomTableComponent = memo(
           className="table-responsive"
           style={{ maxHeight: "400px", overflowX: "auto" }}
         >
-          <Table
-            bordered
-            striped
-            hover
-            responsive="md"
-            className="text-center"
-          >
+          <Table bordered striped hover responsive="md" className="text-center">
             <thead
               style={{
                 position: "sticky",
@@ -100,41 +94,48 @@ const CustomTableComponent = memo(
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((item, index) => (
-                <tr
-                  key={item[slugConfig.idField]}
-                  onDoubleClick={() => handleDoubleClick(item)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {columns.map((col, i) => (
-                    <td key={i}>
-                      {/* Display nomor urut when key is 'no', otherwise show the corresponding field */}
-                      {col.key === "no"
-                        ? (currentPage - 1) * itemsPerPage + index + 1
-                        : col.key === "tanggalLahir" ||
-                          col.key === "createDateTime" ||
-                          col.key === "tanggalDaftar"
-                        ? formatDate(item[col.key])
-                        : item[col.key]}
-                    </td>
-                  ))}
-                  {showActions && (
-                    <td>
-                      {actions.map((action) => (
-                        <Button
-                          key={action.type}
-                          variant={action.variant}
-                          size="sm"
-                          onClick={() => onCustomAction(item.id, action.type)}
-                          className="mx-1"
-                        >
-                          {action.label}
-                        </Button>
-                      ))}
-                    </td>
-                  )}
+              {currentItems.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length + (showActions ? 1 : 0)}>
+                    No data available
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                currentItems.map((item, index) => (
+                  <tr
+                    key={item[slugConfig.idField]}
+                    onDoubleClick={() => handleDoubleClick(item)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {columns.map((col, i) => (
+                      <td key={i}>
+                        {col.key === "no"
+                          ? (currentPage - 1) * itemsPerPage + index + 1
+                          : col.key === "tanggalLahir" ||
+                            col.key === "createDateTime" ||
+                            col.key === "tanggalDaftar"
+                          ? formatDate(item[col.key])
+                          : item[col.key]}
+                      </td>
+                    ))}
+                    {showActions && (
+                      <td>
+                        {actions.map((action) => (
+                          <Button
+                            key={action.type}
+                            variant={action.variant}
+                            size="sm"
+                            onClick={() => onCustomAction(item.id, action.type)}
+                            className="mx-1"
+                          >
+                            {action.label}
+                          </Button>
+                        ))}
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
             </tbody>
           </Table>
         </div>

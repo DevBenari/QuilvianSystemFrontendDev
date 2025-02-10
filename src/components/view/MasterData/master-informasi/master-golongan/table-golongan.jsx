@@ -2,12 +2,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
 
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import { fetchGolongan } from "../../../../../../lib/state/slices/masterData/master-informasi/golonganSlice";
+
 import { useSelector, useDispatch } from "react-redux";
+import { fetchGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
 
 const TableDataGolongan = () => {
   const methods = useForm();
@@ -73,27 +74,39 @@ const TableDataGolongan = () => {
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
+
               {loading && (
                 <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "200px" }}
+                  className="d-flex flex-column justify-content-center align-items-center"
+                  style={{ height: "300px" }}
                 >
-                  <Spinner animation="border" variant="primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    role="status"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <h5 className="mt-3 text-primary fw-bold">
+                    Loading data, please wait...
+                  </h5>
                 </div>
               )}
-              {error && <div className="text-danger">{error}</div>}
-              {!loading && !error && (
+
+              {/* Error or No Data */}
+              {!loading && (error || golongan.length === 0) && (
+                <Alert variant="warning" className="text-center mt-3">
+                  <i className="ri-information-line me-2"></i>
+                  Tidak ada data yang tersedia.
+                </Alert>
+              )}
+
+              {!loading && !error && golongan.length > 0 && (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredgolongan}
                     columns={[
                       { key: "no", label: "No" }, // Tambahkan kolom nomor urut
-                      {
-                        key: "kodeGolonganDarah",
-                        label: "Kode Golongan Darah",
-                      },
+
                       {
                         key: "namaGolonganDarah",
                         label: "Nama Golongan Darah",

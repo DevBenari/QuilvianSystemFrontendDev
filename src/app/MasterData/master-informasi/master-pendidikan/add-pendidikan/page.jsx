@@ -1,4 +1,4 @@
-import AddFormPendidikan from "@/components/view/MasterData/master-informasi/master-pendidikan/add-form-pendidikan/page";
+import AddFormPendidikan from "@/components/view/MasterData/master-informasi/master-pendidikan/add-pendidikan";
 import React from "react";
 
 const PageListAdd = () => {

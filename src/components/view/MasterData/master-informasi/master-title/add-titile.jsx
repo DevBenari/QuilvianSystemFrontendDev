@@ -1,7 +1,7 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import { createTitle } from "@/lib/state/slices/masterData/master-informasi/TitleSlice";
+import { createTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
@@ -16,7 +16,7 @@ const PenambahanTitle = () => {
     try {
       await dispatch(createTitle(data)).unwrap(); // Tunggu hasil dari dispatch
       alert("Title berhasil ditambahkan!");
-      router.push("/MasterData/master-informasi/master-title/table-title");
+      router.push("/MasterData/master-informasi/title/table-title");
     } catch (error) {
       console.error("Gagal menambahkan title:", error);
       alert("Gagal menambahkan title.");

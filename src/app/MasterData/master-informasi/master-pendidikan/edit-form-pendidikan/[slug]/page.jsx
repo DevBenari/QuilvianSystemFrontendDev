@@ -3,8 +3,12 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
-import { fetchPendidikanById } from "@/lib/state/slices/masterData/master-informasi/pendidikanSlice";
+
 import { useDispatch, useSelector } from "react-redux";
+import {
+  deletePendidikan,
+  fetchPendidikanById,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 
 const EditFormPendidikan = ({ params }) => {
   const router = useRouter();
@@ -61,6 +65,26 @@ const EditFormPendidikan = ({ params }) => {
     console.log("Form Data:", data);
   };
 
+  const handleDelete = async () => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+      if (!dataPendidikan?.pendidikanId) {
+        alert("Data pendidikan tidak ditemukan atau ID tidak valid.");
+        return;
+      }
+
+      try {
+        await dispatch(deletePendidikan(dataPendidikan.pendidikanId)).unwrap();
+        alert("Data pendidikan berhasil dihapus.");
+        router.push(
+          "/MasterData/master-informasi/master-pendidikan/table-pendidikan"
+        );
+      } catch (error) {
+        console.error("Error deleting pendidikan:", error);
+        alert("Gagal menghapus data pendidikan.");
+      }
+    }
+  };
+
   // Form configuration
   const formFields = [
     {
@@ -71,7 +95,7 @@ const EditFormPendidikan = ({ params }) => {
           name: "namaPendidikan",
           placeholder: "Masukkan Nama Pendidikan...",
           colSize: 6,
-          defaultValue: dataPendidikan?.data.namaPendidikan || [],
+          defaultValue: dataPendidikan?.namaPendidikan || [],
           rules: { required: "Nama Pendidikan harus diisi" },
         },
       ],
@@ -100,6 +124,7 @@ const EditFormPendidikan = ({ params }) => {
         onSubmit={handleSubmit}
         backPath={`/MasterData/master-Pendidikan/table-Pendidikan`}
         isAddMode={false}
+        handleDelete={handleDelete}
       />
     </Fragment>
   );

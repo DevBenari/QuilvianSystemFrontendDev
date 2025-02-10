@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, Fragment, useMemo } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
@@ -7,60 +7,72 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPekerjaanById,
   updatePekerjaan,
-} from "@/lib/state/slices/masterData/master-informasi/pekerjaanSlice";
+  deletePekerjaan,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
 
 const PekerjaanEditForm = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  // Ambil data pekerjaan dari Redux state
   const { selectedPekerjaan, loading, error } = useSelector(
     (state) => state.pekerjaan
   );
-
   const [dataPekerjaan, setDataPekerjaan] = useState(null);
 
-  // Fetch data pekerjaan berdasarkan ID dari URL params
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);
     dispatch(fetchPekerjaanById(id));
   }, [dispatch, params.slug]);
 
-  // Update dataPekerjaan setelah data pekerjaan berhasil di-fetch
   useEffect(() => {
     if (selectedPekerjaan) {
-      console.log("Selected pekerjaan:", selectedPekerjaan); // Cek apakah data tersedia
       setDataPekerjaan(selectedPekerjaan);
     }
   }, [selectedPekerjaan]);
 
-  // Fungsi submit form
-  const handleSubmit = (data) => {
-    if (!dataPekerjaan) return;
-    dispatch(updatePekerjaan({ id: dataPekerjaan.pekerjaanId, data }))
-      .unwrap()
-      .then(() => {
+  const handleSubmit = async (data) => {
+    if (!dataPekerjaan) {
+      alert("Data pekerjaan tidak tersedia.");
+      return;
+    }
+
+    try {
+      // Panggil update pekerjaan melalui Redux
+      await dispatch(
+        updatePekerjaan({ id: dataPekerjaan.pekerjaanId, data })
+      ).unwrap();
+
+      // Berikan notifikasi sukses
+      alert("Data pekerjaan berhasil diperbarui!");
+
+      // Redirect ke halaman tabel pekerjaan setelah sukses
+      router.push(
+        "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
+      );
+    } catch (error) {
+      console.error("Gagal memperbarui data pekerjaan:", error);
+
+      // Berikan notifikasi kesalahan
+      alert("Gagal memperbarui data pekerjaan.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+      try {
+        await dispatch(deletePekerjaan(dataPekerjaan.pekerjaanId)).unwrap();
+        alert("Data pekerjaan berhasil dihapus!");
         router.push(
           "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
         );
-      })
-      .catch((err) => {
-        console.error("Gagal memperbarui data pekerjaan:", err);
-      });
+      } catch (error) {
+        console.error("Gagal menghapus data pekerjaan:", error);
+        alert("Gagal menghapus data pekerjaan.");
+      }
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="iq-card">
-        <div className="card-body text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+  // Konfigurasi form
   const formFields = [
     {
       fields: [
@@ -70,19 +82,13 @@ const PekerjaanEditForm = ({ params }) => {
           name: "namaPekerjaan",
           placeholder: "Masukkan Nama Pekerjaan...",
           colSize: 6,
-          rules: { required: "Nama Pekerjaan harus diisi" },
-          defaultValue: dataPekerjaan.data.namaPekerjaan || "", // Null-safe check
-          onChangeCallback: (e) =>
-            setDataPekerjaan({
-              ...dataPekerjaan,
-              namaPekerjaan: e.target.value,
-            }),
+          rules: { required: "Nama pekerjaan harus diisi" },
+          defaultValue: dataPekerjaan?.namaPekerjaan || "",
         },
       ],
     },
   ];
 
-  // Loading state
   if (loading) {
     return (
       <div className="iq-card">
@@ -105,14 +111,27 @@ const PekerjaanEditForm = ({ params }) => {
     );
   }
 
+  if (!dataPekerjaan) {
+    return (
+      <div className="iq-card">
+        <div className="card-body">
+          <div className="alert alert-warning">
+            Data pekerjaan tidak ditemukan.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Render form
   return (
     <Fragment>
       <DynamicForm
-        pekerjaan="Edit Data Pekerjaan"
+        title="Edit Data Pekerjaan"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={`/MasterData/master-informasi/master-pekerjaan/table-pekerjaan`}
+        handleDelete={handleDelete}
+        backPath="/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
         isAddMode={false}
       />
     </Fragment>

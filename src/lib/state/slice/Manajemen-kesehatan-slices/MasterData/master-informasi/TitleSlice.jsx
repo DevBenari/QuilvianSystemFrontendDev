@@ -1,34 +1,69 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-const API_URL = "http://192.168.15.213:589/api/Title";
-
 // CRUD Thunks
-export const fetchTitles = createAsyncThunk("titles/fetch", async () => {
-  const response = await axios.get(API_URL, { headers: getHeaders() });
-  return response.data;
-});
-
-export const createTitle = createAsyncThunk("titles/create", async (data) => {
-  const response = await axios.post(API_URL, data, { headers: getHeaders() });
-  return response.data;
-});
-
-export const updateTitle = createAsyncThunk(
-  "titles/update",
-  async ({ id, data }) => {
-    const response = await axios.put(`${API_URL}/${id}`, data, {
-      headers: getHeaders(),
-    });
-    return response.data;
+export const fetchTitles = createAsyncThunk(
+  "titles/fetch",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get("/Title", {
+        headers: getHeaders(),
+      });
+      return response.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Gagal mengambil data title";
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 
-export const deleteTitle = createAsyncThunk("titles/delete", async (id) => {
-  await axios.delete(`${API_URL}/${id}`, { headers: getHeaders() });
-  return id;
-});
+export const createTitle = createAsyncThunk(
+  "titles/create",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.post("/Title", data, {
+        headers: getHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Gagal menambahkan data title";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const updateTitle = createAsyncThunk(
+  "titles/update",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.put(`/Title/${id}`, data, {
+        headers: getHeaders(),
+      });
+      return response.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.data.message || "Gagal mengupdate data title";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const deleteTitle = createAsyncThunk(
+  "titles/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      await InstanceAxios.delete(`/Title/${id}`, { headers: getHeaders() });
+      return id;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Gagal menghapus data title";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
 
 // Slice
 const titleSlice = createSlice({
@@ -51,25 +86,23 @@ const titleSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-
       .addCase(createTitle.fulfilled, (state, action) => {
         if (Array.isArray(state.data.data)) {
-          state.data.data.push(action.payload); // Tambahkan payload ke array data
+          state.data.data.push(action.payload);
         }
       })
       .addCase(updateTitle.fulfilled, (state, action) => {
-        if (Array.isArray(state.data.data)) {
-          const index = state.data.data.findIndex(
-            (title) => title.titleId === action.payload.titleId
-          );
-          if (index !== -1) {
-            state.data.data[index] = action.payload;
-          }
+        const index = state.data.data.findIndex(
+          (title) => title.titleId === action.payload.titleId
+        );
+        if (index !== -1) {
+          state.data.data[index] = action.payload;
         }
       })
-
       .addCase(deleteTitle.fulfilled, (state, action) => {
-        state.data = state.data.filter((title) => title.id !== action.payload);
+        state.data.data = state.data.data.filter(
+          (title) => title.titleId !== action.payload
+        );
       });
   },
 });

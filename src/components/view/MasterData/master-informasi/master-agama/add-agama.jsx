@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import { createAgama } from "@/lib/state/slices/masterData/master-informasi/AgamaSlice";
+import { createAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 
 const FormAddAgama = () => {
   const dispatch = useDispatch();
@@ -30,8 +30,8 @@ const FormAddAgama = () => {
           label: "Kode Agama",
           name: "agamaKode",
           placeholder: "Masukkan Kode Agama...",
+          defaultValue: "",
           colSize: 6,
-          rules: { required: "Kode Agama harus diisi" },
         },
         {
           type: "text",

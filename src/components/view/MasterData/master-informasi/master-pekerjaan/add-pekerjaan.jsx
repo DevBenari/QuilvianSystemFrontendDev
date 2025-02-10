@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
-import { createPekerjaan } from "@/lib/state/slices/masterData/master-informasi/pekerjaanSlice";
+import { createPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
 
 const FormAddPekerjaan = () => {
   const [alertMessage, setAlertMessage] = useState(null);
@@ -22,8 +22,8 @@ const FormAddPekerjaan = () => {
           label: "Kode Pekerjaan",
           name: "kodePekerjaan",
           placeholder: "Masukkan Kode Pekerjaan...",
+          defaultValue: "",
           colSize: 6,
-          rules: { required: "Kode Pekerjaan harus diisi" },
         },
         {
           type: "text",
@@ -42,30 +42,13 @@ const FormAddPekerjaan = () => {
       await dispatch(createPekerjaan(data)).unwrap(); // Tunggu hasil dari dispatch
       alert("pekerjaan berhasil ditambahkan!");
       console.log(data);
-      // router.push("/MasterData/master-informasi/master-pekerjaan/table-pekerjaan");
+      router.push(
+        "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
+      );
     } catch (error) {
       console.error("Gagal menambahkan pekerjaan:", error);
       alert("Gagal menambahkan pekerjaan.");
     }
-  };
-
-  const validateFormData = (data, fields) => {
-    const errors = [];
-    fields.forEach((section) => {
-      section.fields.forEach((field) => {
-        const { name, label, rules } = field; // Menggunakan name untuk mengambil value
-        const value = data[name];
-
-        if (rules?.required && (!value || value.trim() === "")) {
-          errors.push(`${label} harus diisi`);
-        }
-
-        if (rules?.pattern && !rules.pattern.test(value)) {
-          errors.push(`${label} tidak valid`);
-        }
-      });
-    });
-    return errors;
   };
 
   return (

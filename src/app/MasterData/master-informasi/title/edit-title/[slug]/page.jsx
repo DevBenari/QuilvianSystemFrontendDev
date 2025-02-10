@@ -5,7 +5,10 @@ import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicF
 import { extractIdFromSlug } from "@/utils/slug";
 
 import { useSelector, useDispatch } from "react-redux";
-import { updateTitle } from "@/lib/state/slices/masterData/master-informasi/TitleSlice";
+import {
+  deleteTitle,
+  updateTitle,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 
 const TitleEditPage = ({ params }) => {
   const router = useRouter();
@@ -16,9 +19,7 @@ const TitleEditPage = ({ params }) => {
     error,
   } = useSelector((state) => state.titles);
 
-  // Gunakan useMemo agar titles hanya dihitung ulang saat titlesData berubah
   const titles = useMemo(() => titlesData?.data || [], [titlesData]);
-
   const [titleData, setTitleData] = useState(null);
 
   useEffect(() => {
@@ -31,7 +32,21 @@ const TitleEditPage = ({ params }) => {
     if (!titleData) return;
     dispatch(updateTitle({ id: titleData.titleId, data }));
     console.log("Submitted data:", data);
-    router.push("/MasterData/master-informasi/master-title/table-title");
+    router.push("/MasterData/master-informasi/title/table-title");
+  };
+
+  const handleDelete = async () => {
+    if (!titleData) return;
+    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+      try {
+        await dispatch(deleteTitle(titleData.titleId)).unwrap();
+        alert("Data title berhasil dihapus.");
+        router.push("/MasterData/master-informasi/title/table-title");
+      } catch (error) {
+        console.error("Error deleting title:", error);
+        alert("Gagal menghapus data title.");
+      }
+    }
   };
 
   if (loading) {
@@ -72,35 +87,24 @@ const TitleEditPage = ({ params }) => {
       fields: [
         {
           type: "text",
-          label: "Kode Title",
-          name: "kodeTitle",
-          colSize: 6,
-          defaultValue: titleData.kodeTitle, // Default value dari state
-          onChangeCallback: (e) =>
-            setTitleData({ ...titleData, kodeTitle: e.target.value }),
-        },
-        {
-          type: "text",
           label: "Nama Title",
           name: "namaTitle",
           colSize: 6,
-          defaultValue: titleData.namaTitle, // Default value dari state
-          onChangeCallback: (e) =>
-            setTitleData({ ...titleData, namaTitle: e.target.value }),
+          defaultValue: titleData.namaTitle,
         },
       ],
     },
   ];
 
-  // Render form
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Title"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={`/MasterData/master-informasi/master-title/table-title`}
+        backPath={`/MasterData/master-informasi/title/table-title`}
         isAddMode={false}
+        handleDelete={handleDelete}
       />
     </Fragment>
   );

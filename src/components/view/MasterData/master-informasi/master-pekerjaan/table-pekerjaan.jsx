@@ -1,62 +1,56 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
-
 import { Row, Col, Spinner } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPendidikan } from "../../../../../../lib/state/slices/masterData/master-informasi/pendidikanSlice";
+import { fetchPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
 
-const TableDataPendidikan = () => {
+const TableDataPekerjaan = () => {
   const methods = useForm();
-
   const dispatch = useDispatch();
   const {
-    data: pendidikanData,
+    data: pekerjaanData,
     loading,
     error,
-  } = useSelector((state) => state.pendidikan);
+  } = useSelector((state) => state.pekerjaan);
 
-  // Gunakan useMemo untuk menghitung ulang pendidikan hanya ketika pendidikanData berubah
-  const pendidikan = useMemo(
-    () => pendidikanData?.data || [],
-    [pendidikanData]
-  );
+  const pekerjaan = useMemo(() => pekerjaanData?.data || [], [pekerjaanData]);
 
-  const [filteredpendidikan, setFilteredpendidikan] = useState(pendidikan);
+  const [filteredPekerjaan, setFilteredPekerjaan] = useState(pekerjaan);
 
   useEffect(() => {
-    dispatch(fetchPendidikan());
+    dispatch(fetchPekerjaan());
   }, [dispatch]);
 
   useEffect(() => {
-    setFilteredpendidikan(pendidikan); // Update filteredpendidikan setelah pendidikan diubah
-  }, [pendidikan]);
+    setFilteredPekerjaan(pekerjaan);
+  }, [pekerjaan]);
 
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">
-            Master Data <br></br>{" "}
+            Master Data <br />
             <span className="letter-spacing fw-bold">
-              List Daftar Pendidikan
+              List Daftar Pekerjaan
             </span>
           </h2>
           <button
             className="btn btn-dark my-3 mx-3"
-            onClick={() => window.location.reload()}
+            onClick={() => dispatch(fetchPekerjaan())}
           >
             <i className="ri-refresh-line"></i>
           </button>
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={pendidikan}
-            setFilteredPatients={setFilteredpendidikan}
-            onFilteredPatients={filteredpendidikan}
+            data={pekerjaan}
+            setFilteredPatients={setFilteredPekerjaan}
+            onFilteredPatients={filteredPekerjaan}
           />
         </Col>
       </Col>
@@ -65,14 +59,14 @@ const TableDataPendidikan = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-Pendidikan">
-                  <h4 className="card-Pendidikan font-widest">
-                    Tabel List Daftar Pendidikan
+                <div className="iq-header-Pekerjaan">
+                  <h4 className="card-Pekerjaan font-widest">
+                    Tabel List Daftar Pekerjaan
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-informasi/master-pendidikan/add-pendidikan"
-                  label="Add Pendidikan"
+                  path="/MasterData/master-informasi/master-pekerjaan/add-pekerjaan"
+                  label="Add Pekerjaan"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -93,18 +87,18 @@ const TableDataPendidikan = () => {
               {!loading && !error && (
                 <div className="iq-card-body">
                   <CustomTableComponent
-                    data={filteredpendidikan}
+                    data={filteredPekerjaan}
                     columns={[
-                      { key: "no", label: "No" }, // Tambahkan kolom nomor urut
+                      { key: "no", label: "No" },
 
-                      { key: "namaPendidikan", label: "Nama Pendidikan" },
+                      { key: "namaPekerjaan", label: "Nama Pekerjaan" },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{
-                      textField: "namaPendidikan",
-                      idField: "pendidikanId",
+                      textField: "namaPekerjaan",
+                      idField: "pekerjaanId",
                     }}
-                    basePath="/MasterData/master-informasi/master-pendidikan/edit-form-pendidikan"
+                    basePath="/MasterData/master-informasi/master-pekerjaan/edit-pekerjaan-form"
                   />
                 </div>
               )}
@@ -116,4 +110,4 @@ const TableDataPendidikan = () => {
   );
 };
 
-export default TableDataPendidikan;
+export default TableDataPekerjaan;

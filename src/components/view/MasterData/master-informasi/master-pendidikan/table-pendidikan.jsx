@@ -7,29 +7,33 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTitles } from "@/lib/state/slices/masterData/master-informasi/TitleSlice";
+import { fetchPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 
-const TableDataTitle = () => {
+const TableDataPendidikan = () => {
   const methods = useForm();
+
   const dispatch = useDispatch();
   const {
-    data: titlesData,
+    data: pendidikanData,
     loading,
     error,
-  } = useSelector((state) => state.titles);
+  } = useSelector((state) => state.pendidikan);
 
-  // Gunakan useMemo untuk menghitung ulang titles hanya ketika titlesData berubah
-  const titles = useMemo(() => titlesData?.data || [], [titlesData]);
+  // Gunakan useMemo untuk menghitung ulang pendidikan hanya ketika pendidikanData berubah
+  const pendidikan = useMemo(
+    () => pendidikanData?.data || [],
+    [pendidikanData]
+  );
 
-  const [filteredTitles, setFilteredTitles] = useState(titles);
+  const [filteredpendidikan, setFilteredpendidikan] = useState(pendidikan);
 
   useEffect(() => {
-    dispatch(fetchTitles());
+    dispatch(fetchPendidikan());
   }, [dispatch]);
 
   useEffect(() => {
-    setFilteredTitles(titles); // Update filteredTitles setelah titles diubah
-  }, [titles]);
+    setFilteredpendidikan(pendidikan); // Update filteredpendidikan setelah pendidikan diubah
+  }, [pendidikan]);
 
   return (
     <FormProvider {...methods}>
@@ -37,7 +41,9 @@ const TableDataTitle = () => {
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">
             Master Data <br></br>{" "}
-            <span className="letter-spacing fw-bold">List Daftar Title</span>
+            <span className="letter-spacing fw-bold">
+              List Daftar Pendidikan
+            </span>
           </h2>
           <button
             className="btn btn-dark my-3 mx-3"
@@ -48,9 +54,9 @@ const TableDataTitle = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={titles}
-            setFilteredPatients={setFilteredTitles}
-            onFilteredPatients={filteredTitles}
+            data={pendidikan}
+            setFilteredPatients={setFilteredpendidikan}
+            onFilteredPatients={filteredpendidikan}
           />
         </Col>
       </Col>
@@ -59,14 +65,14 @@ const TableDataTitle = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-title">
-                  <h4 className="card-title font-widest">
-                    Tabel List Daftar Title
+                <div className="iq-header-Pendidikan">
+                  <h4 className="card-Pendidikan font-widest">
+                    Tabel List Daftar Pendidikan
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-informasi/title/add-title"
-                  label="Add Title"
+                  path="/MasterData/master-informasi/master-pendidikan/add-pendidikan"
+                  label="Add Pendidikan"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -87,15 +93,19 @@ const TableDataTitle = () => {
               {!loading && !error && (
                 <div className="iq-card-body">
                   <CustomTableComponent
-                    data={filteredTitles}
+                    data={filteredpendidikan}
                     columns={[
                       { key: "no", label: "No" }, // Tambahkan kolom nomor urut
-                      { key: "kodeTitle", label: "Kode Title" },
-                      { key: "namaTitle", label: "Nama Title" },
+                      { key: "kodePendidikan", label: "Kode Pendidikan" },
+
+                      { key: "namaPendidikan", label: "Nama Pendidikan" },
                     ]}
                     itemsPerPage={10}
-                    slugConfig={{ textField: "namaTitle", idField: "titleId" }} // Menggunakan titleId untuk slug
-                    basePath="/MasterData/master-informasi/title/edit-title"
+                    slugConfig={{
+                      textField: "namaPendidikan",
+                      idField: "pendidikanId",
+                    }}
+                    basePath="/MasterData/master-informasi/master-pendidikan/edit-form-pendidikan"
                   />
                 </div>
               )}
@@ -107,4 +117,4 @@ const TableDataTitle = () => {
   );
 };
 
-export default TableDataTitle;
+export default TableDataPendidikan;

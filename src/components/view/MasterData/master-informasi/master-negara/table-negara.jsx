@@ -1,34 +1,37 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import { useDispatch, useSelector } from "react-redux";
-fetchnegar
-
+import { fetchNegara } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 
 const TableDataNegara = () => {
   const methods = useForm();
   const dispatch = useDispatch();
+
   const {
-    data: NegaraData,
+    data: negaraData,
     loading,
     error,
-  } = useSelector((state) => state.Negara);
+  } = useSelector((state) => state.negara);
 
-  const Negara = useMemo(() => NegaraData?.data || [], [NegaraData]);
+  // Gunakan useMemo untuk menghitung ulang negara hanya ketika negaraData berubah
+  const negaraList = useMemo(() => negaraData?.data || [], [negaraData]);
 
-  const [filteredNegara, setFilteredNegara] = useState(Negara);
+  const [filteredNegara, setFilteredNegara] = useState(negaraList);
 
+  // Fetch data negara saat komponen di-mount
   useEffect(() => {
     dispatch(fetchNegara());
   }, [dispatch]);
 
+  // Update filteredNegara setelah negaraList diubah
   useEffect(() => {
-    setFilteredNegara(Negara);
-  }, [Negara]);
+    setFilteredNegara(negaraList);
+  }, [negaraList]);
 
   return (
     <FormProvider {...methods}>
@@ -36,20 +39,18 @@ const TableDataNegara = () => {
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">
             Master Data <br />
-            <span className="letter-spacing fw-bold">
-              List Daftar Negara
-            </span>
+            <span className="letter-spacing fw-bold">List Daftar Negara</span>
           </h2>
           <button
             className="btn btn-dark my-3 mx-3"
-            onClick={() => dispatch(fetchNegara())}
+            onClick={() => window.location.reload()}
           >
             <i className="ri-refresh-line"></i>
           </button>
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={Negara}
+            data={negaraList}
             setFilteredPatients={setFilteredNegara}
             onFilteredPatients={filteredNegara}
           />
@@ -66,7 +67,7 @@ const TableDataNegara = () => {
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-informasi/master-Negara/add-Negara"
+                  path="/MasterData/master-informasi/negara/add-negara"
                   label="Add Negara"
                   icon="ri-add-fill"
                   size="sm"
@@ -74,32 +75,47 @@ const TableDataNegara = () => {
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
+              {/* Loading Animation */}
               {loading && (
                 <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "200px" }}
+                  className="d-flex flex-column justify-content-center align-items-center"
+                  style={{ height: "300px" }}
                 >
-                  <Spinner animation="border" variant="primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    role="status"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <h5 className="mt-3 text-primary fw-bold">
+                    Loading data, please wait...
+                  </h5>
                 </div>
               )}
-              {error && <div className="text-danger">{error}</div>}
-              {!loading && !error && (
+
+              {/* Error or No Data */}
+              {!loading && (error || negaraList.length === 0) && (
+                <Alert variant="warning" className="text-center mt-3">
+                  <i className="ri-information-line me-2"></i>
+                  Tidak ada data yang tersedia.
+                </Alert>
+              )}
+
+              {!loading && !error && negaraList.length > 0 && (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredNegara}
                     columns={[
-                      { key: "no", label: "No" },
-                      { key: "kodeNegara", label: "Kode Negara" },
+                      { key: "no", label: "No" }, // Kolom nomor urut
+
                       { key: "namaNegara", label: "Nama Negara" },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{
                       textField: "namaNegara",
-                      idField: "NegaraId",
+                      idField: "negaraId",
                     }}
-                    basePath="/MasterData/master-informasi/master-Negara/edit-Negara-form"
+                    basePath="/MasterData/master-informasi/negara/edit-negara"
                   />
                 </div>
               )}

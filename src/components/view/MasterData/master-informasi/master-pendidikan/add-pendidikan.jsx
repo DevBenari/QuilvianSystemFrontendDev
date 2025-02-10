@@ -1,10 +1,11 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import { createPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
+
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
 import { useDispatch } from "react-redux";
-import { createPendidikan } from "../../../../../../lib/state/slices/masterData/master-informasi/pendidikanSlice";
 
 const AddFormPendidikan = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,14 @@ const AddFormPendidikan = () => {
   const formFields = [
     {
       fields: [
+        {
+          type: "text",
+          label: "Kode Pendidikan",
+          name: "kodePendidikan",
+          placeholder: "Masukkan Kode Pendidikan...",
+          colSize: 6,
+          rules: { required: "Kode Pendidikan harus diisi" },
+        },
         {
           type: "text",
           label: "Nama Pendidikan",

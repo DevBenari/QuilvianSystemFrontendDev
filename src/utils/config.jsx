@@ -312,6 +312,10 @@ export const menus = {
           title: "Data Pekerjaan",
           href: "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan",
         },
+        {
+          title: "Data Negara",
+          href: "/MasterData/master-informasi/negara/table-negara",
+        },
       ],
     },
   ],
