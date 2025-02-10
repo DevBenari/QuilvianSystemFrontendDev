@@ -1,36 +1,54 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { getHeaders } from "@/lib/headers/headers";
-
-const API_URL = "http://192.168.15.213:589/api/Title";
+import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 
 // CRUD Thunks
-export const fetchIdentitas = createAsyncThunk("identitas/fetch", async () => {
-  const response = await axios.get(API_URL, { headers: getHeaders() });
-  return response.data;
+export const fetchIdentitas = createAsyncThunk("identitas/fetch", async (_,{ rejectWithValue }) => {
+  try{
+    const response = await InstanceAxios.get(`/Title`, { headers: getHeaders() });
+    return response.data;
+  }catch(error){
+    const errorMessage = error.response?.data?.message || "Gagal mengambil data identitas";
+    return rejectWithValue(errorMessage);
+  }
 });
 
 export const createIdentitas = createAsyncThunk(
   "identitas/create",
   async (data) => {
-    const response = await axios.post(API_URL, data, { headers: getHeaders() });
-    return response.data;
+    try{
+      const response = await InstanceAxios.post(`/Title`, data, { headers: getHeaders() });
+      return response.data;
+    }catch(error){
+      const errorMessage = error.response?.data?.message || "Gagal create data identitas";
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 
 export const updateTitle = createAsyncThunk(
   "identitas/update",
   async ({ id, data }) => {
-    const response = await axios.put(`${API_URL}/${id}`, data, {
-      headers: getHeaders(),
-    });
-    return response.data;
+    try{
+      const response = await InstanceAxios.put(`/Title/${id}`, data, {
+        headers: getHeaders(),
+      });
+      return response.data;
+    }catch(error){
+      const errorMessage = error.response?.data?.message || "Gagal update data identitas";
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 
-export const deleteTitle = createAsyncThunk("identitas/delete", async (id) => {
-  await axios.delete(`${API_URL}/${id}`, { headers: getHeaders() });
-  return id;
+export const deleteTitle = createAsyncThunk("identitas/delete", async (id, { rejectWithValue }) => {
+  try{
+    const response = await InstanceAxios.delete(`/Title/${id}`, { headers: getHeaders() });
+    return response.data;
+  }catch(error){
+    const errorMessage = error.response?.data?.message || "Gagal delete data identitas";
+    return rejectWithValue(errorMessage);
+  }
 });
 
 // Slice

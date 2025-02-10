@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,memo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
@@ -17,13 +17,7 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = ({
-  title,
-  formConfig,
-  onSubmit,
-  backPath,
-  isAddMode = false,
-}) => {
+const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = false }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -257,6 +251,7 @@ const DynamicForm = ({
       </Row>
     </FormProvider>
   );
-};
+});
 
+DynamicForm.displayName = "DynamicForm";
 export default DynamicForm;

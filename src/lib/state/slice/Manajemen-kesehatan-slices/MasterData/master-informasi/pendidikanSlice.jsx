@@ -1,15 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { getHeaders } from "@/lib/headers/headers";
+import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 
 const API_URL = "http://192.168.15.213:589/api/Pendidikan";
 
 // CRUD Thunks
-export const fetchPendidikan = createAsyncThunk(
-  "pendidikan/fetch",
-  async () => {
-    const response = await axios.get(API_URL, { headers: getHeaders() });
-    return response.data;
+export const fetchPendidikan = createAsyncThunk("pendidikan/fetch",async (_,{ rejectWithValue }) => {
+    try{
+      const response = await InstanceAxios.get(`/Pendidikan`, { headers: getHeaders() });
+      return response.data;
+    }catch(error){
+      const errorMessage = error.response?.data?.message || "Gagal mengambil data pendidikan";
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 
@@ -18,39 +21,55 @@ export const fetchPendidikanById = createAsyncThunk(
   "pendidikan/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/${id}`, {
+      const response = await InstanceAxios.get(`/Pendidikan/${id}`, {
         headers: getHeaders(),
       });
       return response.data;
     } catch (err) {
-      return rejectWithValue("Gagal mengambil data pendidikan berdasarkan ID");
+      const errorMessage = error.response?.data?.message || "Gagal mengambil data pendidikan berdasarkan ID";
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
 export const createPendidikan = createAsyncThunk(
   "pendidikan/create",
-  async (data) => {
-    const response = await axios.post(API_URL, data, { headers: getHeaders() });
-    return response.data;
+  async (data,{ rejectWithValue }) => {
+    try{
+      const response = await InstanceAxios.post(`/Pendidikan`, data, { headers: getHeaders() });
+      return response.data;
+    }catch(error){
+      const errorMessage = error.response?.data?.message || "Gagal create data pendidikan";
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 
 export const updatePendidikan = createAsyncThunk(
   "pendidikan/update",
-  async ({ id, data }) => {
-    const response = await axios.put(`${API_URL}/${id}`, data, {
-      headers: getHeaders(),
-    });
-    return response.data;
+  async ({ id, data },{ rejectWithValue }) => {
+    try{
+      const response = await InstanceAxios.put(`/Pendidikan/${id}`, data, {
+        headers: getHeaders(),
+      });
+      return response.data;
+    }catch(error){
+      const errorMessage = error.response?.data?.message || "Gagal mengupdate data pendidikan";
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 
 export const deletePendidikan = createAsyncThunk(
   "pendidikan/delete",
-  async (id) => {
-    await axios.delete(`${API_URL}/${id}`, { headers: getHeaders() });
-    return id;
+  async (id, { rejectWithValue }) => {
+    try{
+      const response = await InstanceAxios.delete(`/Pendidikan  /${id}`, { headers: getHeaders() });
+      return response.data;
+    }catch(error){
+      const errorMessage = error.response?.data?.message || "Gagal delete data pendidikan";
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 

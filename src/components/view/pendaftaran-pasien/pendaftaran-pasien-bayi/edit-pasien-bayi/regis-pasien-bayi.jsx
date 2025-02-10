@@ -162,7 +162,7 @@ export const RegisPasienBayi = () => {
           label: "Pilih Kelas Rawat Bayi",
           name: "kelas",
           placeholder: bayiEditData?.kelas,
-          options: datakelas.map((item) => ({
+          options: dataKelas.map((item) => ({
             label: item.kelas,
             value: item.kelas,
           })),

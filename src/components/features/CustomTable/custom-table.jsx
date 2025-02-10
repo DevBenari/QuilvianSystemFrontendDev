@@ -83,7 +83,6 @@ const CustomTableComponent = memo(
             hover
             responsive="md"
             className="text-center"
-            style={{ tableLayout: "fixed" }}
           >
             <thead
               style={{

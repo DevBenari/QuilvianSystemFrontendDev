@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
                     <Container fluid>
                       {children}
                     </Container>
-                    <FooterWrapper />  
+                <FooterWrapper />  
               </ContentPage>          
             </SideBarWrapper>
           </Fragment>

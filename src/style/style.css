@@ -448,6 +448,69 @@ a:hover {
   box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
 }
 
+.iq-card-form {
+  margin: 0;
+  padding: 0;
+  background: #ceebee;
+  font-size: 13px;
+  top: 20px !important;
+  border-radius: 10px;
+  border-color: #eef0f4;
+  -webkit-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+  -moz-box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+  box-shadow: 0px 15px 30px 0px rgba(233, 237, 244, 1);
+}
+
+/* styles/patientKiosk.css */
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+
+}
+
+/* Screen styles */
+@media screen {
+  .print-only {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Card styles */
+.patient-card {
+  width: 340px;
+  height: 210px;
+}
+
+.queue-card {
+  width: 580px;
+  height: 380px;
+}
+
+.queue-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  border: 2px dashed #dee2e6;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.hospital-header {
+  margin-bottom: 1rem;
+}
+
+.patient-info-row {
+  margin-bottom: 0.25rem;
+}
+
+.patient-label {
+  font-weight: bold;
+}
+
 .iq-card-header .dropdown-menu .dropdown-item {
   padding: 8px 15px;
   color: #777D74;
@@ -685,6 +748,173 @@ a:hover {
  
   
 }
+
+/*---------------------------------------------------------------------
+                               kiosk-page
+-----------------------------------------------------------------------*/
+.dashboard-container {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  /* padding-top: 200px; */
+  padding-left: 20px;
+  padding-right: 20px ;
+  background: linear-gradient(to bottom right, #1e293b, #1e3a8a);
+}
+
+/* Particles Styles */
+.particles-container {
+  position: relative;
+  inset: 0;
+}
+
+.particle {
+  margin-top: 20px;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: particle linear infinite;
+}
+
+@keyframes particle {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--translate-x, 100px), var(--translate-y, 100px));
+    opacity: 0;
+  }
+}
+
+/* Glow Effects */
+.glow-effect {
+  position: fixed;
+  width: 200px; /* Adjust size as needed */
+  height: 200px;
+  opacity: 0.2; /* Makes it subtle in the background */
+  pointer-events: none;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.glow-effect-1 {
+  top: 25%;
+  left: 25%;
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+.glow-effect-2 {
+  bottom: 25%;
+  right: 25%;
+  background-color: rgba(147, 51, 234, 0.2);
+}
+
+/* Kiosk Page Styles */
+.kiosk-page {
+  margin-top: 70px;
+  margin-left: 1px;
+  height: 100%;
+  z-index: 10;
+}
+
+.kiosk-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1px;
+}
+
+.kiosk-logo img {
+  max-width: 250px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Dashboard Title */
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+/* Service Cards */
+.service-card {
+  height: 100%;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease-in-out;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+}
+
+.service-card .card-title {
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.service-card .card-text {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.service-icon {
+  margin-right: 1rem;
+  padding: 0.75rem;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+}
+
+.service-card .card-footer {
+  text-align: end;
+}
+
+.service-card .card-footer small {
+  color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .kiosk-logo img {
+    max-width: 250px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.75rem;
+  }
+  
+  .service-card {
+    margin-bottom: 1rem;
+  }
+}
+
+.table-bordered {
+  width: 100%;
+  border: 1px solid #dee2e6;
+  border-collapse: collapse;
+}
+
+.table-bordered th, .table-bordered td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #dee2e6;
+}
+
 
 /*---------------------------------------------------------------------
                                Dash Hover
@@ -1689,7 +1919,21 @@ body.sidebar-main .iq-menu-bt-sidebar .iq-menu-bt {
 }
 .content-page-login {
   overflow: hidden;
-  padding: 120px 15px 0;
+  /* padding:  15px 0; */
+  min-height: 100vh;
+  -webkit-transition: all 0.3s ease-out 0s;
+  -moz-transition: all 0.3s ease-out 0s;
+  -ms-transition: all 0.3s ease-out 0s;
+  -o-transition: all 0.3s ease-out 0s;
+  transition: all 0.3s ease-out 0s;
+  background: #eff7f8;
+}
+
+.content-page-kiosk{
+  overflow: hidden;
+  /* min-width: 2000px; */
+  margin-right: -20px;
+  margin-left: -12px;
   min-height: 100vh;
   -webkit-transition: all 0.3s ease-out 0s;
   -moz-transition: all 0.3s ease-out 0s;

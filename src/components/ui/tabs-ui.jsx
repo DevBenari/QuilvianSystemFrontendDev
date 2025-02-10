@@ -9,7 +9,7 @@ const ReusableTabs = ({ children }) => {
       <Col sm={12}>
         <Nav
           as="ul"
-          className="nav nav-pills mb-3 nav-fill"
+          className="nav nav-pills mb-3 nav-fill border-bottom pb-2"
           id="pills-tab"
           role="tablist"
         >
