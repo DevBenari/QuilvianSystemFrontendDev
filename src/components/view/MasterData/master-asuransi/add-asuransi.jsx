@@ -1,58 +1,23 @@
 "use client";
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import { createAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
-import { extractIdFromSlug } from "@/utils/slug";
-import {
-  fetchAsuransiById,
-  updateAsuransi,
-  deleteAsuransi,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
-
-const AsuransiEditForm = ({ params }) => {
-  const router = useRouter();
+const AsuransiAddForm = () => {
   const dispatch = useDispatch();
-  const { selectedAsuransi, loading, error } = useSelector(
-    (state) => state.asuransi
-  );
-  const [dataAsuransi, setDataAsuransi] = useState(null);
-
-  useEffect(() => {
-    const id = extractIdFromSlug(params.slug);
-    dispatch(fetchAsuransiById(id));
-  }, [dispatch, params.slug]);
-
-  useEffect(() => {
-    if (selectedAsuransi) {
-      setDataAsuransi(selectedAsuransi);
-    }
-  }, [selectedAsuransi]);
+  const router = useRouter();
+  const [alertMessage, setAlertMessage] = useState(null);
 
   const handleSubmit = async (data) => {
     try {
-      await dispatch(
-        updateAsuransi({ id: dataAsuransi.asuransiId, data })
-      ).unwrap();
-      alert("Data asuransi berhasil diperbarui!");
+      await dispatch(createAsuransi(data)).unwrap();
+      alert("Asuransi berhasil ditambahkan!");
       router.push("/MasterData/master-asuransi/daftar-asuransi");
     } catch (error) {
-      console.error("Gagal memperbarui data asuransi:", error);
-      alert("Gagal memperbarui data asuransi.");
-    }
-  };
-
-  const handleDelete = async () => {
-    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      try {
-        await dispatch(deleteAsuransi(dataAsuransi.asuransiId)).unwrap();
-        alert("Data asuransi berhasil dihapus!");
-        router.push("/MasterData/master-asuransi/daftar-asuransi");
-      } catch (error) {
-        console.error("Gagal menghapus data asuransi:", error);
-        alert("Gagal menghapus data asuransi.");
-      }
+      console.error("Gagal menambahkan asuransi:", error);
+      alert("Gagal menambahkan data asuransi.");
     }
   };
 
@@ -64,15 +29,14 @@ const AsuransiEditForm = ({ params }) => {
           label: "Kode Asuransi",
           name: "kodeAsuransi",
           placeholder: "Masukkan Kode Asuransi...",
+          defaultValue: "",
           colSize: 6,
-          defaultValue: dataAsuransi?.kodeAsuransi || "",
         },
-
         {
           type: "select",
           label: "Nama Asuransi",
           name: "namaAsuransi",
-
+          placeholder: "Pilih Nama Asuransi...",
           colSize: 6,
           options: [
             { value: "Prudential", label: "Prudential" },
@@ -85,16 +49,14 @@ const AsuransiEditForm = ({ params }) => {
             { value: "Sequis Life", label: "Sequis Life" },
             { value: "FWD Life", label: "FWD Life" },
           ],
-          defaultValue: dataAsuransi?.namaAsuransi || "",
-          placeholder: dataAsuransi?.namaAsuransi || "Pilih Nama Asuransi...",
           rules: { required: "Nama asuransi harus dipilih" },
         },
+
         {
           type: "select",
           label: "Tipe Perusahaan",
           name: "tipePerusahaan",
-          placeholder:
-            dataAsuransi?.tipePerusahaan || "Pilih Tipe Perusahaan...",
+          placeholder: "Pilih Tipe Perusahaan...",
           colSize: 6,
           options: [
             {
@@ -128,21 +90,19 @@ const AsuransiEditForm = ({ params }) => {
             },
             { value: "Lainnya", label: "Lainnya" },
           ],
-          defaultValue: dataAsuransi?.tipePerusahaan || "",
-
           rules: { required: "Tipe perusahaan harus dipilih" },
         },
+
         {
           type: "select",
           label: "Status",
           name: "status",
-          placeholder: dataAsuransi?.status || "Pilih Status...",
+          placeholder: "Pilih Status...",
           colSize: 6,
           options: [
             { value: "Aktif", label: "Aktif" },
             { value: "Non-Aktif", label: "Non-Aktif" },
           ],
-          defaultValue: dataAsuransi?.status || "",
           rules: { required: "Status harus dipilih" },
         },
       ],
@@ -152,14 +112,14 @@ const AsuransiEditForm = ({ params }) => {
   return (
     <Fragment>
       <DynamicForm
-        title="Edit Data Asuransi"
+        title="Tambah Data Asuransi"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        handleDelete={handleDelete}
-        backPath="/MasterData/master-asuransi/daftar-asuransi"
+        backPath="/MasterData/master-informasi/asuransi/table-asuransi"
+        isAddMode={true}
       />
     </Fragment>
   );
 };
 
-export default AsuransiEditForm;
+export default AsuransiAddForm;

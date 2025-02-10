@@ -10,7 +10,7 @@ export const fetchTitles = createAsyncThunk(
       const response = await InstanceAxios.get("/Title", {
         headers: getHeaders(),
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Gagal mengambil data title";

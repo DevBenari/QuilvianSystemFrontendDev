@@ -1,31 +1,42 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
 
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import { useAsuransi } from "@/lib/hooks/masterData/master-asuransi";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
-const TableListDaftarAsuransi = () => {
+const TableDataAsuransi = () => {
   const methods = useForm();
-  const { Asuransi, loading, error } = useAsuransi();
+  const dispatch = useDispatch();
+  const {
+    data: asuransiData,
+    loading,
+    error,
+  } = useSelector((state) => state.asuransi);
 
-  const [filteredPatients, setFilteredPatients] = useState(Asuransi);
+  // Pastikan data berupa array
+
+  const asuransiList = Array.isArray(asuransiData) ? asuransiData : [];
+
+  const [filteredAsuransi, setFilteredAsuransi] = useState(asuransiList);
 
   useEffect(() => {
-    if (Asuransi) {
-      setFilteredPatients(Asuransi);
-    }
-  }, [Asuransi]);
+    dispatch(fetchAsuransi());
+  }, [dispatch]);
 
+  useEffect(() => {
+    setFilteredAsuransi(asuransiList); // Update filteredAsuransi setelah asuransiList berubah
+  }, [asuransiList]);
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">
-            Master Data <br></br>{" "}
+            Master Data <br />
             <span className="letter-spacing fw-bold">List Daftar Asuransi</span>
           </h2>
           <button
@@ -37,9 +48,9 @@ const TableListDaftarAsuransi = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={Asuransi}
-            setFilteredPatients={setFilteredPatients}
-            onFilteredPatients={filteredPatients}
+            data={asuransiData}
+            setFilteredPatients={setFilteredAsuransi}
+            onFilteredPatients={filteredAsuransi}
           />
         </Col>
       </Col>
@@ -48,41 +59,56 @@ const TableListDaftarAsuransi = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-title">
-                  <h4 className="card-title font-widest">
-                    Tabel List Daftar Pegawai
+                <div className="iq-header-Asuransi">
+                  <h4 className="card-Asuransi font-widest">
+                    Tabel List Daftar Asuransi
                   </h4>
                 </div>
                 <ButtonNav
                   path="/MasterData/master-asuransi/add-asuransi"
-                  label="Add Pegawai"
+                  label="Add Asuransi"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
+              {/* Loading Animation */}
               {loading && (
                 <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "200px" }}
+                  className="d-flex flex-column justify-content-center align-items-center"
+                  style={{ height: "300px" }}
                 >
-                  <Spinner animation="border" variant="primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
+                  <Spinner
+                    animation="border"
+                    variant="primary"
+                    role="status"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <h5 className="mt-3 text-primary fw-bold">
+                    Loading data, please wait...
+                  </h5>
                 </div>
               )}
-              {error && <div className="text-danger">{error}</div>}
-              {!loading && !error && (
+
+              {/* Error or No Data */}
+              {!loading && (error || asuransiList.length === 0) && (
+                <Alert variant="warning" className="text-center mt-3">
+                  <i className="ri-information-line me-2"></i>
+                  Tidak ada data yang tersedia.
+                </Alert>
+              )}
+
+              {!loading && !error && asuransiList.length > 0 && (
                 <div className="iq-card-body">
                   <CustomTableComponent
-                    data={filteredPatients}
+                    data={filteredAsuransi}
                     columns={[
                       { key: "no", label: "No" },
+
                       { key: "namaAsuransi", label: "Nama Asuransi" },
-                      { key: "kodeAsuransi", label: "Kode" },
+                      { key: "tipePerusahaan", label: "Tipe Perusahaan" },
                       { key: "status", label: "Status" },
-                      { key: "createDateTime", label: "Tanggal Dibuat" },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{
@@ -101,4 +127,4 @@ const TableListDaftarAsuransi = () => {
   );
 };
 
-export default TableListDaftarAsuransi;
+export default TableDataAsuransi;
