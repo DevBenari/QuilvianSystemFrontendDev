@@ -1,5 +1,6 @@
 "use client";
 
+import { showAlert } from "@/components/features/alert/custom-alert";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { createTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 
@@ -15,11 +16,12 @@ const PenambahanTitle = () => {
   const handleSubmit = async (data) => {
     try {
       await dispatch(createTitle(data)).unwrap(); // Tunggu hasil dari dispatch
-      alert("Title berhasil ditambahkan!");
-      router.push("/MasterData/master-informasi/title/table-title");
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push("/MasterData/master-informasi/title/table-title");
+      });
     } catch (error) {
       console.error("Gagal menambahkan title:", error);
-      alert("Gagal menambahkan title.");
+      showAlert.error("Gagal menambahkan data title");
     }
   };
   const formFields = [

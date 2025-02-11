@@ -14,13 +14,14 @@ const AddFormPendidikan = () => {
   const handleSubmit = async (data) => {
     try {
       await dispatch(createPendidikan(data)).unwrap(); // Tunggu hasil dari dispatch
-      alert("pendidikan berhasil ditambahkan!");
-      router.push(
-        "/MasterData/master-informasi/master-pendidikan/table-pendidikan"
-      );
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push(
+          "/MasterData/master-informasi/master-pendidikan/table-pendidikan"
+        );
+      });
     } catch (error) {
       console.error("Gagal menambahkan pendidikan:", error);
-      alert("Gagal menambahkan pendidikan.");
+      showAlert.error("Gagal menambahkan data pendidikan");
     }
   };
   const formFields = [

@@ -20,7 +20,10 @@ const TableDataAsuransi = () => {
 
   // Pastikan data berupa array
 
-  const asuransiList = Array.isArray(asuransiData) ? asuransiData : [];
+  // Menggunakan useMemo untuk memproses asuransiList
+  const asuransiList = useMemo(() => {
+    return Array.isArray(asuransiData) ? asuransiData : [];
+  }, [asuransiData]);
 
   const [filteredAsuransi, setFilteredAsuransi] = useState(asuransiList);
 

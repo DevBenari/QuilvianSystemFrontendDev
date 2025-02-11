@@ -10,28 +10,20 @@ import { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const FormAddGolongan = () => {
-  const [alertMessage, setAlertMessage] = useState(null);
-  const [alertVariant, setAlertVariant] = useState("success");
-
   const dispatch = useDispatch();
   const router = useRouter();
 
   const handleSubmit = async (data) => {
     try {
       await dispatch(createGolongan(data)).unwrap(); // Tunggu hasil dari dispatch
-      alert("golongan berhasil ditambahkan!");
-
-      setAlertMessage("Golongan added successfully!");
-      setAlertVariant("success");
-      //  Navigasi setelah beberapa detik
-      setTimeout(() => {
+      showAlert.success("Data berhasil disimpan", () => {
         router.push(
           "/MasterData/master-informasi/golongan-darah/table-golongan"
         );
-      }, 500);
+      });
     } catch (error) {
-      console.error("Gagal menambahkan golongan:", error);
-      alert("Gagal menambahkan golongan.");
+      console.error("Gagal menambahkan golongan darah:", error);
+      showAlert.error("Gagal menambahkan data golongan darah");
     }
   };
 

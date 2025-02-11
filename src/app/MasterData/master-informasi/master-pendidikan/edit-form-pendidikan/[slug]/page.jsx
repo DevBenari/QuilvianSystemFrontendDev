@@ -8,7 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deletePendidikan,
   fetchPendidikanById,
+  updatePendidikan,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const EditFormPendidikan = ({ params }) => {
   const router = useRouter();
@@ -62,27 +64,46 @@ const EditFormPendidikan = ({ params }) => {
 
   // Handle form submission
   const handleSubmit = async (data) => {
-    console.log("Form Data:", data);
-  };
-
-  const handleDelete = async () => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      if (!dataPendidikan?.pendidikanId) {
-        alert("Data pendidikan tidak ditemukan atau ID tidak valid.");
-        return;
-      }
-
-      try {
-        await dispatch(deletePendidikan(dataPendidikan.pendidikanId)).unwrap();
-        alert("Data pendidikan berhasil dihapus.");
+    try {
+      // Panggil update pekerjaan melalui Redux
+      await dispatch(
+        updatePendidikan({ id: dataPendidikan.pendidikanId, data })
+      ).unwrap();
+      showAlert.success("Data berhasil disimpan", () => {
         router.push(
           "/MasterData/master-informasi/master-pendidikan/table-pendidikan"
         );
-      } catch (error) {
-        console.error("Error deleting pendidikan:", error);
-        alert("Gagal menghapus data pendidikan.");
-      }
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan pendidikan:", error);
+      showAlert.error("Gagal menambahkan data pendidikan");
     }
+  };
+
+  const handleDelete = async () => {
+    showAlert.confirmDelete(
+      "Data pendidikan akan dihapus permanen",
+      async () => {
+        if (!dataPendidikan?.pendidikanId) {
+          alert("Data pendidikan tidak ditemukan atau ID tidak valid.");
+          return;
+        }
+
+        try {
+          await dispatch(
+            deletePendidikan(dataPendidikan.pendidikanId)
+          ).unwrap();
+          showAlert.success("Data berhasil dihapus", () => {
+            router.push(
+              "/MasterData/master-informasi/master-pendidikan/table-pendidikan"
+            );
+          });
+        } catch (error) {
+          console.error("Gagal  menghapus data pendidikan:", error);
+          showAlert.error("Gagal  menghapus data  pendidikan");
+        }
+      }
+    );
   };
 
   // Form configuration

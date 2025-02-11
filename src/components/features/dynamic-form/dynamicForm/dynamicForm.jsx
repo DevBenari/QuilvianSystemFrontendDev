@@ -18,14 +18,7 @@ import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
 
 const DynamicForm = memo(
-  ({
-    title,
-    formConfig,
-    onSubmit,
-    backPath,
-    isAddMode = false,
-    handleDelete,
-  }) => {
+  ({ title, formConfig, onSubmit, backPath, isAddMode = false }) => {
     const fieldComponents = {
       text: TextField,
       email: TextField,
@@ -219,11 +212,6 @@ const DynamicForm = memo(
                       Cancel
                     </Button>
                   )}
-                {!isAddMode && (
-                  <Button className="btn btn-danger" onClick={handleDelete}>
-                    <i className="ri-delete-bin-line"></i> Hapus
-                  </Button>
-                )}
               </div>
             </div>
             <div className="card-body py-3">

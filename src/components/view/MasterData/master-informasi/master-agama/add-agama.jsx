@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { createAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const FormAddAgama = () => {
   const dispatch = useDispatch();
@@ -13,11 +14,12 @@ const FormAddAgama = () => {
   const handleSubmit = async (data) => {
     try {
       await dispatch(createAgama(data)).unwrap(); // Tunggu hasil dari dispatch
-      alert("Agama berhasil ditambahkan!");
-      router.push("/MasterData/master-informasi/agama/table-agama");
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push("/MasterData/master-informasi/agama/table-agama");
+      });
     } catch (error) {
       console.error("Gagal menambahkan Agama:", error);
-      alert("Gagal menambahkan Agama.");
+      showAlert.error("Gagal menambahkan data Agama");
     }
     console.log("Submitted data:", data);
   };

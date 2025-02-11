@@ -19,6 +19,23 @@ export const fetchTitles = createAsyncThunk(
   }
 );
 
+export const fetchTitleById = createAsyncThunk(
+  "titles/fetchById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Title/${id}`, {
+        headers: getHeaders(),
+      });
+      return response.data.data;
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Gagal mengambil data title berdasarkan ID";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 export const createTitle = createAsyncThunk(
   "titles/create",
   async (data, { rejectWithValue }) => {
@@ -42,10 +59,10 @@ export const updateTitle = createAsyncThunk(
       const response = await InstanceAxios.put(`/Title/${id}`, data, {
         headers: getHeaders(),
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       const errorMessage =
-        error.response?.data?.data.message || "Gagal mengupdate data title";
+        error.response?.data?.message || "Gagal mengupdate data title";
       return rejectWithValue(errorMessage);
     }
   }
@@ -70,6 +87,7 @@ const titleSlice = createSlice({
   name: "titles",
   initialState: {
     data: { data: [] },
+    selectedTitle: null,
     loading: false,
     error: null,
   },
@@ -83,6 +101,17 @@ const titleSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchTitles.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchTitleById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchTitleById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedTitle = action.payload;
+      })
+      .addCase(fetchTitleById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

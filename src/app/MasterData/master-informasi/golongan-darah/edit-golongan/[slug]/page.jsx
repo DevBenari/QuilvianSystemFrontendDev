@@ -9,6 +9,7 @@ import {
   updateGolongan,
   deleteGolongan,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const GolonganEditForm = ({ params }) => {
   const router = useRouter();
@@ -34,29 +35,33 @@ const GolonganEditForm = ({ params }) => {
       await dispatch(
         updateGolongan({ id: golonganDarahData.golonganDarahId, data })
       ).unwrap();
-      alert("Data golongan berhasil diperbarui!");
-      router.push("/MasterData/master-informasi/golongan-darah/table-golongan");
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push(
+          "/MasterData/master-informasi/golongan-darah/table-golongan"
+        );
+      });
     } catch (error) {
-      console.error("Gagal memperbarui data golongan:", error);
-      alert("Gagal memperbarui data golongan.");
+      console.error("Gagal menambahkan golongan:", error);
+      showAlert.error("Gagal menambahkan data golongan");
     }
   };
 
   const handleDelete = async () => {
-    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+    showAlert.confirmDelete("Data golongan akan dihapus permanen", async () => {
       try {
         await dispatch(
           deleteGolongan(golonganDarahData.golonganDarahId)
         ).unwrap();
-        alert("Data golongan berhasil dihapus!");
-        router.push(
-          "/MasterData/master-informasi/golongan-darah/table-golongan"
-        );
+        showAlert.success("Data berhasil dihapus", () => {
+          router.push(
+            "/MasterData/master-informasi/golongan-darah/table-golongan"
+          );
+        });
       } catch (error) {
-        console.error("Gagal menghapus data golongan:", error);
-        alert("Gagal menghapus data golongan.");
+        console.error("Gagal  menghapus data golongan:", error);
+        showAlert.error("Gagal  menghapus data  golongan");
       }
-    }
+    });
   };
 
   // Form configuration

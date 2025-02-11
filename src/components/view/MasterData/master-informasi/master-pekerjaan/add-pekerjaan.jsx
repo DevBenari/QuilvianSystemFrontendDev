@@ -2,11 +2,12 @@
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import ReusableAlert from "@/components/ui/reusable-alert";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { createPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const FormAddPekerjaan = () => {
   const [alertMessage, setAlertMessage] = useState(null);
@@ -40,14 +41,15 @@ const FormAddPekerjaan = () => {
   const handleSubmit = async (data) => {
     try {
       await dispatch(createPekerjaan(data)).unwrap(); // Tunggu hasil dari dispatch
-      alert("pekerjaan berhasil ditambahkan!");
       console.log(data);
-      router.push(
-        "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
-      );
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push(
+          "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
+        );
+      });
     } catch (error) {
-      console.error("Gagal menambahkan pekerjaan:", error);
-      alert("Gagal menambahkan pekerjaan.");
+      console.error("Gagal menambahkan negara:", error);
+      showAlert.error("Gagal menambahkan data negara");
     }
   };
 

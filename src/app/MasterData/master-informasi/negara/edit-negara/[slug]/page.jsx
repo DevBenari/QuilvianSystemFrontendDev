@@ -32,25 +32,28 @@ const NegaraEditForm = ({ params }) => {
   const handleSubmit = async (data) => {
     try {
       await dispatch(updateNegara({ id: dataNegara.negaraId, data })).unwrap();
-      alert("Data negara berhasil diperbarui!");
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push("/MasterData/master-informasi/negara/table-negara");
+      });
       router.push("/MasterData/master-informasi/negara/table-negara");
     } catch (error) {
-      console.error("Gagal memperbarui data negara:", error);
-      alert("Gagal memperbarui data negara.");
+      console.error("Gagal menambahkan negara:", error);
+      showAlert.error("Gagal menambahkan data negara");
     }
   };
 
   const handleDelete = async () => {
-    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+    showAlert.confirmDelete("Data negara akan dihapus permanen", async () => {
       try {
         await dispatch(deleteNegara(dataNegara.negaraId)).unwrap();
-        alert("Data negara berhasil dihapus!");
-        router.push("/MasterData/master-informasi/negara/table-negara");
+        showAlert.success("Data negara berhasil dihapus!", () => {
+          router.push("/MasterData/master-informasi/negara/table-negara");
+        });
       } catch (error) {
         console.error("Gagal menghapus data negara:", error);
-        alert("Gagal menghapus data negara.");
+        showAlert.error("Gagal menghapus data negara.");
       }
-    }
+    });
   };
 
   const formFields = [

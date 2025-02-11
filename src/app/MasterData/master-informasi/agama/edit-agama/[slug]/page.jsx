@@ -9,6 +9,7 @@ import {
   fetchAgamaById,
   updateAgama,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const AgamaEditPage = ({ params }) => {
   const router = useRouter();
@@ -40,17 +41,6 @@ const AgamaEditPage = ({ params }) => {
   }, [selectedAgama]);
 
   // Handle form submission
-  const handleSubmit = async (data) => {
-    if (!dataAgama) return;
-    try {
-      await dispatch(updateAgama({ id: dataAgama.agamaId, data })).unwrap();
-      alert("Data agama berhasil diperbarui!");
-      router.push("/MasterData/master-informasi/master-agama/table-agama");
-    } catch (error) {
-      console.error("Error updating agama:", error);
-      alert("Gagal memperbarui data agama.");
-    }
-  };
 
   // Konfigurasi form
   const formFields = [
@@ -76,24 +66,32 @@ const AgamaEditPage = ({ params }) => {
     },
   ];
 
-  const handleDelete = async () => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      if (!dataAgama?.agamaId) {
-        alert("Data Agama tidak ditemukan atau ID tidak valid.");
-        return;
-      }
-
-      try {
-        await dispatch(deleteAgama(dataAgama.agamaId)).unwrap();
-        alert("Data Agama berhasil dihapus.");
+  const handleSubmit = async (data) => {
+    if (!dataAgama) return;
+    try {
+      await dispatch(updateAgama({ id: dataAgama.agamaId, data })).unwrap();
+      showAlert.success("Data berhasil disimpan", () => {
         router.push("/MasterData/master-informasi/agama/table-agama");
-      } catch (error) {
-        console.error("Error deleting Agama:", error);
-        alert("Gagal menghapus data Agama.");
-      }
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan agama:", error);
+      showAlert.error("Gagal menambahkan data agama");
     }
   };
 
+  const handleDelete = async () => {
+    showAlert.confirmDelete("Data asuransi akan dihapus permanen", async () => {
+      try {
+        await dispatch(deleteAgama(dataAgama.agamaId)).unwrap();
+        showAlert.success("Data berhasil dihapus", () => {
+          router.push("/MasterData/master-informasi/agama/table-agama");
+        });
+      } catch (error) {
+        console.error("Gagal menghapus data agama:", error);
+        showAlert.error("Gagal menghapus data data agama");
+      }
+    });
+  };
   // Loading dan error handling
   if (loading) {
     return (

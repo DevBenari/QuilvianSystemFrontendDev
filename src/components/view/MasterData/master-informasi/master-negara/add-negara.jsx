@@ -1,23 +1,24 @@
 "use client";
-import React, { useState, Fragment } from "react";
+import React, { Fragment } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { createNegara } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const NegaraAddForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [alertMessage, setAlertMessage] = useState(null);
 
   const handleSubmit = async (data) => {
     try {
       await dispatch(createNegara(data)).unwrap();
-      alert("Negara berhasil ditambahkan!");
-      router.push("/MasterData/master-informasi/negara/table-negara");
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push("/MasterData/master-informasi/negara/table-negara");
+      });
     } catch (error) {
       console.error("Gagal menambahkan negara:", error);
-      alert("Gagal menambahkan data negara.");
+      showAlert.error("Gagal menambahkan data negara");
     }
   };
 

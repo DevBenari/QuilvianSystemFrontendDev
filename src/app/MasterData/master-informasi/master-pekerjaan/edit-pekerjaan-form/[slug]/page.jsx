@@ -9,6 +9,7 @@ import {
   updatePekerjaan,
   deletePekerjaan,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const PekerjaanEditForm = ({ params }) => {
   const router = useRouter();
@@ -41,35 +42,34 @@ const PekerjaanEditForm = ({ params }) => {
       await dispatch(
         updatePekerjaan({ id: dataPekerjaan.pekerjaanId, data })
       ).unwrap();
-
-      // Berikan notifikasi sukses
-      alert("Data pekerjaan berhasil diperbarui!");
-
-      // Redirect ke halaman tabel pekerjaan setelah sukses
-      router.push(
-        "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
-      );
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push(
+          "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
+        );
+      });
     } catch (error) {
-      console.error("Gagal memperbarui data pekerjaan:", error);
-
-      // Berikan notifikasi kesalahan
-      alert("Gagal memperbarui data pekerjaan.");
+      console.error("Gagal menambahkan pekerjaan:", error);
+      showAlert.error("Gagal menambahkan data pekerjaan");
     }
   };
 
   const handleDelete = async () => {
-    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-      try {
-        await dispatch(deletePekerjaan(dataPekerjaan.pekerjaanId)).unwrap();
-        alert("Data pekerjaan berhasil dihapus!");
-        router.push(
-          "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
-        );
-      } catch (error) {
-        console.error("Gagal menghapus data pekerjaan:", error);
-        alert("Gagal menghapus data pekerjaan.");
+    showAlert.confirmDelete(
+      "Data pekerjaan akan dihapus permanen",
+      async () => {
+        try {
+          await dispatch(deletePekerjaan(dataPekerjaan.pekerjaanId)).unwrap();
+          showAlert.success("Data berhasil dihapus", () => {
+            router.push(
+              "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
+            );
+          });
+        } catch (error) {
+          console.error("Gagal menghapus data negara:", error);
+          showAlert.error("Gagal menghapus data data negara");
+        }
       }
-    }
+    );
   };
 
   // Konfigurasi form
