@@ -1,33 +1,49 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { getHeaders } from "@/lib/headers/headers";
-
-const API_URL = "http://192.168.15.213:589/api/Title";
+import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 
 // CRUD Thunks
 export const fetchTitles = createAsyncThunk("titles/fetch", async () => {
-  const response = await axios.get(API_URL, { headers: getHeaders() });
-  return response.data;
+  try{
+    const response = await InstanceAxios.get(`/Title`, { headers: getHeaders() });
+    return response.data;
+  }catch(error){
+    const errorMessage = error.response?.data?.message || "Gagal mengambil data title";
+    return rejectWithValue(errorMessage);
+  }
 });
 
 export const createTitle = createAsyncThunk("titles/create", async (data) => {
-  const response = await axios.post(API_URL, data, { headers: getHeaders() });
-  return response.data;
+  try{
+    const response = await InstanceAxios.post(`/Title`, data, { headers: getHeaders() });
+    return response.data;
+  }catch(error){
+    const errorMessage = error.response?.data?.message || "Gagal create data title";
+    return rejectWithValue(errorMessage);
+  }
 });
 
 export const updateTitle = createAsyncThunk(
   "titles/update",
   async ({ id, data }) => {
-    const response = await axios.put(`${API_URL}/${id}`, data, {
-      headers: getHeaders(),
-    });
-    return response.data;
+    try{
+      const response = await InstanceAxios.put(`/Title/${id}`, data, {headers: getHeaders()});
+      return response.data;
+    }catch(error){
+      const errorMessage = error.response?.data?.message || "Gagal update data title";
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 
 export const deleteTitle = createAsyncThunk("titles/delete", async (id) => {
-  await axios.delete(`${API_URL}/${id}`, { headers: getHeaders() });
-  return id;
+  try{
+    const response = await InstanceAxios.delete(`/Title/${id}`, { headers: getHeaders() });
+    return response.data;
+  }catch(error){
+    const errorMessage = error.response?.data?.message || "Gagal delete data title";
+    return rejectWithValue(errorMessage)
+  }
 });
 
 // Slice

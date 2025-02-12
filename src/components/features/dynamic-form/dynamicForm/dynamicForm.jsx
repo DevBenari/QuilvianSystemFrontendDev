@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState,memo } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
@@ -17,7 +17,7 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = false }) => {
+const DynamicForm = memo(({ title, userData, formConfig, onSubmit, backPath, isAddMode = false }) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -35,27 +35,31 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
     searchSelect: SearchableSelectField,
   };
 
-  // TypeScript types for form configuration
-  /**
-   * @typedef {Object} FormField
-   * @property {string} id - Unique identifier for the field.
-   * @property {string} name - Name of the field (used in form state).
-   * @property {string} [label] - Label for the field.
-   * @property {"text" | "select" | "radio" | "date" | "textarea"} type - Type of the field.
-   * @property {string} [placeholder] - Placeholder text for the field.
-   * @property {any} [value] - Default value for the field.
-   * @property {Object} [rules] - Validation rules for the field.
-   * @property {Array<{label: string, value: any}>} [options] - Options for select or radio fields.
-   * @property {number} [colSize] - Bootstrap column size.
-   * @property {boolean} [readOnly] - Whether the field is read-only.
-   * @property {boolean} [disabled] - Whether the field is disabled.
-   * @property {(e: any) => void} [onChange] - Custom onChange handler.
-   * @property {(e: any) => void} [onClick] - Custom onClick handler.
-   * @property {(props: any) => React.ReactNode} [customRender] - Custom render function for the field.
-   */
-  /**
-   * Function to render a single form field based on its configuration.
-   */
+  const [isEditing, setIsEditing] = useState(isAddMode);
+
+  // Initialize form with initial values
+  const methods = useForm({
+    defaultValues: formConfig.reduce((defaults, section) => {
+      section.fields.forEach((field) => {
+        defaults[field.name] = userData?.[field.name] || "";
+      });
+      return defaults;
+    }, {}),
+  });
+
+  // Update form when userData changes
+  useEffect(() => {
+    if (userData) {
+      const values = {};
+      formConfig.forEach(section => {
+        section.fields.forEach(field => {
+          values[field.name] = userData[field.name] || "";
+        });
+      });
+      methods.reset(values);
+    }
+  }, [userData]);
+
   const renderField = (field) => {
     const {
       id,
@@ -66,17 +70,19 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
       rules,
       className = "mb-3",
       readOnly = false,
-      value,
       disabled = false,
       onChange,
       onClick,
       options,
       rows,
-      date,
       customRender,
       colSize,
-      ...otherProps // Capture all other props
+      hide,
+      ...otherProps
     } = field;
+
+    // Remove value and defaultValue from otherProps to prevent conflicts
+    const { value, defaultValue, ...restProps } = otherProps;
 
     const commonProps = {
       id,
@@ -86,8 +92,8 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
       rules,
       className,
       readOnly,
-      value,
-      disabled,
+      disabled: !isEditing || disabled,
+      control: methods.control,
       ...(onChange ? { onChange } : {}),
       ...(onClick ? { onClick } : {}),
     };
@@ -97,17 +103,13 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
         <TextField
           key={id}
           {...commonProps}
-          type="email" // Ensure the type is set to "email"
+          type="email"
         />
       );
     }
 
-    // Remove any props that are not necessary for the DOM, like `hide`
-    const sanitizedProps = { ...commonProps, ...otherProps };
-    delete sanitizedProps.hide;
-
     if (customRender) {
-      return customRender({ key: id, ...sanitizedProps });
+      return customRender({ key: id, ...commonProps });
     }
 
     const Component = fieldComponents[field.type];
@@ -119,62 +121,36 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
     return (
       <Component
         key={id}
-        {...sanitizedProps}
+        {...commonProps}
+        {...restProps}
         options={options}
         rows={rows}
-        control={methods.control}
-        value={value}
-        id={id}
-        name={name}
-        label={label}
-        placeholder={placeholder}
-        rules={rules}
-        disabled={!isEditing || disabled} // Disabled jika bukan mode edit
-        {...otherProps}
       />
     );
   };
 
-  /**
-   * DynamicForm Component
-   * @param {Object} props
-   * @param {string} props.title - Title for the form.
-   * @param {Array<{section: string, fields: FormField[], layout?: "inline" | "default"}>} props.formConfig - Configuration for the form.
-   * @param {(data: any) => void} props.onSubmit - Callback for form submission.
-   */
-
-  const [isEditing, setIsEditing] = useState(isAddMode); // Mulai editable jika add mode
-
-  const methods = useForm({
-    defaultValues: formConfig.reduce((defaults, section) => {
-      section.fields.forEach((field) => {
-        defaults[field.name] = field.value || "";
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+  
+  const handleCancel = () => {
+    setIsEditing(false);
+    if (userData) {
+      const values = {};
+      formConfig.forEach(section => {
+        section.fields.forEach(field => {
+          values[field.name] = userData[field.name] || "";
+        });
       });
-      return defaults;
-    }, {}),
-    mode: "onSubmit", // Menangani validasi secara dinamis
-  });
-
-  const handleEdit = () => setIsEditing(true);
-  const handleCancel = () => setIsEditing(false);
+      methods.reset(values);
+    }
+  };
 
   const {
-    setValue,
     watch,
     formState: { errors },
     handleSubmit: formSubmit,
   } = methods;
-
-  const kewarganegaraan = watch("kewarganegaraan");
-  const negara = watch("negara");
-
-  useEffect(() => {
-    if (kewarganegaraan === "WNI") {
-      setValue("negara", "Indonesia");
-    } else if (kewarganegaraan === "WNA" && negara !== negara) {
-      setValue("negara", negara);
-    }
-  }, [kewarganegaraan, negara, setValue]);
 
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
@@ -198,19 +174,17 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
                 path={backPath}
                 icon="ri-arrow-left-line"
               />
-              {!isAddMode &&
-                !isEditing && ( // Hanya tampil jika bukan add mode dan belum edit
-                  <Button className="btn btn-primary" onClick={handleEdit}>
-                    <i className="ri-edit-2-line"></i>
-                    Edit
-                  </Button>
-                )}
-              {!isAddMode &&
-                isEditing && ( // Tombol cancel hanya tampil di mode edit
-                  <Button className="btn btn-danger" onClick={handleCancel}>
-                    Cancel
-                  </Button>
-                )}
+              {!isAddMode && !isEditing && (
+                <Button className="btn btn-primary" onClick={handleEdit}>
+                  <i className="ri-edit-2-line"></i>
+                  Edit
+                </Button>
+              )}
+              {!isAddMode && isEditing && (
+                <Button className="btn btn-danger" onClick={handleCancel}>
+                  Cancel
+                </Button>
+              )}
             </div>
           </div>
           <div className="card-body py-3">
@@ -239,7 +213,7 @@ const DynamicForm = memo(({ title, formConfig, onSubmit, backPath, isAddMode = f
                   </Row>
                 </div>
               ))}
-              {(isAddMode || isEditing) && ( // Tombol simpan hanya tampil di add mode atau mode edit
+              {(isAddMode || isEditing) && (
                 <Button type="submit" className="btn btn-primary m-3">
                   <i className="ri-save-line"></i>
                   Simpan

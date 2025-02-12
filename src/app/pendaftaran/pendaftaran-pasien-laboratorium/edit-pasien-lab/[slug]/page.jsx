@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form";
 import { extractIdFromSlug } from '@/utils/slug';
 import { daftarPasien } from '@/utils/config';
-import { pemeriksaRadiologi, tindakanDataConfig } from "@/utils/dataTindakan";
+import { tindakanDataConfig } from "@/utils/dataTindakan";
 import DynamicForm from '@/components/features/dynamic-form/dynamicForm/dynamicForm';
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
 import dataWilayah from "@/utils/dataWilayah";
@@ -13,7 +13,7 @@ import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 const PasienLabEditPage = ({params}) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState(daftarPasien);
+  const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { setValue } = useForm();
 
@@ -26,30 +26,26 @@ const PasienLabEditPage = ({params}) => {
   } = UseSelectWilayah(setValue, dataWilayah);
 
   useEffect(() => {
-      const fetchData = async () => {
-        try {
-          console.log('Fetching data for slug:', params.slug);
-          const id = extractIdFromSlug(params.slug);
-          console.log('Extracted ID:', id);
-      
-          const user = daftarPasien.find((u) => u.id === parseInt(id, 10));
-          console.log('Found User:', user);
-      
-          if (!user) {
-            throw new Error('User not found');
-          }
-      
-          setUserData(user);
-        } catch (error) {
-            console.error('Error fetching user:', error);
-            router.push('/404');
-        } finally {
-            setIsLoading(false);
+    const fetchData = async () => {
+      try {
+        const id = extractIdFromSlug(params.slug);
+        const user = daftarPasien.find((u) => u.id === parseInt(id, 10));
+        
+        if (!user) { 
+          throw new Error('User not found');
         }
-      };
-      
-      fetchData();
-    }, [params.slug, router]);
+    
+        setUserData(user);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, [params.slug]); // Pastikan hanya `params.slug` menjadi dependency
+  
         
     const handleSubmit = async (data) => {
       console.log("data", data);
@@ -456,7 +452,7 @@ const PasienLabEditPage = ({params}) => {
           },
         ],
       },
-    ];
+    ];  
     if (isLoading) {
       return (
         <div className="iq-card">
@@ -481,21 +477,28 @@ const PasienLabEditPage = ({params}) => {
       );
     }
 
+    const formFieldsWithData = formFields.map(section => ({
+      ...section,
+      fields: section.fields.map(field => ({
+        ...field,
+        value: userData?.[field.name] ?? "", // Pastikan `undefined` diubah menjadi string kosong
+      }))
+    }));
+    
+
+    
+
   return (
     <Fragment>
       <DynamicForm
         title="Edit Pendaftaran Pasien Laboratorium"
-        formConfig={formFields.map((section) => ({
-          ...section,
-          fields: section.fields.map((field) => ({
-          ...field,
-          value: userData[field.name] || "", // Data dari userData sesuai dengan key di name
-          })),
-        }))} 
+        formConfig={formFieldsWithData} 
+        userData={userData}
         onSubmit={handleSubmit}
         backPath={`/pendaftaran/pendaftaran-pasien-laboratorium`}
-        isAddMode={false}
+        isAddMode={false} // Mode edit
       />
+
     </Fragment>
   )
 }

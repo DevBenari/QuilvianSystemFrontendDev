@@ -10,7 +10,13 @@ import PrintPatientCard from './patientCard';
 import PrintableQueueNumber from './patientAntrian';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddPasienSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice';
-import { GetAgamaSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/agamaSlice';
+import { fetchAgama } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice';
+import { fetchPendidikan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice';
+import { fetchTitles } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice';
+import { fetchPekerjaan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice';
+import { GetNegaraSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
+import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice';
+
 
 const KioskPendaftaranPasien = memo(() => {
     const { setValue } = useForm();
@@ -29,13 +35,21 @@ const KioskPendaftaranPasien = memo(() => {
 
     const dispatch = useDispatch();
 
-    const {data: agamaData, loading, error} = useSelector((state) => state.pasien)
+    const {data: agamaData, loading, error} = useSelector((state) => state.agama)
+    const {data: pendidikanData} = useSelector((state) => state.pendidikan)
+    const {data: titles} = useSelector((state) => state.titles)
+    const {data: pekerjaanData} = useSelector((state) => state.pekerjaan)
+    const {data: negara} = useSelector((state) => state.negara)
+    const {data: GolonganDarah} = useSelector((state) => state.golongan)
 
     useEffect(() => {
-        dispatch(GetAgamaSlice());
-
-    },[dispatch])
-
+        dispatch(fetchAgama())
+        dispatch(fetchPendidikan())
+        dispatch(fetchTitles())
+        dispatch(fetchPekerjaan())
+        dispatch(GetNegaraSlice())
+        dispatch(fetchGolongan())
+    }, [dispatch]);
     if (loading) {
         return <div>Loading data pasien...</div>;
     }
@@ -44,6 +58,12 @@ const KioskPendaftaranPasien = memo(() => {
     if (error) {
         return <div>Error: {error}</div>;
     }
+
+    const titlesOptions = titles?.data.map(item => ({
+        label: item.kodeTitle, // Label seperti "Tn", "Ny", "Mr"
+        value: item.titleId    // ID untuk value
+      })) || [];
+      
 
 
     const formFields = 
@@ -54,14 +74,11 @@ const KioskPendaftaranPasien = memo(() => {
             [
                 {
                     type: "select",
-                    id: "titleId",
+                    id: "titlesId",
                     label: "Title",
-                    name: "titleId",
+                    name: "titlesId",
                     placeholder: "Title",
-                    options: [
-                        { label: "Tn. ", value: "Tn" },
-                        { label: "Ny. ", value: "Ny" },
-                    ],
+                    options: titlesOptions,
                     rules: { required: "Title is required" },
                     colSize: 6,
                 },
@@ -148,7 +165,7 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Agama",
                     name:"agamaId",
                     placeholder: "Agama",
-                    options: agamaData?.map(item => ({ label: item.jenisAgama, value: item.agamaId })) || [],
+                    options: agamaData?.data.map(item => ({ label: item.jenisAgama, value: item.agamaId })) || [],
                     rules: { required: "Agama is required" },
                     colSize: 6
                 },
@@ -158,14 +175,7 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Pendidikan Terakhir",
                     name: "pendidikanTerakhirId",
                     placeholder: "Pendidikan Terakhir",
-                    options: [
-                        { label: "SD", value: "SD" },
-                        { label: "SMP", value: "SMP" },
-                        { label: "SMA", value: "SMA" },
-                        { label: "S1", value: "S1" },    
-                        { label: "S2", value: "S2" },
-                        { label: "S3", value: "S3" },
-                    ],
+                    options: pendidikanData?.data.map(item => ({ label: item.namaPendidikan, value: item.pendidikanId })) || [],
                     colSize: 6
                 }
             ]
@@ -205,15 +215,7 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Negara",
                     name: "negaraId",
                     placeholder: "Negara",
-                    options: [
-                        { label: "Indonesia", value: "Indonesia" },
-                        { label: "Amerika", value: "Amerika" },
-                        { label: "Malaysia", value: "Malaysia" },
-                        { label: "Singapura", value: "Singapura" },
-                        { label: "Jepang", value: "Jepang" },
-                        { label: "Spanyol", value: "Spanyol" },
-                        { label: "Italia", value: "Italia" },
-                    ],
+                    options: negara?.data.map(item => ({label: item.namaNegara, value: item.negaraId})) || [],
                     colSize: 6
                 },
                 {
@@ -347,14 +349,8 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Pekerjaan",
                     name: "pekerjaan",
                     placeholder: "Pilih Pekerjaan",
-                    options: [
-                        { label: "Pegawai Negeri Sipil", value: "Pegawai Negeri Sipil" },
-                        { label: "Pegawai Swasta", value: "Pegawai Swasta" },
-                        { label: "Wiraswasta", value: "Wiraswasta" },
-                        { label: "Pensiunan", value: "Pensiunan" },
-                        { label: "Lain-lain", value: "Lain-lain" },
-                    ],
-                    colSize: 6
+                    options: pekerjaanData?.data?.map(item => ({label:item.namaPekerjaan, value:item.pekerjaanId})),
+                    colSize: 6,
                 },
                 {
                     type: "text",
@@ -365,13 +361,22 @@ const KioskPendaftaranPasien = memo(() => {
                     colSize: 6
                 },
                 {
-                    type: "text",
+                    type: "number",
                     id: "noTeleponPerusahaan",
                     label: "No Telepon Perusahaan",
                     name: "noTeleponPerusahaan",
                     placeholder: "No Telepon Perusahaan",
-                    colSize: 6
-                },
+                    rules: {
+                        required: "No Telepon Perusahaan is required",
+                        validate: (value) => {
+                        if (value > 2147483647 || value < 0) {
+                            return "Nomor telepon terlalu panjang untuk tipe integer";
+                        }
+                        return true;
+                        },
+                    },
+                    colSize: 6,
+                },            
                 {
                     type: "textarea",
                     id: "alamatPerusahaan",
@@ -392,12 +397,7 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Golongan Darah",
                     name: "golonganDarahId",
                     placeholder: "Pilih Golongan Darah",
-                    options: [
-                        { label: "A", value: "A" },
-                        { label: "B", value: "B" },
-                        { label: "AB", value: "AB" },
-                        { label: "O", value: "O" },
-                    ],
+                    options: GolonganDarah?.data.map(item => ({label:item.namaGolonganDarah, value:item.golonganDarahId})),
                     colSize: 6
                 },
                 {
@@ -551,6 +551,7 @@ const KioskPendaftaranPasien = memo(() => {
             noRekamMedis: `RM-${new Date().getTime()}`,
             queueNumber: `A-${Math.floor(Math.random() * 100)}`,
             registrationDate: new Date().toLocaleDateString('id-ID'),
+            noIdentitas: `${data.noIdentitas}`,
         };
 
         setSubmittedData(enhancedData);
@@ -578,7 +579,7 @@ const KioskPendaftaranPasien = memo(() => {
                 <Col lg={12}>
                 <Card className="d-flex justify-content-center align-items-center">
                   <Card.Body>
-                    <PrintPatientCard patientData={submittedData} className="mb-3" />
+                    <PrintPatientCard patientData={submittedData}  />
                   </Card.Body>
                 </Card>
                 </Col>
@@ -631,6 +632,7 @@ const KioskPendaftaranPasien = memo(() => {
                 formConfig={formFields}
                 onSubmit={handleSubmit}
                 onFormSubmit={handleFormSubmit}
+                externalOptions={{ titles: titlesOptions }}
                 backPath="/kiosk"
                 isAddMode={true}
             />

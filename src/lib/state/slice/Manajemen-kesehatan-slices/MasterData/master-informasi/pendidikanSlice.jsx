@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getHeaders } from "@/lib/headers/headers";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 
-const API_URL = "http://192.168.15.213:589/api/Pendidikan";
+// const API_URL = "http://192.168.15.213:589/api/Pendidikan";
 
 // CRUD Thunks
 export const fetchPendidikan = createAsyncThunk("pendidikan/fetch",async (_,{ rejectWithValue }) => {

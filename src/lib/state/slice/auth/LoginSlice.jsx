@@ -1,48 +1,54 @@
-import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
+import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 
-export const LoginUser = createAsyncThunk("login", async(data, {rejectWithValue}) => {
-    try{
-        const request = await InstanceAxios.post(`/Auth/login`, data)
-        const response = await request.data.token;
-        console.log(response)
+// Async thunk untuk login user
+export const LoginUser = createAsyncThunk("auth/login", async (data, { rejectWithValue }) => {
+    try {
+        const response = await InstanceAxios.post(`/auth/login`, data);
+        const token = response.data.token;
 
-        Cookies.set("token", token, { expires: 1 });
-        return {token, response};
-    }catch(error){
-        return rejectWithValue(error.response.data)
+        // Simpan token di cookie (hanya di client-side)
+        if (typeof window !== 'undefined') {
+            Cookies.set("token", token, { expires: 1, path: "/" });  // Cookie berlaku untuk semua path
+        }
+
+        return { token };
+    } catch (error) {
+        return rejectWithValue(error.response.data);
     }
-})
+});
 
-const userSlice = createSlice({
-    name:"loginUser",
-    initialState:{
-        user: null,
+// Slice Redux untuk auth
+const authSlice = createSlice({
+    name: "auth",
+    initialState: {
         token: null,
-        loading: false,
         error: null,
+        loading: false,
+    },
+    reducers: {
+        logout: (state) => {
+            state.token = null;
+            Cookies.remove("token");  // Hapus token dari cookie saat logout
+        },
     },
     extraReducers: (builder) => {
         builder
-        .addCase(LoginUser.pending, (state) => {
-            state.loading = true;
-            state.user = null;
-            state.token = null;
-            state.error = false;
-        })
-        .addCase(LoginUser.fulfilled, (state, action) => {
-            state.loading = false;
-            state.error = false;
-            state.user = action.payload.user;
-            state.token = action.payload.token;
-        })
-        .addCase(LoginUser.rejected, (state, action) => {
-            state.loading = false;
-            state.user = null;
-            state.token = null;
-            state.error = action.error.message;
-        })
-    }
-})
+            .addCase(LoginUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(LoginUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.token = action.payload.token;
+            })
+            .addCase(LoginUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            });
+    },
+});
 
-export default userSlice.reducer;
+export const { logout } = authSlice.actions;
+export default authSlice.reducer;

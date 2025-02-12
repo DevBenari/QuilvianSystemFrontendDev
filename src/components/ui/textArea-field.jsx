@@ -1,9 +1,9 @@
 'use client';
-import React from 'react';
+import React, { forwardRef, memo } from 'react';
 import { Form } from 'react-bootstrap';
 import { useFormContext, Controller } from 'react-hook-form';
 
-const TextArea = ({ label, name, placeholder, rows = 3, rules, ...props }) => {
+const TextArea = forwardRef(({ label, name, placeholder, rows = 3, rules, ...props }, ref) => {
     const { control, formState: { errors } } = useFormContext();
 
     return (
@@ -21,6 +21,8 @@ const TextArea = ({ label, name, placeholder, rows = 3, rules, ...props }) => {
                         {...field}
                         as="textarea" // Menggunakan textarea
                         placeholder={placeholder}
+                        value={field.value ?? ''} // ✅ Pastikan tidak undefined
+                        onChange={(e) => field.onChange(e.target.value)}
                         rows={rows} // Jumlah baris untuk TextArea
                         isInvalid={!!errors[name]} // Validasi error
                         {...props}
@@ -36,6 +38,7 @@ const TextArea = ({ label, name, placeholder, rows = 3, rules, ...props }) => {
             )}
         </Form.Group>
     );
-};
+});
 
-export default TextArea;
+TextArea.displayName = "TextAreaField";
+export default memo(TextArea);

@@ -98,22 +98,86 @@ const formConfig = [
         ],
     },
     {
-        section: "Informasi Layanan Poli",
+        section: "Pendaftaran Layanan Poli",
         fields: [
             {
-                id: "poli",
-                name: "poli",
-                label: "Poli Tujuan",
-                type: "select",
-                options: [
+              id:"layanan",
+              name: "layanan",
+              label: "Jenis Layanan Kesehatan",
+              type: "select",
+              options: [
+                { label: "Rawat Inap", value: "rawat_inap" },
+                { label: "Layanan Poliklinik", value: "layananPoliklinik" },
+                { label: "Laboratorium", value: "laboratorium" },
+                { label: "Radiologi", value: "radiologi" },
+                { label: "Medical Check Up", value: "medicalCheckUp" },
+                { label: "Optik", value: "optik" }
+              ],
+              colSize: 12
+            },
+            {
+              id: "jenisPemeriksaan",
+              name: "jenisPemeriksaan",
+              label: "Jenis Pemeriksaan",
+              type: "select",
+              options: (watchValues) => {
+                if(watchValues.layanan === "layananPoliklinik") {
+                  return [
                     { label: "Poli Anak", value: "poli_anak" },
                     { label: "Poli Bedah", value: "poli_bedah" },
                     { label: "Poli Saraf", value: "poli_saraf" },
                     { label: "Poli Gigi", value: "poli_gigi"}
-                ],
-                rules: { required: true },
-                colSize: 6,
+                  ]
+                }else if(watchValues.layanan === "laboratorium") {
+                  return [
+                    {label: "tes darah lengkap(CBC)" , value: "tesDarah"},
+                    {label: "tes darah hematologi", value: "tesDarahHematologi"},
+                    {label: "Tes Gula Dan Kolesterol", value: "tesGulaKolesterol"},
+                    {label: "Tes Urin", value: "tesUrin"},
+                  ]
+                }else if(watchValues.layanan === "radiologi") {
+                  return [
+                    {label: "Rontgen (X-Ray)" , value: "rontgen"},
+                    {label: "CT Scan", value: "CtScan"},
+                    {label: "MRI", value: "MRI"},
+                    {label: "USG", value: "usg"},
+                    {label: "Mamografi", value: "mamografi"},
+                    {label: "Lainnya...", value: "lainnya"},
+                  ]
+                }
+                return [];
+              },
+              colSize: 6,
+              // hide: (watchValues) => watchValues.layanan !== "layananPoliklinik"
             },
+
+            // {
+            //     id: "poli",
+            //     name: "poli",
+            //     label: "Poli Tujuan",
+            //     type: "select",
+            //     options: [
+            //         { label: "Poli Anak", value: "poli_anak" },
+            //         { label: "Poli Bedah", value: "poli_bedah" },
+            //         { label: "Poli Saraf", value: "poli_saraf" },
+            //         { label: "Poli Gigi", value: "poli_gigi"}
+            //     ],
+            //     rules: { required: true },
+            //     colSize: 6,
+                
+            // },
+            // {
+            //   id: "laboratorium",
+            //   name: "laboratorium",
+            //   label: "Laboratorium", 
+            //   type: "select",
+            //   options: [
+            //     { label: "Patologi Anatomi", value: "patologiAnatomi" },
+            //     { label: "Patologi Klinik", value: "patologiKlinik"},
+            //   ],
+            //   colSize: 6,
+            //   hide: (watchValues) => watchValues.layanan !== "laboratorium"
+            // },
             {
                 id: "dokter",
                 name: "dokter",
@@ -159,7 +223,7 @@ const formConfig = [
             {
                 id:"asalRujukan",
                 name:"asalRujukan",
-                label:"Asil Fasilitas Kesehatan Rujukan",
+                label:"Asal Fasilitas Kesehatan Rujukan",
                 type:"text",
                 colSize:6,
                 hide: (watchValues) => watchValues.pasienRujukan !== "Ya"
@@ -181,15 +245,39 @@ const formConfig = [
                 ],
                 colsize:6,
             },
-            // {
-            //     id:"nomorAsuransi",
-            //     name:"nomorAsuransi",
-            //     label: "Nomor Kartu Asuransi",
-            //     type: "number",
-            //     colsize:6,
-            //     placeholder:"masukkan nomor asuransi",
-            //     hide: (watchValues) => watchValues.pembayaran !== "asuransi"
-            // },
+            {
+              id:"asuransiPasien",
+              name:"asuransiPasien",
+              label: "Asuransi yang digunakan pasien",
+              type: "select",
+              options: insuranceList.map((item) => ({ label: item.provider, value: item.provider})),
+              colSize:6,
+              hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+            },
+            {
+                id:"nomorAsuransi",
+                name:"nomorAsuransi",
+                label: "Nomor Kartu Asuransi",
+                type: "number",
+                colsize:6,
+                placeholder:"masukkan nomor asuransi",
+                hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+            },
+            {
+              id: "tambahAsuransi",
+              name: "tambahAsuransi",
+              label: "",
+              type: "custom",
+              customRender: () => (
+                <Button variant="info" onClick={handleOpenModal} style={{ marginTop: "30px"}}>
+                  Tambah Asuransi
+                </Button>
+              ),
+              colSize: 6,
+              className: "mt-2",
+              hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+          },
+          
 
         ]
     }
@@ -197,6 +285,7 @@ const formConfig = [
 
   const handleSubmit = (data) => {
     console.log("Submitted Data:", data);
+    handleCloseModal(false)
   };
 
   return (
@@ -210,11 +299,12 @@ const formConfig = [
         backPath="/kiosk"
         isAddMode={true}
       />
-      {/* <ModalInsurance
+      <ModalInsurance
         onOpen={showInsuranceModal}
         onClose={handleCloseModal}
         onSubmit={handleInsuranceSubmit}
-      /> */}
+        formConfig={formConfig}
+      />
 
     </Fragment>
 

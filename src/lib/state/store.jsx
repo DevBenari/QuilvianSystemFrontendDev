@@ -19,7 +19,7 @@ const store = configureStore({
     identitas: identitasSlice, 
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
-    Negara: NegaraSlice,
+    negara: NegaraSlice,
   },
 });
 
