@@ -318,6 +318,15 @@ export const menus = {
         },
       ],
     },
+    {
+      title: "Dokter",
+      subItems: [
+        {
+          title: "Data Dokter",
+          href: "/MasterData/master-dokter/table-dokter",
+        },
+      ],
+    },
   ],
   instalasiRawatJalan: [
     {

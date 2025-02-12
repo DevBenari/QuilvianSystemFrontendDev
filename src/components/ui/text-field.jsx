@@ -5,17 +5,19 @@ import { useFormContext, Controller } from "react-hook-form";
 const TextField = ({
   label,
   name,
-  type,
+  type = "text",
   className,
   placeholder,
   rules,
-  disabled = false, // Tambahkan properti disabled
+  disabled = false,
+  onChangeCallback, // Tambahkan properti ini
   ...props
 }) => {
   const {
     control,
     formState: { errors },
   } = useFormContext();
+
   return (
     <Form.Group className="mb-3">
       {/* Label Input */}
@@ -33,8 +35,14 @@ const TextField = ({
             className={className}
             placeholder={placeholder}
             isInvalid={!!errors[name]}
-            {...props}
             disabled={disabled}
+            onChange={(e) => {
+              field.onChange(e); // Biarkan react-hook-form menangani perubahan
+              if (onChangeCallback) {
+                onChangeCallback(e); // Panggil callback tambahan jika ada
+              }
+            }}
+            {...props}
           />
         )}
       />
@@ -42,7 +50,7 @@ const TextField = ({
       {/* Pesan Error */}
       {errors[name] && (
         <Form.Control.Feedback type="invalid">
-          {errors[name]?.message || errorMessage}
+          {errors[name]?.message}
         </Form.Control.Feedback>
       )}
     </Form.Group>

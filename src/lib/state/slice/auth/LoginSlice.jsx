@@ -6,14 +6,22 @@ export const LoginUser = createAsyncThunk(
   "login",
   async (data, { rejectWithValue }) => {
     try {
-      const request = await InstanceAxios.post(`/Auth/login`, data);
-      const token = request.data.token; // Use the token from the response
-      console.log(token);
+      // Gunakan FormData untuk multipart/form-data
+      const formData = new FormData();
+      formData.append("Email", data.Email); // Sesuai dengan API (huruf besar)
+      formData.append("Password", data.Password); // Sesuai dengan API (huruf besar)
 
-      Cookies.set("token", token, { expires: 1 }); // Correct the variable name here
-      return { token }; // Return only the token
+      const request = await InstanceAxios.post(`/Auth/login`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Sesuai dengan Swagger API
+        },
+      });
+
+      const token = request.data.token;
+      Cookies.set("token", token, { expires: 1 });
+      return { token };
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || "Login failed");
     }
   }
 );

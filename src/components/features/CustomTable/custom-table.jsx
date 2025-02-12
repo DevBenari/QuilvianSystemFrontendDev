@@ -113,7 +113,9 @@ const CustomTableComponent = memo(
                           ? (currentPage - 1) * itemsPerPage + index + 1
                           : col.key === "tanggalLahir" ||
                             col.key === "createDateTime" ||
-                            col.key === "tanggalDaftar"
+                            col.key === "tanggalDaftar" ||
+                            col.key === "tglSip" ||
+                            col.key === "tglStr"
                           ? formatDate(item[col.key])
                           : item[col.key]}
                       </td>

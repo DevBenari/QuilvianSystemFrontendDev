@@ -9,6 +9,9 @@ import pendidikanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/Master
 import pasien from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 import negaraSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 import asuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
+import pegawaiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-pegawai/pagawaiSlice";
+
+import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 const store = configureStore({
   reducer: {
     token: authLogin,
@@ -21,6 +24,8 @@ const store = configureStore({
     pendidikan: pendidikanSlice,
     negara: negaraSlice,
     asuransi: asuransiSlice,
+    pegawai: pegawaiSlice,
+    dokter: dokterSlice,
   },
 });
 

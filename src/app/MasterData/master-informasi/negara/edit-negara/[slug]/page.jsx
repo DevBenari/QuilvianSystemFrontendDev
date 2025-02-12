@@ -9,6 +9,7 @@ import {
   updateNegara,
   deleteNegara,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const NegaraEditForm = ({ params }) => {
   const router = useRouter();
@@ -30,16 +31,7 @@ const NegaraEditForm = ({ params }) => {
   }, [selectedNegara]);
 
   const handleSubmit = async (data) => {
-    try {
-      await dispatch(updateNegara({ id: dataNegara.negaraId, data })).unwrap();
-      showAlert.success("Data berhasil disimpan", () => {
-        router.push("/MasterData/master-informasi/negara/table-negara");
-      });
-      router.push("/MasterData/master-informasi/negara/table-negara");
-    } catch (error) {
-      console.error("Gagal menambahkan negara:", error);
-      showAlert.error("Gagal menambahkan data negara");
-    }
+    console.log(data);
   };
 
   const handleDelete = async () => {
@@ -68,7 +60,10 @@ const NegaraEditForm = ({ params }) => {
           rules: { required: "Nama negara harus diisi" },
           defaultValue: dataNegara?.namaNegara || "",
           onChangeCallback: (e) =>
-            setDataNegara({ ...dataNegara, namaNegara: e.target.value }),
+            setDataNegara((prev) => ({
+              ...prev,
+              namaNegara: e.target.value,
+            })),
         },
       ],
     },

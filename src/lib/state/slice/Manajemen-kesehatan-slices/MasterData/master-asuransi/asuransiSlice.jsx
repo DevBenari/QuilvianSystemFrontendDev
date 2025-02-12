@@ -12,9 +12,9 @@ export const fetchAsuransi = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal mengambil data asuransi";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal mengambil data asuransi"
+      );
     }
   }
 );
@@ -28,10 +28,10 @@ export const fetchAsuransiById = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
+      return rejectWithValue(
         error.response?.data?.message ||
-        "Gagal mengambil data asuransi berdasarkan ID";
-      return rejectWithValue(errorMessage);
+          "Gagal mengambil data asuransi berdasarkan ID"
+      );
     }
   }
 );
@@ -45,9 +45,9 @@ export const createAsuransi = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal menambahkan data asuransi";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal menambahkan data asuransi"
+      );
     }
   }
 );
@@ -61,9 +61,9 @@ export const updateAsuransi = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal mengupdate data asuransi";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal mengupdate data asuransi"
+      );
     }
   }
 );
@@ -75,9 +75,9 @@ export const deleteAsuransi = createAsyncThunk(
       await InstanceAxios.delete(`/Asuransi/${id}`, { headers: getHeaders() });
       return id;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal menghapus data asuransi";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal menghapus data asuransi"
+      );
     }
   }
 );
@@ -104,6 +104,9 @@ const asuransiSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(fetchAsuransiById.pending, (state) => {
+        state.selectedAsuransi = null;
+      })
       .addCase(fetchAsuransiById.fulfilled, (state, action) => {
         state.selectedAsuransi = action.payload;
       })
@@ -115,7 +118,17 @@ const asuransiSlice = createSlice({
           (item) => item.asuransiId === action.payload.asuransiId
         );
         if (index !== -1) {
-          state.data[index] = action.payload;
+          state.data[index] = {
+            ...state.data[index],
+            ...action.payload,
+          };
+        }
+
+        if (state.selectedAsuransi?.asuransiId === action.payload.asuransiId) {
+          state.selectedAsuransi = {
+            ...state.selectedAsuransi,
+            ...action.payload,
+          };
         }
       })
       .addCase(deleteAsuransi.fulfilled, (state, action) => {

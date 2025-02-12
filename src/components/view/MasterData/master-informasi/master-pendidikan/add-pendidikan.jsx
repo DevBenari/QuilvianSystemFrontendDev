@@ -6,7 +6,7 @@ import { createPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/M
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
 import { useDispatch } from "react-redux";
-
+import { showAlert } from "@/components/features/alert/custom-alert";
 const AddFormPendidikan = () => {
   const dispatch = useDispatch();
   const router = useRouter();

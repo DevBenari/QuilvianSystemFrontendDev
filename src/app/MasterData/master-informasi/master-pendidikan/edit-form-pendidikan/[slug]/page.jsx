@@ -143,7 +143,7 @@ const EditFormPendidikan = ({ params }) => {
         title="Edit Data Pendidikan"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={`/MasterData/master-Pendidikan/table-Pendidikan`}
+        backPath={`/MasterData/master-informasi/master-pendidikan/table-pendidikan`}
         isAddMode={false}
         handleDelete={handleDelete}
       />
