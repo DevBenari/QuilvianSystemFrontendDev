@@ -1,4 +1,4 @@
-import AddFormDokter from "@/components/view/MasterData/master-dokter/add-dokter";
+import AddFormDokter from "@/components/view/MasterData/master-dokter/dokter/add-dokter";
 import React from "react";
 
 const PageAddDokter = () => {

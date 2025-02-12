@@ -323,7 +323,11 @@ export const menus = {
       subItems: [
         {
           title: "Data Dokter",
-          href: "/MasterData/master-dokter/table-dokter",
+          href: "/MasterData/master-dokter/dokter/table-dokter",
+        },
+        {
+          title: "Dokter Praktek",
+          href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
         },
       ],
     },

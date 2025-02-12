@@ -10,6 +10,7 @@ import pasien from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 import negaraSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 import asuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 import pegawaiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-pegawai/pagawaiSlice";
+import dokterPraktek from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
 
 import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 const store = configureStore({
@@ -26,6 +27,7 @@ const store = configureStore({
     asuransi: asuransiSlice,
     pegawai: pegawaiSlice,
     dokter: dokterSlice,
+    dokterPraktek: dokterPraktek,
   },
 });
 

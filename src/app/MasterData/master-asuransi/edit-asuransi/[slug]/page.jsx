@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -15,10 +15,9 @@ import { showAlert } from "@/components/features/alert/custom-alert";
 const AsuransiEditForm = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { selectedAsuransi, loading } = useSelector((state) => state.asuransi);
+  const { selectedAsuransi } = useSelector((state) => state.asuransi);
 
   const [dataAsuransi, setDataAsuransi] = useState(null);
-  const { register, handleSubmit, setValue } = useForm();
 
   // Fetch data saat komponen pertama kali dimuat
   useEffect(() => {
@@ -29,14 +28,14 @@ const AsuransiEditForm = ({ params }) => {
   useEffect(() => {
     if (selectedAsuransi) {
       setDataAsuransi(selectedAsuransi);
-      Object.keys(selectedAsuransi).forEach((key) =>
-        setValue(key, selectedAsuransi[key] || "")
-      );
+      // Object.keys(selectedAsuransi).forEach((key) =>
+      //   setValue(key, selectedAsuransi[key] || "")
+      // );
     }
-  }, [selectedAsuransi, setValue]);
+  }, [selectedAsuransi]);
 
   // Submit form untuk update data
-  const onSubmit = async (formData) => {
+  const handleSubmit = async (formData) => {
     try {
       const cleanedData = {
         namaAsuransi: formData.namaAsuransi,
@@ -74,69 +73,65 @@ const AsuransiEditForm = ({ params }) => {
   };
 
   // Konfigurasi Form Fields
-  const formFields = dataAsuransi
-    ? [
+  const formFields = [
+    {
+      section: "Informasi Asuransi",
+      fields: [
         {
-          section: "Informasi Asuransi",
-          fields: [
-            {
-              type: "text",
-              label: "Kode Asuransi",
-              name: "kodeAsuransi",
-              placeholder: "Masukkan Kode Asuransi...",
-              colSize: 6,
-              defaultValue: dataAsuransi.kodeAsuransi || "",
-              onChangeCallback: (e) => setValue("kodeAsuransi", e.target.value),
-            },
-            {
-              type: "text",
-              label: "Nama Asuransi",
-              name: "namaAsuransi",
-              placeholder: "Masukkan Nama Asuransi...",
-              colSize: 6,
-              defaultValue: dataAsuransi.namaAsuransi || "",
-              onChangeCallback: (e) => setValue("namaAsuransi", e.target.value),
-            },
-            {
-              type: "text",
-              label: "Tipe Perusahaan",
-              name: "tipePerusahaan",
-              placeholder: "Masukkan Tipe Perusahaan...",
-              colSize: 6,
-              defaultValue: dataAsuransi.tipePerusahaan || "",
-              onChangeCallback: (e) =>
-                setValue("tipePerusahaan", e.target.value),
-            },
-            {
-              type: "text",
-              label: "Status",
-              name: "status",
-              placeholder: "Masukkan Status...",
-              colSize: 6,
-              defaultValue: dataAsuransi.status || "",
-              onChangeCallback: (e) => setValue("status", e.target.value),
-            },
-          ],
+          type: "text",
+          label: "Kode Asuransi",
+          name: "kodeAsuransi",
+          placeholder: "Masukkan Kode Asuransi...",
+          colSize: 6,
+          rules: { required: "Kode Asuransi wajib diisi" },
         },
-      ]
-    : [];
+        {
+          type: "text",
+          label: "Nama Asuransi",
+          name: "namaAsuransi",
+          placeholder: "Masukkan Nama Asuransi...",
+          colSize: 6,
+          rules: { required: "Nama Asuransi wajib diisi" },
+        },
+        {
+          type: "text",
+          label: "Tipe Perusahaan",
+          name: "tipePerusahaan",
+          placeholder: "Masukkan Tipe Perusahaan...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Status",
+          name: "status",
+          placeholder: "Pilih Status",
+
+          colSize: 6,
+          rules: { required: "Status wajib dipilih" },
+        },
+      ],
+    },
+  ];
+
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: selectedAsuransi?.[field.name] ?? "",
+    })),
+  }));
 
   return (
     <Fragment>
-      {loading ? (
-        <p>Loading...</p>
-      ) : dataAsuransi ? (
-        <DynamicForm
-          title="Edit Data Asuransi"
-          formConfig={formFields}
-          onSubmit={handleSubmit(onSubmit)}
-          handleDelete={handleDelete}
-          backPath="/MasterData/master-asuransi/daftar-asuransi"
-          isAddMode={false}
-        />
-      ) : (
-        <p>Data tidak ditemukan</p>
-      )}
+      <DynamicForm
+        title="Edit Data Asuransi"
+        formConfig={formFieldsWithData}
+        onSubmit={handleSubmit}
+        handleDelete={handleDelete}
+        userData={dataAsuransi}
+        backPath="/MasterData/master-asuransi/daftar-asuransi"
+        isAddMode={false}
+      />
     </Fragment>
   );
 };
