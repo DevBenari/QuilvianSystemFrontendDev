@@ -27,6 +27,7 @@ const SideBarItems = memo(() => {
         { pathname: "/instalasi-bedah", label: "Instalasi Bedah" },
         { pathname: "/instalasi-Operasi", label: "Instalasi Operasi" },
         { pathname: "/farmasi", label: "Farmasi" },
+        { pathname: "/farmasi", label: "Farmasi" },
       ],
     },
     {

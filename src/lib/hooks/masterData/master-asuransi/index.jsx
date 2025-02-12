@@ -11,8 +11,14 @@ export const useAsuransi = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://192.168.15.213:589/api/Asuransi`
-        );
+          `http://192.168.15.213:589/api/Asuransi`, {
+            headers: {
+              "Content-Type": "application/json", // Pastikan data dikirim sebagai JSON
+              Accept: "application/json", // Memberi tahu server untuk mengembalikan JSON
+            },
+          }
+        ) 
+       
         // console.log("Data fetched:", response.data); // Tambahkan log ini
         setAsuransi(response.data);
       } catch (err) {

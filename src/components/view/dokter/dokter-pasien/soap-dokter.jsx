@@ -131,7 +131,7 @@ const SoapDokter = memo(() => {
                                                     name="tekananDarah"
                                                     label=""
                                                     placeholder={'TD(mmHg)'}
-                                                    rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                    readOnly={true}
 
                                                 />
                                             </Col>
@@ -141,6 +141,7 @@ const SoapDokter = memo(() => {
                                                     label=""
                                                     placeholder={'TB(Kg)'}
                                                     rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                    readOnly={true}
                                                 />
                                             </Col>
                                             <Col md="3">
@@ -148,7 +149,7 @@ const SoapDokter = memo(() => {
                                                     name="tinggiBadan"
                                                     label=""
                                                     placeholder={'TB(cm)'}
-                                                    rules={{ required: 'tinggi Badan harus diisi' }} 
+                                                    readOnly={true}
                                                 />
                                             </Col>
                                             <Col md="3">
@@ -156,7 +157,7 @@ const SoapDokter = memo(() => {
                                                     name="heartRate"
                                                     label=""
                                                     placeholder={'HR(bpm)'}
-                                                    rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                    readOnly={true}
                                                 />
                                             </Col>
                                             <Col md="3">
@@ -164,7 +165,7 @@ const SoapDokter = memo(() => {
                                                     name="RespiratoryRate"
                                                     label=""
                                                     placeholder={"RR(bpm)"}
-                                                    rules={{ required: 'Respiratory Rate harus diisi' }}
+                                                    readOnly={true}
                                                 />
                                             </Col>
                                             <Col md="3">
@@ -172,7 +173,7 @@ const SoapDokter = memo(() => {
                                                     name="suhu"
                                                     label=""
                                                     placeholder={'suhu °C'}
-                                                    rules={{ required: 'Tekanan Darah harus diisi' }} 
+                                                    readOnly={true} 
                                                 />
                                             </Col>
                                             <Col md="12">
@@ -180,7 +181,7 @@ const SoapDokter = memo(() => {
                                                     label=""
                                                     name="pemeriksaanlainnya"
                                                     placeholder="Pemeriksaan dan Keluhan Pasien..."
-                                                    rules={{ required: 'Keluhan Pasien harus diisi' }}
+                                                    readOnly={true}
                                                     rows={5}      
                                                 />
                                             </Col>
