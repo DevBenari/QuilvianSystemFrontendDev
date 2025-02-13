@@ -16,9 +16,18 @@ import TimeField from "@/components/ui/time-input";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
+import { showAlert } from "../../alert/custom-alert";
 
 const DynamicForm = memo(
-  ({ title, userData, formConfig, onSubmit, backPath, isAddMode = false }) => {
+  ({
+    title,
+    userData,
+    formConfig,
+    onSubmit,
+    backPath,
+    isAddMode = false,
+    handleDelete,
+  }) => {
     const fieldComponents = {
       text: TextField,
       email: TextField,
@@ -176,8 +185,13 @@ const DynamicForm = memo(
                   </Button>
                 )}
                 {!isAddMode && isEditing && (
-                  <Button className="btn btn-danger" onClick={handleCancel}>
+                  <Button className="btn btn-warning" onClick={handleCancel}>
                     Cancel
+                  </Button>
+                )}
+                {!isAddMode && (
+                  <Button className="btn btn-danger" onClick={handleDelete}>
+                    Delete
                   </Button>
                 )}
               </div>

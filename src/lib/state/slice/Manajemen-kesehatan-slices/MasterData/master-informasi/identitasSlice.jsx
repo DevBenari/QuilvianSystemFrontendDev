@@ -1,61 +1,97 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getHeaders } from "@/lib/headers/headers";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
+import { getHeaders } from "@/lib/headers/headers";
 
-// CRUD Thunks
-export const fetchIdentitas = createAsyncThunk("identitas/fetch", async (_,{ rejectWithValue }) => {
-  try{
-    const response = await InstanceAxios.get(`/Title`, { headers: getHeaders() });
-    return response.data;
-  }catch(error){
-    const errorMessage = error.response?.data?.message || "Gagal mengambil data identitas";
-    return rejectWithValue(errorMessage);
-  }
-});
-
-export const createIdentitas = createAsyncThunk(
-  "identitas/create",
-  async (data) => {
-    try{
-      const response = await InstanceAxios.post(`/Title`, data, { headers: getHeaders() });
-      return response.data;
-    }catch(error){
-      const errorMessage = error.response?.data?.message || "Gagal create data identitas";
-      return rejectWithValue(errorMessage);
+// 🔹 Fetch semua identitas
+export const fetchIdentitas = createAsyncThunk(
+  "identitas/fetch",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get("/Identitas", {
+        headers: getHeaders(),
+      });
+      return response.data.data; // Ambil data dari response
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal mengambil data identitas"
+      );
     }
   }
 );
 
-export const updateTitle = createAsyncThunk(
+// 🔹 Fetch identitas berdasarkan ID
+export const fetchIdentitasById = createAsyncThunk(
+  "identitas/fetchById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Identitas/${id}`, {
+        headers: getHeaders(),
+      });
+      return response.data.data; // Ambil data dari response
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Gagal mengambil data identitas berdasarkan ID"
+      );
+    }
+  }
+);
+
+// 🔹 Tambah identitas
+export const createIdentitas = createAsyncThunk(
+  "identitas/create",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.post("/Identitas", data, {
+        headers: getHeaders(),
+      });
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal menambahkan data identitas"
+      );
+    }
+  }
+);
+
+// 🔹 Update identitas
+export const updateIdentitas = createAsyncThunk(
   "identitas/update",
-  async ({ id, data }) => {
-    try{
-      const response = await InstanceAxios.put(`/Title/${id}`, data, {
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.put(`/Identitas/${id}`, data, {
         headers: getHeaders(),
       });
       return response.data;
-    }catch(error){
-      const errorMessage = error.response?.data?.message || "Gagal update data identitas";
-      return rejectWithValue(errorMessage);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal memperbarui data identitas"
+      );
     }
   }
 );
 
-export const deleteTitle = createAsyncThunk("identitas/delete", async (id, { rejectWithValue }) => {
-  try{
-    const response = await InstanceAxios.delete(`/Title/${id}`, { headers: getHeaders() });
-    return response.data;
-  }catch(error){
-    const errorMessage = error.response?.data?.message || "Gagal delete data identitas";
-    return rejectWithValue(errorMessage);
+// 🔹 Hapus identitas
+export const deleteIdentitas = createAsyncThunk(
+  "identitas/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      await InstanceAxios.delete(`/Identitas/${id}`, { headers: getHeaders() });
+      return id;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal menghapus data identitas"
+      );
+    }
   }
-});
+);
 
-// Slice
+// 🔹 Slice Identitas
 const identitasSlice = createSlice({
   name: "identitas",
   initialState: {
-    data: { data: [] },
+    data: [], // Data harus berupa array, bukan { data: [] }
+    selectedIdentitas: null,
     loading: false,
     error: null,
   },
@@ -66,31 +102,43 @@ const identitasSlice = createSlice({
       })
       .addCase(fetchIdentitas.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload; // Pastikan mengambil data sebagai array langsung
       })
       .addCase(fetchIdentitas.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
-
+      .addCase(fetchIdentitasById.pending, (state) => {
+        state.selectedIdentitas = null;
+      })
+      .addCase(fetchIdentitasById.fulfilled, (state, action) => {
+        state.selectedIdentitas = action.payload;
+      })
       .addCase(createIdentitas.fulfilled, (state, action) => {
-        if (Array.isArray(state.data.data)) {
-          state.data.data.push(action.payload); // Tambahkan payload ke array data
-        }
+        state.data.push(action.payload);
       })
-      .addCase(updateTitle.fulfilled, (state, action) => {
-        if (Array.isArray(state.data.data)) {
-          const index = state.data.data.findIndex(
-            (title) => title.titleId === action.payload.titleId
-          );
-          if (index !== -1) {
-            state.data.data[index] = action.payload;
-          }
-        }
-      })
+      .addCase(updateIdentitas.fulfilled, (state, action) => {
+        const index = state.data.findIndex(
+          (item) => item.identitasId === action.payload.identitasId
+        );
 
-      .addCase(deleteTitle.fulfilled, (state, action) => {
-        state.data = state.data.filter((title) => title.id !== action.payload);
+        if (index !== -1) {
+          state.data[index] = { ...state.data[index], ...action.payload };
+        }
+
+        if (
+          state.selectedIdentitas?.identitasId === action.payload.identitasId
+        ) {
+          state.selectedIdentitas = {
+            ...state.selectedIdentitas,
+            ...action.payload,
+          };
+        }
+      })
+      .addCase(deleteIdentitas.fulfilled, (state, action) => {
+        state.data = state.data.filter(
+          (item) => item.identitasId !== action.payload
+        );
       });
   },
 });

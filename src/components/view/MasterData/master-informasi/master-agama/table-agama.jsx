@@ -1,12 +1,13 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Col, Spinner, Alert } from "react-bootstrap";
+import { Col, Row, Alert, Spinner } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+
 import ButtonNav from "@/components/ui/button-navigation";
 import { fetchAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+import CustomSearchFilterApi from "@/components/features/custom-search/CustomSearchComponen/custom-search-api";
+import CustomTablePagedApi from "@/components/features/CustomTable/custom-table-page-api";
 
 const TableDataAgama = () => {
   const dispatch = useDispatch();
@@ -15,30 +16,57 @@ const TableDataAgama = () => {
     loading,
     error,
   } = useSelector((state) => state.agama);
-  const methods = useForm();
 
-  const agama = useMemo(() => agamaData?.data || [], [agamaData]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [periode, setPeriode] = useState("ThisYear");
+  const [sortDirection, setSortDirection] = useState("asc");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  const [filteredData, setFilteredData] = useState(agama);
+  // Fetch data berdasarkan filter
+  const fetchData = () => {
+    dispatch(
+      fetchAgama({
+        page: currentPage,
+        perPage,
+        searchQuery,
+        periode,
+        sortDirection,
+        startDate,
+        endDate,
+      })
+    );
+  };
 
   useEffect(() => {
-    dispatch(fetchAgama());
-  }, [dispatch]);
-
-  useEffect(() => {
-    setFilteredData(agama);
-  }, [agama]);
+    fetchData();
+  }, [
+    currentPage,
+    perPage,
+    searchQuery,
+    periode,
+    sortDirection,
+    startDate,
+    endDate,
+  ]);
 
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...useForm()}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">Master Data - List Daftar Agama</h2>
         </div>
-        <CustomSearchFilter
-          data={agama}
-          setFilteredPatients={setFilteredData}
-          onFilteredPatients={filteredData}
+
+        {/* Custom Search Filter */}
+        <CustomSearchFilterApi
+          setSearchQuery={setSearchQuery}
+          setPeriode={setPeriode}
+          setSortDirection={setSortDirection}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          onSearch={fetchData} // Tam
         />
       </Col>
 
@@ -59,40 +87,30 @@ const TableDataAgama = () => {
                 />
               </div>
 
-              {loading && (
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{ height: "300px" }}
-                >
-                  <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <h5 className="mt-3 text-primary fw-bold">
-                    Loading data, please wait...
-                  </h5>
+              {/* Handling Loading, Error, dan Data */}
+              {loading ? (
+                <div className="text-center p-5">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Memuat data...</p>
                 </div>
-              )}
-
-              {/* Error or No Data */}
-              {!loading && (error || agama.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
-                  <i className="ri-information-line me-2"></i>
-                  Tidak ada data yang tersedia.
+              ) : error ? (
+                <Alert variant="danger" className="text-center mt-3">
+                  {error}
                 </Alert>
-              )}
-
-              {!loading && !error && agama.length > 0 && (
-                <CustomTableComponent
-                  data={filteredData}
+              ) : (
+                <CustomTablePagedApi
+                  data={agamaData.rows}
                   columns={[
                     { key: "no", label: "No" },
-                    { key: "jenisAgama", label: "Nama Agama" },
+                    { key: "namaAgama", label: "Nama Agama" },
                   ]}
-                  itemsPerPage={10}
-                  slugConfig={{ textField: "jenisAgama", idField: "agamaId" }}
+                  fetchData={fetchData}
+                  currentPage={currentPage}
+                  totalPages={agamaData.totalPages}
+                  totalRows={agamaData.totalRows}
+                  perPage={perPage}
+                  onPageChange={setCurrentPage}
+                  slugConfig={{ textField: "namaAgama", idField: "agamaId" }}
                   basePath="/MasterData/master-informasi/agama/edit-agama"
                 />
               )}

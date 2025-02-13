@@ -316,6 +316,14 @@ export const menus = {
           title: "Data Negara",
           href: "/MasterData/master-informasi/negara/table-negara",
         },
+        {
+          title: "Data Identitas",
+          href: "/MasterData/master-informasi/identitas/table-identitas",
+        },
+        {
+          title: "Data jabatan",
+          href: "/MasterData/master-informasi/jabatan/table-jabatan",
+        },
       ],
     },
     {

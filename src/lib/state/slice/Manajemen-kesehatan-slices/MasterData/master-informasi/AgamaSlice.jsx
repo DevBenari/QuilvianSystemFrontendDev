@@ -2,23 +2,38 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-// CRUD Thunks
+// **FETCH DATA AGAMA DENGAN FILTER & PAGINATION**
 export const fetchAgama = createAsyncThunk(
-  "agama/fetch",
-  async (_, { rejectWithValue }) => {
+  "agama/fetchPaged",
+  async (
+    { page, perPage, searchQuery, periode, sortDirection, startDate, endDate },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await InstanceAxios.get("/Agama", {
+      const response = await InstanceAxios.get("/Agama/paged", {
         headers: getHeaders(),
+        params: {
+          page,
+          perPage,
+          search: searchQuery || "", // Jika kosong, kirim string kosong
+          orderBy: "CreateDateTime",
+          sortDirection: sortDirection || "asc",
+          periode: periode || "ThisYear",
+          startDate: startDate || "", // Bisa dikosongkan jika tidak digunakan
+          endDate: endDate || "",
+        },
       });
-      return response.data;
+
+      return response.data.data; // Pastikan API mengembalikan data dalam 'data'
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal mengambil data agama";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal mengambil data agama"
+      );
     }
   }
 );
 
+// **FETCH DETAIL AGAMA BERDASARKAN ID**
 export const fetchAgamaById = createAsyncThunk(
   "agama/fetchById",
   async (id, { rejectWithValue }) => {
@@ -26,16 +41,17 @@ export const fetchAgamaById = createAsyncThunk(
       const response = await InstanceAxios.get(`/Agama/${id}`, {
         headers: getHeaders(),
       });
-      return response.data.data; // Pastikan API mengembalikan data di dalam 'data'
+      return response.data.data; // Data Agama berdasarkan ID
     } catch (error) {
-      const errorMessage =
+      return rejectWithValue(
         error.response?.data?.message ||
-        "Gagal mengambil data agama berdasarkan ID";
-      return rejectWithValue(errorMessage);
+          "Gagal mengambil data agama berdasarkan ID"
+      );
     }
   }
 );
 
+// **TAMBAH DATA AGAMA**
 export const createAgama = createAsyncThunk(
   "agama/create",
   async (data, { rejectWithValue }) => {
@@ -45,13 +61,14 @@ export const createAgama = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal create data agama";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal create data agama"
+      );
     }
   }
 );
 
+// **UPDATE DATA AGAMA**
 export const updateAgama = createAsyncThunk(
   "agama/update",
   async ({ id, data }, { rejectWithValue }) => {
@@ -61,40 +78,43 @@ export const updateAgama = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal mengupdate data agama";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal mengupdate data agama"
+      );
     }
   }
 );
 
+// **HAPUS DATA AGAMA**
 export const deleteAgama = createAsyncThunk(
   "agama/delete",
   async (id, { rejectWithValue }) => {
     try {
       await InstanceAxios.delete(`/Agama/${id}`, { headers: getHeaders() });
-      return id;
+      return id; // Kembalikan ID untuk menghapus dari state
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal delete data agama";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data?.message || "Gagal delete data agama"
+      );
     }
   }
 );
 
-// Slice
+// **SLICE REDUX AGAMA**
 const agamaSlice = createSlice({
   name: "agama",
   initialState: {
-    data: { data: [] },
-    selectedAgama: null, // Menyimpan data agama berdasarkan ID
+    data: { rows: [], totalPages: 1, totalRows: 0 }, // Format data sesuai API
+    selectedAgama: null, // Untuk menyimpan data detail berdasarkan ID
     loading: false,
     error: null,
   },
   extraReducers: (builder) => {
     builder
+      // **FETCH DATA AGAMA**
       .addCase(fetchAgama.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchAgama.fulfilled, (state, action) => {
         state.loading = false;
@@ -102,10 +122,10 @@ const agamaSlice = createSlice({
       })
       .addCase(fetchAgama.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
 
-      // Fetch data agama berdasarkan ID
+      // **FETCH DATA AGAMA BY ID**
       .addCase(fetchAgamaById.pending, (state) => {
         state.loading = true;
       })
@@ -115,29 +135,27 @@ const agamaSlice = createSlice({
       })
       .addCase(fetchAgamaById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
 
-      // Tambah data agama baru
+      // **CREATE DATA AGAMA**
       .addCase(createAgama.fulfilled, (state, action) => {
-        if (Array.isArray(state.data.data)) {
-          state.data.data.push(action.payload);
-        }
+        state.data.rows.push(action.payload);
       })
 
-      // Update data agama
+      // **UPDATE DATA AGAMA**
       .addCase(updateAgama.fulfilled, (state, action) => {
-        const index = state.data.data.findIndex(
+        const index = state.data.rows.findIndex(
           (agama) => agama.agamaId === action.payload.agamaId
         );
         if (index !== -1) {
-          state.data.data[index] = action.payload;
+          state.data.rows[index] = action.payload;
         }
       })
 
-      // Hapus data agama
+      // **DELETE DATA AGAMA**
       .addCase(deleteAgama.fulfilled, (state, action) => {
-        state.data.data = state.data.data.filter(
+        state.data.rows = state.data.rows.filter(
           (agama) => agama.agamaId !== action.payload
         );
       });

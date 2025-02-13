@@ -75,12 +75,6 @@ const GolonganEditForm = ({ params }) => {
           placeholder: "Masukkan Nama golongan...",
           colSize: 6,
           rules: { required: "Nama golongan harus diisi" },
-          defaultValue: golonganDarahData?.namaGolonganDarah || "",
-          onChangeCallback: (e) =>
-            setGolonganDarahData({
-              ...golonganDarahData,
-              namaGolonganDarah: e.target.value,
-            }),
         },
       ],
     },
@@ -120,15 +114,24 @@ const GolonganEditForm = ({ params }) => {
     );
   }
 
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: golonganDarahData?.[field.name] ?? "",
+    })),
+  }));
+
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Golongan"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         backPath="/MasterData/master-informasi/golongan-darah/table-golongan"
         isAddMode={false}
         handleDelete={handleDelete}
+        userData={golonganDarahData}
       />
     </Fragment>
   );

@@ -83,7 +83,6 @@ const PekerjaanEditForm = ({ params }) => {
           placeholder: "Masukkan Nama Pekerjaan...",
           colSize: 6,
           rules: { required: "Nama pekerjaan harus diisi" },
-          defaultValue: dataPekerjaan?.namaPekerjaan || "",
         },
       ],
     },
@@ -123,16 +122,25 @@ const PekerjaanEditForm = ({ params }) => {
     );
   }
 
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataJabatan?.[field.name] ?? "",
+    })),
+  }));
+
   // Render form
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Pekerjaan"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         handleDelete={handleDelete}
         backPath="/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
         isAddMode={false}
+        userData={dataPekerjaan}
       />
     </Fragment>
   );

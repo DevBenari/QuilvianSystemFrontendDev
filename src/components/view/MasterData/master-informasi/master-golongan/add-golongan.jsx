@@ -1,5 +1,6 @@
 "use client";
 
+import { showAlert } from "@/components/features/alert/custom-alert";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import ReusableAlert from "@/components/ui/reusable-alert";
 import { createGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
@@ -71,12 +72,6 @@ const FormAddGolongan = () => {
 
   return (
     <Fragment>
-      <ReusableAlert
-        message={alertMessage}
-        variant={alertVariant}
-        onClose={() => setAlertMessage(null)}
-        autoClose={alertVariant === "success" ? 3000 : null}
-      />
       <DynamicForm
         title="Tambah Data Golongan"
         formConfig={formFields}

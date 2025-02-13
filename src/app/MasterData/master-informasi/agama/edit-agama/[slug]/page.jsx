@@ -48,16 +48,8 @@ const AgamaEditPage = ({ params }) => {
       fields: [
         {
           type: "text",
-          label: "Kode Agama",
-          name: "agamaKode",
-          defaultValue: dataAgama?.agamaKode || "",
-          colSize: 6,
-          rules: { required: "Kode Agama harus diisi" },
-        },
-        {
-          type: "text",
           label: "Nama Agama",
-          name: "jenisAgama",
+          name: "namaAgama",
           defaultValue: dataAgama?.jenisAgama || "",
           colSize: 6,
           rules: { required: "Nama Agama harus diisi" },
@@ -80,15 +72,20 @@ const AgamaEditPage = ({ params }) => {
   };
 
   const handleDelete = async () => {
-    showAlert.confirmDelete("Data asuransi akan dihapus permanen", async () => {
+    if (!dataAgama?.agamaId) {
+      showAlert.error("Gagal menghapus: agama ID tidak ditemukan.");
+      return;
+    }
+
+    showAlert.confirmDelete("Data agama akan dihapus permanen", async () => {
       try {
         await dispatch(deleteAgama(dataAgama.agamaId)).unwrap();
-        showAlert.success("Data berhasil dihapus", () => {
+        showAlert.success("Data agama berhasil dihapus!", () => {
           router.push("/MasterData/master-informasi/agama/table-agama");
         });
       } catch (error) {
+        showAlert.error("Gagal menghapus data agama.");
         console.error("Gagal menghapus data agama:", error);
-        showAlert.error("Gagal menghapus data data agama");
       }
     });
   };
@@ -125,13 +122,22 @@ const AgamaEditPage = ({ params }) => {
     );
   }
 
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataAgama?.[field.name] ?? "",
+    })),
+  }));
+
   // Render form
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Agama"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
+        userData={dataAgama}
         backPath="/MasterData/master-informasi/master-agama/table-agama"
         isAddMode={false}
         handleDelete={handleDelete}

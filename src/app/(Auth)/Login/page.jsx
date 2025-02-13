@@ -1,5 +1,3 @@
-// src/app/login/page.jsx
-
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -23,7 +21,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const router = useRouter(); // Inisialisasi router
+  const router = useRouter(); // Untuk navigasi
 
   const methods = useForm({
     defaultValues: {
@@ -39,22 +37,38 @@ const LoginPage = () => {
 
     dispatch(LoginUser(values))
       .then((result) => {
-        if (result.payload) {
-          setSuccessMessage("Login successful! Redirecting...");
-          // Redirect ke halaman utama setelah 2 detik
+        const responseMessage = result.payload?.message?.toLowerCase(); // Ambil pesan API dan ubah ke huruf kecil
+
+        if (!responseMessage) {
+          setErrorMessage("Terjadi kesalahan. Silakan coba lagi.");
+          showAlert.error("Terjadi kesalahan. Silakan coba lagi.");
+          return;
+        }
+
+        if (responseMessage.includes("user belum terdaftar")) {
+          // Jika user tidak terdaftar
+          setErrorMessage(
+            "User belum terdaftar. Silakan cek email dan password."
+          );
+          showAlert.error("User belum terdaftar. Silakan coba lagi.");
+          console.error("Login failed:", result.payload.message);
+        } else if (responseMessage.includes("password salah")) {
+          // Jika password salah
+          setErrorMessage("Password salah. Silakan coba lagi.");
+          showAlert.error("Password salah. Silakan coba lagi.");
+          console.error("Login failed:", result.payload.message);
+        } else if (result.payload) {
+          // Jika login berhasil
           showAlert.success("Anda Berhasil Login", () => {
             setTimeout(() => {
               router.push("/"); // Redirect ke halaman utama
-            }, 2000);
+            }, 500);
           });
           console.log("Login successful:", result.payload);
-        } else {
-          setErrorMessage("Invalid email or password. Please try again.");
-          console.error("Login failed:", result.error);
         }
       })
       .catch((error) => {
-        setErrorMessage("Something went wrong. Please try again later.");
+        setErrorMessage("Terjadi kesalahan. Silakan coba lagi nanti.");
         console.error("Error:", error);
       });
   };
@@ -95,7 +109,7 @@ const LoginPage = () => {
                   {/* Email Field */}
                   <TextField
                     label="Email"
-                    name="Email" // Sesuai dengan API
+                    name="Email"
                     type="text"
                     placeholder="Enter email"
                     className="form-control mb-0"
@@ -112,7 +126,7 @@ const LoginPage = () => {
                   {/* Password Field */}
                   <TextField
                     label="Password"
-                    name="Password" // Sesuai dengan API
+                    name="Password"
                     type="password"
                     placeholder="Password"
                     className="form-control mb-0"

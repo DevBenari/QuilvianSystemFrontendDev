@@ -29,16 +29,8 @@ const FormAddAgama = () => {
       fields: [
         {
           type: "text",
-          label: "Kode Agama",
-          name: "agamaKode",
-          placeholder: "Masukkan Kode Agama...",
-          defaultValue: "",
-          colSize: 6,
-        },
-        {
-          type: "text",
           label: "Nama Agama",
-          name: "jenisAgama",
+          name: "namaAgama",
           placeholder: "Masukkan Nama Agama...",
           colSize: 6,
           rules: { required: "Nama Agama harus diisi" },

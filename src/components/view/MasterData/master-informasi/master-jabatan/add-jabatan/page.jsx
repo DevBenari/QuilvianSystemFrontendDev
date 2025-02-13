@@ -1,18 +1,18 @@
 "use client";
 
+import React, { Fragment } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
-import { useRouter } from "next/navigation";
-import { Fragment } from "react";
-import { useDispatch } from "react-redux";
 import { showAlert } from "@/components/features/alert/custom-alert";
-import { createIdentitas } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import { createJabatan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
 
-const AddFormIdentitas = () => {
+const AddJabatanForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // Fungsi untuk menangani submit form
+  // Fungsi submit form untuk menambahkan jabatan baru
   const handleSubmit = async (data) => {
     try {
       // Validasi data sebelum submit
@@ -23,36 +23,28 @@ const AddFormIdentitas = () => {
       }
 
       // Kirim data ke Redux API
-      await dispatch(createIdentitas(data)).unwrap();
-      showAlert.success("Data Identitas berhasil ditambahkan!", () => {
-        router.push("/MasterData/master-informasi/identitas/table-identitas");
+      await dispatch(createJabatan(data)).unwrap();
+      showAlert.success("Data Jabatan berhasil ditambahkan!", () => {
+        router.push("/MasterData/master-informasi/jabatan/table-jabatan");
       });
     } catch (error) {
-      console.error("Gagal menambahkan Identitas:", error);
-      showAlert.error("Gagal menambahkan data Identitas.");
+      console.error("Gagal menambahkan Jabatan:", error);
+      showAlert.error("Gagal menambahkan data jabatan.");
     }
   };
 
   // Konfigurasi Form Fields
   const formFields = [
     {
-      section: "Informasi Identitas",
+      section: "Informasi Jabatan",
       fields: [
         {
           type: "text",
-          label: "Kode Identitas",
-          name: "kdIdentitas",
-          placeholder: "Masukkan Kode Identitas...",
+          label: "Nama Jabatan",
+          name: "namaJabatan",
+          placeholder: "Masukkan Nama Jabatan...",
           colSize: 6,
-          rules: { required: "Kode Identitas harus diisi" },
-        },
-        {
-          type: "text",
-          label: "Jenis Identitas",
-          name: "jenisIdentitas",
-          placeholder: "Masukkan Jenis Identitas...",
-          colSize: 6,
-          rules: { required: "Jenis Identitas harus diisi" },
+          rules: { required: "Nama Jabatan harus diisi" },
         },
       ],
     },
@@ -81,14 +73,14 @@ const AddFormIdentitas = () => {
   return (
     <Fragment>
       <DynamicForm
-        title="Tambah Data Identitas"
+        title="Tambah Data Jabatan"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath={"/MasterData/master-identitas/table-identitas"}
+        backPath="/MasterData/master-informasi/jabatan/table-jabatan"
         isAddMode={true}
       />
     </Fragment>
   );
 };
 
-export default AddFormIdentitas;
+export default AddJabatanForm;
