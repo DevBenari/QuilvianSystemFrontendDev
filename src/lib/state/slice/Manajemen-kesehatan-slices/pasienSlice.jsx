@@ -1,19 +1,16 @@
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
-import { createAsyncThunk, createSlice, isRejectedWithValue } from "@reduxjs/toolkit";
+import { getHeaders } from "@/lib/headers/headers";
+import { createAsyncThunk, createSlice, rejectedWithValue } from "@reduxjs/toolkit";
 
-export const GetPasienSlice = createAsyncThunk("pasien/getPasien", async(_,{isRejectedWithValue}) => {
+export const GetPasienSlice = createAsyncThunk("pasien/getPasien", async(_,{rejectedWithValue}) => {
     try{
         const request = await InstanceAxios.get("/PendaftaranPasienBaru", {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImp0aSI6IjM0OTM3N2JjLTBhOTEtNDY3Ny05NGY2LWRkY2JjM2UzMDJhZCIsImV4cCI6MTczODkwMzk3NCwiaXNzIjoiTXlBcGlJc3N1ZXIiLCJhdWQiOiJNeUFwaUF1ZGllbmNlIn0.xDkRYBmMyiGz8aYppQvOpT2p0YD6-HA4aIv2KibWAUY"
-            },
+            headers: getHeaders()
         })
         const response = await request.data;
-
         return response.data;
     }catch(error){
-        return isRejectedWithValue(error.response.data)
+        return rejectedWithValue(error.response.data)
     }
 })
 
@@ -33,7 +30,7 @@ export const AddPasienSlice = createAsyncThunk(
             const response = await InstanceAxios.post("/PendaftaranPasienBaru", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    "Authorization": "Bearer <TOKEN>",
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiI0ZGNiMzEwNC1mMzg4LTQyYTItYmM2My01NzdlNDNlMDlkZWUiLCJleHAiOjE3MzkzNTMxNzksImlzcyI6Ik15QXBpSXNzdWVyIiwiYXVkIjoiTXlBcGlBdWRpZW5jZSJ9.ven2LfIV2AzQ8L8oALkdnQM09MuxTKQkPCvFxcOICds",
                 },
             });
 

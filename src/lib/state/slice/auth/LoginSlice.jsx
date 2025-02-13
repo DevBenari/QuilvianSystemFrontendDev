@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
+import { getHeaders } from "@/lib/headers/headers";
 
 // Async thunk untuk login user
 export const LoginUser = createAsyncThunk("auth/login", async (data, { rejectWithValue }) => {
     try {
-        const response = await InstanceAxios.post(`/auth/login`, data);
+        const response = await InstanceAxios.post(`/auth/login`, data, {
+            headers: getHeaders()
+        });
         const token = response.data.token;
 
         // Simpan token di cookie (hanya di client-side)
