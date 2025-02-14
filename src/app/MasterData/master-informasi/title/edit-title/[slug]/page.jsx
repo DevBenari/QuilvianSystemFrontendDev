@@ -104,7 +104,6 @@ const TitleEditPage = ({ params }) => {
           name: "kodeTitle",
           placeholder: "Masukkan Kode Title...",
           colSize: 6,
-          defaultValue: titleData.kodeTitle,
           rules: { required: "Kode title harus diisi" },
         },
         {
@@ -113,22 +112,30 @@ const TitleEditPage = ({ params }) => {
           name: "namaTitle",
           placeholder: "Masukkan Nama Title...",
           colSize: 6,
-          defaultValue: titleData.namaTitle,
           rules: { required: "Nama title harus diisi" },
         },
       ],
     },
   ];
 
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: titleData?.[field.name] ?? "",
+    })),
+  }));
+
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Title"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         backPath={`/MasterData/master-informasi/title/table-title`}
         isAddMode={false}
         handleDelete={handleDelete}
+        userData={titleData}
       />
     </Fragment>
   );

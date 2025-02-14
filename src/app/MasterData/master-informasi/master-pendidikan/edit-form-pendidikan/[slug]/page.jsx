@@ -136,16 +136,25 @@ const EditFormPendidikan = ({ params }) => {
     );
   }
 
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataPendidikan?.[field.name] ?? "",
+    })),
+  }));
+
   // Render form
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Pendidikan"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         backPath={`/MasterData/master-informasi/master-pendidikan/table-pendidikan`}
         isAddMode={false}
         handleDelete={handleDelete}
+        userData={dataPendidikan}
       />
     </Fragment>
   );

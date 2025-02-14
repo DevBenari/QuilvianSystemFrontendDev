@@ -123,7 +123,7 @@ const negaraSlice = createSlice({
 
       .addCase(updateNegara.fulfilled, (state, action) => {
         const index = state.data.data.findIndex(
-          (item) => item.negaraId === action.payload.negaraId
+          (negara) => negara.negaraId === action.payload.negaraId
         );
         if (index !== -1) {
           state.data.data[index] = action.payload;

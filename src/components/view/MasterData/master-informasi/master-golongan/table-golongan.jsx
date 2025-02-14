@@ -106,10 +106,29 @@ const TableDataGolongan = () => {
                     data={filteredgolongan}
                     columns={[
                       { key: "no", label: "No" }, // Tambahkan kolom nomor urut
-
                       {
                         key: "namaGolonganDarah",
                         label: "Nama Golongan Darah",
+                      },
+                      {
+                        key: "kodeGolonganDarah",
+                        label: "Kode Golongan Darah",
+                      },
+                      {
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createBy",
+                        label: "Dibuat Oleh",
+                      },
+                      {
+                        key: "updateDateTime",
+                        label: "Tanggal Update",
+                      },
+                      {
+                        key: "updateBy",
+                        label: "Update Oleh",
                       },
                     ]}
                     itemsPerPage={10}

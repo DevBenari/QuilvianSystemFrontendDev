@@ -111,6 +111,22 @@ const TableDataPendidikan = () => {
                       { key: "no", label: "No" }, // Tambahkan kolom nomor urut
                       { key: "kodePendidikan", label: "Kode Pendidikan" },
                       { key: "namaPendidikan", label: "Nama Pendidikan" },
+                      {
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createBy",
+                        label: "Dibuat Oleh",
+                      },
+                      {
+                        key: "updateDateTime",
+                        label: "Tanggal Update",
+                      },
+                      {
+                        key: "updateBy",
+                        label: "Update Oleh",
+                      },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{

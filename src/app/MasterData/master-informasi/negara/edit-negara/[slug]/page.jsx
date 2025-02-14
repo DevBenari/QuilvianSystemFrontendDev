@@ -31,7 +31,16 @@ const NegaraEditForm = ({ params }) => {
   }, [selectedNegara]);
 
   const handleSubmit = async (data) => {
-    console.log(data);
+    try {
+      if (!dataNegara) return;
+      await dispatch(updateNegara({ id: dataNegara.negaraId, data })).unwrap();
+      showAlert.success("Data negara berhasil diperbarui!", () => {
+        router.push("/MasterData/master-informasi/negara/table-negara");
+      });
+    } catch (error) {
+      console.error("Gagal memperbarui data negara:", error);
+      showAlert.error("Gagal memperbarui data negara.");
+    }
   };
 
   const handleDelete = async () => {
@@ -53,17 +62,19 @@ const NegaraEditForm = ({ params }) => {
       fields: [
         {
           type: "text",
+          label: "kode Negara",
+          name: "kodeNegara",
+          placeholder: "Masukkan kode Negara...",
+          colSize: 6,
+          rules: { required: "kode negara harus diisi" },
+        },
+        {
+          type: "text",
           label: "Nama Negara",
           name: "namaNegara",
           placeholder: "Masukkan Nama Negara...",
           colSize: 6,
           rules: { required: "Nama negara harus diisi" },
-          defaultValue: dataNegara?.namaNegara || "",
-          onChangeCallback: (e) =>
-            setDataNegara((prev) => ({
-              ...prev,
-              namaNegara: e.target.value,
-            })),
         },
       ],
     },
@@ -72,15 +83,24 @@ const NegaraEditForm = ({ params }) => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Terjadi kesalahan: {error}</div>;
 
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataNegara?.[field.name] ?? "",
+    })),
+  }));
+
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Negara"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         handleDelete={handleDelete}
         backPath="/MasterData/master-informasi/negara/table-negara"
         isAddMode={false}
+        userData={dataNegara}
       />
     </Fragment>
   );

@@ -29,14 +29,6 @@ const PenambahanTitle = () => {
       fields: [
         {
           type: "text",
-          label: "Kode Title",
-          name: "kodeTitle",
-          placeholder: "Masukkan Kode Title...",
-          colSize: 6,
-          rules: { required: "Kode Title harus diisi" },
-        },
-        {
-          type: "text",
           label: "Nama Title",
           name: "namaTitle",
           placeholder: "Masukkan Nama Title...",

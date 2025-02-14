@@ -108,7 +108,24 @@ const TableDataNegara = () => {
                     columns={[
                       { key: "no", label: "No" }, // Kolom nomor urut
 
+                      { key: "kodeNegara", label: "Kode Negara" },
                       { key: "namaNegara", label: "Nama Negara" },
+                      {
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createBy",
+                        label: "Dibuat Oleh",
+                      },
+                      {
+                        key: "updateDateTime",
+                        label: "Tanggal Update",
+                      },
+                      {
+                        key: "updateBy",
+                        label: "Update Oleh",
+                      },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{
