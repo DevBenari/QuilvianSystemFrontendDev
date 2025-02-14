@@ -8,44 +8,36 @@ import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import { fetchAnggota } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
 
-import { fetchDokterPraktek } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-
-const TableDokterPraktek = () => {
+const TableDataAnggota = () => {
   const methods = useForm();
   const dispatch = useDispatch();
 
   // Ambil data dari Redux Store
   const {
-    data: dokterPraktekData,
+    data: AnggotaData,
     loading,
     error,
-  } = useSelector((state) => state.dokterPraktek);
+  } = useSelector((state) => state.anggota);
 
-  // Transformasi data untuk memasukkan nama dokter langsung dari objek "dokters"
-  const dokterPraktekList = useMemo(() => {
-    if (!Array.isArray(dokterPraktekData)) return [];
-
-    return dokterPraktekData.map((praktek) => ({
-      ...praktek,
-      namaDokter: praktek.dokters?.nmDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
-      kodeDokter: praktek.dokters?.kdDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
-    }));
-  }, [dokterPraktekData]);
+  // Gunakan useMemo untuk menghindari perhitungan ulang yang tidak perlu
+  const AnggotaList = useMemo(() => {
+    return Array.isArray(AnggotaData) ? AnggotaData : [];
+  }, [AnggotaData]);
 
   // State untuk hasil filter pencarian
-  const [filteredDokterPraktek, setFilteredDokterPraktek] =
-    useState(dokterPraktekList);
+  const [filteredAnggota, setFilteredAnggota] = useState(AnggotaList);
 
   // Fetch data saat pertama kali render
   useEffect(() => {
-    dispatch(fetchDokterPraktek());
+    dispatch(fetchAnggota());
   }, [dispatch]);
 
-  // Update filteredDokterPraktek ketika dokterPraktekList berubah
+  // Update filteredAnggota ketika AnggotaList berubah
   useEffect(() => {
-    setFilteredDokterPraktek(dokterPraktekList);
-  }, [dokterPraktekList]);
+    setFilteredAnggota(AnggotaList);
+  }, [AnggotaList]);
 
   return (
     <FormProvider {...methods}>
@@ -53,16 +45,14 @@ const TableDokterPraktek = () => {
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">
             Master Data <br />
-            <span className="letter-spacing fw-bold">
-              List Daftar Dokter Praktek
-            </span>
+            <span className="letter-spacing fw-bold">List Daftar Anggota</span>
           </h2>
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={dokterPraktekData}
-            setFilteredPatients={setFilteredDokterPraktek}
-            onFilteredPatients={filteredDokterPraktek}
+            data={AnggotaData}
+            setFilteredPatients={setFilteredAnggota}
+            onFilteredPatients={filteredAnggota}
           />
         </Col>
       </Col>
@@ -71,14 +61,14 @@ const TableDokterPraktek = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-dokterPraktek">
-                  <h4 className="card-dokterPraktek font-widest">
-                    Tabel List Daftar Dokter Praktek
+                <div className="iq-header-Anggota">
+                  <h4 className="card-Anggota font-widest">
+                    Tabel List Daftar Anggota
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-dokter/dokter-praktek/add-dokter-praktek"
-                  label="Tambah Dokter Praktek"
+                  path="/MasterData/master-anggota/add-anggota"
+                  label="Tambah Anggota"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -102,7 +92,7 @@ const TableDokterPraktek = () => {
               )}
 
               {/* Tampilkan pesan jika data kosong */}
-              {!loading && !error && dokterPraktekList.length === 0 && (
+              {!loading && !error && AnggotaList.length === 0 && (
                 <Alert variant="warning" className="text-center mt-3">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
@@ -110,25 +100,37 @@ const TableDokterPraktek = () => {
               )}
 
               {/* Tampilkan tabel jika ada data */}
-              {!loading && !error && dokterPraktekList.length > 0 && (
+              {!loading && !error && AnggotaList.length > 0 && (
                 <div className="iq-card-body">
                   <CustomTableComponent
-                    data={filteredDokterPraktek}
+                    data={filteredAnggota}
                     columns={[
-                      { key: "kodeDokter", label: "Kode Dokter" }, // Nama dokter dari objek "dokters"
-                      { key: "namaDokter", label: "Nama Dokter" }, // Nama dokter dari objek "dokters"
-                      { key: "layanan", label: "Layanan" },
-                      { key: "jamPraktek", label: "Jam Praktek" },
-                      { key: "hari", label: "Hari" },
-                      { key: "jamMasuk", label: "Tanggal Masuk" },
-                      { key: "jamKeluar", label: "Tanggal Keluar" },
+                      { key: "keangotaanKode", label: "Kode Anggota" },
+                      { key: "jenisKeangotaan", label: "Jenis Anggota" },
+                      { key: "jenisPromo", label: "Jenis Promo" },
+                      {
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createBy",
+                        label: "Dibuat Oleh",
+                      },
+                      {
+                        key: "updateDateTime",
+                        label: "Tanggal Update",
+                      },
+                      {
+                        key: "updateBy",
+                        label: "Update Oleh",
+                      },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{
-                      textField: "dokter",
-                      idField: "dokterPraktekId",
+                      textField: "keangotaanKode",
+                      idField: "keangotaanId",
                     }}
-                    basePath="/MasterData/master-dokter/dokter-praktek/edit-dokter-praktek"
+                    basePath="/MasterData/master-anggota/edit-anggota"
                   />
                 </div>
               )}
@@ -140,4 +142,4 @@ const TableDokterPraktek = () => {
   );
 };
 
-export default TableDokterPraktek;
+export default TableDataAnggota;

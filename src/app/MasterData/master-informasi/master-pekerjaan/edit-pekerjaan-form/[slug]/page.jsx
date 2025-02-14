@@ -126,7 +126,7 @@ const PekerjaanEditForm = ({ params }) => {
     ...section,
     fields: section.fields.map((field) => ({
       ...field,
-      value: dataJabatan?.[field.name] ?? "",
+      value: dataPekerjaan?.[field.name] ?? "",
     })),
   }));
 

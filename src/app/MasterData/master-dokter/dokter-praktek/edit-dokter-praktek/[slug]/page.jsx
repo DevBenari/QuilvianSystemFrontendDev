@@ -1,141 +1,179 @@
 "use client";
-import React, { useState, useEffect, Fragment } from "react";
+
+import React, { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchPekerjaanById,
-  updatePekerjaan,
-  deletePekerjaan,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
-import { showAlert } from "@/components/features/alert/custom-alert";
 
-const PekerjaanEditForm = ({ params }) => {
+import { showAlert } from "@/components/features/alert/custom-alert";
+import {
+  deleteDokterPraktek,
+  fetchDokterPraktekById,
+  updateDokterPraktek,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
+
+const EditDokterPraktekForm = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { selectedDokterPraktek } = useSelector((state) => state.dokterPraktek);
+  const [dataDokterPraktek, setDataDokterPraktek] = useState(null);
+  console.log("selectedDokterPraktek:", selectedDokterPraktek);
 
-  const { selectedPekerjaan, loading, error } = useSelector(
-    (state) => state.pekerjaan
-  );
-  const [dataPekerjaan, setDataPekerjaan] = useState(null);
-
+  // Fetch data saat pertama kali dimuat
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);
-    dispatch(fetchPekerjaanById(id));
+    dispatch(fetchDokterPraktekById(id));
   }, [dispatch, params.slug]);
 
+  // Sinkronisasi data Redux dengan State
   useEffect(() => {
-    if (selectedPekerjaan) {
-      setDataPekerjaan(selectedPekerjaan);
+    if (selectedDokterPraktek) {
+      setDataDokterPraktek(selectedDokterPraktek);
     }
-  }, [selectedPekerjaan]);
+  }, [selectedDokterPraktek]);
 
-  const handleSubmit = async (data) => {
-    if (!dataPekerjaan) {
-      alert("Data pekerjaan tidak tersedia.");
-      return;
-    }
+  // Pastikan data sudah ada sebelum menampilkan form
+  if (!dataDokterPraktek) {
+    return <p className="text-center">Memuat data...</p>;
+  }
 
+  // Submit form untuk update data
+  const handleSubmit = async (formData) => {
     try {
-      // Panggil update pekerjaan melalui Redux
+      if (!dataDokterPraktek.dokterPraktekId) {
+        showAlert.error(
+          "Gagal memperbarui data: Dokter Praktek ID tidak ditemukan."
+        );
+        return;
+      }
+
+      console.log("Data yang dikirim ke backend:", formData);
+
       await dispatch(
-        updatePekerjaan({ id: dataPekerjaan.pekerjaanId, data })
+        updateDokterPraktek({
+          id: dataDokterPraktek.dokterPraktekId,
+          data: formData,
+        })
       ).unwrap();
-      showAlert.success("Data berhasil disimpan", () => {
+
+      showAlert.success("Data berhasil diperbarui!", () => {
         router.push(
-          "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
+          "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek"
         );
       });
     } catch (error) {
-      console.error("Gagal menambahkan pekerjaan:", error);
-      showAlert.error("Gagal menambahkan data pekerjaan");
+      console.error("Gagal memperbarui data Dokter Praktek:", error);
+      showAlert.error("Gagal memperbarui data Dokter Praktek.");
     }
   };
 
+  // Fungsi Hapus Data
   const handleDelete = async () => {
+    if (!dataDokterPraktek?.dokterPraktekId) {
+      showAlert.error("Gagal menghapus: Dokter Praktek ID tidak ditemukan.");
+      return;
+    }
+
     showAlert.confirmDelete(
-      "Data pekerjaan akan dihapus permanen",
+      "Data Dokter Praktek akan dihapus permanen",
       async () => {
         try {
-          await dispatch(deletePekerjaan(dataPekerjaan.pekerjaanId)).unwrap();
-          showAlert.success("Data berhasil dihapus", () => {
+          await dispatch(
+            deleteDokterPraktek(dataDokterPraktek.dokterPraktekId)
+          ).unwrap();
+          showAlert.success("Data Dokter Praktek berhasil dihapus!", () => {
             router.push(
-              "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
+              "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek"
             );
           });
         } catch (error) {
-          console.error("Gagal menghapus data negara:", error);
-          showAlert.error("Gagal menghapus data data negara");
+          showAlert.error("Gagal menghapus data Dokter Praktek.");
         }
       }
     );
   };
 
-  // Konfigurasi form
+  // Konfigurasi Form Fields
   const formFields = [
     {
+      section: "Informasi Dokter Praktek",
       fields: [
         {
           type: "text",
-          label: "Nama Pekerjaan",
-          name: "namaPekerjaan",
-          placeholder: "Masukkan Nama Pekerjaan...",
+          label: "Nama Dokter",
+          name: "dokter",
+          placeholder: "Masukkan Nama Dokter...",
           colSize: 6,
-          rules: { required: "Nama pekerjaan harus diisi" },
-          defaultValue: dataPekerjaan?.namaPekerjaan || "",
+        },
+        {
+          type: "text",
+          label: "Layanan",
+          name: "layanan",
+          placeholder: "Masukkan Layanan...",
+          colSize: 6,
+        },
+        {
+          type: "time",
+          label: "Jam Praktek",
+          name: "jamPraktek",
+          placeholder: "Masukkan Jam Praktek...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Hari",
+          name: "hari",
+          placeholder: "Masukkan Hari Praktek...",
+          colSize: 6,
+        },
+        {
+          type: "date",
+          label: "Jam Masuk",
+          name: "jamMasuk",
+          placeholder: "Pilih Jam Masuk...",
+          colSize: 6,
+        },
+        {
+          type: "date",
+          label: "Jam Keluar",
+          name: "jamKeluar",
+          placeholder: "Pilih Jam Keluar...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Dokter ID",
+          name: "dokterId",
+          placeholder: "Masukkan Dokter ID...",
+          colSize: 6,
         },
       ],
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="iq-card">
-        <div className="card-body text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Menyesuaikan field form dengan data yang sudah ada di Redux
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataDokterPraktek?.[field.name] ?? "",
+    })),
+  }));
 
-  if (error) {
-    return (
-      <div className="iq-card">
-        <div className="card-body">
-          <div className="alert alert-danger">Terjadi kesalahan: {error}</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!dataPekerjaan) {
-    return (
-      <div className="iq-card">
-        <div className="card-body">
-          <div className="alert alert-warning">
-            Data pekerjaan tidak ditemukan.
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Render form
   return (
     <Fragment>
       <DynamicForm
-        title="Edit Data Pekerjaan"
-        formConfig={formFields}
+        title="Edit Data Dokter Praktek"
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         handleDelete={handleDelete}
-        backPath="/MasterData/master-informasi/master-pekerjaan/table-pekerjaan"
+        userData={dataDokterPraktek}
+        backPath="/MasterData/master-dokter/dokter-praktek/table-dokter-praktek"
         isAddMode={false}
       />
     </Fragment>
   );
 };
 
-export default PekerjaanEditForm;
+export default EditDokterPraktekForm;

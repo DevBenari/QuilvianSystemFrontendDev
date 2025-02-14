@@ -101,6 +101,22 @@ const TableDataJabatan = () => {
               columns={[
                 { key: "no", label: "No" },
                 { key: "namaJabatan", label: "Nama Jabatan" },
+                {
+                  key: "createDateTime",
+                  label: "Tanggal Dibuat",
+                },
+                {
+                  key: "createBy",
+                  label: "Dibuat Oleh",
+                },
+                {
+                  key: "updateDateTime",
+                  label: "Tanggal Update",
+                },
+                {
+                  key: "updateBy",
+                  label: "Update Oleh",
+                },
               ]}
               itemsPerPage={10}
               slugConfig={{ textField: "kodeJabatan", idField: "jabatanId" }}

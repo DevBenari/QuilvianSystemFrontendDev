@@ -18,52 +18,37 @@ const AsuransiEditForm = ({ params }) => {
   const { selectedAsuransi } = useSelector((state) => state.asuransi);
 
   const [dataAsuransi, setDataAsuransi] = useState(null);
-
+  console.log("selectedAsuransi:", selectedAsuransi);
   // Fetch data saat komponen pertama kali dimuat
   useEffect(() => {
-    dispatch(fetchAsuransiById(extractIdFromSlug(params.slug)));
+    const id = extractIdFromSlug(params.slug);
+    dispatch(fetchAsuransiById(id));
   }, [dispatch, params.slug]);
 
-  // Sinkronisasi data Redux dengan State dan Form
   useEffect(() => {
     if (selectedAsuransi) {
       setDataAsuransi(selectedAsuransi);
-      // Object.keys(selectedAsuransi).forEach((key) =>
-      //   setValue(key, selectedAsuransi[key] || "")
-      // );
     }
   }, [selectedAsuransi]);
 
-  // Submit form untuk update data
   const handleSubmit = async (formData) => {
     try {
-      const cleanedData = {
-        namaAsuransi: formData.namaAsuransi,
-        kodeAsuransi: formData.kodeAsuransi,
-        tipePerusahaan: formData.tipePerusahaan,
-        status: formData.status,
-      };
-
-      console.log("Data yang dikirim ke backend:", cleanedData);
-
       await dispatch(
-        updateAsuransi({ id: dataAsuransi.asuransiId, data: cleanedData })
+        updateAsuransi({ id: selectedAsuransi.asuransiId, data: formData })
       ).unwrap();
-      showAlert.success("Data berhasil disimpan", () => {
+      showAlert.success("Data berhasil diperbarui", () => {
         router.push("/MasterData/master-asuransi/daftar-asuransi");
       });
     } catch (error) {
-      console.error("Gagal memperbarui data asuransi:", error);
       showAlert.error("Gagal memperbarui data asuransi.");
     }
   };
 
-  // Fungsi Hapus Data
   const handleDelete = async () => {
-    showAlert.confirmDelete("Data asuransi akan dihapus permanen", async () => {
+    showAlert.confirmDelete("Yakin ingin menghapus?", async () => {
       try {
-        await dispatch(deleteAsuransi(dataAsuransi.asuransiId)).unwrap();
-        showAlert.success("Data asuransi berhasil dihapus!", () => {
+        await dispatch(deleteAsuransi(selectedAsuransi.asuransiId)).unwrap();
+        showAlert.success("Data berhasil dihapus!", () => {
           router.push("/MasterData/master-asuransi/daftar-asuransi");
         });
       } catch (error) {
@@ -71,7 +56,6 @@ const AsuransiEditForm = ({ params }) => {
       }
     });
   };
-
   // Konfigurasi Form Fields
   const formFields = [
     {
@@ -105,7 +89,6 @@ const AsuransiEditForm = ({ params }) => {
           label: "Status",
           name: "status",
           placeholder: "Pilih Status",
-
           colSize: 6,
           rules: { required: "Status wajib dipilih" },
         },
@@ -117,7 +100,7 @@ const AsuransiEditForm = ({ params }) => {
     ...section,
     fields: section.fields.map((field) => ({
       ...field,
-      value: selectedAsuransi?.[field.name] ?? "",
+      value: dataAsuransi?.[field.name] ?? "",
     })),
   }));
 

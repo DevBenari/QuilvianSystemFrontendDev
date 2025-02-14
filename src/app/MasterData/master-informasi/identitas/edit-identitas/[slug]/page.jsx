@@ -18,7 +18,7 @@ const EditIdentitasForm = ({ params }) => {
   const dispatch = useDispatch();
   const { selectedIdentitas } = useSelector((state) => state.identitas);
   const [dataIdentitas, setDataIdentitas] = useState(null);
-
+  console.log("selectedIdentitas:", selectedIdentitas);
   // Fetch data saat komponen pertama kali dimuat
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);

@@ -17,8 +17,8 @@ const AsuransiAddForm = () => {
         router.push("/MasterData/master-asuransi/daftar-asuransi");
       });
     } catch (error) {
-      console.error("Gagal menambahkan negara:", error);
-      showAlert.error("Gagal menambahkan data negara");
+      console.error("Gagal menambahkan asuransi:", error);
+      showAlert.error("Gagal menambahkan data asuransi");
     }
   };
 

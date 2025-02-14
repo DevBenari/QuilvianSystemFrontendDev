@@ -183,7 +183,10 @@ export const menus = {
     {
       title: "Keanggotaan",
       subItems: [
-        { title: "Tipe Keanggotaan", href: "/master-data/tipe-keanggotaan" },
+        {
+          title: "Tipe Keanggotaan",
+          href: "/MasterData/master-anggota/table-anggota",
+        },
       ],
     },
     {

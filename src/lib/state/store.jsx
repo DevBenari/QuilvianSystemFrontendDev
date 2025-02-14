@@ -13,6 +13,7 @@ import dokterPraktek from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterDa
 import identitasSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 import jabatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
+import anggotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
 
 const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ const store = configureStore({
     dokter: dokterSlice,
     dokterPraktek: dokterPraktek,
     jabatan: jabatanSlice,
+    anggota: anggotaSlice,
   },
 });
 

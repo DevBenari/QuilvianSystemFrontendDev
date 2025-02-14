@@ -1,4 +1,4 @@
-import AddFormIdentitas from "@/components/view/MasterData/master-informasi/master-indetitas/add-indetitas/page";
+import AddFormIdentitas from "@/components/view/MasterData/master-informasi/master-indetitas/add-indetitas/add-identitas";
 import React from "react";
 
 const PageAddIdentitas = () => {

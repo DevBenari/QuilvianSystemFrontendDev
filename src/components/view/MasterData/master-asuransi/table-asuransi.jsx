@@ -108,10 +108,18 @@ const TableDataAsuransi = () => {
                     data={filteredAsuransi}
                     columns={[
                       { key: "no", label: "No" },
-
+                      { key: "kodeAsuransi", label: "Kode Asuransi" },
                       { key: "namaAsuransi", label: "Nama Asuransi" },
                       { key: "tipePerusahaan", label: "Tipe Perusahaan" },
                       { key: "status", label: "Status" },
+                      {
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createBy",
+                        label: "Dibuat Oleh",
+                      },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{

@@ -16,7 +16,7 @@ const AddFormDokter = () => {
     try {
       await dispatch(createDokter(data)).unwrap();
       showAlert.success("Data dokter berhasil ditambahkan!", () => {
-        router.push("/MasterData/master-dokter/table-dokter");
+        router.push("/MasterData/master-dokter/dokter/table-dokter");
       });
     } catch (error) {
       console.error("Gagal menambahkan dokter:", error);

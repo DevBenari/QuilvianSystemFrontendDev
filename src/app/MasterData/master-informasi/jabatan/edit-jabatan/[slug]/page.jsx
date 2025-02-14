@@ -71,7 +71,7 @@ const EditJabatanForm = ({ params }) => {
       try {
         await dispatch(deleteJabatan(dataJabatan.jabatanId)).unwrap();
         showAlert.success("Data Jabatan berhasil dihapus!", () => {
-          router.push("/MasterData/master-jabatan/table-jabatan");
+          router.push("/MasterData/master-informasi/jabatan/table-jabatan");
         });
       } catch (error) {
         showAlert.error("Gagal menghapus data jabatan.");

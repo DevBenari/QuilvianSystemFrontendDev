@@ -117,7 +117,9 @@ const CustomTableComponent = memo(
                             col.key === "tglSip" ||
                             col.key === "tglStr" ||
                             col.key === "createDateTime" ||
-                            col.key === "updateDateTime"
+                            col.key === "updateDateTime" ||
+                            col.key === "jamMasuk" ||
+                            col.key === "jamKeluar"
                           ? formatDate(item[col.key])
                           : item[col.key]}
                       </td>

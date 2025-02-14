@@ -109,6 +109,22 @@ const TableDataIdentitas = () => {
                     columns={[
                       { key: "kodeIdentitas", label: "Kode Identitas" },
                       { key: "jenisIdentitas", label: "Jenis Identitas" },
+                      {
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createBy",
+                        label: "Dibuat Oleh",
+                      },
+                      {
+                        key: "updateDateTime",
+                        label: "Tanggal Update",
+                      },
+                      {
+                        key: "updateBy",
+                        label: "Update Oleh",
+                      },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{

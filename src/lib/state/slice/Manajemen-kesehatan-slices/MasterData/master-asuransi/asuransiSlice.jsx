@@ -4,83 +4,96 @@ import { getHeaders } from "@/lib/headers/headers";
 
 // CRUD Thunks
 export const fetchAsuransi = createAsyncThunk(
-  "asuransi/fetch",
+  "Asuransi/fetch",
   async (_, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.get("/Asuransi", {
         headers: getHeaders(),
       });
-      return response.data;
+      return response.data.data; // Ambil data dari response
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal mengambil data asuransi"
+        error.response?.data?.message || "Gagal mengambil data Asuransi"
       );
     }
   }
 );
 
+// 🔹 Fetch Asuransi berdasarkan ID
 export const fetchAsuransiById = createAsyncThunk(
-  "asuransi/fetchById",
+  "Asuransi/fetchById",
   async (id, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.get(`/Asuransi/${id}`, {
         headers: getHeaders(),
       });
-      return response.data;
+      return response.data.data; // Ambil data dari response
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-          "Gagal mengambil data asuransi berdasarkan ID"
+          "Gagal mengambil data Asuransi berdasarkan ID"
       );
     }
   }
 );
 
+// 🔹 Tambah Asuransi
 export const createAsuransi = createAsyncThunk(
-  "asuransi/create",
+  "Asuransi/create",
   async (data, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.post("/Asuransi", data, {
         headers: getHeaders(),
       });
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal menambahkan data asuransi"
+        error.response?.data?.message || "Gagal menambahkan data Asuransi"
       );
     }
   }
 );
 
+// 🔹 Update Asuransi
 export const updateAsuransi = createAsyncThunk(
-  "asuransi/update",
+  "Asuransi/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.put(`/Asuransi/${id}`, data, {
         headers: getHeaders(),
       });
-      return response.data;
+      // Pastikan responsnya adalah array, ambil objek pertama
+      if (Array.isArray(response.data.data) && response.data.data.length > 0) {
+        return (
+          response.data.data.find((item) => item.asuransiId === id) || null
+        );
+      } else {
+        return null;
+      }
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal mengupdate data asuransi"
+        error.response?.data?.message || "Gagal memperbarui data Asuransi"
       );
     }
   }
 );
 
+// 🔹 Hapus Asuransi
 export const deleteAsuransi = createAsyncThunk(
-  "asuransi/delete",
+  "Asuransi/delete",
   async (id, { rejectWithValue }) => {
     try {
       await InstanceAxios.delete(`/Asuransi/${id}`, { headers: getHeaders() });
       return id;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal menghapus data asuransi"
+        error.response?.data?.message || "Gagal menghapus data Asuransi"
       );
     }
   }
 );
+
+// 🔹 Slice Asuransi
 
 // Slice
 const asuransiSlice = createSlice({
@@ -98,7 +111,7 @@ const asuransiSlice = createSlice({
       })
       .addCase(fetchAsuransi.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload; // Pastikan mengambil data sebagai array langsung
       })
       .addCase(fetchAsuransi.rejected, (state, action) => {
         state.loading = false;
@@ -108,23 +121,21 @@ const asuransiSlice = createSlice({
         state.selectedAsuransi = null;
       })
       .addCase(fetchAsuransiById.fulfilled, (state, action) => {
-        state.selectedAsuransi = action.payload;
+        state.selectedAsuransi = action.payload; // Simpan hanya satu objek
       })
       .addCase(createAsuransi.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
       .addCase(updateAsuransi.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (item) => item.asuransiId === action.payload.asuransiId
+          (item) => item.AsuransiId === action.payload.AsuransiId
         );
+
         if (index !== -1) {
-          state.data[index] = {
-            ...state.data[index],
-            ...action.payload,
-          };
+          state.data[index] = { ...state.data[index], ...action.payload };
         }
 
-        if (state.selectedAsuransi?.asuransiId === action.payload.asuransiId) {
+        if (state.selectedAsuransi?.AsuransiId === action.payload.AsuransiId) {
           state.selectedAsuransi = {
             ...state.selectedAsuransi,
             ...action.payload,
@@ -133,7 +144,7 @@ const asuransiSlice = createSlice({
       })
       .addCase(deleteAsuransi.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (item) => item.asuransiId !== action.payload
+          (item) => item.AsuransiId !== action.payload
         );
       });
   },

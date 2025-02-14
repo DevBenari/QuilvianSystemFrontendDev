@@ -20,7 +20,7 @@ const TableDataDokter = () => {
   } = useSelector((state) => state.dokter);
 
   // 🔹 Menggunakan useMemo untuk memastikan hanya dire-render saat data berubah
-  const dokter = useMemo(() => dokterData || [], [dokterData]);
+  const dokter = useMemo(() => dokterData.data || [], [dokterData.data]);
 
   const [filteredDokter, setFilteredDokter] = useState(dokter);
 
@@ -64,7 +64,7 @@ const TableDataDokter = () => {
                   <h4 className="card-title font-widest">Tabel List Dokter</h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-dokter/add-dokter"
+                  path="/MasterData/master-dokter/dokter/add-dokter"
                   label="Tambah Dokter"
                   icon="ri-add-fill"
                   size="sm"
@@ -108,10 +108,18 @@ const TableDataDokter = () => {
                       { key: "tglStr", label: "Tanggal STR" },
                       { key: "panggilDokter", label: "Panggilan" },
                       { key: "nik", label: "NIK" },
+                      {
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createBy",
+                        label: "Dibuat Oleh",
+                      },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{ textField: "nmDokter", idField: "dokterId" }} // ID Dokter untuk Slug
-                    basePath="/MasterData/master-dokter/edit-dokter-form"
+                    basePath="/MasterData/master-dokter/dokter/edit-dokter-form"
                   />
                 </div>
               )}

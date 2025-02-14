@@ -1,12 +1,12 @@
-import FormAddPekerjaan from "@/components/view/MasterData/master-informasi/master-pekerjaan/add-pekerjaan";
+import AddFormDokterPraktek from "@/components/view/MasterData/master-dokter/dokter-praktek/add-dokter-praktek";
 import React from "react";
 
-const PageAddPekerjaan = () => {
+const PageAddDokterPraktek = () => {
   return (
     <div>
-      <FormAddPekerjaan />
+      <AddFormDokterPraktek />
     </div>
   );
 };
 
-export default PageAddPekerjaan;
+export default PageAddDokterPraktek;

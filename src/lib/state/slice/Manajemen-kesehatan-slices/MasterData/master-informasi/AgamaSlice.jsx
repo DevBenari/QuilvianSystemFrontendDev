@@ -15,12 +15,11 @@ export const fetchAgama = createAsyncThunk(
         params: {
           page,
           perPage,
-          search: searchQuery || "", // Jika kosong, kirim string kosong
-          orderBy: "CreateDateTime",
-          sortDirection: sortDirection || "asc",
-          periode: periode || "ThisYear",
-          startDate: startDate || "", // Bisa dikosongkan jika tidak digunakan
-          endDate: endDate || "",
+          orderBy,
+          sortDirection,
+          periode,
+          startDate,
+          endDate,
         },
       });
 

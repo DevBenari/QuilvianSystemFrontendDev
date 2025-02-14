@@ -10,7 +10,7 @@ export const fetchDokter = createAsyncThunk(
       const response = await InstanceAxios.get("/Dokter", {
         headers: getHeaders(),
       });
-      return response.data.data; // Mengambil hanya bagian data
+      return response.data; // Mengambil hanya bagian data
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Gagal mengambil data dokter"
@@ -90,7 +90,7 @@ export const deleteDokter = createAsyncThunk(
 const dokterSlice = createSlice({
   name: "dokter",
   initialState: {
-    data: [],
+    data: { data: [] },
     selectedDokter: null,
     loading: false,
     error: null,

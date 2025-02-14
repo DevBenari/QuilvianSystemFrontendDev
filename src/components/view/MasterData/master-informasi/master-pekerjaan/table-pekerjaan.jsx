@@ -101,7 +101,24 @@ const TableDataPekerjaan = () => {
                     data={filteredPekerjaan}
                     columns={[
                       { key: "no", label: "No" },
+                      { key: "kodePekerjaan", label: "Kode Pekerjaan" },
                       { key: "namaPekerjaan", label: "Nama Pekerjaan" },
+                      {
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createBy",
+                        label: "Dibuat Oleh",
+                      },
+                      {
+                        key: "updateDateTime",
+                        label: "Tanggal Update",
+                      },
+                      {
+                        key: "updateBy",
+                        label: "Update Oleh",
+                      },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{
