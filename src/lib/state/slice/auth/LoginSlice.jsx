@@ -6,7 +6,7 @@ import { getHeaders } from "@/lib/headers/headers";
 // Async thunk untuk login user
 export const LoginUser = createAsyncThunk("auth/login", async (data, { rejectWithValue }) => {
     try {
-        const response = await InstanceAxios.post(`/auth/login`, data, {
+        const response = await InstanceAxios.post(`/Auth/login`, data, {
             headers: getHeaders()
         });
         const token = response.data.token;

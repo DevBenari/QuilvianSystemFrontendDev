@@ -6,7 +6,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import ButtonNav from "@/components/ui/button-navigation";
-import { fetchAgama } from "@/lib/state/slices/masterData/master-informasi/AgamaSlice";
+import { fetchAgamaWithPaging } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 
 const TableDataAgama = () => {
   const dispatch = useDispatch();
@@ -18,11 +18,13 @@ const TableDataAgama = () => {
   const methods = useForm();
 
   const agama = useMemo(() => agamaData?.data || [], [agamaData]);
+  // console.log(agama)
 
   const [filteredData, setFilteredData] = useState(agama);
+  console.log(filteredData)
 
   useEffect(() => {
-    dispatch(fetchAgama());
+    dispatch(fetchAgamaWithPaging());
   }, [dispatch]);
 
   useEffect(() => {
@@ -34,11 +36,15 @@ const TableDataAgama = () => {
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">Master Data - List Daftar Agama</h2>
+          <button className="btn btn-dark my-3 mx-3" onClick={() => window.location.reload()}>
+              <i className="ri-refresh-line"></i>
+          </button>
         </div>
         <CustomSearchFilter
-          data={agama}
-          setFilteredPatients={setFilteredData}
-          onFilteredPatients={filteredData}
+          data={agama} 
+          setFilteredData={setFilteredData} 
+          filterFields={["namaAgama", "kodeAgama"]} 
+          dateField="createDateTime"
         />
       </Col>
 
@@ -75,11 +81,11 @@ const TableDataAgama = () => {
                   data={filteredData}
                   columns={[
                     { key: "no", label: "No" },
-                    { key: "agamaKode", label: "Kode Agama" },
-                    { key: "jenisAgama", label: "Nama Agama" },
+                    { key: "kodeAgama", label: "Kode Agama" },
+                    { key: "namaAgama", label: "Nama Agama" },
                   ]}
                   itemsPerPage={10}
-                  slugConfig={{ textField: "jenisAgama", idField: "agamaId" }}
+                  slugConfig={{ textField: "namaAgama", idField: "agamaId" }}
                   basePath="/MasterData/master-informasi/agama/edit-agama"
                 />
               )}

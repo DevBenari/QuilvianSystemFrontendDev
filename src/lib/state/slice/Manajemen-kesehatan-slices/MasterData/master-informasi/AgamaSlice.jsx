@@ -14,6 +14,27 @@ export const fetchAgama = createAsyncThunk("agama/fetch", async (_, { rejectWith
   }
 });
 
+
+export const fetchAgamaWithPaging = createAsyncThunk(
+  "agama/fetchWithPaging",
+  async ({ page = 1, perPage = 10, orderBy = "CreateDateTime", sortDirection = "asc", periode = "Today", search = "", startDate = "", endDate = "" }, { rejectWithValue }) => {
+    const params = { page, perPage, orderBy, sortDirection, periode };
+
+    if (search) params.search = search;
+    if (startDate) params.startDate = startDate;
+    if (endDate) params.endDate = endDate;
+
+    try {
+      const response = await InstanceAxios.get("/Agama/paged", { headers: getHeaders(), params });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Gagal mengambil data agama");
+    }
+  }
+);
+
+
 export const createAgama = createAsyncThunk("agama/create", async (data, { rejectWithValue }) => {
   try{  
     const response = await InstanceAxios.post("/Agama", data, { headers: getHeaders() });
@@ -58,8 +79,25 @@ const agamaSlice = createSlice({
   name: "agama",
   initialState: {
     data: { data: [] },
+    totalPages: 1,
+    currentPage: 1,
+    perPage: 10,
+    orderBy: "CreateDateTime",
+    sortDirection: "asc",
+    periode: "Today",
+    search: "",
+    startDate: "",
+    endDate: "",
     loading: false,
     error: null,
+  },
+  reducers: {
+    setPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+    setFilters: (state, action) => {
+      return { ...state, ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -73,6 +111,18 @@ const agamaSlice = createSlice({
       .addCase(fetchAgama.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(fetchAgamaWithPaging.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchAgamaWithPaging.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data || [];
+        state.totalPages = action.payload.totalPages || 1;
+      })
+      .addCase(fetchAgamaWithPaging.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Gagal mengambil data";
       })
       .addCase(createAgama.fulfilled, (state, action) => {
         if (Array.isArray(state.data.data)) {
@@ -95,4 +145,5 @@ const agamaSlice = createSlice({
   },
 });
 
+export const { setPage, setFilters } = agamaSlice.actions
 export default agamaSlice.reducer;

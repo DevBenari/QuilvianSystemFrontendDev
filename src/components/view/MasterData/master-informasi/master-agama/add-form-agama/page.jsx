@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import { createAgama } from "@/lib/state/slices/masterData/master-informasi/AgamaSlice";
+import { createAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 
 const FormAddAgama = () => {
   const dispatch = useDispatch();
