@@ -1,10 +1,10 @@
 "use client";
 
 import CustomSearchText from "@/components/features/custom-search/CustomSearchText/custom-search-text";
-import EditableTable from "@/components/features/custom-table/edit-table/edit-table";
+import EditableTable from "@/components/features/edit-table/edit-table/edit-table";
 import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";
 
-import { getbyidTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi/getById";
+import { getbyidTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi/getById";
 
 import {
   DataAnestesi,

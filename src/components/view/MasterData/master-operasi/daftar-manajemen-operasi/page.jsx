@@ -3,13 +3,14 @@
 import { Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useManajemenOperasi } from "@/lib/hooks/manajemen-operasi/manajemenOperasi";
-import { addOperasi } from "@/lib/hooks/manajemen-operasi/manajemenOperasi/add";
-import { OperasiEdit } from "@/lib/hooks/manajemen-operasi/manajemenOperasi/edit";
+import { useManajemenOperasi } from "@/lib/hooks/masterData/manajemen-operasi/manajemenOperasi";
+import { addOperasi } from "@/lib/hooks/masterData/manajemen-operasi/manajemenOperasi/add";
+import { OperasiEdit } from "@/lib/hooks/masterData/manajemen-operasi/manajemenOperasi/edit";
 import TextField from "@/components/ui/text-field";
 import NumberField from "@/components/ui/distance-filed";
-import CustomTableComponent from "@/components/features/custom-table/CustomTable/custom-table";
+
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const TableManajemenOperasi = () => {
   const methods = useForm();

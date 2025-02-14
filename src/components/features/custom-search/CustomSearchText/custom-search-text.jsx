@@ -124,7 +124,7 @@ const CustomSearchText = ({
     setFilteredPatients(filtered);
   };
   return (
-    <Col lg="12" className="mt-2 mx-4">
+    <Col lg="12" className=" mx-4">
       <Row>
         <Col md="3">
           <TextField

@@ -64,6 +64,8 @@ const CustomSearchFilter = ({
         patient.tipeRawat?.toLowerCase().includes(query) ||
         "" ||
         patient.tipeAdministrasi?.toLowerCase().includes(query) ||
+        "" ||
+        patient.namaTitle?.toLowerCase().includes(query) ||
         ""
     );
     setFilteredPatients(filtered);

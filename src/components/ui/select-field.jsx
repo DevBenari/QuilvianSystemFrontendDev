@@ -12,6 +12,7 @@ const SelectField = forwardRef(
       rules,
       placeholder,
       className,
+      readOnly = false, // Tambahkan properti readOnly
       onChangeCallback,
       ...props
     },
@@ -63,6 +64,8 @@ const SelectField = forwardRef(
           value={options.find((option) => option.value === field.value) || null} // Sesuaikan untuk hanya `value`
           onChange={handleChange}
           isClearable
+          isDisabled={readOnly} // Nonaktifkan select jika readOnly
+          menuIsOpen={readOnly ? false : undefined} // Tutup menu jika readOnly
         />
         {error && (
           <Form.Control.Feedback type="invalid">
