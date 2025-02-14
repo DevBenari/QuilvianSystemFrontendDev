@@ -16,7 +16,7 @@ import { fetchPekerjaan } from '@/lib/state/slice/Manajemen-kesehatan-slices/Mas
 import { GetNegaraSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
 import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice';
 import { GetProvinsiSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice';
-import { GetIndentitasSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/indetitasSlice';
+import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice';
 
 
 const KioskPendaftaranPasien = memo(() => {
@@ -56,7 +56,7 @@ const KioskPendaftaranPasien = memo(() => {
         dispatch(GetNegaraSlice())
         dispatch(fetchGolongan())
         dispatch(GetProvinsiSlice())
-        dispatch(GetIndentitasSlice())
+        dispatch(fetchIdentitas())
     }, [dispatch]);
     if (loading) {
         return <div>Loading data pasien...</div>;
@@ -71,8 +71,6 @@ const KioskPendaftaranPasien = memo(() => {
         label: item.kodeTitle, // Label seperti "Tn", "Ny", "Mr"
         value: item.titleId    // ID untuk value
       })) || [];
-
-    //   console.log(identitas.data)
 
     const formFields = 
     [

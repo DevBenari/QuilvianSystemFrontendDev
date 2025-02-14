@@ -12,7 +12,7 @@ import provinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterDa
 import kabupaten from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kabupatenSlice";
 import kecamatan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kecamatanSlice";
 import kelurahan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kelurahanSlice";
-import identitas from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import identitasStore from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 
 const store = configureStore({
   reducer: {
@@ -29,7 +29,6 @@ const store = configureStore({
     kabupaten: kabupaten,
     kecamatan: kecamatan,
     kelurahan: kelurahan,
-    identitas: identitas,
   },
 });
 

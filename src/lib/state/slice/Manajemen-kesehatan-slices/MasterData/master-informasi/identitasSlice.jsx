@@ -5,7 +5,7 @@ import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 // CRUD Thunks
 export const fetchIdentitas = createAsyncThunk("identitas/fetch", async (_,{ rejectWithValue }) => {
   try{
-    const response = await InstanceAxios.get(`/Title`, { headers: getHeaders() });
+    const response = await InstanceAxios.get(`/Identitas`, { headers: getHeaders() });
     return response.data;
   }catch(error){
     const errorMessage = error.response?.data?.message || "Gagal mengambil data identitas";
@@ -17,7 +17,7 @@ export const createIdentitas = createAsyncThunk(
   "identitas/create",
   async (data) => {
     try{
-      const response = await InstanceAxios.post(`/Title`, data, { headers: getHeaders() });
+      const response = await InstanceAxios.post(`/Identitas`, data, { headers: getHeaders() });
       return response.data;
     }catch(error){
       const errorMessage = error.response?.data?.message || "Gagal create data identitas";
@@ -26,11 +26,11 @@ export const createIdentitas = createAsyncThunk(
   }
 );
 
-export const updateTitle = createAsyncThunk(
+export const updateIdentitas = createAsyncThunk(
   "identitas/update",
   async ({ id, data }) => {
     try{
-      const response = await InstanceAxios.put(`/Title/${id}`, data, {
+      const response = await InstanceAxios.put(`/Identitas/${id}`, data, {
         headers: getHeaders(),
       });
       return response.data;
@@ -41,9 +41,9 @@ export const updateTitle = createAsyncThunk(
   }
 );
 
-export const deleteTitle = createAsyncThunk("identitas/delete", async (id, { rejectWithValue }) => {
+export const deleteIdentitas = createAsyncThunk("identitas/delete", async (id, { rejectWithValue }) => {
   try{
-    const response = await InstanceAxios.delete(`/Title/${id}`, { headers: getHeaders() });
+    const response = await InstanceAxios.delete(`/Identitas/${id}`, { headers: getHeaders() });
     return response.data;
   }catch(error){
     const errorMessage = error.response?.data?.message || "Gagal delete data identitas";
@@ -78,10 +78,10 @@ const identitasSlice = createSlice({
           state.data.data.push(action.payload); // Tambahkan payload ke array data
         }
       })
-      .addCase(updateTitle.fulfilled, (state, action) => {
+      .addCase(updateIdentitas.fulfilled, (state, action) => {
         if (Array.isArray(state.data.data)) {
           const index = state.data.data.findIndex(
-            (title) => title.titleId === action.payload.titleId
+            (item) => item.IdentitasId === action.payload.IdentitasId
           );
           if (index !== -1) {
             state.data.data[index] = action.payload;
@@ -89,8 +89,8 @@ const identitasSlice = createSlice({
         }
       })
 
-      .addCase(deleteTitle.fulfilled, (state, action) => {
-        state.data = state.data.filter((title) => title.id !== action.payload);
+      .addCase(deleteIdentitas.fulfilled, (state, action) => {
+        state.data = state.data.filter((item) => item.id !== action.payload);
       });
   },
 });
