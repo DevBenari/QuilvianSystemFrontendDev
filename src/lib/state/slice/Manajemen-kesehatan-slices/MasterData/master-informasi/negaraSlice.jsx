@@ -109,4 +109,4 @@ const negaraSlice = createSlice({
   }
 })
 
-export default negaraSlice.reducer
+export default negaraSlice.reducer;

@@ -6,7 +6,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import ButtonNav from "@/components/ui/button-navigation";
-import { fetchAgamaWithPaging } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+import { fetchAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 
 const TableDataAgama = () => {
   const dispatch = useDispatch();
@@ -24,12 +24,14 @@ const TableDataAgama = () => {
   console.log(filteredData)
 
   useEffect(() => {
-    dispatch(fetchAgamaWithPaging());
+    dispatch(fetchAgama());
   }, [dispatch]);
 
   useEffect(() => {
     setFilteredData(agama);
   }, [agama]);
+
+  console.log(filteredData)
 
   return (
     <FormProvider {...methods}>
