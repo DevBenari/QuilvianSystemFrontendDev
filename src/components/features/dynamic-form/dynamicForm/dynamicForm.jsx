@@ -101,7 +101,7 @@ const DynamicForm = memo(
         placeholder,
         rules,
         className,
-        readOnly,
+        readOnly : !isEditing || false,
         disabled: !isEditing || disabled,
         control: methods.control,
         ...(onChange ? { onChange } : {}),

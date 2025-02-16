@@ -41,7 +41,7 @@ export const createPekerjaan = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.post(`/Pekerjaan`, data, { 
-      const response = await InstanceAxios.post("/Pekerjaan", data, {
+     
         headers: getHeaders(),
       });
       return response.data;

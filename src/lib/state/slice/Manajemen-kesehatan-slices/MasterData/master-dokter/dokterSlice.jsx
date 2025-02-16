@@ -45,7 +45,7 @@ export const createDokter = createAsyncThunk(
       const response = await InstanceAxios.post("/Dokter", data, {
         headers: getHeaders(),
       });
-      return response.data.data; // Mengambil hanya bagian data
+      return response.data; // Mengambil hanya bagian data
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Gagal menambahkan data dokter"
@@ -62,7 +62,7 @@ export const updateDokter = createAsyncThunk(
       const response = await InstanceAxios.put(`/Dokter/${id}`, data, {
         headers: getHeaders(),
       });
-      return response.data.data; // Mengambil hanya bagian data
+      return response.data; // Mengambil hanya bagian data
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Gagal memperbarui data dokter"
@@ -117,22 +117,20 @@ const dokterSlice = createSlice({
         state.selectedDokter = action.payload;
       })
       .addCase(createDokter.fulfilled, (state, action) => {
-        state.data.push(action.payload);
+        state.data.data.push(action.payload);
       })
       .addCase(updateDokter.fulfilled, (state, action) => {
-        const index = state.data.findIndex(
+        const index = state.data.data. findIndex(
           (dokter) => dokter.dokterId === action.payload.dokterId
         );
         if (index !== -1) {
           state.data[index] = { ...state.data[index], ...action.payload };
         }
 
-        if (state.selectedDokter?.dokterId === action.payload.dokterId) {
-          state.selectedDokter = { ...state.selectedDokter, ...action.payload };
-        }
+       
       })
       .addCase(deleteDokter.fulfilled, (state, action) => {
-        state.data = state.data.filter(
+        state.data = state.data.data.filter(
           (dokter) => dokter.dokterId !== action.payload
         );
       });

@@ -12,6 +12,9 @@ import {
   fetchDokterPraktekById,
   updateDokterPraktek,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
+import { fetchDokter } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
+
+
 
 const EditDokterPraktekForm = ({ params }) => {
   const router = useRouter();
@@ -20,10 +23,15 @@ const EditDokterPraktekForm = ({ params }) => {
   const [dataDokterPraktek, setDataDokterPraktek] = useState(null);
   console.log("selectedDokterPraktek:", selectedDokterPraktek);
 
+   const { data: dokterData } = useSelector((state) => state.dokter);
+  
+   
+
   // Fetch data saat pertama kali dimuat
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);
     dispatch(fetchDokterPraktekById(id));
+    dispatch(fetchDokter());
   }, [dispatch, params.slug]);
 
   // Sinkronisasi data Redux dengan State
@@ -142,11 +150,17 @@ const EditDokterPraktekForm = ({ params }) => {
           colSize: 6,
         },
         {
-          type: "text",
-          label: "Dokter ID",
+          type: "select",
+          label: "Dokter",
           name: "dokterId",
-          placeholder: "Masukkan Dokter ID...",
+          placeholder: "Pilih Dokter...",
           colSize: 6,
+          options: dokterData.data.map((item) => ({
+            label: item.nmDokter,
+            value: item.dokterId,
+          })),
+
+          rules: { required: "Dokter harus dipilih" },
         },
       ],
     },

@@ -1,13 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Col, Row, Alert, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import ButtonNav from "@/components/ui/button-navigation";
-import { fetchAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
-import CustomSearchFilterApi from "@/components/features/custom-search/CustomSearchComponen/custom-search-api";
-import CustomTablePagedApi from "@/components/features/CustomTable/custom-table-page-api";
+import { fetchAgamaWithPaging } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+
 
 const TableDataAgama = () => {
   const dispatch = useDispatch();
@@ -16,57 +16,36 @@ const TableDataAgama = () => {
     loading,
     error,
   } = useSelector((state) => state.agama);
+  const methods = useForm();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [periode, setPeriode] = useState("ThisYear");
-  const [sortDirection, setSortDirection] = useState("asc");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const agama = useMemo(() => agamaData?.data || [], [agamaData]);
+  console.log(agama)  
 
-  // Fetch data berdasarkan filter
-  const fetchData = () => {
-    dispatch(
-      fetchAgama({
-        page: currentPage,
-        perPage,
-        searchQuery,
-        periode,
-        sortDirection,
-        startDate,
-        endDate,
-      })
-    );
-  };
+  const [filteredData, setFilteredData] = useState(agama);
+  console.log(filteredData)
 
   useEffect(() => {
-    fetchData();
-  }, [
-    currentPage,
-    perPage,
-    searchQuery,
-    periode,
-    sortDirection,
-    startDate,
-    endDate,
-  ]);
+    dispatch(fetchAgamaWithPaging());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setFilteredData(agama);
+  }, [agama]);
 
   return (
-    <FormProvider {...useForm()}>
+    <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">Master Data - List Daftar Agama</h2>
+          <button className="btn btn-dark my-3 mx-3" onClick={() => window.location.reload()}>
+              <i className="ri-refresh-line"></i>
+          </button>
         </div>
-
-        {/* Custom Search Filter */}
-        <CustomSearchFilterApi
-          setSearchQuery={setSearchQuery}
-          setPeriode={setPeriode}
-          setSortDirection={setSortDirection}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
-          onSearch={fetchData} // Tam
+        <CustomSearchFilter
+          data={agama} 
+          setFilteredData={setFilteredData} 
+          filterFields={["namaAgama", "kodeAgama"]} 
+          dateField="createDateTime"
         />
       </Col>
 
@@ -87,29 +66,26 @@ const TableDataAgama = () => {
                 />
               </div>
 
-              {/* Handling Loading, Error, dan Data */}
-              {loading ? (
-                <div className="text-center p-5">
-                  <Spinner animation="border" variant="primary" />
-                  <p className="mt-2">Memuat data...</p>
+              {loading && (
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ height: "200px" }}
+                >
+                  <Spinner animation="border" variant="primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
                 </div>
-              ) : error ? (
-                <Alert variant="danger" className="text-center mt-3">
-                  {error}
-                </Alert>
-              ) : (
-                <CustomTablePagedApi
-                  data={agamaData.rows}
+              )}
+              {error && <div className="text-danger">{error}</div>}
+              {!loading && !error && (
+                <CustomTableComponent
+                  data={filteredData}
                   columns={[
                     { key: "no", label: "No" },
+                    { key: "kodeAgama", label: "Kode Agama" },
                     { key: "namaAgama", label: "Nama Agama" },
                   ]}
-                  fetchData={fetchData}
-                  currentPage={currentPage}
-                  totalPages={agamaData.totalPages}
-                  totalRows={agamaData.totalRows}
-                  perPage={perPage}
-                  onPageChange={setCurrentPage}
+                  itemsPerPage={10}
                   slugConfig={{ textField: "namaAgama", idField: "agamaId" }}
                   basePath="/MasterData/master-informasi/agama/edit-agama"
                 />

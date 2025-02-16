@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authLogin from "@/lib/state/slice/auth/LoginSlice";
 import titleReducer from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
-import AgamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 import pekerjaanReducer from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
 import golonganSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
 import pendidikanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
@@ -12,6 +11,8 @@ import kabupaten from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/m
 import kecamatan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kecamatanSlice";
 import kelurahan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kelurahanSlice";
 import identitasStore from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import AgamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+
 
 const store = configureStore({
   reducer: {
@@ -20,7 +21,7 @@ const store = configureStore({
     pasien: pasien,
     agama: AgamaSlice,
     pekerjaan: pekerjaanReducer,
-    identitas: identitasSlice,
+    identitas: identitasStore,
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
     negara: NegaraSlice,

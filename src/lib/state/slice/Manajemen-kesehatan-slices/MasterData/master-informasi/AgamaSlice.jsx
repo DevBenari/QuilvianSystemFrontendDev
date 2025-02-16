@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 
 // CRUD Thunks
 export const fetchAgama = createAsyncThunk("agama/fetch", async (_, { rejectWithValue }) => {
@@ -17,7 +18,7 @@ export const fetchAgama = createAsyncThunk("agama/fetch", async (_, { rejectWith
 
 export const fetchAgamaWithPaging = createAsyncThunk(
   "agama/fetchWithPaging",
-  async ({ page = 1, perPage = 10, orderBy = "CreateDateTime", sortDirection = "asc", periode = "Today", search = "", startDate = "", endDate = "" }, { rejectWithValue }) => {
+  async ({ page = 1, perPage = 10, orderBy = "CreateDateTime", sortDirection = "asc", periode = "ThisMonth", search = "", startDate = "", endDate = "" }, { rejectWithValue }) => {
     const params = { page, perPage, orderBy, sortDirection, periode };
 
     if (search) params.search = search;
@@ -26,7 +27,7 @@ export const fetchAgamaWithPaging = createAsyncThunk(
 
     try {
       const response = await InstanceAxios.get("/Agama/paged", { headers: getHeaders(), params });
-      console.log(response.data);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Gagal mengambil data agama");
@@ -94,7 +95,7 @@ const agamaSlice = createSlice({
     perPage: 10,
     orderBy: "CreateDateTime",
     sortDirection: "asc",
-    periode: "Today",
+    periode: "ThisMonth",
     search: "",
     startDate: "",
     endDate: "",
