@@ -38,6 +38,17 @@ export const fetchIdentitasById = createAsyncThunk(
 );
 
 // 🔹 Tambah identitas
+// CRUD Thunks
+export const fetchIdentitas = createAsyncThunk("identitas/fetch", async (_,{ rejectWithValue }) => {
+  try{
+    const response = await InstanceAxios.get(`/Identitas`, { headers: getHeaders() });
+    return response.data;
+  }catch(error){
+    const errorMessage = error.response?.data?.message || "Gagal mengambil data identitas";
+    return rejectWithValue(errorMessage);
+  }
+});
+
 export const createIdentitas = createAsyncThunk(
   "identitas/create",
   async (data, { rejectWithValue }) => {
@@ -50,15 +61,26 @@ export const createIdentitas = createAsyncThunk(
       return rejectWithValue(
         error.response?.data?.message || "Gagal menambahkan data identitas"
       );
+  async (data) => {
+    try{
+      const response = await InstanceAxios.post(`/Identitas`, data, { headers: getHeaders() });
+      return response.data;
+    }catch(error){
+      const errorMessage = error.response?.data?.message || "Gagal create data identitas";
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
 // 🔹 Update identitas
 export const updateIdentitas = createAsyncThunk(
+export const updateIdentitas = createAsyncThunk(
   "identitas/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
+      const response = await InstanceAxios.put(`/Identitas/${id}`, data, {
+  async ({ id, data }) => {
+    try{
       const response = await InstanceAxios.put(`/Identitas/${id}`, data, {
         headers: getHeaders(),
       });
@@ -85,6 +107,15 @@ export const deleteIdentitas = createAsyncThunk(
     }
   }
 );
+export const deleteIdentitas = createAsyncThunk("identitas/delete", async (id, { rejectWithValue }) => {
+  try{
+    const response = await InstanceAxios.delete(`/Identitas/${id}`, { headers: getHeaders() });
+    return response.data;
+  }catch(error){
+    const errorMessage = error.response?.data?.message || "Gagal delete data identitas";
+    return rejectWithValue(errorMessage);
+  }
+});
 
 // 🔹 Slice Identitas
 const identitasSlice = createSlice({
@@ -133,12 +164,23 @@ const identitasSlice = createSlice({
             ...state.selectedIdentitas,
             ...action.payload,
           };
+      .addCase(updateIdentitas.fulfilled, (state, action) => {
+        if (Array.isArray(state.data.data)) {
+          const index = state.data.data.findIndex(
+            (item) => item.IdentitasId === action.payload.IdentitasId
+          );
+          if (index !== -1) {
+            state.data.data[index] = action.payload;
+          }
         }
       })
       .addCase(deleteIdentitas.fulfilled, (state, action) => {
         state.data = state.data.filter(
           (item) => item.identitasId !== action.payload
         );
+
+      .addCase(deleteIdentitas.fulfilled, (state, action) => {
+        state.data = state.data.filter((item) => item.id !== action.payload);
       });
   },
 });

@@ -6,14 +6,12 @@ import pekerjaanReducer from "@/lib/state/slice/Manajemen-kesehatan-slices/Maste
 import golonganSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
 import pendidikanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 import pasien from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
-import negaraSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
-import asuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
-import pegawaiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-pegawai/pagawaiSlice";
-import dokterPraktek from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-import identitasSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
-import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
-import jabatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
-import anggotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
+import NegaraSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice"
+import provinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice";
+import kabupaten from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kabupatenSlice";
+import kecamatan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kecamatanSlice";
+import kelurahan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kelurahanSlice";
+import identitasStore from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 
 const store = configureStore({
   reducer: {
@@ -25,13 +23,11 @@ const store = configureStore({
     identitas: identitasSlice,
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
-    negara: negaraSlice,
-    asuransi: asuransiSlice,
-    pegawai: pegawaiSlice,
-    dokter: dokterSlice,
-    dokterPraktek: dokterPraktek,
-    jabatan: jabatanSlice,
-    anggota: anggotaSlice,
+    negara: NegaraSlice,
+    provinsi: provinsiSlice,
+    kabupaten: kabupaten,
+    kecamatan: kecamatan,
+    kelurahan: kelurahan,
   },
 });
 

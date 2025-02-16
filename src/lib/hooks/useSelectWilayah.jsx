@@ -1,95 +1,27 @@
-import { useState, useCallback } from "react";
-import { dataWilayah } from "@/utils/config"; // Import data wilayah
+import { useDispatch, useSelector } from "react-redux";
+import { GetProvinsiSlice } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice";
+import { fetchKabupatenByProvinsi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kabupatenSlice";
+import { fetchKecamatanByKabupaten } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kecamatanSlice";
+import { fetchKelurahanByKecamatan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kelurahanSlice";
 
-const UseSelectWilayah = (setValue) => {
-  // State untuk pasien
-  const [pasienSelectedProvinsi, setPasienSelectedProvinsi] = useState("");
-  const [pasienFilteredKabupaten, setPasienFilteredKabupaten] = useState([]);
-  const [pasienFilteredKecamatan, setPasienFilteredKecamatan] = useState([]);
-  const [pasienFilteredKelurahan, setPasienFilteredKelurahan] = useState([]);
+const UseSelectWilayah = () => {
+    const dispatch = useDispatch();
 
-  // State untuk keluarga
-  const [keluargaSelectedProvinsi, setKeluargaSelectedProvinsi] = useState("");
-  const [keluargaFilteredKabupaten, setKeluargaFilteredKabupaten] = useState([]);
-  const [keluargaFilteredKecamatan, setKeluargaFilteredKecamatan] = useState([]);
-  const [keluargaFilteredKelurahan, setKeluargaFilteredKelurahan] = useState([]);
+    const { data: provinsi } = useSelector(state => state.provinsi);
+    const { data: kabupaten } = useSelector(state => state.kabupaten);
+    const { data: kecamatan } = useSelector(state => state.kecamatan);
+    const { data: kelurahan } = useSelector(state => state.kelurahan);
 
-  // Handle perubahan wilayah
-  const handleChange = useCallback(
-    (type, field, value) => {
-      if (type === "pasien") {
-        if (field === "provinsi") {
-          setPasienSelectedProvinsi(value);
-          const selected = dataWilayah.find((item) => item.provinsi === value);
-          setPasienFilteredKabupaten(selected ? selected.kabupaten : []);
-          setValue("pasien_provinsi", value);
-        } else if (field === "kabupaten") {
-          const selectedKabupaten = pasienFilteredKabupaten.find(
-            (item) => item.nama === value
-          );
-          setPasienFilteredKecamatan(
-            selectedKabupaten ? selectedKabupaten.kecamatan : []
-          );
-          setValue("pasien_kabupaten", value);
-        } else if (field === "kecamatan") {
-          const selectedKecamatan = pasienFilteredKecamatan.find(
-            (item) => item.nama === value
-          );
-          setPasienFilteredKelurahan(
-            selectedKecamatan ? selectedKecamatan.kelurahan : []
-          );
-          setValue("pasien_kecamatan", value);
-        }
-      } else if (type === "keluarga") {
-        if (field === "provinsi") {
-          setKeluargaSelectedProvinsi(value);
-          const selected = dataWilayah.find((item) => item.provinsi === value);
-          setKeluargaFilteredKabupaten(selected ? selected.kabupaten : []);
-          setValue("keluarga_provinsi", value);
-        } else if (field === "kabupaten") {
-          const selectedKabupaten = keluargaFilteredKabupaten.find(
-            (item) => item.nama === value
-          );
-          setKeluargaFilteredKecamatan(
-            selectedKabupaten ? selectedKabupaten.kecamatan : []
-          );
-          setValue("keluarga_kabupaten", value);
-        } else if (field === "kecamatan") {
-          const selectedKecamatan = keluargaFilteredKecamatan.find(
-            (item) => item.nama === value
-          );
-          setKeluargaFilteredKelurahan(
-            selectedKecamatan ? selectedKecamatan.kelurahan : []
-          );
-          setValue("keluarga_kecamatan", value);
-        }
-      }
-    },
-    [
-      pasienFilteredKabupaten,
-      pasienFilteredKecamatan,
-      keluargaFilteredKabupaten,
-      keluargaFilteredKecamatan,
-      setValue,
-    ]
-  );
+    console.log(provinsi)
 
-  return {
-    // State pasien
-    pasienSelectedProvinsi,
-    pasienFilteredKabupaten,
-    pasienFilteredKecamatan,
-    pasienFilteredKelurahan,
+    const handleChange = (level, id) => {
+        if (level === "negara") dispatch(GetProvinsiSlice(id));
+        if (level === "provinsi") dispatch(fetchKabupatenByProvinsi(id));
+        if (level === "kabupaten") dispatch(fetchKecamatanByKabupaten(id));
+        if (level === "kecamatan") dispatch(fetchKelurahanByKecamatan(id));
+    };
 
-    // State keluarga
-    keluargaSelectedProvinsi,
-    keluargaFilteredKabupaten,
-    keluargaFilteredKecamatan,
-    keluargaFilteredKelurahan,
-
-    // Function
-    handleChange,
-  };
+    return { provinsi, kabupaten, kecamatan, kelurahan, handleChange };
 };
 
 export default UseSelectWilayah;
