@@ -25,6 +25,7 @@
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^2.4.0",
     "@remixicon/react": "^4.5.0",
+    "@shadcn/ui": "^0.0.4",
     "animate.css": "^4.1.1",
     "apexcharts": "^4.1.0",
     "axios": "^1.7.9",
@@ -66,6 +67,7 @@
     "sharp": "^0.33.5",
     "smooth-scrollbar": "^8.8.4",
     "smooth-scrollbar-react": "^2.4.1",
+    "sweetalert2": "^11.16.0",
     "swiper": "^11.1.15",
     "tesseract.js": "^6.0.0"
   },

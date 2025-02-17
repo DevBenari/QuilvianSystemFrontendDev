@@ -16,216 +16,226 @@ import TimeField from "@/components/ui/time-input";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
+import { showAlert } from "../../alert/custom-alert";
 
-const DynamicForm = memo(({ title, userData, formConfig, onSubmit, backPath, isAddMode = false }) => {
-  const fieldComponents = {
-    text: TextField,
-    email: TextField,
-    select: SelectField,
-    radio: RadioInput,
-    date: DateInput,
-    textarea: TextArea,
-    file: UploadPhotoField,
-    toggle: ToggleCustom,
-    slider: SliderInput,
-    richText: RichTextEditor,
-    signature: SignaturePad,
-    time: TimeField,
-    number: NumberField,
-    searchSelect: SearchableSelectField,
-  };
-
-  const [isEditing, setIsEditing] = useState(isAddMode);
-
-  // Initialize form with initial values
-  const methods = useForm({
-    defaultValues: formConfig.reduce((defaults, section) => {
-      section.fields.forEach((field) => {
-        defaults[field.name] = userData?.[field.name] || "";
-      });
-      return defaults;
-    }, {}),
-  });
-
-  // Update form when userData changes
-  useEffect(() => {
-    if (userData) {
-      const values = {};
-      formConfig.forEach(section => {
-        section.fields.forEach(field => {
-          values[field.name] = userData[field.name] || "";
-        });
-      });
-      methods.reset(values);
-    }
-  }, [userData]);
-
-  const renderField = (field) => {
-    const {
-      id,
-      name,
-      label,
-      placeholder,
-      type,
-      rules,
-      className = "mb-3",
-      readOnly = false,
-      disabled = false,
-      onChange,
-      onClick,
-      options,
-      rows,
-      customRender,
-      colSize,
-      hide,
-      ...otherProps
-    } = field;
-
-    // Remove value and defaultValue from otherProps to prevent conflicts
-    const { value, defaultValue, ...restProps } = otherProps;
-
-    const commonProps = {
-      id,
-      name,
-      label,
-      placeholder,
-      rules,
-      className,
-      readOnly,
-      disabled: !isEditing || disabled,
-      control: methods.control,
-      ...(onChange ? { onChange } : {}),
-      ...(onClick ? { onClick } : {}),
+const DynamicForm = memo(
+  ({
+    title,
+    userData,
+    formConfig,
+    onSubmit,
+    backPath,
+    isAddMode = false,
+    handleDelete,
+  }) => {
+    const fieldComponents = {
+      text: TextField,
+      email: TextField,
+      select: SelectField,
+      radio: RadioInput,
+      date: DateInput,
+      textarea: TextArea,
+      file: UploadPhotoField,
+      toggle: ToggleCustom,
+      slider: SliderInput,
+      richText: RichTextEditor,
+      signature: SignaturePad,
+      time: TimeField,
+      number: NumberField,
+      searchSelect: SearchableSelectField,
     };
 
-    if (type === "email") {
+    const [isEditing, setIsEditing] = useState(isAddMode);
+
+    // Initialize form with initial values
+    const methods = useForm({
+      defaultValues: formConfig.reduce((defaults, section) => {
+        section.fields.forEach((field) => {
+          defaults[field.name] = userData?.[field.name] || "";
+        });
+        return defaults;
+      }, {}),
+    });
+
+    // Update form when userData changes
+    useEffect(() => {
+      if (userData) {
+        const values = {};
+        formConfig.forEach((section) => {
+          section.fields.forEach((field) => {
+            values[field.name] = userData[field.name] || "";
+          });
+        });
+        methods.reset(values);
+      }
+    }, [userData]);
+
+    const renderField = (field) => {
+      const {
+        id,
+        name,
+        label,
+        placeholder,
+        type,
+        rules,
+        className = "mb-3",
+        readOnly = false,
+        disabled = false,
+        onChange,
+        onClick,
+        options,
+        rows,
+        customRender,
+        colSize,
+        hide,
+        ...otherProps
+      } = field;
+
+      // Remove value and defaultValue from otherProps to prevent conflicts
+      const { value, defaultValue, ...restProps } = otherProps;
+
+      const commonProps = {
+        id,
+        name,
+        label,
+        placeholder,
+        rules,
+        className,
+        readOnly : !isEditing || false,
+        disabled: !isEditing || disabled,
+        control: methods.control,
+        ...(onChange ? { onChange } : {}),
+        ...(onClick ? { onClick } : {}),
+      };
+
+      if (type === "email") {
+        return <TextField key={id} {...commonProps} type="email" />;
+      }
+
+      if (customRender) {
+        return customRender({ key: id, ...commonProps });
+      }
+
+      const Component = fieldComponents[field.type];
+      if (!Component) {
+        console.warn(`Unsupported field type: ${field.type}`);
+        return null;
+      }
+
       return (
-        <TextField
+        <Component
           key={id}
           {...commonProps}
-          type="email"
+          {...restProps}
+          options={options}
+          rows={rows}
         />
       );
-    }
+    };
 
-    if (customRender) {
-      return customRender({ key: id, ...commonProps });
-    }
+    const handleEdit = () => {
+      setIsEditing(true);
+    };
 
-    const Component = fieldComponents[field.type];
-    if (!Component) {
-      console.warn(`Unsupported field type: ${field.type}`);
-      return null;
-    }
+    const handleCancel = () => {
+      setIsEditing(false);
+      if (userData) {
+        const values = {};
+        formConfig.forEach((section) => {
+          section.fields.forEach((field) => {
+            values[field.name] = userData[field.name] || "";
+          });
+        });
+        methods.reset(values);
+      }
+    };
+
+    const {
+      watch,
+      formState: { errors },
+      handleSubmit: formSubmit,
+    } = methods;
+
+    const shouldHideField = (field) => {
+      if (typeof field.hide === "function") {
+        return field.hide(watch());
+      }
+      return field.hide;
+    };
 
     return (
-      <Component
-        key={id}
-        {...commonProps}
-        {...restProps}
-        options={options}
-        rows={rows}
-      />
+      <FormProvider {...methods}>
+        <Row>
+          <div className="iq-card pt-2">
+            <div className="iq-card-header d-flex justify-content-between">
+              <div className="iq-header-title">
+                <h3 className="card-title tracking-wide">{title}</h3>
+              </div>
+              <div className="d-flex gap-2">
+                <ButtonNav
+                  className="btn btn-secondary"
+                  label="Kembali"
+                  path={backPath}
+                  icon="ri-arrow-left-line"
+                />
+                {!isAddMode && !isEditing && (
+                  <Button className="btn btn-primary" onClick={handleEdit}>
+                    <i className="ri-edit-2-line"></i>
+                    Edit
+                  </Button>
+                )}
+                {!isAddMode && isEditing && (
+                  <Button className="btn btn-warning" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                )}
+                {!isAddMode && (
+                  <Button className="btn btn-danger" onClick={handleDelete}>
+                    Delete
+                  </Button>
+                )}
+              </div>
+            </div>
+            <div className="card-body py-3">
+              <Form onSubmit={formSubmit(onSubmit)}>
+                {formConfig.map((section, index) => (
+                  <div key={`section-${index}`} className="iq-card-header mt-3">
+                    {section.section && (
+                      <div className="iq-header-title">
+                        <h4 className="mb-3">{section.section}</h4>
+                      </div>
+                    )}
+                    <Row
+                      className={
+                        section.layout === "inline"
+                          ? "d-flex align-items-center"
+                          : ""
+                      }
+                    >
+                      {section.fields
+                        .filter((field) => !shouldHideField(field))
+                        .map(({ colSize, ...field }, fieldIndex) => (
+                          <Col key={field.id || fieldIndex} lg={colSize || 6}>
+                            {renderField(field)}
+                          </Col>
+                        ))}
+                    </Row>
+                  </div>
+                ))}
+                {(isAddMode || isEditing) && (
+                  <Button type="submit" className="btn btn-primary m-3">
+                    <i className="ri-save-line"></i>
+                    Simpan
+                  </Button>
+                )}
+              </Form>
+            </div>
+          </div>
+        </Row>
+      </FormProvider>
     );
-  };
-
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-  
-  const handleCancel = () => {
-    setIsEditing(false);
-    if (userData) {
-      const values = {};
-      formConfig.forEach(section => {
-        section.fields.forEach(field => {
-          values[field.name] = userData[field.name] || "";
-        });
-      });
-      methods.reset(values);
-    }
-  };
-
-  const {
-    watch,
-    formState: { errors },
-    handleSubmit: formSubmit,
-  } = methods;
-
-  const shouldHideField = (field) => {
-    if (typeof field.hide === "function") {
-      return field.hide(watch());
-    }
-    return field.hide;
-  };
-
-  return (
-    <FormProvider {...methods}>
-      <Row>
-        <div className="iq-card pt-2">
-          <div className="iq-card-header d-flex justify-content-between">
-            <div className="iq-header-title">
-              <h3 className="card-title tracking-wide">{title}</h3>
-            </div>
-            <div className="d-flex gap-2">
-              <ButtonNav
-                className="btn btn-secondary"
-                label="Kembali"
-                path={backPath}
-                icon="ri-arrow-left-line"
-              />
-              {!isAddMode && !isEditing && (
-                <Button className="btn btn-primary" onClick={handleEdit}>
-                  <i className="ri-edit-2-line"></i>
-                  Edit
-                </Button>
-              )}
-              {!isAddMode && isEditing && (
-                <Button className="btn btn-danger" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              )}
-            </div>
-          </div>
-          <div className="card-body py-3">
-            <Form onSubmit={formSubmit(onSubmit)}>
-              {formConfig.map((section, index) => (
-                <div key={`section-${index}`} className="iq-card-header mt-3">
-                  {section.section && (
-                    <div className="iq-header-title">
-                      <h4 className="mb-3">{section.section}</h4>
-                    </div>
-                  )}
-                  <Row
-                    className={
-                      section.layout === "inline"
-                        ? "d-flex align-items-center"
-                        : ""
-                    }
-                  >
-                    {section.fields
-                      .filter((field) => !shouldHideField(field))
-                      .map(({ colSize, ...field }, fieldIndex) => (
-                        <Col key={field.id || fieldIndex} lg={colSize || 6}>
-                          {renderField(field)}
-                        </Col>
-                      ))}
-                  </Row>
-                </div>
-              ))}
-              {(isAddMode || isEditing) && (
-                <Button type="submit" className="btn btn-primary m-3">
-                  <i className="ri-save-line"></i>
-                  Simpan
-                </Button>
-              )}
-            </Form>
-          </div>
-        </div>
-      </Row>
-    </FormProvider>
-  );
-});
+  }
+);
 
 DynamicForm.displayName = "DynamicForm";
 export default DynamicForm;

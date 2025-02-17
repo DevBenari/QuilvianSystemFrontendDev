@@ -183,7 +183,10 @@ export const menus = {
     {
       title: "Keanggotaan",
       subItems: [
-        { title: "Tipe Keanggotaan", href: "/master-data/tipe-keanggotaan" },
+        {
+          title: "Tipe Keanggotaan",
+          href: "/MasterData/master-anggota/table-anggota",
+        },
       ],
     },
     {
@@ -311,6 +314,31 @@ export const menus = {
         {
           title: "Data Pekerjaan",
           href: "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan",
+        },
+        {
+          title: "Data Negara",
+          href: "/MasterData/master-informasi/negara/table-negara",
+        },
+        {
+          title: "Data Identitas",
+          href: "/MasterData/master-informasi/identitas/table-identitas",
+        },
+        {
+          title: "Data jabatan",
+          href: "/MasterData/master-informasi/jabatan/table-jabatan",
+        },
+      ],
+    },
+    {
+      title: "Dokter",
+      subItems: [
+        {
+          title: "Data Dokter",
+          href: "/MasterData/master-dokter/dokter/table-dokter",
+        },
+        {
+          title: "Dokter Praktek",
+          href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
         },
       ],
     },

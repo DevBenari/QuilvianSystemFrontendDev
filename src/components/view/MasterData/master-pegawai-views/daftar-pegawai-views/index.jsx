@@ -1,24 +1,37 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
 
 import { Row, Col, Spinner } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import { usePegawai } from "@/lib/hooks/masterData/master-pegawai";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPegawai } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-pegawai/pagawaiSlice";
 
 const TableListDaftarPegawai = () => {
   const methods = useForm();
+  const dispatch = useDispatch();
 
-  const { Pegawai, loading, error } = usePegawai();
-  const [filteredPatients, setFilteredPatients] = useState(Pegawai);
+  // Mengambil data dari Redux store
+  const {
+    data: pegawaiData,
+    loading,
+    error,
+  } = useSelector((state) => state.pegawai);
+
+  // Pastikan data yang digunakan adalah array
+  const pegawaiList = useMemo(() => pegawaiData?.data || [], [pegawaiData]);
+
+  const [filteredPegawai, setFilteredPegawai] = useState(pegawaiList);
 
   useEffect(() => {
-    if (Pegawai) {
-      setFilteredPatients(Pegawai);
-    }
-  }, [Pegawai]);
+    dispatch(fetchPegawai()); // Fetch data pegawai saat komponen dimuat
+  }, [dispatch]);
+
+  useEffect(() => {
+    setFilteredPegawai(pegawaiList); // Update data saat pegawaiList berubah
+  }, [pegawaiList]);
 
   return (
     <FormProvider {...methods}>
@@ -37,9 +50,9 @@ const TableListDaftarPegawai = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={Pegawai}
-            setFilteredPatients={setFilteredPatients}
-            onFilteredPatients={filteredPatients}
+            data={pegawaiList}
+            setFilteredPatients={setFilteredPegawai}
+            onFilteredPatients={filteredPegawai}
           />
         </Col>
       </Col>
@@ -76,7 +89,7 @@ const TableListDaftarPegawai = () => {
               {!loading && !error && (
                 <div className="iq-card-body">
                   <CustomTableComponent
-                    data={filteredPatients}
+                    data={filteredPegawai}
                     columns={[
                       { key: "no", label: "No" },
                       { key: "noRekamMedis", label: "No Rekam Medis" },

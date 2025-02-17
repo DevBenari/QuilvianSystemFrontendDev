@@ -192,8 +192,10 @@ const agamaSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // **FETCH DATA AGAMA**
       .addCase(fetchAgama.pending, (state) => {
         state.loading = true;
+        state.error = null;
         state.error = null;
       })
       .addCase(fetchAgama.fulfilled, (state, action) => {

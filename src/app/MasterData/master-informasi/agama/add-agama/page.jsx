@@ -1,4 +1,4 @@
-import FormAddAgama from "@/components/view/MasterData/master-informasi/master-agama/add-form-agama/page";
+import FormAddAgama from "@/components/view/MasterData/master-informasi/master-agama/add-agama";
 import React from "react";
 
 const PageListAgama = () => {

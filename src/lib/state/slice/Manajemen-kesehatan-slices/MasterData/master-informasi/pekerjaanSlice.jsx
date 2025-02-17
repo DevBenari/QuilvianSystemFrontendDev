@@ -1,57 +1,58 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getHeaders } from "@/lib/headers/headers";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
+import { getHeaders } from "@/lib/headers/headers";
 
-// ========== Async Thunks ==========
-
-// Fetch semua pekerjaan
+// CRUD Thunks
 export const fetchPekerjaan = createAsyncThunk(
-  "pekerjaan/fetchAll",
+  "pekerjaan/fetch",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Pekerjaan`, { headers: getHeaders() });
-      return response.data;
-
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || "Gagal mengambil data pekerjaan";
-       return rejectWithValue(errorMessage);
-    }
-  }
-);
-
-// Fetch pekerjaan berdasarkan ID
-export const fetchPekerjaanById = createAsyncThunk(
-  "pekerjaan/fetchById",
-  async (id, { rejectWithValue }) => {
-    try {
-      const response= await InstanceAxios.get(`/Pekerjaan/${id}`, {
+      const response = await InstanceAxios.get("/Pekerjaan", {
         headers: getHeaders(),
       });
       return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Gagal mengambil data pekerjaan berdasarkan ID";
-       return rejectWithValue(errorMessage);
+      const errorMessage =
+        error.response?.data?.message || "Gagal mengambil data pekerjaan";
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
-// Tambah pekerjaan baru
+export const fetchPekerjaanById = createAsyncThunk(
+  "pekerjaan/fetchById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Pekerjaan/${id}`, {
+        headers: getHeaders(),
+      });
+      return response.data.data; // Pastikan API mengembalikan data dalam properti 'data'
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Gagal mengambil data pekerjaan berdasarkan ID";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 export const createPekerjaan = createAsyncThunk(
   "pekerjaan/create",
   async (data, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.post(`/Pekerjaan`, data, { 
+     
         headers: getHeaders(),
       });
       return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Gagal menambahkan data pekerjaan berdasarkan ID";
-       return rejectWithValue(errorMessage);
+      const errorMessage =
+        error.response?.data?.message || "Gagal menambahkan data pekerjaan";
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
-// Update pekerjaan berdasarkan ID
 export const updatePekerjaan = createAsyncThunk(
   "pekerjaan/update",
   async ({ id, data }, { rejectWithValue }) => {
@@ -61,57 +62,52 @@ export const updatePekerjaan = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Gagal menambahkan data pekerjaan berdasarkan ID";
-       return rejectWithValue(errorMessage);
+      const errorMessage =
+        error.response?.data?.message || "Gagal mengupdate data pekerjaan";
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
-// Hapus pekerjaan berdasarkan ID
 export const deletePekerjaan = createAsyncThunk(
   "pekerjaan/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.delete(`/Pekerjaan/${id}`, { headers: getHeaders() });
-      return response.data; // Kembalikan ID pekerjaan yang dihapus
+      await InstanceAxios.delete(`/Pekerjaan/${id}`, { headers: getHeaders() });
+      return id;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Gagal menghapus data pekerjaan berdasarkan ID";
-       return rejectWithValue(errorMessage);
+      const errorMessage =
+        error.response?.data?.message || "Gagal menghapus data pekerjaan";
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
-// ========== Redux Slice ==========
-
+// Slice
 const pekerjaanSlice = createSlice({
   name: "pekerjaan",
   initialState: {
-    data: [], // Menyimpan daftar pekerjaan
-    selectedPekerjaan: null, // Menyimpan pekerjaan berdasarkan ID
+    data: { data: [] },
+    selectedPekerjaan: null,
     loading: false,
     error: null,
   },
-  reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch semua pekerjaan
       .addCase(fetchPekerjaan.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchPekerjaan.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload || [];
+        state.data = action.payload;
       })
       .addCase(fetchPekerjaan.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Fetch pekerjaan berdasarkan ID
       .addCase(fetchPekerjaanById.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchPekerjaanById.fulfilled, (state, action) => {
         state.loading = false;
@@ -122,24 +118,23 @@ const pekerjaanSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Tambah pekerjaan baru
       .addCase(createPekerjaan.fulfilled, (state, action) => {
-        state.data.push(action.payload);
-      })
-
-      // Update pekerjaan
-      .addCase(updatePekerjaan.fulfilled, (state, action) => {
-        const index = state.data.findIndex(
-          (item) => item.pekerjaanId === action.payload.pekerjaanId
-        );
-        if (index !== -1) {
-          state.data[index] = action.payload;
+        if (Array.isArray(state.data.data)) {
+          state.data.data.push(action.payload);
         }
       })
 
-      // Hapus pekerjaan
+      .addCase(updatePekerjaan.fulfilled, (state, action) => {
+        const index = state.data.data.findIndex(
+          (item) => item.pekerjaanId === action.payload.pekerjaanId
+        );
+        if (index !== -1) {
+          state.data.data[index] = action.payload;
+        }
+      })
+
       .addCase(deletePekerjaan.fulfilled, (state, action) => {
-        state.data = state.data.filter(
+        state.data.data = state.data.data.filter(
           (item) => item.pekerjaanId !== action.payload
         );
       });

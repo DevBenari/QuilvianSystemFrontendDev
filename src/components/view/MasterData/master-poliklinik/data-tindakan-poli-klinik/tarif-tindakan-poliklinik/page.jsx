@@ -1,6 +1,6 @@
 "use client";
 
-import CustomSearchText from "@/components/features/custom-search/CustomSearchText/custom-search-text";
+import CustomSearchText from "@/components/features/custom-search/CustomSearchComponen/custom-search-text";
 import EditableTable from "@/components/features/edit-table/edit-table/edit-table";
 import TableEditSave from "@/components/features/edit-table/edit-table/table-edit-save-cancel";
 import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";

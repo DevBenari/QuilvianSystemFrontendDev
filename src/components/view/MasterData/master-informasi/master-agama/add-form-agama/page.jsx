@@ -12,7 +12,7 @@ const FormAddAgama = () => {
 
   const handleSubmit = async (data) => {
     try {
-      await dispatch(createAgama(data)).unwrap(); // Tunggu hasil dari dispatch
+      await dispatch(createAgama(data)).unwrap(); 
       alert("Agama berhasil ditambahkan!");
       router.push("/MasterData/master-informasi/agama/table-agama");
     } catch (error) {

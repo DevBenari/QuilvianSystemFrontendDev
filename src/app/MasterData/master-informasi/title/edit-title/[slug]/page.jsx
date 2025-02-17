@@ -1,37 +1,65 @@
 "use client";
-import React, { useState, useEffect, Fragment, useMemo } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
-
-import { useSelector, useDispatch } from "react-redux";
-import { updateTitle } from "@/lib/state/slices/masterData/master-informasi/TitleSlice";
+import {
+  fetchTitleById,
+  updateTitle,
+  deleteTitle,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const TitleEditPage = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const {
-    data: titlesData,
-    loading,
-    error,
-  } = useSelector((state) => state.titles);
 
-  // Gunakan useMemo agar titles hanya dihitung ulang saat titlesData berubah
-  const titles = useMemo(() => titlesData?.data || [], [titlesData]);
+  // Ambil data dari Redux store
+  const { selectedTitle, loading, error } = useSelector(
+    (state) => state.titles
+  );
 
   const [titleData, setTitleData] = useState(null);
 
+  // Fetch data title berdasarkan ID dari URL params
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);
-    const title = titles.find((item) => item.titleId === id);
-    if (title) setTitleData(title);
-  }, [params.slug, titles]);
+    dispatch(fetchTitleById(id));
+  }, [dispatch, params.slug]);
 
-  const handleSubmit = (data) => {
-    if (!titleData) return;
-    dispatch(updateTitle({ id: titleData.titleId, data }));
-    console.log("Submitted data:", data);
-    router.push("/MasterData/master-informasi/master-title/table-title");
+  // Update state setelah data title berhasil di-fetch
+  useEffect(() => {
+    if (selectedTitle) {
+      setTitleData(selectedTitle);
+    }
+  }, [selectedTitle]);
+
+  const handleSubmit = async (data) => {
+    try {
+      if (!titleData) return;
+      await dispatch(updateTitle({ id: titleData.titleId, data })).unwrap();
+      showAlert.success("Data title berhasil diperbarui!", () => {
+        router.push("/MasterData/master-informasi/title/table-title");
+      });
+    } catch (error) {
+      console.error("Gagal memperbarui data title:", error);
+      showAlert.error("Gagal memperbarui data title.");
+    }
+  };
+
+  const handleDelete = async () => {
+    showAlert.confirmDelete("Data title akan dihapus permanen", async () => {
+      try {
+        await dispatch(deleteTitle(titleData.titleId)).unwrap();
+        showAlert.success("Data title berhasil dihapus!", () => {
+          router.push("/MasterData/master-informasi/title/table-title");
+        });
+      } catch (error) {
+        console.error("Gagal menghapus data title:", error);
+        showAlert.error("Gagal menghapus data title.");
+      }
+    });
   };
 
   if (loading) {
@@ -66,7 +94,7 @@ const TitleEditPage = ({ params }) => {
     );
   }
 
-  // Form configuration
+  // Konfigurasi form
   const formFields = [
     {
       fields: [
@@ -74,33 +102,40 @@ const TitleEditPage = ({ params }) => {
           type: "text",
           label: "Kode Title",
           name: "kodeTitle",
+          placeholder: "Masukkan Kode Title...",
           colSize: 6,
-          defaultValue: titleData.kodeTitle, // Default value dari state
-          onChangeCallback: (e) =>
-            setTitleData({ ...titleData, kodeTitle: e.target.value }),
+          rules: { required: "Kode title harus diisi" },
         },
         {
           type: "text",
           label: "Nama Title",
           name: "namaTitle",
+          placeholder: "Masukkan Nama Title...",
           colSize: 6,
-          defaultValue: titleData.namaTitle, // Default value dari state
-          onChangeCallback: (e) =>
-            setTitleData({ ...titleData, namaTitle: e.target.value }),
+          rules: { required: "Nama title harus diisi" },
         },
       ],
     },
   ];
 
-  // Render form
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: titleData?.[field.name] ?? "",
+    })),
+  }));
+
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Title"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
-        backPath={`/MasterData/master-informasi/master-title/table-title`}
+        backPath={`/MasterData/master-informasi/title/table-title`}
         isAddMode={false}
+        handleDelete={handleDelete}
+        userData={titleData}
       />
     </Fragment>
   );

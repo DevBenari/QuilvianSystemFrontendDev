@@ -1,12 +1,11 @@
-import FormAddAsuransiViews from '@/components/view/MasterData/master-asuransi-views/daftar-asuransi-views/add-asuransi-views';
-import React from 'react'
+import AsuransiAddForm from "@/components/view/MasterData/master-asuransi/add-asuransi";
+import React from "react";
 const PagesAddDaftarAsuransi = () => {
-    return (
-        <div>
-            <FormAddAsuransiViews />
-        </div>
-    )
-
-}
+  return (
+    <div>
+      <AsuransiAddForm />
+    </div>
+  );
+};
 
 export default PagesAddDaftarAsuransi;

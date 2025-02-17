@@ -1,4 +1,4 @@
-import TableDataPekerjaan from "@/components/view/MasterData/master-informasi/master-pekerjaan/table-pekerjaan/page";
+import TableDataPekerjaan from "@/components/view/MasterData/master-informasi/master-pekerjaan/table-pekerjaan";
 import React from "react";
 
 const PageListPekerjaan = () => {

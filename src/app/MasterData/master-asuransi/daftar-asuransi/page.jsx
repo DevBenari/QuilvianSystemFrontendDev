@@ -1,9 +1,10 @@
-import TableListDaftarAsuransi from "@/components/view/MasterData/master-asuransi-views/daftar-asuransi-views";
+import TableDataAsuransi from "@/components/view/MasterData/master-asuransi/table-asuransi";
 import React from "react";
+
 const PageListDaftarAsuransi = () => {
   return (
     <div>
-      <TableListDaftarAsuransi />
+      <TableDataAsuransi />
     </div>
   );
 };
