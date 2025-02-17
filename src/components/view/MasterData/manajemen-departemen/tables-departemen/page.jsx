@@ -37,8 +37,13 @@ const TableListManajemenDepartemen = () => {
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
             data={ManajemenDepartemen}
-            setFilteredPatients={setFilteredPatients}
-            onFilteredPatients={filteredPatients}
+            setFilteredData={setFilteredPatients}
+            filterFields={[
+              "id",
+              "namaDepartemen",
+              "penanggungJawab",
+              "deskripsi",
+            ]}
           />
         </Col>
       </Col>

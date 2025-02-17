@@ -36,9 +36,7 @@ const CustomSearchFilter = ({
     if (filters.searchQuery) {
       const query = filters.searchQuery.toLowerCase();
       filtered = filtered.filter((item) =>
-        filterFields.some(
-          (field) => item[field]?.toLowerCase().includes(query)
-        )
+        filterFields.some((field) => item[field]?.toLowerCase().includes(query))
       );
     }
 
@@ -49,7 +47,11 @@ const CustomSearchFilter = ({
 
     // 3️⃣ Filter berdasarkan rentang tanggal
     if (filters.startDate && filters.endDate) {
-      filtered = filterByDateRange(filtered, filters.startDate, filters.endDate);
+      filtered = filterByDateRange(
+        filtered,
+        filters.startDate,
+        filters.endDate
+      );
     }
 
     setFilteredData(filtered);
@@ -139,7 +141,10 @@ const CustomSearchFilter = ({
               { value: "Last Month", label: "Last Month" },
             ]}
             onChangeCallback={(value) =>
-              setFilters((prevFilters) => ({ ...prevFilters, timeFilter: value }))
+              setFilters((prevFilters) => ({
+                ...prevFilters,
+                timeFilter: value,
+              }))
             }
           />
         </Col>
@@ -151,7 +156,10 @@ const CustomSearchFilter = ({
             label="Tanggal Awal:"
             placeholder="Pilih tanggal awal"
             onChange={(value) =>
-              setFilters((prevFilters) => ({ ...prevFilters, startDate: value }))
+              setFilters((prevFilters) => ({
+                ...prevFilters,
+                startDate: value,
+              }))
             }
           />
         </Col>
@@ -170,7 +178,10 @@ const CustomSearchFilter = ({
 
         {/* 🔹 Tombol untuk menerapkan filter */}
         <Col md="1" className="mt-2">
-          <button className="btn btn-info mt-4" onClick={() => applyFilters(filters)}>
+          <button
+            className="btn btn-info mt-4"
+            onClick={() => applyFilters(filters)}
+          >
             <i className="ri-search-line"></i>
           </button>
         </Col>

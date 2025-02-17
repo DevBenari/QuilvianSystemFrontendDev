@@ -8,7 +8,6 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 import ButtonNav from "@/components/ui/button-navigation";
 import { fetchAgamaWithPaging } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 
-
 const TableDataAgama = () => {
   const dispatch = useDispatch();
   const {
@@ -19,10 +18,10 @@ const TableDataAgama = () => {
   const methods = useForm();
 
   const agama = useMemo(() => agamaData?.data || [], [agamaData]);
-  console.log(agama)  
+  console.log(agama);
 
   const [filteredData, setFilteredData] = useState(agama);
-  console.log(filteredData)
+  console.log(filteredData);
 
   useEffect(() => {
     dispatch(fetchAgamaWithPaging());
@@ -37,14 +36,17 @@ const TableDataAgama = () => {
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">Master Data - List Daftar Agama</h2>
-          <button className="btn btn-dark my-3 mx-3" onClick={() => window.location.reload()}>
-              <i className="ri-refresh-line"></i>
+          <button
+            className="btn btn-dark my-3 mx-3"
+            onClick={() => window.location.reload()}
+          >
+            <i className="ri-refresh-line"></i>
           </button>
         </div>
         <CustomSearchFilter
-          data={agama} 
-          setFilteredData={setFilteredData} 
-          filterFields={["namaAgama", "kodeAgama"]} 
+          data={agama}
+          setFilteredData={setFilteredData}
+          filterFields={["namaAgama", "kodeAgama"]}
           dateField="createDateTime"
         />
       </Col>

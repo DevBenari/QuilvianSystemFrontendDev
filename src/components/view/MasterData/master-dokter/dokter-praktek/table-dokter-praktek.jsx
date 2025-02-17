@@ -10,6 +10,7 @@ import CustomTableComponent from "@/components/features/CustomTable/custom-table
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 
 import { fetchDokterPraktek } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
+import CustomTablePagedApi from "@/components/features/CustomTable/custom-table-page-api";
 
 const TableDokterPraktek = () => {
   const methods = useForm();
@@ -61,8 +62,9 @@ const TableDokterPraktek = () => {
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
             data={dokterPraktekData}
-            setFilteredPatients={setFilteredDokterPraktek}
-            onFilteredPatients={filteredDokterPraktek}
+            setFilteredData={setFilteredDokterPraktek}
+            filterFields={["kodeDokter", "namaDokter"]}
+            dateField="createDateTime"
           />
         </Col>
       </Col>
@@ -112,7 +114,7 @@ const TableDokterPraktek = () => {
               {/* Tampilkan tabel jika ada data */}
               {!loading && !error && dokterPraktekList.length > 0 && (
                 <div className="iq-card-body">
-                  <CustomTableComponent
+                  <CustomTablePagedApi
                     data={filteredDokterPraktek}
                     columns={[
                       { key: "kodeDokter", label: "Kode Dokter" }, // Nama dokter dari objek "dokters"

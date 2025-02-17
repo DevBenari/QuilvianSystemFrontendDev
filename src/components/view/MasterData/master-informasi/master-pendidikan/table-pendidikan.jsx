@@ -55,8 +55,9 @@ const TableDataPendidikan = () => {
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
             data={pendidikan}
-            setFilteredPatients={setFilteredpendidikan}
-            onFilteredPatients={filteredpendidikan}
+            setFilteredData={setFilteredpendidikan}
+            filterFields={["kodePendidikan", "namaPendidikan"]}
+            dateField="createdDateTime"
           />
         </Col>
       </Col>

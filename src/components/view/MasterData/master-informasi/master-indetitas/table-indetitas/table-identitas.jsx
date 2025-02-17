@@ -53,8 +53,9 @@ const TableDataIdentitas = () => {
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
             data={identitasData}
-            setFilteredPatients={setFilteredIdentitas}
-            onFilteredPatients={filteredIdentitas}
+            setFilteredData={setFilteredIdentitas}
+            filterFields={["kodeIdentitas", "nmIdentitas"]}
+            dateField="createDateTime"
           />
         </Col>
       </Col>
