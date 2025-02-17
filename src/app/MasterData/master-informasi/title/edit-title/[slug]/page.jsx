@@ -35,6 +35,8 @@ const TitleEditPage = ({ params }) => {
     }
   }, [selectedTitle]);
 
+  console.log("titleData:", titleData);
+
   const handleSubmit = async (data) => {
     try {
       if (!titleData) return;

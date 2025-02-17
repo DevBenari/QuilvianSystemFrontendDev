@@ -13,7 +13,7 @@ import { fetchAgama } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterD
 import { fetchPendidikan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice';
 import { fetchTitles } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice';
 import { fetchPekerjaan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice';
-import { GetNegaraSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
+import { fetchNegara} from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
 import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice';
 import { GetProvinsiSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice';
 import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice';
@@ -24,6 +24,8 @@ const KioskPendaftaranPasien = memo(() => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
     const [selectedPrintType, setSelectedPrintType] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [page, setPage] = useState(1);
     const router = useRouter();
     // fungsi untuk melakukan select provinsi
     // const {
@@ -40,7 +42,7 @@ const KioskPendaftaranPasien = memo(() => {
 
     const dispatch = useDispatch();
 
-    const {data: agamaData, loading, error} = useSelector((state) => state.agama)
+    const {data: agamaData, loading, error, currentPage,perPage} = useSelector((state) => state.agama)
     const {data: pendidikanData} = useSelector((state) => state.pendidikan)
     const {data: titles} = useSelector((state) => state.titles)
     const {data: pekerjaanData} = useSelector((state) => state.pekerjaan)
@@ -51,33 +53,51 @@ const KioskPendaftaranPasien = memo(() => {
     const {data: pasien} = useSelector((state) => state.pasien)
 
     useEffect(() => {
-        dispatch(fetchAgama())
+        dispatch(fetchAgama({page: currentPage, perPage : perPage}))
         dispatch(fetchPendidikan())
         dispatch(fetchTitles())
         dispatch(fetchPekerjaan())
-        dispatch(GetNegaraSlice())
+        dispatch(fetchNegara())
         dispatch(fetchGolongan())
         dispatch(GetProvinsiSlice())
         dispatch(fetchIdentitas())
-    }, [dispatch]);
+    }, [dispatch, currentPage, perPage]);
 
     useEffect(() => {
-        if (pasien) {
+        if (error) {
           router.push("/error-page");
         }
-      }, [router]);
+      }, [error, router]);
+
+    const handleSearchChange = (inputValue) => {
+        setSearchQuery(inputValue);
+      };
     
     if (loading) {
         return <div>Loading data pasien...</div>;
     }
 
+    const filteredAgama = searchQuery
+    ? agamaData.filter((item) =>
+        item.namaAgama.includes(searchQuery.toLowerCase())
+        )
+    : agamaData;
+    
+    const handleLoadMore = () => {
+        if (page < totalPages) {
+          setPage((prev) => prev + 1);
+        }
+      };
+
     // Tampilkan pesan error jika ada kesalahan
-   
+    console.log(filteredAgama)
 
     const titlesOptions = titles?.data.map(item => ({
         label: item.kodeTitle, // Label seperti "Tn", "Ny", "Mr"
         value: item.titleId    // ID untuk value
       })) || [];
+
+      
 
     const formFields = 
     [
@@ -174,9 +194,11 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Agama",
                     name:"agamaId",
                     placeholder: "Agama",
-                    options: agamaData?.data.map(item => ({ label: item.namaAgama, value: item.agamaId })) || [],
+                    options: agamaData?.map(item => ({ label: item.namaAgama, value: item.agamaId })) || [],
                     rules: { required: "Agama is required" },
-                    colSize: 6
+                    colSize: 6,
+                    onSearchChange: handleSearchChange, 
+                    onLoadMore: handleLoadMore, 
                 },
                 {
                     type: "select",

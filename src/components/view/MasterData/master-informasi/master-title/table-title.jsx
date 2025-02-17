@@ -20,6 +20,7 @@ const TableDataTitle = () => {
 
   // Gunakan useMemo untuk menghitung ulang titles hanya ketika titlesData berubah
   const titles = useMemo(() => titlesData?.data || [], [titlesData]);
+  console.log(titles);
 
   const [filteredTitles, setFilteredTitles] = useState(titles);
 
@@ -49,8 +50,9 @@ const TableDataTitle = () => {
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
             data={titles}
-            setFilteredPatients={setFilteredTitles}
-            onFilteredPatients={filteredTitles}
+            setFilteredData={setFilteredTitles} 
+            filterFields={["namaTitle", "kodeTitle"]} 
+            dateField="createDateTime"
           />
         </Col>
       </Col>

@@ -15,32 +15,41 @@ const TableDataAgama = () => {
     data: agamaData,
     loading,
     error,
+    currentPage,
+    perPage
   } = useSelector((state) => state.agama);
   const methods = useForm();
 
   const agama = useMemo(() => agamaData?.data || [], [agamaData]);
-  console.log(agama)  
+  // console.log(agama)  
 
   const [filteredData, setFilteredData] = useState(agama);
-  console.log(filteredData)
+  // console.log(filteredData)
 
   useEffect(() => {
-    dispatch(fetchAgama());
-  }, [dispatch]);
+    dispatch(fetchAgama({ page: currentPage, perPage }));
+  }, [dispatch, currentPage, perPage]);
+
+  // Fungsi untuk menangani perubahan halaman
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= agamaData.totalPages) {
+      dispatch(fetchAgama({ page: newPage, perPage }));
+    }
+  };
 
   useEffect(() => {
     setFilteredData(agama);
   }, [agama]);
 
-  console.log(filteredData)
+  // console.log(filteredData)
 
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">Master Data - List Daftar Agama</h2>
-          <button className="btn btn-dark my-3 mx-3" onClick={() => window.location.reload()}>
-              <i className="ri-refresh-line"></i>
+          <button className="btn btn-dark my-3 mx-3" onClick={() => dispatch(fetchAgama({ page: currentPage, perPage }))}>
+            <i className="ri-refresh-line"></i>
           </button>
         </div>
         <CustomSearchFilter
@@ -90,6 +99,9 @@ const TableDataAgama = () => {
                   itemsPerPage={10}
                   slugConfig={{ textField: "namaAgama", idField: "agamaId" }}
                   basePath="/MasterData/master-informasi/agama/edit-agama"
+                  currentPage={currentPage}
+                  totalPages={filteredData.totalPages}
+                  onPageChange={handlePageChange}
                 />
               )}
             </div>
