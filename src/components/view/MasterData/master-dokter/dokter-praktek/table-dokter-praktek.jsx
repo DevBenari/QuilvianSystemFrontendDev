@@ -29,11 +29,12 @@ const TableDokterPraktek = () => {
 
     return dokterPraktekData.map((praktek) => ({
       ...praktek,
-      namaDokter: praktek.dokters?.nmDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
-      kodeDokter: praktek.dokters?.kdDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
+      namaDokter: praktek.dokters.nmDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
+      kodeDokter: praktek.dokters.kdDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
     }));
   }, [dokterPraktekData]);
 
+  console.log("dokterPraktekList:", dokterPraktekList);
   // State untuk hasil filter pencarian
   const [filteredDokterPraktek, setFilteredDokterPraktek] =
     useState(dokterPraktekList);
@@ -127,7 +128,7 @@ const TableDokterPraktek = () => {
                     ]}
                     itemsPerPage={10}
                     slugConfig={{
-                      textField: "dokter",
+                      textField: "namaDokter",
                       idField: "dokterPraktekId",
                     }}
                     basePath="/MasterData/master-dokter/dokter-praktek/edit-dokter-praktek"

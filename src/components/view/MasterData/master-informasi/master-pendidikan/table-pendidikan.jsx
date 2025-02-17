@@ -117,16 +117,8 @@ const TableDataPendidikan = () => {
                         label: "Tanggal Dibuat",
                       },
                       {
-                        key: "createBy",
+                        key: "createByName",
                         label: "Dibuat Oleh",
-                      },
-                      {
-                        key: "updateDateTime",
-                        label: "Tanggal Update",
-                      },
-                      {
-                        key: "updateBy",
-                        label: "Update Oleh",
                       },
                     ]}
                     itemsPerPage={10}

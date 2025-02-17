@@ -1,11 +1,10 @@
 "use client";
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import { Table, Button, Spinner } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import PaginationControls from "@/utils/paginationControl";
 import { generateSlug } from "@/utils/slug";
-import { format } from "date-fns";
 
+import { parseISO, format } from "date-fns";
 const CustomTableComponent = memo(
   ({
     data = [],
@@ -25,7 +24,8 @@ const CustomTableComponent = memo(
     const router = useRouter();
 
     const formatDate = (date) => {
-      return format(new Date(date), "dd/MM/yyyy"); // Formats date to Day/Month/Year
+      if (!date) return "-"; // Jika tanggal null/undefined, tampilkan "-"
+      return format(parseISO(date), "dd/MM/yyyy HH:mm");
     };
 
     const handleDoubleClick = (item) => {
@@ -90,13 +90,15 @@ const CustomTableComponent = memo(
                               paginationProps.itemsPerPage +
                             index +
                             1
-                          : col.key === "tanggalLahir" ||
-                            col.key === "createDateTime" ||
-                            col.key === "tanggalDaftar" ||
-                            col.key === "tglSip" ||
-                            col.key === "tglStr"
-                          ? formatDate(item[col.key])
-                          : item[col.key]}
+                          : col.key === "createDateTime"
+                          ? // col.key === "createDateTime" ||
+                            // col.key === "tanggalDaftar" ||
+                            // col.key === "tglSip" ||
+                            // col.key === "tglStr"
+                            formatDate(item[col.key])
+                          : item
+                          ? item[col.key] ?? "-"
+                          : "-"}
                       </td>
                     ))}
                     {showActions && (
@@ -120,7 +122,33 @@ const CustomTableComponent = memo(
             </tbody>
           </Table>
         </div>
-        <PaginationControls {...paginationProps} />
+
+        {/* 🔹 Pagination Controls */}
+        <div className="d-flex justify-content-between mt-3">
+          <Button
+            className="btn btn-secondary"
+            onClick={() =>
+              paginationProps.onPageChange(paginationProps.currentPage - 1)
+            }
+            disabled={paginationProps.currentPage === 1}
+          >
+            Previous
+          </Button>
+
+          <span>
+            Page {paginationProps.currentPage} of {paginationProps.totalPages}
+          </span>
+
+          <Button
+            className="btn btn-primary"
+            onClick={() =>
+              paginationProps.onPageChange(paginationProps.currentPage + 1)
+            }
+            disabled={paginationProps.currentPage >= paginationProps.totalPages}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     );
   }

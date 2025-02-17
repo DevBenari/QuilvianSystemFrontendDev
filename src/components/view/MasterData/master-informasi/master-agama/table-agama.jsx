@@ -1,37 +1,36 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { FormProvider, useForm } from "react-hook-form";
+import { fetchAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import { FormProvider, useForm } from "react-hook-form";
 import ButtonNav from "@/components/ui/button-navigation";
-import { fetchAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 
 const TableDataAgama = () => {
+  const methods = useForm();
   const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
+  const perPage = 10; // Bisa diubah sesuai kebutuhan
+  const [filteredData, setFilteredData] = useState([]);
   const {
     data: agamaData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.agama);
-  const methods = useForm();
-
-  const agama = useMemo(() => agamaData?.data || [], [agamaData]);
-  console.log(agama);
-
-  const [filteredData, setFilteredData] = useState(agama);
-  console.log(filteredData);
 
   useEffect(() => {
-    dispatch(fetchAgama());
-  }, [dispatch]);
+    dispatch(fetchAgama({ page, perPage }));
+  }, [dispatch, page]);
 
   useEffect(() => {
-    setFilteredData(agama);
-  }, [agama]);
-
-  console.log(filteredData)
+    if (Array.isArray(agamaData)) {
+      setFilteredData(agamaData);
+      console.log("Filtered Data (cek createByName):", agamaData);
+    }
+  }, [agamaData]);
 
   return (
     <FormProvider {...methods}>
@@ -45,14 +44,13 @@ const TableDataAgama = () => {
             <i className="ri-refresh-line"></i>
           </button>
         </div>
+
         <CustomSearchFilter
-          data={agama}
+          data={agamaData}
           setFilteredData={setFilteredData}
           filterFields={["namaAgama", "kodeAgama"]}
-          dateField="createDateTime"
         />
       </Col>
-
       <div className="mt-3">
         <Row>
           <Col sm="12" className="p-3">
@@ -66,10 +64,10 @@ const TableDataAgama = () => {
                   label="Add Agama"
                   icon="ri-add-fill"
                   size="sm"
+                  variant=""
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
-
               {loading && (
                 <div
                   className="d-flex justify-content-center align-items-center"
@@ -86,12 +84,20 @@ const TableDataAgama = () => {
                   data={filteredData}
                   columns={[
                     { key: "no", label: "No" },
-                    { key: "kodeAgama", label: "Kode Agama" },
+                    // { key: "kodeAgama", label: "Kode Agama" },
                     { key: "namaAgama", label: "Nama Agama" },
+                    { key: "createByName", label: "Dibuat Oleh" }, // Pastikan ini benar
+                    { key: "createdDate", label: "Tanggal Dibuat" },
                   ]}
-                  itemsPerPage={10}
+                  itemsPerPage={perPage}
                   slugConfig={{ textField: "namaAgama", idField: "agamaId" }}
                   basePath="/MasterData/master-informasi/agama/edit-agama"
+                  paginationProps={{
+                    currentPage: page,
+                    totalPages: totalPages,
+                    itemsPerPage: perPage,
+                    onPageChange: setPage, // Gunakan fungsi untuk mengubah halaman
+                  }}
                 />
               )}
             </div>

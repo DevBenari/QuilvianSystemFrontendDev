@@ -118,7 +118,7 @@ const TableDataAsuransi = () => {
                         label: "Tanggal Dibuat",
                       },
                       {
-                        key: "createBy",
+                        key: "createByName",
                         label: "Dibuat Oleh",
                       },
                     ]}

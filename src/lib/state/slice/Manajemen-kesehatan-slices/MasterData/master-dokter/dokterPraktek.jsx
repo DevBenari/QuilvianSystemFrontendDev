@@ -44,7 +44,7 @@ export const createDokterPraktek = createAsyncThunk(
       const response = await InstanceAxios.post("/DokterPraktek", data, {
         headers: getHeaders(),
       });
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Gagal menambahkan data Dokter Praktek"

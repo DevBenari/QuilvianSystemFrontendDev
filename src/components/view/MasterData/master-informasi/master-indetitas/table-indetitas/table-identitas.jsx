@@ -26,6 +26,8 @@ const TableDataIdentitas = () => {
     return Array.isArray(identitasData) ? identitasData : [];
   }, [identitasData]);
 
+  console.log("identitasData:", identitasData);
+
   // State untuk hasil filter pencarian
   const [filteredIdentitas, setFilteredIdentitas] = useState(identitasList);
 
@@ -51,12 +53,11 @@ const TableDataIdentitas = () => {
           </h2>
         </div>
         <Col lg="12" className="mt-2">
-          <CustomSearchFilter
-            data={identitasData}
+          {/* <CustomSearchFilter
+            data={identitasData.data}
             setFilteredData={setFilteredIdentitas}
             filterFields={["kodeIdentitas", "nmIdentitas"]}
-            dateField="createDateTime"
-          />
+          /> */}
         </Col>
       </Col>
       <div className="mt-3">
@@ -115,16 +116,8 @@ const TableDataIdentitas = () => {
                         label: "Tanggal Dibuat",
                       },
                       {
-                        key: "createBy",
+                        key: "createByName",
                         label: "Dibuat Oleh",
-                      },
-                      {
-                        key: "updateDateTime",
-                        label: "Tanggal Update",
-                      },
-                      {
-                        key: "updateBy",
-                        label: "Update Oleh",
                       },
                     ]}
                     itemsPerPage={10}

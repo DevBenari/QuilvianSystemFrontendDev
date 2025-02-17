@@ -116,20 +116,12 @@ const TableDataGolongan = () => {
                         label: "Kode Golongan Darah",
                       },
                       {
-                        key: "createDateTime",
-                        label: "Tanggal Dibuat",
-                      },
-                      {
-                        key: "createBy",
+                        key: "createByName",
                         label: "Dibuat Oleh",
                       },
                       {
-                        key: "updateDateTime",
-                        label: "Tanggal Update",
-                      },
-                      {
-                        key: "updateBy",
-                        label: "Update Oleh",
+                        key: "createDateTime",
+                        label: "Tanggal Dibuat",
                       },
                     ]}
                     itemsPerPage={10}

@@ -10,7 +10,8 @@ import provinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterDa
 import kabupaten from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kabupatenSlice";
 import kecamatan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kecamatanSlice";
 import kelurahan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kelurahanSlice";
-import identitasStore from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import indetitasSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import jabatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
 import AgamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 import dokterPraktekData from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
 import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
@@ -22,7 +23,6 @@ const store = configureStore({
     pasien: pasien,
     agama: AgamaSlice,
     pekerjaan: pekerjaanReducer,
-    identitas: identitasStore,
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
     negara: NegaraSlice,
@@ -32,6 +32,8 @@ const store = configureStore({
     kelurahan: kelurahan,
     dokterPraktek: dokterPraktekData,
     dokter: dokterSlice,
+    identitas: indetitasSlice,
+    jabatan: jabatanSlice,
   },
 });
 
