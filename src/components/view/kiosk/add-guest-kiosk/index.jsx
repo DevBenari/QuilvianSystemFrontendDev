@@ -17,13 +17,14 @@ import { GetNegaraSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/Mas
 import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice';
 import { GetProvinsiSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice';
 import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice';
-
+import { useRouter } from 'next/navigation';
 
 const KioskPendaftaranPasien = memo(() => {
     const { setValue } = useForm();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
     const [selectedPrintType, setSelectedPrintType] = useState(null);
+    const router = useRouter();
     // fungsi untuk melakukan select provinsi
     // const {
     //     provinsi,
@@ -47,6 +48,7 @@ const KioskPendaftaranPasien = memo(() => {
     const {data: GolonganDarah} = useSelector((state) => state.golongan)
     const {data: provinsi} = useSelector((state) => state.provinsi)
     const {data: identitas} = useSelector((state) => state.identitas)
+    const {data: pasien} = useSelector((state) => state.pasien)
 
     useEffect(() => {
         dispatch(fetchAgama())
@@ -58,14 +60,19 @@ const KioskPendaftaranPasien = memo(() => {
         dispatch(GetProvinsiSlice())
         dispatch(fetchIdentitas())
     }, [dispatch]);
+
+    useEffect(() => {
+        if (pasien) {
+          router.push("/error-page");
+        }
+      }, [router]);
+    
     if (loading) {
         return <div>Loading data pasien...</div>;
     }
 
     // Tampilkan pesan error jika ada kesalahan
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+   
 
     const titlesOptions = titles?.data.map(item => ({
         label: item.kodeTitle, // Label seperti "Tn", "Ny", "Mr"
