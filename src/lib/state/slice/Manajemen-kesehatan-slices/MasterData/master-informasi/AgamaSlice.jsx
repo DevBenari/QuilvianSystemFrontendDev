@@ -2,18 +2,27 @@ import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// 🔹 Fetch semua data agama dengan pagination
+// ✅ Fetch semua data agama dengan pagination
 export const fetchAgama = createAsyncThunk(
   "agama/fetchData",
-  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
+  async ({ page = 1, perPage = 10 }, { rejectWithValue, getState }) => {
     try {
-      const response = await InstanceAxios.get(`/Agama/paged`, {
+      // Check if we already have the data for this page
+      const currentState = getState().agama;
+      if (currentState.loadedPages.includes(page)) {
+        return null; // Skip fetching if we already have the data
+      }
+
+      const response = await InstanceAxios.get(`/Agama`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
 
-      console.log("Response API:", response.data);
-      return response.data;
+      return { 
+        data: response.data.data,
+        pagination: response.data.pagination,
+        page
+      };
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
@@ -103,12 +112,12 @@ const agamaSlice = createSlice({
   name: "agama",
   initialState: {
     data: [],
+    loadedPages: [], 
     totalItems: 0,
     totalPages: 1,
     currentPage: 1,
     loading: false,
     error: null,
-    selectedAgama: null, // Untuk menyimpan data dari fetch by ID
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -119,18 +128,28 @@ const agamaSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAgama.fulfilled, (state, action) => {
-        console.log("Processed Data:", action.payload);
+        if (!action.payload) return; // Skip if we already had the data
+        
         state.loading = false;
-        state.data = [...action.payload.data.rows];
-        state.totalItems = action.payload.data?.totalRows;
-        state.totalPages = action.payload.data?.totalPages;
-        state.currentPage = action.payload.data?.currentPage;
+        
+        // Add new data without duplicates
+        const newData = action.payload.data.filter(
+          newItem => !state.data.some(
+            existingItem => existingItem.agamaId === newItem.agamaId
+          )
+        );
+        
+        state.data = [...state.data, ...newData];
+        state.loadedPages.push(action.payload.page);
+        state.totalItems = action.payload.pagination?.totalRows || 0;
+        state.totalPages = action.payload.pagination?.totalPages || 1;
+        state.currentPage = action.meta.arg.page;
       })
       .addCase(fetchAgama.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || "Gagal mengambil data";
+        state.error = action.payload;
       })
-
+  
       // **Fetch By ID**
       .addCase(fetchAgamaById.pending, (state) => {
         state.loading = true;

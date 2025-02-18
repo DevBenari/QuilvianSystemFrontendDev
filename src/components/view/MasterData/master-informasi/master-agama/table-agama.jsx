@@ -20,7 +20,7 @@ const TableDataAgama = () => {
   } = useSelector((state) => state.agama);
   const methods = useForm();
 
-  const agama = useMemo(() => agamaData?.data || [], [agamaData]);
+  const agama = useMemo(() => agamaData || [], [agamaData]);
   // console.log(agama)  
 
   const [filteredData, setFilteredData] = useState(agama);

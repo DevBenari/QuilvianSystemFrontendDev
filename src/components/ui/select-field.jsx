@@ -1,34 +1,49 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useRef, useMemo, useCallback } from "react";
 import { useController, useFormContext } from "react-hook-form";
 import { Form } from "react-bootstrap";
 import Select from "react-select";
 
 const SelectField = forwardRef(
-  ({ name, label, options, rules, placeholder, onSearchChange, onLoadMore, ...props }, ref) => {
+  ({ name, label, options, rules, placeholder, onInputChange, onMenuScrollToBottom, ...props }, ref) => {
     const { control } = useFormContext();
     const { field, fieldState: { error } } = useController({ name, control, rules });
 
-    const customStyles = {
-      control: (provided) => ({
-        ...provided,
-        border: "1px solid #ced4da",
-        borderRadius: "0.25rem",
-        boxShadow: "none",
-        height: "calc(1.5em + 0.75rem + 2px)",
-      }),
-      menu: (provided) => ({
-        ...provided,
-        zIndex: 9999,
-      }),
-      placeholder: (provided) => ({
-        ...provided,
-        color: "#6c757d",
-      }),
-    };
+    const scrollTimeout = useRef(null);
+    const isFetching = useRef(false);
 
-    const handleChange = (selected) => {
+    // Memoize the handleChange callback
+    const handleChange = useCallback((selected) => {
       field.onChange(selected ? selected.value : null);
-    };
+    }, [field]);
+
+    // Memoize the scroll handler
+    const handleScrollToBottom = useCallback(() => {
+      if (scrollTimeout.current || isFetching.current) return;
+
+      isFetching.current = true;
+      scrollTimeout.current = setTimeout(() => {
+        if (onMenuScrollToBottom) {
+          onMenuScrollToBottom();
+        }
+        isFetching.current = false;
+        scrollTimeout.current = null;
+      }, 300); // Reduced debounce time
+    }, [onMenuScrollToBottom]);
+
+    // Memoize options with deep comparison
+    const memoizedOptions = useMemo(() => 
+      options?.map(opt => ({
+        label: opt.label,
+        value: opt.value
+      })) || [], 
+      [options]
+    );
+
+    // Memoize the selected value
+    const selectedValue = useMemo(() => 
+      memoizedOptions.find((option) => option.value === field.value) || null,
+      [memoizedOptions, field.value]
+    );
 
     return (
       <Form.Group>
@@ -36,14 +51,14 @@ const SelectField = forwardRef(
         <Select
           {...field}
           {...props}
-          options={options}
-          placeholder={placeholder || "Pilih Agama"}
-          styles={customStyles}
-          value={options.find((option) => option.value === field.value) || null}
+          options={memoizedOptions}
+          placeholder={placeholder || "Pilih opsi"}
+          value={selectedValue}
           onChange={handleChange}
-          onInputChange={onSearchChange} // Trigger pencarian dari parent
-          onMenuScrollToBottom={onLoadMore} // Load halaman berikutnya saat scroll
+          onInputChange={onInputChange}
+          onMenuScrollToBottom={handleScrollToBottom}
           isClearable
+          isLoading={props.isLoading}
         />
         {error && <Form.Control.Feedback type="invalid">{error.message}</Form.Control.Feedback>}
       </Form.Group>
@@ -53,4 +68,11 @@ const SelectField = forwardRef(
 
 SelectField.displayName = "SelectField";
 
-export default SelectField;
+export default React.memo(SelectField, (prevProps, nextProps) => {
+  // Custom comparison for React.memo
+  return (
+    prevProps.options === nextProps.options &&
+    prevProps.value === nextProps.value &&
+    prevProps.isLoading === nextProps.isLoading
+  );
+});

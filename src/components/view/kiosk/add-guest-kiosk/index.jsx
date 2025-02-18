@@ -1,5 +1,5 @@
 'use client'
-import React, {  Fragment, memo, useEffect, useState } from 'react'
+import React, {  Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 // import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import DynamicStepForm from '@/components/features/dynamic-form/dynamicForm/dynamicFormSteps';
@@ -18,14 +18,13 @@ import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/Mast
 import { GetProvinsiSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice';
 import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice';
 import { useRouter } from 'next/navigation';
+import useAgamaData from '@/lib/hooks/useAgamaData';
 
 const KioskPendaftaranPasien = memo(() => {
     const { setValue } = useForm();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
     const [selectedPrintType, setSelectedPrintType] = useState(null);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [page, setPage] = useState(1);
     const router = useRouter();
     // fungsi untuk melakukan select provinsi
     // const {
@@ -39,11 +38,14 @@ const KioskPendaftaranPasien = memo(() => {
     //     handleChange,
     // } = UseSelectWilayah(setValue);
 
-
+    const { 
+        agamaOptions, 
+        loading: agamaLoading, 
+        handleLoadMore 
+      } = useAgamaData();
     const dispatch = useDispatch();
 
-    const {data: agamaData, loading, error, currentPage,perPage} = useSelector((state) => state.agama)
-    const {data: pendidikanData} = useSelector((state) => state.pendidikan)
+    const {data: pendidikanData, error, loading} = useSelector((state) => state.pendidikan)
     const {data: titles} = useSelector((state) => state.titles)
     const {data: pekerjaanData} = useSelector((state) => state.pekerjaan)
     const {data: negara} = useSelector((state) => state.negara)
@@ -53,7 +55,6 @@ const KioskPendaftaranPasien = memo(() => {
     const {data: pasien} = useSelector((state) => state.pasien)
 
     useEffect(() => {
-        dispatch(fetchAgama({page: currentPage, perPage : perPage}))
         dispatch(fetchPendidikan())
         dispatch(fetchTitles())
         dispatch(fetchPekerjaan())
@@ -61,43 +62,37 @@ const KioskPendaftaranPasien = memo(() => {
         dispatch(fetchGolongan())
         dispatch(GetProvinsiSlice())
         dispatch(fetchIdentitas())
-    }, [dispatch, currentPage, perPage]);
+    }, [dispatch]);
+
+    const lastFetchedPage = useRef(1);
+
+    // const handleLoadMore = useCallback(() => {
+    //     if (page < totalPages && lastFetchedPage.current !== page + 1) {
+    //         console.log(`📡 Fetching next page: ${page + 1}`);
+    //         lastFetchedPage.current = page + 1; // Update ref agar tidak fetch ulang
+    //         setPage(prevPage => prevPage + 1);
+    //     } else {
+    //         console.log(`✅ No more pages to fetch`);
+    //     }
+    // }, [page, totalPages]);
+
+    
+    // Tampilkan pesan error jika ada kesalahan
+
+    const titlesOptions = titles?.data.map(item => ({
+        label: item.namaTitle, // Label seperti "Tn", "Ny", "Mr"
+        value: item.titleId    // ID untuk value
+      })) || [];
 
     useEffect(() => {
         if (error) {
-          router.push("/error-page");
+            router.push("/error-page");
         }
-      }, [error, router]);
-
-    const handleSearchChange = (inputValue) => {
-        setSearchQuery(inputValue);
-      };
+    }, [error, router]);
     
     if (loading) {
         return <div>Loading data pasien...</div>;
     }
-
-    const filteredAgama = searchQuery
-    ? agamaData.filter((item) =>
-        item.namaAgama.includes(searchQuery.toLowerCase())
-        )
-    : agamaData;
-    
-    const handleLoadMore = () => {
-        if (page < totalPages) {
-          setPage((prev) => prev + 1);
-        }
-      };
-
-    // Tampilkan pesan error jika ada kesalahan
-    console.log(filteredAgama)
-
-    const titlesOptions = titles?.data.map(item => ({
-        label: item.kodeTitle, // Label seperti "Tn", "Ny", "Mr"
-        value: item.titleId    // ID untuk value
-      })) || [];
-
-      
 
     const formFields = 
     [
@@ -189,17 +184,18 @@ const KioskPendaftaranPasien = memo(() => {
                     colSize: 6
                 },
                 {
-                    type:"select",
+                    type: "select",
                     id: "agamaId",
                     label: "Agama",
-                    name:"agamaId",
-                    placeholder: "Agama",
-                    options: agamaData?.map(item => ({ label: item.namaAgama, value: item.agamaId })) || [],
+                    name: "agamaId",
+                    placeholder: "Pilih Agama",
+                    options: agamaOptions,
                     rules: { required: "Agama is required" },
                     colSize: 6,
-                    onSearchChange: handleSearchChange, 
-                    onLoadMore: handleLoadMore, 
+                    onMenuScrollToBottom: handleLoadMore,
+                    isLoading: agamaLoading
                 },
+                
                 {
                     type: "select",
                     id: "pendidikanTerakhirId",
