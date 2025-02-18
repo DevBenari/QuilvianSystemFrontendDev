@@ -10,7 +10,7 @@ import DateInput from "@/components/ui/date-input";
  * @param {Function} fetchFunction - Fungsi Redux untuk fetch data (contoh: fetchAgamaWithFilters)
  * @param {Function} setFilteredData - Fungsi untuk menyimpan hasil pencarian
  */
-const CustomSearchFilterApi = ({ fetchFunction, setFilteredData }) => {
+const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
   const dispatch = useDispatch();
 
   // 🔹 State untuk menyimpan filter pencarian
@@ -113,4 +113,4 @@ const CustomSearchFilterApi = ({ fetchFunction, setFilteredData }) => {
   );
 };
 
-export default CustomSearchFilterApi;
+export default CustomSearchFilter;

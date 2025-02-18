@@ -3,7 +3,7 @@
 import { Row, Col, Button } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 

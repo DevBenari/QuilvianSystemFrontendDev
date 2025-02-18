@@ -2,7 +2,7 @@
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Col, Row, Spinner } from "react-bootstrap";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
 import { pasienLama } from "@/utils/dataPasien";

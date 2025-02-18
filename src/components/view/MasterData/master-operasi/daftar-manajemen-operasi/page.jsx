@@ -12,7 +12,7 @@ import {
 import TextField from "@/components/ui/text-field";
 import NumberField from "@/components/ui/distance-filed";
 
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const TableManajemenOperasi = () => {
