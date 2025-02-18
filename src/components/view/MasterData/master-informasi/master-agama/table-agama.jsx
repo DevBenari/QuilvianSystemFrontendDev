@@ -9,7 +9,8 @@ import {
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 import { FormProvider, useForm } from "react-hook-form";
-import CustomSearchFilterApi from "@/components/features/custom-search/CustomSearchComponen/custom-search-api";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-api";
+import ButtonNav from "@/components/ui/button-navigation";
 
 const TableDataAgama = () => {
   const methods = useForm();
@@ -29,15 +30,8 @@ const TableDataAgama = () => {
   }, [dispatch, page]);
 
   useEffect(() => {
-    if (Array.isArray(agamaData)) {
-      const updatedData = agamaData.map((item) => ({
-        ...item,
-        createByName: item.createByName || "Tidak Diketahui",
-        createdDate: item.createDateTime || "-",
-      }));
-      console.log("Updated Data:", updatedData);
-      setFilteredData(updatedData);
-    }
+    console.log("Agama Data:", agamaData);
+    setFilteredData(agamaData);
   }, [agamaData]);
 
   return (
@@ -56,7 +50,7 @@ const TableDataAgama = () => {
           </button>
         </div>
         <Col lg="12" className="mt-2">
-          <CustomSearchFilterApi
+          <CustomSearchFilter
             fetchFunction={fetchAgamaWithFilters}
             setFilteredData={setFilteredData}
           />
@@ -66,6 +60,21 @@ const TableDataAgama = () => {
         <Row>
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
+              <div className="iq-card-header d-flex justify-content-between">
+                <div className="iq-header-Anggota">
+                  <h4 className="card-Anggota font-widest">
+                    Tabel List Daftar Anggota
+                  </h4>
+                </div>
+                <ButtonNav
+                  path="/MasterData/master-informasi/agama/add-agama"
+                  label="Tambah Agama"
+                  icon="ri-add-fill"
+                  size="sm"
+                  variant=""
+                  className="btn btn-sm iq-bg-success"
+                />
+              </div>
               {loading ? (
                 <div className="text-center p-4">
                   <Spinner animation="border" variant="primary" />
@@ -86,10 +95,12 @@ const TableDataAgama = () => {
                   columns={[
                     { key: "no", label: "No" },
                     { key: "createByName", label: "Dibuat Oleh" },
-                    { key: "createdDate", label: "Tanggal Dibuat" },
+                    { key: "createDateTime", label: "Tanggal Dibuat" },
                     { key: "kodeAgama", label: "Kode Agama" },
                     { key: "namaAgama", label: "Nama Agama" },
                   ]}
+                  slugConfig={{ textField: "namaAgama", idField: "agamaId" }}
+                  basePath="/MasterData/master-informasi/agama/edit-agama"
                   paginationProps={{
                     currentPage: page,
                     totalPages: totalPages,

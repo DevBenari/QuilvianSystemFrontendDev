@@ -48,6 +48,73 @@ export const fetchAgamaWithFilters = createAsyncThunk(
   }
 );
 
+// 🔹 Fetch data agama berdasarkan ID
+export const fetchAgamaById = createAsyncThunk(
+  "agama/fetchById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Agama/${id}`, {
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Fetch By ID):", response.data);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
+    }
+  }
+);
+
+// 🔹 Tambah Agama Darah
+export const createAgama = createAsyncThunk(
+  "agama/create",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.post(`/Agama`, data, {
+        headers: getHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Gagal menambahkan Agama darah"
+      );
+    }
+  }
+);
+
+// 🔹 Update Agama Darah berdasarkan ID
+export const updateAgama = createAsyncThunk(
+  "agama/update",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.put(`/Agama/${id}`, data, {
+        headers: getHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Gagal memperbarui Agama "
+      );
+    }
+  }
+);
+
+export const deleteAgama = createAsyncThunk(
+  "agama/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.delete(`/Agama/${id}`, {
+        headers: getHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Gagal menghapus Agama");
+    }
+  }
+);
+
 // 🔹 Redux Slice
 const agamaSlice = createSlice({
   name: "agama",
@@ -96,6 +163,42 @@ const agamaSlice = createSlice({
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
+      })
+
+      // Fetch By ID
+      .addCase(fetchAgamaById.pending, (state) => {
+        state.loading = true;
+        state.selectedAgama = null;
+      })
+      .addCase(fetchAgamaById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedAgama = action.payload;
+      })
+      .addCase(fetchAgamaById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Tambah Agama Darah
+      .addCase(createAgama.fulfilled, (state, action) => {
+        state.data.push(action.payload);
+      })
+
+      // Update Agama Darah
+      .addCase(updateAgama.fulfilled, (state, action) => {
+        const index = state.data.findIndex(
+          (agama) => agama.agamaId === action.payload.agamaId
+        );
+        if (index !== -1) {
+          state.data[index] = action.payload;
+        }
+      })
+
+      // Hapus agama Darah
+      .addCase(deleteAgama.fulfilled, (state, action) => {
+        state.data = state.data.filter(
+          (agama) => agama.agamaId !== action.payload
+        );
       });
   },
 });
