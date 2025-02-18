@@ -90,17 +90,18 @@ const CustomTableComponent = memo(
                               paginationProps.itemsPerPage +
                             index +
                             1
-                          : col.key === "createdDate"
-                          ? // col.key === "createDateTime" ||
-                            // col.key === "tanggalDaftar" ||
-                            // col.key === "tglSip" ||
-                            // col.key === "tglStr"
-                            formatDate(item[col.key])
+                          : col.key === "createdDate" ||
+                            col.key === "createDateTime" ||
+                            col.key === "tanggalDaftar" ||
+                            col.key === "tglSip" ||
+                            col.key === "tglStr"
+                          ? formatDate(item[col.key])
                           : item
                           ? item[col.key] ?? "-"
                           : "-"}
                       </td>
                     ))}
+
                     {showActions && (
                       <td>
                         {actions.map((action) => (
