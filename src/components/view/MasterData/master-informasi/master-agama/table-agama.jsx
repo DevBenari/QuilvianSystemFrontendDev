@@ -15,8 +15,7 @@ import ButtonNav from "@/components/ui/button-navigation";
 const TableDataAgama = () => {
   const methods = useForm();
   const dispatch = useDispatch();
-  const [page, setPage] = useState(1);
-  const perPage = 10;
+
   const [filteredData, setFilteredData] = useState([]);
   const {
     data: agamaData,
@@ -24,6 +23,9 @@ const TableDataAgama = () => {
     error,
     totalPages,
   } = useSelector((state) => state.agama);
+
+  const [page, setPage] = useState(1);
+  const perPage = 10;
 
   useEffect(() => {
     dispatch(fetchAgamaPaged({ page, perPage }));

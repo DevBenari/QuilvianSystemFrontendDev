@@ -7,7 +7,11 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDokter } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
+import {
+  fetchDokter,
+  fetchDokterWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
+import { set } from "date-fns";
 
 const TableDataDokter = () => {
   const methods = useForm();
@@ -27,7 +31,7 @@ const TableDataDokter = () => {
   // 🔹 Menggunakan useMemo untuk memastikan hanya dire-render saat data berubah
   const dokter = useMemo(() => dokterData || [], [dokterData]);
 
-  const [filteredDokter, setFilteredDokter] = useState(dokter);
+  const [filteredDokter, setFilteredDokter] = useState([]);
 
   useEffect(() => {
     dispatch(fetchDokter({ page, perPage }));
@@ -38,6 +42,7 @@ const TableDataDokter = () => {
   }, [dokter]);
 
   console.log("dokter Data:", dokter);
+
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
@@ -55,10 +60,8 @@ const TableDataDokter = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={dokter}
+            fetchFunction={fetchDokterWithFilters}
             setFilteredData={setFilteredDokter}
-            filterFields={["kdDokter", "nmDokter", "sip", "str"]}
-            dateField="createDateTime"
           />
         </Col>
       </Col>
@@ -80,41 +83,26 @@ const TableDataDokter = () => {
                 />
               </div>
 
-              {/* 🔹 Loading Animation */}
-              {loading && (
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "200px" }}
-                >
-                  <Spinner animation="border" variant="primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* 🔹 Error atau Data Kosong */}
-              {!loading && (error || dokter.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredDokter.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {/* 🔹 Tabel Data Dokter */}
-              {!loading && !error && dokter.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredDokter}
                     columns={[
                       { key: "no", label: "No" }, // Nomor urut
-                      { key: "kdDokter", label: "Kode Dokter" },
-                      { key: "nmDokter", label: "Nama Dokter" },
-                      { key: "sip", label: "SIP" },
-                      { key: "str", label: "STR" },
-                      { key: "tglSip", label: "Tanggal SIP" },
-                      { key: "tglStr", label: "Tanggal STR" },
-                      { key: "panggilDokter", label: "Panggilan" },
-                      { key: "nik", label: "NIK" },
                       {
                         key: "createdDate",
                         label: "Tanggal Dibuat",
@@ -123,6 +111,14 @@ const TableDataDokter = () => {
                         key: "createByName",
                         label: "Dibuat Oleh",
                       },
+                      { key: "kdDokter", label: "Kode Dokter" },
+                      { key: "nmDokter", label: "Nama Dokter" },
+                      { key: "sip", label: "SIP" },
+                      { key: "str", label: "STR" },
+                      { key: "tglSip", label: "Tanggal SIP" },
+                      { key: "tglStr", label: "Tanggal STR" },
+                      { key: "panggilDokter", label: "Panggilan" },
+                      { key: "nik", label: "NIK" },
                     ]}
                     slugConfig={{ textField: "nmDokter", idField: "dokterId" }} // ID Dokter untuk Slug
                     basePath="/MasterData/master-dokter/dokter/edit-dokter-form"

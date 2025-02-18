@@ -22,6 +22,31 @@ export const fetchPendidikan = createAsyncThunk(
   }
 );
 
+export const fetchPendidikanWithFilters = createAsyncThunk(
+  "Pendidikan/fetchWithFilters",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Pendidikan/paged`, {
+        params: filters,
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Filtered):", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "Tidak ada data yang tersedia",
+          data: [],
+        });
+      }
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
+    }
+  }
+);
+
 export const fetchPendidikanById = createAsyncThunk(
   "pendidikan/fetchById",
   async (id, { rejectWithValue }) => {
@@ -117,6 +142,25 @@ const pendidikanSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Gagal mengambil data";
       })
+
+      // ✅ Fetch Pendidikan dengan search & filter (CustomSearchFilter)
+      .addCase(fetchPendidikanWithFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPendidikanWithFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
+      })
+      .addCase(fetchPendidikanWithFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
+      })
+
       // Fetch data pendidikan berdasarkan ID
       .addCase(fetchPendidikanById.pending, (state) => {
         state.loading = true;

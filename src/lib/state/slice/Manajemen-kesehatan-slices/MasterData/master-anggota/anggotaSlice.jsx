@@ -40,6 +40,31 @@ export const fetchAnggotaById = createAsyncThunk(
   }
 );
 
+export const fetchAnggotaWithFilters = createAsyncThunk(
+  "Anggota/fetchWithFilters",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Keanggotaan/paged`, {
+        params: filters,
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Filtered):", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "Tidak ada data yang tersedia",
+          data: [],
+        });
+      }
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
+    }
+  }
+);
+
 // 🔹 Tambah Anggota
 export const createAnggota = createAsyncThunk(
   "anggota/create",
@@ -121,6 +146,25 @@ const anggotaSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Gagal mengambil data";
       })
+
+      // ✅ Fetch Anggota dengan search & filter (CustomSearchFilter)
+      .addCase(fetchAnggotaWithFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAnggotaWithFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
+      })
+      .addCase(fetchAnggotaWithFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
+      })
+
       .addCase(fetchAnggotaById.pending, (state) => {
         state.selectedAnggota = null;
       })

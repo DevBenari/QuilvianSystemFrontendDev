@@ -23,6 +23,31 @@ export const fetchIdentitas = createAsyncThunk(
   }
 );
 
+export const fetchIdentitasWithFilters = createAsyncThunk(
+  "Identitas/fetchWithFilters",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Identitas/paged`, {
+        params: filters,
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Filtered):", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "Tidak ada data yang tersedia",
+          data: [],
+        });
+      }
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
+    }
+  }
+);
+
 // 🔹 Fetch identitas berdasarkan ID
 export const fetchIdentitasById = createAsyncThunk(
   "identitas/fetchById",
@@ -114,6 +139,24 @@ const identitasSlice = createSlice({
       .addCase(fetchIdentitas.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Gagal mengambil data identitas";
+      })
+
+      // ✅ Fetch Identitas dengan search & filter (CustomSearchFilter)
+      .addCase(fetchIdentitasWithFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchIdentitasWithFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
+      })
+      .addCase(fetchIdentitasWithFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // ** Fetch By ID **

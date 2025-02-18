@@ -7,7 +7,10 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
+import {
+  fetchTitle,
+  fetchTitleWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 
 const TableDataTitle = () => {
   const methods = useForm();
@@ -25,7 +28,7 @@ const TableDataTitle = () => {
   // Gunakan useMemo untuk menghitung ulang titles hanya ketika titlesData berubah
   const titles = useMemo(() => titlesData || [], [titlesData]);
 
-  const [filteredTitles, setFilteredTitles] = useState(titles);
+  const [filteredTitles, setFilteredTitles] = useState([]);
 
   useEffect(() => {
     dispatch(fetchTitle({ page, perPage }));
@@ -54,10 +57,8 @@ const TableDataTitle = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={titles}
+            fetchFunction={fetchTitleWithFilters}
             setFilteredData={setFilteredTitles}
-            filterFields={["kodeTitle", "namaTitle"]}
-            dateField="createdDateTime"
           />
         </Col>
       </Col>
@@ -81,47 +82,36 @@ const TableDataTitle = () => {
                 />
               </div>
               {/* Loading Animation */}
-              {loading && (
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{ height: "300px" }}
-                >
-                  <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <h5 className="mt-3 text-primary fw-bold">
-                    Loading data, please wait...
-                  </h5>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* Error or No Data */}
-              {!loading && (error || titles.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredTitles.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {!loading && !error && titles.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredTitles}
                     columns={[
                       { key: "no", label: "No" }, // Tambahkan kolom nomor urut
-                      { key: "kodeTitle", label: "Kode Title" },
-                      { key: "namaTitle", label: "Nama Title" },
                       {
-                        key: "createdDate",
+                        key: "createDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
                         key: "createByName",
                         label: "Dibuat Oleh",
                       },
+                      { key: "kodeTitle", label: "Kode Title" },
+                      { key: "namaTitle", label: "Nama Title" },
                     ]}
                     slugConfig={{ textField: "namaTitle", idField: "titleId" }} // Menggunakan titleId untuk slug
                     basePath="/MasterData/master-informasi/title/edit-title"

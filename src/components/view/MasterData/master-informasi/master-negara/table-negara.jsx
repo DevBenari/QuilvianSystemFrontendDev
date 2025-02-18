@@ -6,7 +6,10 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNegara } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
+import {
+  fetchNegara,
+  fetchNegaraWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 
 const TableDataNegara = () => {
   const methods = useForm();
@@ -24,7 +27,7 @@ const TableDataNegara = () => {
 
   // Gunakan useMemo untuk menghitung ulang negara hanya ketika negaraData berubah
   const negaraList = useMemo(() => negaraData || [], [negaraData]);
-  const [filteredNegara, setFilteredNegara] = useState(negaraList);
+  const [filteredNegara, setFilteredNegara] = useState([]);
 
   // Fetch data negara saat komponen di-mount
   useEffect(() => {
@@ -55,10 +58,8 @@ const TableDataNegara = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={negaraList}
+            fetchFunction={fetchNegaraWithFilters}
             setFilteredData={setFilteredNegara}
-            filterFields={["negara"]}
-            dateField="createDateTime"
           />
         </Col>
       </Col>
@@ -81,41 +82,26 @@ const TableDataNegara = () => {
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
-              {/* Loading Animation */}
-              {loading && (
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{ height: "300px" }}
-                >
-                  <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <h5 className="mt-3 text-primary fw-bold">
-                    Loading data, please wait...
-                  </h5>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* Error or No Data */}
-              {!loading && (error || negaraList.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredNegara.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {!loading && !error && negaraList.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredNegara}
                     columns={[
                       { key: "no", label: "No" }, // Kolom nomor urut
-
-                      { key: "kodeNegara", label: "Kode Negara" },
-                      { key: "namaNegara", label: "Nama Negara" },
                       {
                         key: "createdDate",
                         label: "Tanggal Dibuat",
@@ -124,6 +110,8 @@ const TableDataNegara = () => {
                         key: "createByName",
                         label: "Dibuat Oleh",
                       },
+                      { key: "kodeNegara", label: "Kode Negara" },
+                      { key: "namaNegara", label: "Nama Negara" },
                     ]}
                     slugConfig={{
                       textField: "namaNegara",

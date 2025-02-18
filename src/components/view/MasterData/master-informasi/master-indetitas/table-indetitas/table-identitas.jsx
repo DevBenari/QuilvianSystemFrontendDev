@@ -7,7 +7,10 @@ import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
-import { fetchIdentitas } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import {
+  fetchIdentitas,
+  fetchIdentitasWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 
 const TableDataIdentitas = () => {
   const methods = useForm();
@@ -25,7 +28,7 @@ const TableDataIdentitas = () => {
 
   const identitasList = useMemo(() => identitasData || [], [identitasData]);
 
-  const [filteredIdentitas, setFilteredIdentitas] = useState(identitasList);
+  const [filteredIdentitas, setFilteredIdentitas] = useState([]);
 
   useEffect(() => {
     dispatch(fetchIdentitas({ page, perPage }));
@@ -48,10 +51,8 @@ const TableDataIdentitas = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={identitasList}
+            fetchFunction={fetchIdentitasWithFilters}
             setFilteredData={setFilteredIdentitas}
-            filterFields={["kodeIdentitas", "jenisIdentitas"]}
-            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -69,20 +70,29 @@ const TableDataIdentitas = () => {
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
-              {loading && <Spinner animation="border" variant="primary" />}
-              {!loading && error && <Alert variant="danger">{error}</Alert>}
-              {!loading && !error && identitasList.length === 0 && (
-                <Alert variant="warning">Tidak ada data yang tersedia.</Alert>
-              )}
-
-              {!loading && !error && identitasList.length > 0 && (
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
+                </div>
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredIdentitas.length === 0 ? (
+                <Alert variant="warning" className="text-center">
+                  <i className="ri-information-line me-2"></i>
+                  Tidak ada data yang tersedia.
+                </Alert>
+              ) : (
                 <CustomTableComponent
                   data={filteredIdentitas}
                   columns={[
+                    { key: "no", label: "No" },
+                    { key: "createdDateTime", label: "Tanggal Dibuat" },
+                    { key: "createByName", label: "Dibuat Oleh" },
                     { key: "kodeIdentitas", label: "Kode Identitas" },
                     { key: "jenisIdentitas", label: "Jenis Identitas" },
-                    { key: "createdDate", label: "Tanggal Dibuat" },
-                    { key: "createByName", label: "Dibuat Oleh" },
                   ]}
                   slugConfig={{
                     textField: "kodeIdentitas",

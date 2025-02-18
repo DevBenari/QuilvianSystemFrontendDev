@@ -6,7 +6,10 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
+import {
+  fetchPekerjaan,
+  fetchPekerjaanWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
 
 const TableDataPekerjaan = () => {
   const methods = useForm();
@@ -20,7 +23,7 @@ const TableDataPekerjaan = () => {
 
   const pekerjaan = useMemo(() => pekerjaanData || [], [pekerjaanData]);
 
-  const [filteredPekerjaan, setFilteredPekerjaan] = useState(pekerjaan);
+  const [filteredPekerjaan, setFilteredPekerjaan] = useState([]);
 
   // 🔹 State untuk Pagination
   const [page, setPage] = useState(1);
@@ -55,10 +58,8 @@ const TableDataPekerjaan = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={pekerjaan}
+            fetchFunction={fetchPekerjaanWithFilters}
             setFilteredData={setFilteredPekerjaan}
-            filterFields={["kdPekerjaan", "nmPekerjaan"]}
-            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -81,44 +82,36 @@ const TableDataPekerjaan = () => {
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
-              {loading && (
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{ height: "300px" }}
-                >
-                  <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <h5 className="mt-3 text-primary fw-bold">
-                    Loading data, please wait...
-                  </h5>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-              {!loading && (error || pekerjaan.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredPekerjaan.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-              {!loading && !error && pekerjaan.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredPekerjaan}
                     columns={[
                       { key: "no", label: "No" },
-                      { key: "kodePekerjaan", label: "Kode Pekerjaan" },
-                      { key: "namaPekerjaan", label: "Nama Pekerjaan" },
                       {
-                        key: "createdDate",
+                        key: "createDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
                         key: "createByName",
                         label: "Dibuat Oleh",
                       },
+                      { key: "kodePekerjaan", label: "Kode Pekerjaan" },
+                      { key: "namaPekerjaan", label: "Nama Pekerjaan" },
                     ]}
                     slugConfig={{
                       textField: "namaPekerjaan",

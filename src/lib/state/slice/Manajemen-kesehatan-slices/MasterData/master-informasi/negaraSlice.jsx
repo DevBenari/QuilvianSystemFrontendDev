@@ -22,6 +22,31 @@ export const fetchNegara = createAsyncThunk(
   }
 );
 
+export const fetchNegaraWithFilters = createAsyncThunk(
+  "Negara/fetchWithFilters",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Negara/paged`, {
+        params: filters,
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Filtered):", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "Tidak ada data yang tersedia",
+          data: [],
+        });
+      }
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
+    }
+  }
+);
+
 export const fetchNegaraById = createAsyncThunk(
   "negara/fetchById",
   async (id, { rejectWithValue }) => {
@@ -114,6 +139,24 @@ const negaraSlice = createSlice({
       .addCase(fetchNegara.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Gagal mengambil data";
+      })
+
+      // ✅ Fetch Negara dengan search & filter (CustomSearchFilter)
+      .addCase(fetchNegaraWithFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchNegaraWithFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
+      })
+      .addCase(fetchNegaraWithFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       .addCase(fetchNegaraById.pending, (state) => {

@@ -8,7 +8,10 @@ import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
-import { fetchAnggota } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
+import {
+  fetchAnggota,
+  fetchAnggotaWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
 
 const TableDataAnggota = () => {
   const methods = useForm();
@@ -32,7 +35,7 @@ const TableDataAnggota = () => {
   const perPage = 2; // Bisa diubah sesuai kebutuhan
 
   // State untuk hasil filter pencarian
-  const [filteredAnggota, setFilteredAnggota] = useState(AnggotaList);
+  const [filteredAnggota, setFilteredAnggota] = useState([]);
 
   // Fetch data saat pertama kali render
   useEffect(() => {
@@ -57,10 +60,8 @@ const TableDataAnggota = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={AnggotaData}
+            fetchFunction={fetchAnggotaWithFilters}
             setFilteredData={setFilteredAnggota}
-            filterFields={["keanggotaanId", "jenisKeangotaan"]}
-            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -85,45 +86,37 @@ const TableDataAnggota = () => {
               </div>
 
               {/* Tampilkan loading spinner jika sedang mengambil data */}
-              {loading && (
+              {loading ? (
                 <div className="text-center p-4">
                   <Spinner animation="border" variant="primary" />
                   <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* Tampilkan pesan jika terjadi error */}
-              {!loading && error && (
-                <Alert variant="danger" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
                   {error}
                 </Alert>
-              )}
-
-              {/* Tampilkan pesan jika data kosong */}
-              {!loading && !error && AnggotaList.length === 0 && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : filteredAnggota.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {/* Tampilkan tabel jika ada data */}
-              {!loading && !error && AnggotaList.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredAnggota}
                     columns={[
-                      { key: "kodeKeanggotaan", label: "Kode Anggota" },
-                      { key: "jenisKeangotaan", label: "Jenis Anggota" },
-                      { key: "jenisPromo", label: "Jenis Promo" },
+                      { key: "no", label: "No" },
                       {
-                        key: "createdDate",
+                        key: "createdDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
                         key: "createByName",
                         label: "Dibuat Oleh",
                       },
+                      { key: "kodeKeanggotaan", label: "Kode Anggota" },
+                      { key: "jenisKeangotaan", label: "Jenis Anggota" },
+                      { key: "jenisPromo", label: "Jenis Promo" },
                     ]}
                     slugConfig={{
                       textField: "jenisKeangotaan",

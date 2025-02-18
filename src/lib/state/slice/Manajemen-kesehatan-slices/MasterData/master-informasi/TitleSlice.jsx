@@ -21,6 +21,32 @@ export const fetchTitle = createAsyncThunk(
     }
   }
 );
+
+export const fetchTitleWithFilters = createAsyncThunk(
+  "Title/fetchWithFilters",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Title/paged`, {
+        params: filters,
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Filtered):", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "Tidak ada data yang tersedia",
+          data: [],
+        });
+      }
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
+    }
+  }
+);
+
 export const fetchTitleById = createAsyncThunk(
   "titles/fetchById",
   async (id, { rejectWithValue }) => {
@@ -114,6 +140,25 @@ const titleSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Gagal mengambil data";
       })
+
+      // ✅ Fetch Title dengan search & filter (CustomSearchFilter)
+      .addCase(fetchTitleWithFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchTitleWithFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
+      })
+      .addCase(fetchTitleWithFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
+      })
+
       .addCase(fetchTitleById.pending, (state) => {
         state.loading = true;
       })

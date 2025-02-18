@@ -7,7 +7,10 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
+import {
+  fetchPendidikan,
+  fetchPendidikanWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 
 const TableDataPendidikan = () => {
   const methods = useForm();
@@ -23,7 +26,7 @@ const TableDataPendidikan = () => {
   // Gunakan useMemo untuk menghitung ulang pendidikan hanya ketika pendidikanData berubah
   const pendidikan = useMemo(() => pendidikanData || [], [pendidikanData]);
 
-  const [filteredpendidikan, setFilteredpendidikan] = useState(pendidikan);
+  const [filteredpendidikan, setFilteredpendidikan] = useState([]);
 
   // 🔹 State untuk Pagination
   const [page, setPage] = useState(1);
@@ -58,10 +61,8 @@ const TableDataPendidikan = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={pendidikan}
+            fetchFunction={fetchPendidikanWithFilters}
             setFilteredData={setFilteredpendidikan}
-            filterFields={["kodePendidikan", "namaPendidikan"]}
-            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -84,46 +85,36 @@ const TableDataPendidikan = () => {
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
-              {loading && (
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{ height: "300px" }}
-                >
-                  <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <h5 className="mt-3 text-primary fw-bold">
-                    Loading data, please wait...
-                  </h5>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* Error or No Data */}
-              {!loading && (error || pendidikan.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredpendidikan.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-              {!loading && !error && pendidikan.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredpendidikan}
                     columns={[
                       { key: "no", label: "No" }, // Tambahkan kolom nomor urut
-                      { key: "kodePendidikan", label: "Kode Pendidikan" },
-                      { key: "namaPendidikan", label: "Nama Pendidikan" },
                       {
-                        key: "createdDate",
+                        key: "createDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
                         key: "createByName",
                         label: "Dibuat Oleh",
                       },
+                      { key: "kodePendidikan", label: "Kode Pendidikan" },
+                      { key: "namaPendidikan", label: "Nama Pendidikan" },
                     ]}
                     slugConfig={{
                       textField: "namaPendidikan",

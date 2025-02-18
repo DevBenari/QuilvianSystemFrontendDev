@@ -1,7 +1,10 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
+import {
+  fetchGolongan,
+  fetchGolonganDarahWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
@@ -24,21 +27,19 @@ const TableDataGolongan = () => {
   const [page, setPage] = useState(1);
   const perPage = 5; // Bisa diubah sesuai kebutuhan
 
-  // 🔹 Data yang akan ditampilkan di tabel
-  const golongan = useMemo(() => golonganData || [], [golonganData]);
-  const [filteredGolongan, setFilteredGolongan] = useState(golongan);
-
   // 🔹 Fetch data ketika komponen pertama kali di-mount atau ketika `page` berubah
   useEffect(() => {
     dispatch(fetchGolongan({ page, perPage }));
   }, [dispatch, page]);
 
-  // 🔹 Sinkronisasi filtered data dengan data dari Redux
-  useEffect(() => {
-    setFilteredGolongan(golongan);
-  }, [golongan]);
+  const [filteredGolongan, setFilteredGolongan] = useState([]);
 
-  console.log("Golongan Data:", golongan);
+  useEffect(() => {
+    console.log("Agama Data:", golonganData);
+    setFilteredGolongan(golonganData);
+  }, [golonganData]);
+
+  console.log("Golongan Data:", golonganData);
 
   return (
     <FormProvider {...methods}>
@@ -54,10 +55,8 @@ const TableDataGolongan = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={golongan}
+            fetchFunction={fetchGolonganDarahWithFilters}
             setFilteredData={setFilteredGolongan}
-            filterFields={["namaGolonganDarah", "kodeGolonganDarah"]}
-            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -80,39 +79,28 @@ const TableDataGolongan = () => {
                 />
               </div>
 
-              {/* 🔹 Loading Indicator */}
-              {loading && (
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{ height: "300px" }}
-                >
-                  <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <h5 className="mt-3 text-primary fw-bold">
-                    Loading data, please wait...
-                  </h5>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* 🔹 Error atau Data Kosong */}
-              {!loading && (error || golongan.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredGolongan.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {/* 🔹 Tabel Data */}
-              {!loading && !error && golongan.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredGolongan}
                     columns={[
                       { key: "no", label: "No" },
+                      { key: "createByName", label: "Dibuat Oleh" },
+                      { key: "createDateTime", label: "Tanggal Dibuat" },
                       {
                         key: "namaGolonganDarah",
                         label: "Nama Golongan Darah",
@@ -121,8 +109,6 @@ const TableDataGolongan = () => {
                         key: "kodeGolonganDarah",
                         label: "Kode Golongan Darah",
                       },
-                      { key: "createByName", label: "Dibuat Oleh" },
-                      { key: "createdDate", label: "Tanggal Dibuat" },
                     ]}
                     slugConfig={{
                       textField: "namaGolonganDarah",
