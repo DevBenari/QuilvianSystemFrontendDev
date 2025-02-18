@@ -19,6 +19,7 @@ const TableDataAnggota = () => {
     data: AnggotaData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.anggota);
 
   // Gunakan useMemo untuk menghindari perhitungan ulang yang tidak perlu
@@ -26,18 +27,24 @@ const TableDataAnggota = () => {
     return Array.isArray(AnggotaData) ? AnggotaData : [];
   }, [AnggotaData]);
 
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 2; // Bisa diubah sesuai kebutuhan
+
   // State untuk hasil filter pencarian
   const [filteredAnggota, setFilteredAnggota] = useState(AnggotaList);
 
   // Fetch data saat pertama kali render
   useEffect(() => {
-    dispatch(fetchAnggota());
-  }, [dispatch]);
+    dispatch(fetchAnggota({ page, perPage }));
+  }, [dispatch, page]);
 
   // Update filteredAnggota ketika AnggotaList berubah
   useEffect(() => {
     setFilteredAnggota(AnggotaList);
   }, [AnggotaList]);
+
+  console.log("anggota Data:", AnggotaList);
 
   return (
     <FormProvider {...methods}>
@@ -52,8 +59,8 @@ const TableDataAnggota = () => {
           <CustomSearchFilter
             data={AnggotaData}
             setFilteredData={setFilteredAnggota}
-            filterFields={["anggota_id", "anggota_name"]}
-            dateField="createDateTime"
+            filterFields={["keanggotaanId", "jenisKeangotaan"]}
+            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -106,11 +113,11 @@ const TableDataAnggota = () => {
                   <CustomTableComponent
                     data={filteredAnggota}
                     columns={[
-                      { key: "keangotaanKode", label: "Kode Anggota" },
+                      { key: "kodeKeanggotaan", label: "Kode Anggota" },
                       { key: "jenisKeangotaan", label: "Jenis Anggota" },
                       { key: "jenisPromo", label: "Jenis Promo" },
                       {
-                        key: "createDateTime",
+                        key: "createdDate",
                         label: "Tanggal Dibuat",
                       },
                       {
@@ -118,12 +125,18 @@ const TableDataAnggota = () => {
                         label: "Dibuat Oleh",
                       },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
-                      textField: "keangotaanKode",
+                      textField: "jenisKeangotaan",
                       idField: "keangotaanId",
                     }}
                     basePath="/MasterData/master-anggota/edit-anggota"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

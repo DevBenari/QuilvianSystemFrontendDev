@@ -7,7 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTitles } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
+import { fetchTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 
 const TableDataTitle = () => {
   const methods = useForm();
@@ -16,20 +16,26 @@ const TableDataTitle = () => {
     data: titlesData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.titles);
 
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
   // Gunakan useMemo untuk menghitung ulang titles hanya ketika titlesData berubah
-  const titles = useMemo(() => titlesData?.data || [], [titlesData]);
+  const titles = useMemo(() => titlesData || [], [titlesData]);
 
   const [filteredTitles, setFilteredTitles] = useState(titles);
 
   useEffect(() => {
-    dispatch(fetchTitles());
-  }, [dispatch]);
+    dispatch(fetchTitle({ page, perPage }));
+  }, [dispatch, page]);
 
   useEffect(() => {
     setFilteredTitles(titles); // Update filteredTitles setelah titles diubah
   }, [titles]);
+
+  console.log("titles", titles);
 
   return (
     <FormProvider {...methods}>
@@ -109,7 +115,7 @@ const TableDataTitle = () => {
                       { key: "kodeTitle", label: "Kode Title" },
                       { key: "namaTitle", label: "Nama Title" },
                       {
-                        key: "createDateTime",
+                        key: "createdDate",
                         label: "Tanggal Dibuat",
                       },
                       {
@@ -117,9 +123,15 @@ const TableDataTitle = () => {
                         label: "Dibuat Oleh",
                       },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{ textField: "namaTitle", idField: "titleId" }} // Menggunakan titleId untuk slug
                     basePath="/MasterData/master-informasi/title/edit-title"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

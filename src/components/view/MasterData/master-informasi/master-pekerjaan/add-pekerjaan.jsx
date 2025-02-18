@@ -20,14 +20,6 @@ const FormAddPekerjaan = () => {
       fields: [
         {
           type: "text",
-          label: "Kode Pekerjaan",
-          name: "kodePekerjaan",
-          placeholder: "Masukkan Kode Pekerjaan...",
-          defaultValue: "",
-          colSize: 6,
-        },
-        {
-          type: "text",
           label: "Nama Pekerjaan",
           name: "namaPekerjaan",
           placeholder: "Masukkan Nama Pekerjaan...",

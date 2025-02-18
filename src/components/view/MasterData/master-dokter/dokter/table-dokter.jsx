@@ -17,21 +17,27 @@ const TableDataDokter = () => {
     data: dokterData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.dokter);
 
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuha
+
   // 🔹 Menggunakan useMemo untuk memastikan hanya dire-render saat data berubah
-  const dokter = useMemo(() => dokterData.data || [], [dokterData.data]);
+  const dokter = useMemo(() => dokterData || [], [dokterData]);
 
   const [filteredDokter, setFilteredDokter] = useState(dokter);
 
   useEffect(() => {
-    dispatch(fetchDokter());
-  }, [dispatch]);
+    dispatch(fetchDokter({ page, perPage }));
+  }, [dispatch, page]);
 
   useEffect(() => {
     setFilteredDokter(dokter); // Perbarui data setelah fetch
   }, [dokter]);
 
+  console.log("dokter Data:", dokter);
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
@@ -118,9 +124,15 @@ const TableDataDokter = () => {
                         label: "Dibuat Oleh",
                       },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{ textField: "nmDokter", idField: "dokterId" }} // ID Dokter untuk Slug
                     basePath="/MasterData/master-dokter/dokter/edit-dokter-form"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

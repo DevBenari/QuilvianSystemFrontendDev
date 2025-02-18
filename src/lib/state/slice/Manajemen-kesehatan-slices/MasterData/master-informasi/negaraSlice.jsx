@@ -4,17 +4,20 @@ import { getHeaders } from "@/lib/headers/headers";
 
 // CRUD Thunks
 export const fetchNegara = createAsyncThunk(
-  "negara/fetch",
-  async (_, { rejectWithValue }) => {
+  "negara/fetchData",
+  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get("/Negara", {
+      const response = await InstanceAxios.get(`/Negara`, {
+        params: { page, perPage },
         headers: getHeaders(),
       });
-      return response.data;
+
+      console.log("Response API:", response.data);
+      return response.data; // Pastikan API mengembalikan struktur data yang benar
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal mengambil data negara";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
     }
   }
 );
@@ -86,23 +89,31 @@ export const deleteNegara = createAsyncThunk(
 const negaraSlice = createSlice({
   name: "negara",
   initialState: {
-    data: { data: [] },
+    data: [],
     selectedNegara: null,
     loading: false,
     error: null,
+    totalItems: 0,
+    totalPages: 1,
+    currentPage: 1,
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchNegara.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchNegara.fulfilled, (state, action) => {
+        console.log("API Response Data:", action.payload);
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload.data || []; // Menyimpan daftar golongan darah
+        state.totalItems = action.payload.pagination?.totalRows || 0;
+        state.totalPages = action.payload.pagination?.totalPages || 1;
+        state.currentPage = action.payload.pagination?.currentPage || 1;
       })
       .addCase(fetchNegara.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || "Gagal mengambil data";
       })
 
       .addCase(fetchNegaraById.pending, (state) => {
@@ -118,20 +129,20 @@ const negaraSlice = createSlice({
       })
 
       .addCase(createNegara.fulfilled, (state, action) => {
-        state.data.data.push(action.payload);
+        state.data.push(action.payload);
       })
 
       .addCase(updateNegara.fulfilled, (state, action) => {
-        const index = state.data.data.findIndex(
+        const index = state.data.findIndex(
           (negara) => negara.negaraId === action.payload.negaraId
         );
         if (index !== -1) {
-          state.data.data[index] = action.payload;
+          state.data[index] = action.payload;
         }
       })
 
       .addCase(deleteNegara.fulfilled, (state, action) => {
-        state.data.data = state.data.data.filter(
+        state.data = state.data.filter(
           (item) => item.negaraId !== action.payload
         );
       });

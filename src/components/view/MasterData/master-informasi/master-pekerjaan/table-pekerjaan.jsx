@@ -15,19 +15,26 @@ const TableDataPekerjaan = () => {
     data: pekerjaanData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.pekerjaan);
 
-  const pekerjaan = useMemo(() => pekerjaanData?.data || [], [pekerjaanData]);
+  const pekerjaan = useMemo(() => pekerjaanData || [], [pekerjaanData]);
 
   const [filteredPekerjaan, setFilteredPekerjaan] = useState(pekerjaan);
 
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
+
   useEffect(() => {
-    dispatch(fetchPekerjaan());
-  }, [dispatch]);
+    dispatch(fetchPekerjaan({ page, perPage }));
+  }, [dispatch, page]);
 
   useEffect(() => {
     setFilteredPekerjaan(pekerjaan);
   }, [pekerjaan]);
+
+  console.log("pekerjaan", pekerjaan);
 
   return (
     <FormProvider {...methods}>
@@ -51,7 +58,7 @@ const TableDataPekerjaan = () => {
             data={pekerjaan}
             setFilteredData={setFilteredPekerjaan}
             filterFields={["kdPekerjaan", "nmPekerjaan"]}
-            dateField="createDateTime"
+            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -105,7 +112,7 @@ const TableDataPekerjaan = () => {
                       { key: "kodePekerjaan", label: "Kode Pekerjaan" },
                       { key: "namaPekerjaan", label: "Nama Pekerjaan" },
                       {
-                        key: "createDateTime",
+                        key: "createdDate",
                         label: "Tanggal Dibuat",
                       },
                       {
@@ -113,12 +120,18 @@ const TableDataPekerjaan = () => {
                         label: "Dibuat Oleh",
                       },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
                       textField: "namaPekerjaan",
                       idField: "pekerjaanId",
                     }}
                     basePath="/MasterData/master-informasi/master-pekerjaan/edit-pekerjaan-form"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

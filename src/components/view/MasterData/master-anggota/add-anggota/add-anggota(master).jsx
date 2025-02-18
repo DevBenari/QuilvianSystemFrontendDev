@@ -40,16 +40,8 @@ const AddFormAnggota = () => {
       fields: [
         {
           type: "text",
-          label: "Kode Anggota",
-          name: "keangotaanKode",
-          placeholder: "Masukkan Kode Anggota...",
-          colSize: 6,
-          rules: { required: "Kode Anggota harus diisi" },
-        },
-        {
-          type: "text",
           label: "Jenis Anggota",
-          name: "jenisKeangotaan",
+          name: "jenisKeanggotaan",
           placeholder: "Masukkan Jenis Anggota...",
           colSize: 6,
           rules: { required: "Jenis Anggota harus diisi" },

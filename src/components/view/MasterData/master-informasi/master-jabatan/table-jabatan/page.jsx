@@ -13,25 +13,33 @@ import { fetchJabatan } from "@/lib/state/slice/Manajemen-kesehatan-slices/Maste
 const TableDataJabatan = () => {
   const methods = useForm();
   const dispatch = useDispatch();
+
+  // 🔹 Ambil data dari Redux store
   const {
     data: jabatanData,
     loading,
     error,
+    totalPages,
+    currentPage,
   } = useSelector((state) => state.jabatan);
 
-  const jabatanList = useMemo(() => {
-    return Array.isArray(jabatanData) ? jabatanData : [];
-  }, [jabatanData]);
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 10; // Bisa diubah sesuai kebutuhan
 
-  const [filteredJabatan, setFilteredJabatan] = useState(jabatanList);
+  // 🔹 Data yang akan ditampilkan di tabel
+  const jabatan = useMemo(() => jabatanData || [], [jabatanData]);
+  const [filteredJabatan, setFilteredJabatan] = useState(jabatan);
 
+  // 🔹 Fetch data ketika komponen pertama kali di-mount atau ketika `page` berubah
   useEffect(() => {
-    dispatch(fetchJabatan());
-  }, [dispatch]);
+    dispatch(fetchJabatan({ page, perPage }));
+  }, [dispatch, page]);
 
+  // 🔹 Sinkronisasi filtered data dengan data dari Redux
   useEffect(() => {
-    setFilteredJabatan(jabatanList);
-  }, [jabatanList]);
+    setFilteredJabatan(jabatan);
+  }, [jabatan]);
 
   return (
     <FormProvider {...methods}>
@@ -47,7 +55,7 @@ const TableDataJabatan = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={jabatanList}
+            data={jabatan}
             setFilteredData={setFilteredJabatan}
             filterFields={["namaJabatan"]}
             dateField="createDateTime"
@@ -88,7 +96,7 @@ const TableDataJabatan = () => {
           )}
 
           {/* Tampilkan pesan jika data kosong */}
-          {!loading && !error && jabatanList.length === 0 && (
+          {!loading && !error && jabatan.length === 0 && (
             <Alert variant="warning" className="text-center mt-3">
               <i className="ri-information-line me-2"></i>
               Tidak ada data yang tersedia.
@@ -96,14 +104,14 @@ const TableDataJabatan = () => {
           )}
 
           {/* Tampilkan tabel jika ada data */}
-          {!loading && !error && jabatanList.length > 0 && (
+          {!loading && !error && jabatan.length > 0 && (
             <CustomTableComponent
               data={filteredJabatan}
               columns={[
                 { key: "no", label: "No" },
                 { key: "namaJabatan", label: "Nama Jabatan" },
                 {
-                  key: "createDateTime",
+                  key: "createdDate",
                   label: "Tanggal Dibuat",
                 },
                 {
@@ -111,9 +119,15 @@ const TableDataJabatan = () => {
                   label: "Dibuat Oleh",
                 },
               ]}
-              itemsPerPage={10}
               slugConfig={{ textField: "kodeJabatan", idField: "jabatanId" }}
               basePath="/MasterData/master-informasi/jabatan/edit-jabatan"
+              paginationProps={{
+                currentPage: page,
+                totalPages: totalPages,
+                itemsPerPage: perPage,
+                onPageChange: setPage, // Fungsi untuk mengubah halaman
+              }}
+              itemsPerPage={perPage}
             />
           )}
         </div>

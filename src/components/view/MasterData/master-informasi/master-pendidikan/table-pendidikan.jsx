@@ -17,23 +17,27 @@ const TableDataPendidikan = () => {
     data: pendidikanData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.pendidikan);
 
   // Gunakan useMemo untuk menghitung ulang pendidikan hanya ketika pendidikanData berubah
-  const pendidikan = useMemo(
-    () => pendidikanData?.data || [],
-    [pendidikanData]
-  );
+  const pendidikan = useMemo(() => pendidikanData || [], [pendidikanData]);
 
   const [filteredpendidikan, setFilteredpendidikan] = useState(pendidikan);
 
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
+
   useEffect(() => {
-    dispatch(fetchPendidikan());
-  }, [dispatch]);
+    dispatch(fetchPendidikan({ page, perPage }));
+  }, [dispatch, page]);
 
   useEffect(() => {
     setFilteredpendidikan(pendidikan); // Update filteredpendidikan setelah pendidikan diubah
   }, [pendidikan]);
+
+  console.log("pendidikan", pendidikan);
 
   return (
     <FormProvider {...methods}>
@@ -57,7 +61,7 @@ const TableDataPendidikan = () => {
             data={pendidikan}
             setFilteredData={setFilteredpendidikan}
             filterFields={["kodePendidikan", "namaPendidikan"]}
-            dateField="createdDateTime"
+            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -113,7 +117,7 @@ const TableDataPendidikan = () => {
                       { key: "kodePendidikan", label: "Kode Pendidikan" },
                       { key: "namaPendidikan", label: "Nama Pendidikan" },
                       {
-                        key: "createDateTime",
+                        key: "createdDate",
                         label: "Tanggal Dibuat",
                       },
                       {
@@ -121,12 +125,18 @@ const TableDataPendidikan = () => {
                         label: "Dibuat Oleh",
                       },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
                       textField: "namaPendidikan",
                       idField: "pendidikanId",
                     }}
                     basePath="/MasterData/master-informasi/master-pendidikan/edit-form-pendidikan"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

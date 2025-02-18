@@ -2,23 +2,27 @@ import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// CRUD Thunks
+// 🔹 Fetch semua data Golongan Darah dengan pagination
 export const fetchGolongan = createAsyncThunk(
-  "golongan/fetch",
-  async (_, { rejectWithValue }) => {
+  "golongan/fetchData",
+  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.get(`/GolonganDarah`, {
+        params: { page, perPage },
         headers: getHeaders(),
       });
-      return response.data;
+
+      console.log("Response API:", response.data);
+      return response.data; // Pastikan API mengembalikan struktur data yang benar
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal Mengambil Data Golongan Darah";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
     }
   }
 );
 
+// 🔹 Fetch Golongan Darah berdasarkan ID
 export const fetchGolonganById = createAsyncThunk(
   "golongan/fetchById",
   async (id, { rejectWithValue }) => {
@@ -26,16 +30,16 @@ export const fetchGolonganById = createAsyncThunk(
       const response = await InstanceAxios.get(`/GolonganDarah/${id}`, {
         headers: getHeaders(),
       });
-      return response.data.data; // Pastikan API mengembalikan data dalam properti 'data'
+      return response.data.data; // Mengembalikan data golongan darah berdasarkan ID
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        "Gagal mengambil data golongan darah berdasarkan ID";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Gagal mengambil data golongan darah"
+      );
     }
   }
 );
 
+// 🔹 Tambah Golongan Darah
 export const createGolongan = createAsyncThunk(
   "golongan/create",
   async (data, { rejectWithValue }) => {
@@ -45,13 +49,14 @@ export const createGolongan = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal create data golongan darah";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Gagal menambahkan golongan darah"
+      );
     }
   }
 );
 
+// 🔹 Update Golongan Darah berdasarkan ID
 export const updateGolongan = createAsyncThunk(
   "golongan/update",
   async ({ id, data }, { rejectWithValue }) => {
@@ -61,13 +66,14 @@ export const updateGolongan = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal mengupdate data golongan darah";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Gagal memperbarui golongan darah"
+      );
     }
   }
 );
 
+// 🔹 Hapus Golongan Darah berdasarkan ID
 export const deleteGolongan = createAsyncThunk(
   "golongan/delete",
   async (id, { rejectWithValue }) => {
@@ -77,19 +83,22 @@ export const deleteGolongan = createAsyncThunk(
       });
       return id;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal delete data golongan darah";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Gagal menghapus golongan darah"
+      );
     }
   }
 );
 
-// Slice
+// 🔹 Redux Slice
 const golonganSlice = createSlice({
   name: "golongan",
   initialState: {
-    data: { data: [] },
+    data: [],
     selectedGolongan: null,
+    totalItems: 0,
+    totalPages: 1,
+    currentPage: 1,
     loading: false,
     error: null,
   },
@@ -97,17 +106,25 @@ const golonganSlice = createSlice({
     builder
       .addCase(fetchGolongan.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchGolongan.fulfilled, (state, action) => {
+        console.log("API Response Data:", action.payload);
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload.data || []; // Menyimpan daftar golongan darah
+        state.totalItems = action.payload.pagination?.totalRows || 0;
+        state.totalPages = action.payload.pagination?.totalPages || 1;
+        state.currentPage = action.payload.pagination?.currentPage || 1;
       })
       .addCase(fetchGolongan.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || "Gagal mengambil data";
       })
+
+      // Fetch By ID
       .addCase(fetchGolonganById.pending, (state) => {
         state.loading = true;
+        state.selectedGolongan = null;
       })
       .addCase(fetchGolonganById.fulfilled, (state, action) => {
         state.loading = false;
@@ -117,20 +134,26 @@ const golonganSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+      // Tambah Golongan Darah
       .addCase(createGolongan.fulfilled, (state, action) => {
-        state.data.data.push(action.payload);
+        state.data.push(action.payload);
       })
+
+      // Update Golongan Darah
       .addCase(updateGolongan.fulfilled, (state, action) => {
-        const index = state.data.data.findIndex(
+        const index = state.data.findIndex(
           (golongan) =>
             golongan.golonganDarahId === action.payload.golonganDarahId
         );
         if (index !== -1) {
-          state.data.data[index] = action.payload;
+          state.data[index] = action.payload;
         }
       })
+
+      // Hapus Golongan Darah
       .addCase(deleteGolongan.fulfilled, (state, action) => {
-        state.data.data = state.data.data.filter(
+        state.data = state.data.filter(
           (golongan) => golongan.golonganDarahId !== action.payload
         );
       });

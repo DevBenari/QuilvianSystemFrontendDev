@@ -25,7 +25,7 @@ const CustomTableComponent = memo(
 
     const formatDate = (date) => {
       if (!date) return "-"; // Jika tanggal null/undefined, tampilkan "-"
-      return format(parseISO(date), "dd/MM/yyyy HH:mm");
+      return format(parseISO(date), "dd/MM/yyyy");
     };
 
     const handleDoubleClick = (item) => {
@@ -90,7 +90,7 @@ const CustomTableComponent = memo(
                               paginationProps.itemsPerPage +
                             index +
                             1
-                          : col.key === "createDateTime"
+                          : col.key === "createdDate"
                           ? // col.key === "createDateTime" ||
                             // col.key === "tanggalDaftar" ||
                             // col.key === "tglSip" ||

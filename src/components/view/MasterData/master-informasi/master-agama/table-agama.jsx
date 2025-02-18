@@ -28,7 +28,7 @@ const TableDataAgama = () => {
   useEffect(() => {
     if (Array.isArray(agamaData)) {
       setFilteredData(agamaData);
-      console.log("Filtered Data (cek createByName):", agamaData);
+      console.log("agamaData:", agamaData);
     }
   }, [agamaData]);
 
@@ -84,13 +84,16 @@ const TableDataAgama = () => {
                   data={filteredData}
                   columns={[
                     { key: "no", label: "No" },
-                    // { key: "kodeAgama", label: "Kode Agama" },
+                    { key: "kodeAgama", label: "Kode Agama" },
                     { key: "namaAgama", label: "Nama Agama" },
                     { key: "createByName", label: "Dibuat Oleh" }, // Pastikan ini benar
                     { key: "createdDate", label: "Tanggal Dibuat" },
                   ]}
                   itemsPerPage={perPage}
-                  slugConfig={{ textField: "namaAgama", idField: "agamaId" }}
+                  slugConfig={{
+                    textField: "namaAgama",
+                    idField: "agamaId",
+                  }}
                   basePath="/MasterData/master-informasi/agama/edit-agama"
                   paginationProps={{
                     currentPage: page,

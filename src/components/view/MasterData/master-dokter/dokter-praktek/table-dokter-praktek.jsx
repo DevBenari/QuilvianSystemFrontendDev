@@ -10,7 +10,6 @@ import CustomTableComponent from "@/components/features/CustomTable/custom-table
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
 
 import { fetchDokterPraktek } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-import CustomTablePagedApi from "@/components/features/CustomTable/custom-table-page-api";
 
 const TableDokterPraktek = () => {
   const methods = useForm();
@@ -21,8 +20,12 @@ const TableDokterPraktek = () => {
     data: dokterPraktekData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.dokterPraktek);
 
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
   // Transformasi data untuk memasukkan nama dokter langsung dari objek "dokters"
   const dokterPraktekList = useMemo(() => {
     if (!Array.isArray(dokterPraktekData)) return [];
@@ -41,13 +44,15 @@ const TableDokterPraktek = () => {
 
   // Fetch data saat pertama kali render
   useEffect(() => {
-    dispatch(fetchDokterPraktek());
-  }, [dispatch]);
+    dispatch(fetchDokterPraktek({ page, perPage }));
+  }, [dispatch, page]);
 
   // Update filteredDokterPraktek ketika dokterPraktekList berubah
   useEffect(() => {
     setFilteredDokterPraktek(dokterPraktekList);
   }, [dokterPraktekList]);
+
+  console.log("dokterPraktekList Data:", dokterPraktekList);
 
   return (
     <FormProvider {...methods}>
@@ -65,7 +70,7 @@ const TableDokterPraktek = () => {
             data={dokterPraktekData}
             setFilteredData={setFilteredDokterPraktek}
             filterFields={["kodeDokter", "namaDokter"]}
-            dateField="createDateTime"
+            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -115,7 +120,7 @@ const TableDokterPraktek = () => {
               {/* Tampilkan tabel jika ada data */}
               {!loading && !error && dokterPraktekList.length > 0 && (
                 <div className="iq-card-body">
-                  <CustomTablePagedApi
+                  <CustomTableComponent
                     data={filteredDokterPraktek}
                     columns={[
                       { key: "kodeDokter", label: "Kode Dokter" }, // Nama dokter dari objek "dokters"
@@ -126,12 +131,18 @@ const TableDokterPraktek = () => {
                       { key: "jamMasuk", label: "Tanggal Masuk" },
                       { key: "jamKeluar", label: "Tanggal Keluar" },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
                       textField: "namaDokter",
                       idField: "dokterPraktekId",
                     }}
                     basePath="/MasterData/master-dokter/dokter-praktek/edit-dokter-praktek"
+                    // paginationProps={{
+                    //   currentPage: page,
+                    //   totalPages: totalPages,
+                    //   itemsPerPage: perPage,
+                    //   onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    // }}
+                    // itemsPerPage={perPage}
                   />
                 </div>
               )}

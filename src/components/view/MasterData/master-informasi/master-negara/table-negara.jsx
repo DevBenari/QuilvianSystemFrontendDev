@@ -16,22 +16,27 @@ const TableDataNegara = () => {
     data: negaraData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.negara);
 
-  // Gunakan useMemo untuk menghitung ulang negara hanya ketika negaraData berubah
-  const negaraList = useMemo(() => negaraData?.data || [], [negaraData]);
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
 
+  // Gunakan useMemo untuk menghitung ulang negara hanya ketika negaraData berubah
+  const negaraList = useMemo(() => negaraData || [], [negaraData]);
   const [filteredNegara, setFilteredNegara] = useState(negaraList);
 
   // Fetch data negara saat komponen di-mount
   useEffect(() => {
-    dispatch(fetchNegara());
-  }, [dispatch]);
+    dispatch(fetchNegara({ page, perPage }));
+  }, [dispatch, page]);
 
   // Update filteredNegara setelah negaraList diubah
   useEffect(() => {
     setFilteredNegara(negaraList);
   }, [negaraList]);
+
+  console.log("negara list", negaraList);
 
   return (
     <FormProvider {...methods}>
@@ -112,7 +117,7 @@ const TableDataNegara = () => {
                       { key: "kodeNegara", label: "Kode Negara" },
                       { key: "namaNegara", label: "Nama Negara" },
                       {
-                        key: "createDateTime",
+                        key: "createdDate",
                         label: "Tanggal Dibuat",
                       },
                       {
@@ -120,12 +125,18 @@ const TableDataNegara = () => {
                         label: "Dibuat Oleh",
                       },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
                       textField: "namaNegara",
                       idField: "negaraId",
                     }}
                     basePath="/MasterData/master-informasi/negara/edit-negara"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

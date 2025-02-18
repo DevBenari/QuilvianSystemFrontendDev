@@ -1,19 +1,21 @@
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { updateAnggota } from "../master-anggota/anggotaSlice";
 
 // 🔹 Fetch semua data agama dengan pagination
+
 export const fetchAgama = createAsyncThunk(
   "agama/fetchData",
   async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Agama/paged`, {
+      const response = await InstanceAxios.get(`/Agama`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
 
       console.log("Response API:", response.data);
-      return response.data;
+      return response.data; // Pastikan API mengembalikan struktur data yang benar
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
@@ -41,40 +43,24 @@ export const fetchAgamaById = createAsyncThunk(
   }
 );
 
-// 🔹 Tambah data agama
+// 🔹 Tambah Agama Darah
 export const createAgama = createAsyncThunk(
-  "Agama/create",
+  "agama/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post("/Agama", data, {
+      const response = await InstanceAxios.post(`/Agama`, data, {
         headers: getHeaders(),
       });
-      return response.data.data;
+      return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal menambahkan data Dokter Praktek"
+        error.response?.data || "Gagal menambahkan Agama darah"
       );
     }
   }
 );
-// 🔹 Hapus data agama berdasarkan ID
-export const deleteAgama = createAsyncThunk(
-  "agama/delete",
-  async (id, { rejectWithValue }) => {
-    try {
-      await InstanceAxios.delete(`/Agama/${id}`, {
-        headers: getHeaders(),
-      });
 
-      console.log(`Agama dengan ID ${id} berhasil dihapus`);
-      return id; // Mengembalikan ID yang dihapus agar bisa dihapus dari Redux store
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Gagal menghapus data");
-    }
-  }
-);
-
-// 🔹 Update data agama berdasarkan ID
+// 🔹 Update Agama Darah berdasarkan ID
 export const updateAgama = createAsyncThunk(
   "agama/update",
   async ({ id, data }, { rejectWithValue }) => {
@@ -85,11 +71,27 @@ export const updateAgama = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal memperbarui data Dokter Praktek"
+        error.response?.data || "Gagal memperbarui Agama "
       );
     }
   }
 );
+
+// 🔹 Hapus Agama Darah berdasarkan ID
+export const deleteAgama = createAsyncThunk(
+  "agama/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      await InstanceAxios.delete(`/Agama/${id}`, {
+        headers: getHeaders(),
+      });
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Gagal menghapus Agama ");
+    }
+  }
+);
+
 // 🔹 Redux Slice
 const agamaSlice = createSlice({
   name: "agama",
@@ -105,28 +107,27 @@ const agamaSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // **Fetch All**
+
       .addCase(fetchAgama.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchAgama.fulfilled, (state, action) => {
-        console.log("Processed Data:", action.payload);
+        console.log("API Response Data:", action.payload);
         state.loading = false;
-        state.data = action.payload.data?.rows;
-        state.totalItems = action.payload.data?.totalRows;
-        state.totalPages = action.payload.data?.totalPages;
-        state.currentPage = action.payload.data?.currentPage;
+        state.data = action.payload.data || []; // Menyimpan daftar Agama darah
+        state.totalItems = action.payload.pagination?.totalRows || 0;
+        state.totalPages = action.payload.pagination?.totalPages || 1;
+        state.currentPage = action.payload.pagination?.currentPage || 1;
       })
       .addCase(fetchAgama.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || "Gagal mengambil data";
+        state.error = action.payload || "Gagal mengambil data";
       })
 
-      // **Fetch By ID**
+      // Fetch By ID
       .addCase(fetchAgamaById.pending, (state) => {
         state.loading = true;
-        state.error = null;
         state.selectedAgama = null;
       })
       .addCase(fetchAgamaById.fulfilled, (state, action) => {
@@ -135,33 +136,28 @@ const agamaSlice = createSlice({
       })
       .addCase(fetchAgamaById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || "Gagal mengambil data";
+        state.error = action.payload;
       })
 
-      // **Add**
+      // Tambah Agama Darah
       .addCase(createAgama.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
-      // **Delete**
-      .addCase(deleteAgama.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(deleteAgama.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = state.data.filter(
-          (item) => item.agamaId !== action.payload
+      // Update Agama Darah
+      .addCase(updateAnggota.fulfilled, (state, action) => {
+        const index = state.data.findIndex(
+          (agama) => agama.agamaId === action.payload.agamaId
         );
-      })
-      .addCase(deleteAgama.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message || "Gagal menghapus data";
+        if (index !== -1) {
+          state.data[index] = action.payload;
+        }
       })
 
-      // **Update**
-      .addCase(updateAgama.fulfilled, (state, action) => {
-        const index = state.data.findIndex(
-          (item) => item.AgamaId === action.payload.AgamaId
+      // Hapus agama Darah
+      .addCase(deleteAgama.fulfilled, (state, action) => {
+        state.data = state.data.filter(
+          (agama) => agama.agamaId !== action.payload
         );
       });
   },
