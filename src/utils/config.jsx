@@ -47,7 +47,7 @@ export const daftarPasien = [
     id: 1,
     noRekamMedis: "123456789",
     date: "2022-01-01",
-    nama: "Dwi",
+    namaPasien: "Dwi",
     jenisKelamin: "Laki-laki",
     tglLahir: "2022-01-01",
     umur: 20,
@@ -57,7 +57,7 @@ export const daftarPasien = [
     id: 2,
     noRekamMedis: "123456789",
     date: "2022-01-10",
-    nama: "Alisa",
+    namaPasien: "Alisa",
     jenisKelamin: "Perempuan",
     tglLahir: "2001-02-05",
     umur: 23,
@@ -67,7 +67,7 @@ export const daftarPasien = [
     id: 3,
     noRekamMedis: "123456789",
     date: "2022-02-15",
-    nama: "Iwan",
+    namaPasien: "Iwan",
     jenisKelamin: "Laki-laki",
     tglLahir: "2022-05-03",
     umur: 20,
@@ -183,7 +183,10 @@ export const menus = {
     {
       title: "Keanggotaan",
       subItems: [
-        { title: "Tipe Keanggotaan", href: "/master-data/tipe-keanggotaan" },
+        {
+          title: "Tipe Keanggotaan",
+          href: "/MasterData/master-anggota/table-anggota",
+        },
       ],
     },
     {
@@ -311,6 +314,31 @@ export const menus = {
         {
           title: "Data Pekerjaan",
           href: "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan",
+        },
+        {
+          title: "Data Negara",
+          href: "/MasterData/master-informasi/negara/table-negara",
+        },
+        {
+          title: "Data Identitas",
+          href: "/MasterData/master-informasi/identitas/table-identitas",
+        },
+        {
+          title: "Data jabatan",
+          href: "/MasterData/master-informasi/jabatan/table-jabatan",
+        },
+      ],
+    },
+    {
+      title: "Dokter",
+      subItems: [
+        {
+          title: "Data Dokter",
+          href: "/MasterData/master-dokter/dokter/table-dokter",
+        },
+        {
+          title: "Dokter Praktek",
+          href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
         },
       ],
     },

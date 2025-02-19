@@ -1,4 +1,4 @@
-import TableDataPendidikan from "@/components/view/MasterData/master-informasi/master-pendidikan/table-pendidikan/page";
+import TableDataPendidikan from "@/components/view/MasterData/master-informasi/master-pendidikan/table-pendidikan";
 import React from "react";
 
 const PageListPendidikan = () => {

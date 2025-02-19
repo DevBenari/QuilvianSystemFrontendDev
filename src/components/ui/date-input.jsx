@@ -21,10 +21,21 @@ const DateInput = memo(
     } = useController({ name, control, rules });
 
     // Fungsi untuk memformat tanggal menjadi "YYYY-MM-DD"
-    const formatDate = (date) => {
+    const formatDate = (dateString) => {
+      if (!dateString) return "-";
+
+      // Tanggal default yang harus diganti dengan "Belum diupdate"
+      const defaultDate = "0001-01-01T00:00:00+00:00";
+
+      if (dateString === defaultDate) {
+        return "Belum diupdate";
+      }
+
+      const date = new Date(dateString);
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
+
       return `${year}-${month}-${day}`;
     };
 

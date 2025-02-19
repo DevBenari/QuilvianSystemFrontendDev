@@ -1,40 +1,46 @@
 "use client";
-import React, { Fragment, useEffect, useState, useMemo } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
-import { updateAgama } from "@/lib/state/slices/masterData/master-informasi/AgamaSlice";
+import {
+  deleteAgama,
+  fetchAgamaById,
+  updateAgama,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const AgamaEditPage = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  // Local state untuk data agama
+  const [dataAgama, setDataAgama] = useState(null);
+
   // Mengambil data dari Redux store
-  const {
-    data: agamaData,
-    loading,
-    error,
-  } = useSelector((state) => state.agama);
+  const { selectedAgama, loading, error } = useSelector((state) => state.agama);
 
-  // Memoize data untuk mengurangi proses hitung ulang
-  const agama = useMemo(() => agamaData?.data || [], [agamaData]);
-
-  const [agamaaData, setAgamaaData] = useState(null);
-
-  // Menggunakan useEffect untuk mengambil data berdasarkan slug
+  // Fetch data Agama berdasarkan ID dari URL params
   useEffect(() => {
-    const id = extractIdFromSlug(params.slug);
-    const selectedAgama = agama.find((item) => item.agamaId === id);
-    if (selectedAgama) setAgamaaData(selectedAgama);
-  }, [agama, params.slug]);
+    try {
+      const id = extractIdFromSlug(params.slug);
+      dispatch(fetchAgamaById(id));
+    } catch (error) {
+      console.error("Error fetching agama:", error);
+      router.push("/404");
+    }
+  }, [dispatch, params.slug, router]);
 
-  const handleSubmit = (data) => {
-    if (!agamaaData) return;
-    dispatch(updateAgama({ id: agamaaData.agamaId, data }));
-    console.log("Submitted data:", data);
-    // router.push("/MasterData/master-informasi/master-agama/table-agama");
-  };
+  // Update data lokal setelah data Agama berhasil di-fetch
+  useEffect(() => {
+    if (selectedAgama) {
+      console.log("Selected Agama:", selectedAgama);
+      setDataAgama(selectedAgama); // Update state lokal dengan data dari Redux
+    }
+  }, [selectedAgama]);
+
+  // Handle form submission
 
   // Konfigurasi form
   const formFields = [
@@ -42,28 +48,47 @@ const AgamaEditPage = ({ params }) => {
       fields: [
         {
           type: "text",
-          label: "Kode Agama",
-          name: "agamaKode",
-          defaultValue: agamaaData?.agamaKode || "",
-          colSize: 6,
-          rules: { required: "Kode Agama harus diisi" },
-          onChangeCallback: (e) =>
-            setAgamaaData({ ...agamaaData, agamaKode: e.target.value }),
-        },
-        {
-          type: "text",
           label: "Nama Agama",
-          name: "jenisAgama",
-          defaultValue: agamaaData?.jenisAgama || "",
+          name: "namaAgama",
+          defaultValue: dataAgama?.jenisAgama || "",
           colSize: 6,
           rules: { required: "Nama Agama harus diisi" },
-          onChangeCallback: (e) =>
-            setAgamaaData({ ...agamaaData, jenisAgama: e.target.value }),
         },
       ],
     },
   ];
 
+  const handleSubmit = async (data) => {
+    if (!dataAgama) return;
+    try {
+      await dispatch(updateAgama({ id: dataAgama.agamaId, data })).unwrap();
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push("/MasterData/master-informasi/agama/table-agama");
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan agama:", error);
+      showAlert.error("Gagal menambahkan data agama");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!dataAgama?.agamaId) {
+      showAlert.error("Gagal menghapus: agama ID tidak ditemukan.");
+      return;
+    }
+
+    showAlert.confirmDelete("Data agama akan dihapus permanen", async () => {
+      try {
+        await dispatch(deleteAgama(dataAgama.agamaId)).unwrap();
+        showAlert.success("Data agama berhasil dihapus!", () => {
+          router.push("/MasterData/master-informasi/agama/table-agama");
+        });
+      } catch (error) {
+        showAlert.error("Gagal menghapus data agama.");
+        console.error("Gagal menghapus data agama:", error);
+      }
+    });
+  };
   // Loading dan error handling
   if (loading) {
     return (
@@ -87,7 +112,7 @@ const AgamaEditPage = ({ params }) => {
     );
   }
 
-  if (!agamaaData) {
+  if (!dataAgama) {
     return (
       <div className="iq-card">
         <div className="card-body">
@@ -97,15 +122,25 @@ const AgamaEditPage = ({ params }) => {
     );
   }
 
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataAgama?.[field.name] ?? "",
+    })),
+  }));
+
   // Render form
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Agama"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
+        userData={dataAgama}
         backPath="/MasterData/master-informasi/master-agama/table-agama"
         isAddMode={false}
+        handleDelete={handleDelete}
       />
     </Fragment>
   );

@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { useController, useFormContext } from "react-hook-form";
+import { useController, useFormContext, useWatch } from "react-hook-form";
 import { Form } from "react-bootstrap";
 import Select from "react-select";
 
@@ -12,19 +12,23 @@ const SelectField = forwardRef(
       rules,
       placeholder,
       className,
-      readOnly = false, // Tambahkan properti readOnly
+      readOnly = false,
       onChangeCallback,
+      dynamicOptions = null,  // Tambahkan dynamicOptions untuk opsi dinamis
       ...props
     },
     ref
   ) => {
     const { control } = useFormContext();
+    const watchValues = useWatch({ control });
     const {
       field,
       fieldState: { error },
     } = useController({ name, control, rules });
 
-    // Custom styles for react-select
+    // Tentukan opsi, apakah dari fungsi (dinamis) atau array statis
+    const resolvedOptions = typeof options === "function" ? options(watchValues) : options;
+
     const customStyles = {
       control: (provided) => ({
         ...provided,
@@ -43,11 +47,10 @@ const SelectField = forwardRef(
       }),
     };
 
-    // Handle change to store only `value`
     const handleChange = (selected) => {
-      field.onChange(selected ? selected.value : null); // Simpan hanya `value` ke state form
+      field.onChange(selected ? selected.value : null);
       if (onChangeCallback) {
-        onChangeCallback(selected ? selected.value : null); // Panggil callback dengan value
+        onChangeCallback(selected ? selected.value : null);
       }
     };
 
@@ -57,15 +60,15 @@ const SelectField = forwardRef(
         <Select
           {...field}
           {...props}
-          ref={ref}
-          options={options}
+          
+          options={resolvedOptions}
           placeholder={placeholder || "Select an option"}
           styles={customStyles}
-          value={options.find((option) => option.value === field.value) || null} // Sesuaikan untuk hanya `value`
+          value={resolvedOptions.find((option) => option.value === field.value) || null}
           onChange={handleChange}
           isClearable
-          isDisabled={readOnly} // Nonaktifkan select jika readOnly
-          menuIsOpen={readOnly ? false : undefined} // Tutup menu jika readOnly
+          isDisabled={readOnly}
+          menuIsOpen={readOnly ? false : undefined}
         />
         {error && (
           <Form.Control.Feedback type="invalid">

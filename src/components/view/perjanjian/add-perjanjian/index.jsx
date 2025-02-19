@@ -1,5 +1,5 @@
 "use client"
-import DynamicForm from "@/components/features/dynamic-form/dynamicForm";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import React, {memo} from "react";
 const AddPerjanjianPasien = memo(() => {
     // const {setValue} = useForm();

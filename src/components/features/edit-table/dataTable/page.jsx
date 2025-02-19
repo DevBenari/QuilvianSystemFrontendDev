@@ -11,7 +11,10 @@ import {
 import { FormProvider, useForm } from "react-hook-form";
 import DateInput from "@/components/ui/date-input";
 import TextField from "@/components/ui/text-field";
+<<<<<<< HEAD:src/components/features/custom-table/viewDataTables/dataTable.jsx
+=======
 import SelectField from "@/components/ui/select-field";
+>>>>>>> origin/MHamzah:src/components/features/edit-table/dataTable/page.jsx
 
 const DataTable = ({
   headers,

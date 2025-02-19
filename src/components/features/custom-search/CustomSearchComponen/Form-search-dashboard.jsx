@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
@@ -7,72 +7,56 @@ import DateInput from "@/components/ui/date-input";
 
 const CustomSearchFilter = ({
   data,
-  setFilteredPatients,
-  onFilteredPatients,
+  setFilteredData,
+  filterFields = [], // List field yang akan dicari (misalnya ["nama", "kodeAgama"])
+  dateField = "date", // Field yang menyimpan tanggal
 }) => {
-  // const methods = useForm();
   const [filters, setFilters] = useState({
     searchQuery: "",
+    startDate: null,
+    endDate: null,
+    timeFilter: "",
   });
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  // 🔹 Perbarui data yang difilter ketika filters berubah
+  useEffect(() => {
+    applyFilters(filters);
+  }, [filters, data]);
 
-  // Filter by search query
+  // 🔹 Fungsi untuk memfilter data berdasarkan search query
   const handleFilterChange = (value) => {
-    const newFilters = { ...filters, searchQuery: value };
-    setFilters(newFilters); // Perbarui state filters
-    applyFilters(newFilters); // Terapkan filter ke data
+    setFilters((prevFilters) => ({ ...prevFilters, searchQuery: value }));
   };
 
+  // 🔹 Fungsi untuk menerapkan semua filter
   const applyFilters = (filters) => {
-    const query = filters.searchQuery.toLowerCase();
-    const filtered = data.filter(
-      (patient) =>
-        patient.nomorRekamMedis?.toLowerCase().includes(query) ||
-        "" ||
-        patient.nama?.toLowerCase().includes(query) ||
-        "" ||
-        patient.penjamin?.toLowerCase().includes(query) ||
-        "" ||
-        (typeof patient.dokter === "string" &&
-          patient.dokter.toLowerCase().includes(query)) ||
-        patient.departemen?.toLowerCase().includes(query) ||
-        "" ||
-        patient.tipe_perjanjian?.toLowerCase().includes(query) ||
-        "" ||
-        patient.user?.toLowerCase().includes(query) ||
-        "" ||
-        patient.tipeOperasi?.toLowerCase().includes(query) ||
-        "" ||
-        patient.namaTindakan?.toLowerCase().includes(query) ||
-        "" ||
-        patient.jenisOperasi?.toLowerCase().includes(query) ||
-        "" ||
-        patient.namaTindakanOperasi?.toLowerCase().includes(query) ||
-        "" ||
-        patient.kategoriOperasi?.toLowerCase().includes(query) ||
-        "" ||
-        patient.namaDepartemen?.toLowerCase().includes(query) ||
-        "" ||
-        patient.penanggungJawab?.toLowerCase().includes(query) ||
-        "" ||
-        patient.ruangan?.toLowerCase().includes(query) ||
-        "" ||
-        patient.namaAdministrasi?.toLowerCase().includes(query) ||
-        "" ||
-        patient.tipeRawat?.toLowerCase().includes(query) ||
-        "" ||
-        patient.tipeAdministrasi?.toLowerCase().includes(query) ||
-        "" ||
-        patient.namaTitle?.toLowerCase().includes(query) ||
-        ""
-    );
-    setFilteredPatients(filtered);
+    let filtered = [...data];
+
+    // 1️⃣ Filter berdasarkan search query
+    if (filters.searchQuery) {
+      const query = filters.searchQuery.toLowerCase();
+      filtered = filtered.filter((item) =>
+        filterFields.some(
+          (field) => item[field]?.toLowerCase().includes(query)
+        )
+      );
+    }
+
+    // 2️⃣ Filter berdasarkan waktu (Today, Last Week, etc.)
+    if (filters.timeFilter) {
+      filtered = filterByTime(filtered, filters.timeFilter);
+    }
+
+    // 3️⃣ Filter berdasarkan rentang tanggal
+    if (filters.startDate && filters.endDate) {
+      filtered = filterByDateRange(filtered, filters.startDate, filters.endDate);
+    }
+
+    setFilteredData(filtered);
   };
 
-  // Filter by time
-  const handleFilterTime = (filterType) => {
+  // 🔹 Fungsi untuk filter by predefined time ranges
+  const filterByTime = (data, filterType) => {
     const now = new Date();
     let start = new Date();
     let end = new Date();
@@ -102,57 +86,51 @@ const CustomSearchFilter = ({
         end.setDate(0);
         break;
       default:
-        return;
+        return data;
     }
 
-    const filtered = data.filter((patient) => {
-      const patientDate = new Date(patient.date);
-      return patientDate >= start && patientDate <= end;
+    return data.filter((item) => {
+      const itemDate = new Date(item[dateField]);
+      return itemDate >= start && itemDate <= end;
     });
-
-    setFilteredPatients(filtered);
   };
 
-  // Filter by date range
-  const handleFilterDate = () => {
-    if (!startDate || !endDate) {
-      alert("Harap pilih rentang tanggal!");
-      return;
-    }
+  // 🔹 Fungsi untuk filter berdasarkan rentang tanggal
+  const filterByDateRange = (data, startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-    const filtered = data.filter((patient) => {
-      const patientDate = new Date(patient.date);
-      const start = new Date(startDate);
-      const end = new Date(endDate);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
 
-      start.setHours(0, 0, 0, 0);
-      end.setHours(23, 59, 59, 999);
-
-      return patientDate >= start && patientDate <= end;
+    return data.filter((item) => {
+      const itemDate = new Date(item[dateField]);
+      return itemDate >= start && itemDate <= end;
     });
-
-    setFilteredPatients(filtered);
   };
+
   return (
     <Col lg="12" className="mt-2">
       <Row>
+        {/* 🔹 Input untuk pencarian */}
         <Col md="3">
           <TextField
-            label="Cari Pasien:"
-            name="registrasiPasien"
+            label="Cari Data:"
+            name="searchQuery"
             type="text"
-            placeholder="Cari berdasarkan nama, no rekam medis, atau no telp..."
+            placeholder="Masukkan kata kunci..."
             className="form-control mb-0"
             value={filters.searchQuery}
             onChange={(e) => handleFilterChange(e.target.value)}
-            // errorMessage={filters.searchQuery === "" ? "Field tidak boleh kosong" : ""}
           />
         </Col>
+
+        {/* 🔹 Dropdown untuk filter berdasarkan waktu */}
         <Col md="2">
           <SelectField
             name="ByTime"
-            label="Filter By : *"
-            placeholder="Select Option"
+            label="Filter By:"
+            placeholder="Pilih opsi"
             options={[
               { value: "Today", label: "Today" },
               { value: "Last Day", label: "Last Day" },
@@ -160,27 +138,39 @@ const CustomSearchFilter = ({
               { value: "This Month", label: "This Month" },
               { value: "Last Month", label: "Last Month" },
             ]}
-            onChangeCallback={handleFilterTime}
+            onChangeCallback={(value) =>
+              setFilters((prevFilters) => ({ ...prevFilters, timeFilter: value }))
+            }
           />
         </Col>
+
+        {/* 🔹 Input untuk memilih tanggal awal */}
         <Col md="3">
           <DateInput
             name="startDate"
-            label="Tanggal Awal Regist Pasien :"
-            placeholder={"Enter tanggal regist Pasien"}
-            onChange={setStartDate}
+            label="Tanggal Awal:"
+            placeholder="Pilih tanggal awal"
+            onChange={(value) =>
+              setFilters((prevFilters) => ({ ...prevFilters, startDate: value }))
+            }
           />
         </Col>
+
+        {/* 🔹 Input untuk memilih tanggal akhir */}
         <Col md="3">
           <DateInput
             name="endDate"
-            label="Tanggal Akhir Regist Pasien :"
-            placeholder={"Enter tanggal regist Pasien"}
-            onChange={setEndDate}
+            label="Tanggal Akhir:"
+            placeholder="Pilih tanggal akhir"
+            onChange={(value) =>
+              setFilters((prevFilters) => ({ ...prevFilters, endDate: value }))
+            }
           />
         </Col>
+
+        {/* 🔹 Tombol untuk menerapkan filter */}
         <Col md="1" className="mt-2">
-          <button onClick={handleFilterDate} className="btn btn-info mt-4">
+          <button className="btn btn-info mt-4" onClick={() => applyFilters(filters)}>
             <i className="ri-search-line"></i>
           </button>
         </Col>

@@ -11,11 +11,9 @@ import {
   Button,
 } from "react-bootstrap";
 import SelectField from "@/components/ui/select-field";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TextField from "@/components/ui/text-field";
 import DateInput from "@/components/ui/date-input";
-
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import {
@@ -25,9 +23,7 @@ import {
 
 import { dataKelasTersedia } from "@/utils/PasienPerjanjian";
 import {
-  dataDepartemen,
   dataDokter,
-  dataKelas,
   paketMcu,
   ruangOperasi,
   tipeAnestesiOptions,

@@ -49,21 +49,21 @@ const DashboardAdmisiLab = () => {
                                     data={filteredPatients}
                                     columns={[
                                         { key: 'id', label: 'ID' },
-                                        { key: 'nomorRekamMedis', label: 'No Rekam Medis' },
+                                        { key: 'noRekamMedis', label: 'No Rekam Medis' },
                                         { key: 'date', label: 'Tanggal' },
-                                        { key: 'nama', label: 'Nama Pasien' },
+                                        { key: 'namaPasien', label: 'Nama Pasien' },
                                         { key: 'jenisKelamin', label: 'Jenis Kelamin' },
                                         { key: 'umur', label: 'Umur' },
                                     ]}
                                     itemsPerPage={10}
-                                    slugConfig={{ textField: 'nama', idField: 'id' }}
+                                    slugConfig={{ textField: 'namaPasien', idField: 'id' }}
                                     basePath="/pendaftaran/pendaftaran-pasien-laboratorium/edit-pasien-lab"
                                 />
                             </div>
                         </div>
                     </Col>
                 </Row>
-            </div>
+            </div> 
         </FormProvider>
     )
 }

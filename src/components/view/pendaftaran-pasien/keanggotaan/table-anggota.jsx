@@ -2,20 +2,12 @@
 
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-<<<<<<< HEAD
-import { useAnggota } from "@/lib/hooks/keanggotaan";
-=======
->>>>>>> origin/MHamzah
 import { useRouter } from "next/navigation";
 import { Col, Row, Spinner } from "react-bootstrap";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-<<<<<<< HEAD
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-=======
 import ButtonNav from "@/components/ui/button-navigation";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import { useAnggota } from "@/lib/hooks/admisi/keanggotaan";
->>>>>>> origin/MHamzah
 
 const TableAnggota = memo(() => {
   const methods = useForm();
@@ -36,43 +28,6 @@ const TableAnggota = memo(() => {
 
   return (
     <FormProvider {...methods}>
-<<<<<<< HEAD
-      <>
-        <Col lg="12" className=" iq-card p-4">
-          <div className="d-flex justify-content-between iq-card-header">
-            <h2 className="mb-3">Searching Anggota</h2>
-            <button
-              className="btn btn-dark my-3 mx-3"
-              onClick={() => window.location.reload()}
-            >
-              <i className="ri-refresh-line"></i>
-            </button>
-          </div>
-          <Col lg="12" className="mt-2">
-            <CustomSearchFilter
-              data={anggota}
-              setFilteredPatients={setFilteredAnggota}
-              onFilteredPatients={filteredAnggota}
-            />
-          </Col>
-        </Col>
-        {loading && <div>Loading...</div>}
-        {error && <div className="text-danger">{error}</div>}
-        {!loading && !error && (
-          <CustomTableComponent
-            data={filteredPatients}
-            columns={[
-                { key: 'id', label: 'ID' },
-                { key: 'nomorRekamMedis', label: 'No Rekam Medis' },
-                { key: 'date', label: 'Tanggal' },
-                { key: 'nama', label: 'Nama Pasien' },
-                { key: 'jenisKelamin', label: 'Jenis Kelamin' },
-                { key: 'umur', label: 'Umur' },
-            ]}
-            itemsPerPage={10}
-            slugConfig={{ textField: 'nama', idField: 'id' }}
-            basePath="/pendaftaran/pendaftaran-pasien-laboratorium/edit-pasien-lab"
-=======
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">Searching Anggota</h2>
@@ -88,7 +43,6 @@ const TableAnggota = memo(() => {
             data={anggota}
             setFilteredPatients={setFilteredAnggota}
             onFilteredPatients={filteredAnggota}
->>>>>>> origin/MHamzah
           />
         </Col>
       </Col>

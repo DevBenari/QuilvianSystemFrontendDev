@@ -1,36 +1,67 @@
 "use client";
-import React, { useState, useEffect, Fragment, useMemo } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
-
 import { useDispatch, useSelector } from "react-redux";
-import { updateGolongan } from "@/lib/state/slices/masterData/master-informasi/golonganSlice";
+import {
+  fetchGolonganById,
+  updateGolongan,
+  deleteGolongan,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
+import { showAlert } from "@/components/features/alert/custom-alert";
 
 const GolonganEditForm = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const {
-    data: golonganData,
-    loading,
-    error,
-  } = useSelector((state) => state.golongan);
-
-  // Gunakan useMemo untuk menghitung ulang golongan hanya ketika golonganData berubah
-  const golongan = useMemo(() => golonganData.data, [golonganData]);
+  const { selectedGolongan, loading, error } = useSelector(
+    (state) => state.golongan
+  );
 
   const [golonganDarahData, setGolonganDarahData] = useState(null);
 
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);
-    const golonganDarah = golongan.find((item) => item.golonganDarahId === id);
+    dispatch(fetchGolonganById(id));
+  }, [dispatch, params.slug]);
 
-    if (golonganDarah) setGolonganDarahData(golonganDarah);
-  }, [params.slug, golongan]);
+  useEffect(() => {
+    if (selectedGolongan) setGolonganDarahData(selectedGolongan);
+  }, [selectedGolongan]);
 
-  const handleSubmit = (data) => {
-    console.log(data);
+  const handleSubmit = async (data) => {
+    try {
+      await dispatch(
+        updateGolongan({ id: golonganDarahData.golonganDarahId, data })
+      ).unwrap();
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push(
+          "/MasterData/master-informasi/golongan-darah/table-golongan"
+        );
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan golongan:", error);
+      showAlert.error("Gagal menambahkan data golongan");
+    }
+  };
+
+  const handleDelete = async () => {
+    showAlert.confirmDelete("Data golongan akan dihapus permanen", async () => {
+      try {
+        await dispatch(
+          deleteGolongan(golonganDarahData.golonganDarahId)
+        ).unwrap();
+        showAlert.success("Data berhasil dihapus", () => {
+          router.push(
+            "/MasterData/master-informasi/golongan-darah/table-golongan"
+          );
+        });
+      } catch (error) {
+        console.error("Gagal  menghapus data golongan:", error);
+        showAlert.error("Gagal  menghapus data  golongan");
+      }
+    });
   };
 
   // Form configuration
@@ -39,17 +70,11 @@ const GolonganEditForm = ({ params }) => {
       fields: [
         {
           type: "text",
-          label: "Nama golongan",
+          label: "Nama Golongan",
           name: "namaGolonganDarah",
           placeholder: "Masukkan Nama golongan...",
           colSize: 6,
           rules: { required: "Nama golongan harus diisi" },
-          defaultValue: golonganDarahData?.namaGolonganDarah, // Default value dari state
-          onChangeCallback: (e) =>
-            setGolonganDarahData({
-              ...golonganDarahData,
-              namaGolonganDarah: e.target.value,
-            }),
         },
       ],
     },
@@ -77,7 +102,7 @@ const GolonganEditForm = ({ params }) => {
     );
   }
 
-  if (!golongan) {
+  if (!golonganDarahData) {
     return (
       <div className="iq-card">
         <div className="card-body">
@@ -89,15 +114,24 @@ const GolonganEditForm = ({ params }) => {
     );
   }
 
-  // Render form
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: golonganDarahData?.[field.name] ?? "",
+    })),
+  }));
+
   return (
     <Fragment>
       <DynamicForm
         title="Edit Data Golongan"
-        formConfig={formFields}
+        formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
-        backPath={`/MasterData/master-golongan/table-golongan`}
+        backPath="/MasterData/master-informasi/golongan-darah/table-golongan"
         isAddMode={false}
+        handleDelete={handleDelete}
+        userData={golonganDarahData}
       />
     </Fragment>
   );

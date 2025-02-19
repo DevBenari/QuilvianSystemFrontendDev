@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button, ProgressBar, Card, Image } from "react-bootstrap";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
+import { Row, Col, Form, Button, ProgressBar} from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -17,13 +17,13 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmited, backPath, isAddMode = false }) => {
+const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath, isAddMode = false, externalOptions = {} }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isEditing, setIsEditing] = useState(isAddMode);
   const [submittedData, setSubmittedData] = useState(null);
 
   const steps = [
-    { section: "Main Information", fields: mainFields },
+    // { section: "Main Information", fields: mainFields },
     ...formConfig,
   ];
 
@@ -46,10 +46,6 @@ const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmite
 
   const methods = useForm({
     defaultValues: {
-      ...mainFields.reduce((defaults, field) => {
-        defaults[field.name] = field.value || "";
-        return defaults;
-      }, {}),
       ...formConfig.reduce((defaults, section) => {
         section.fields.forEach((field) => {
           defaults[field.name] = field.value || "";
@@ -68,20 +64,29 @@ const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmite
     trigger,
   } = methods;
 
-  const titles = watch("title");
+  
+  const {titles = []} = externalOptions;
+   // Gunakan useWatch agar tidak memicu re-render berulang
+  const currentJenisKelamin = useWatch({ control: methods.control, name: "jenisKelamin" });
+  const titlesId = useWatch({ control: methods.control, name: "titlesId" });
   const statusKewarganegaraan = watch("statusKewarganegaraan");
   const kewarganegaraan = watch("kewarganegaraan");
 
   useEffect(() => {
-    if (titles === "Mr" || titles === "Tn" || titles === "Ms") {
-      setValue("jenisKelamin", "Laki-Laki");
-    } else if (["Mrs", "Miss", "Ny", "Nn"].includes(titles)) {
-      setValue("jenisKelamin", "Perempuan");
-    } else {
-      setValue("jenisKelamin", "");
+    const titleLabel = titles.find(option => option.value === titlesId)?.label;
+    let newJenisKelamin = "";
+    if (["Tn", "Mr"].includes(titleLabel)) {
+      newJenisKelamin = "Laki-Laki";
+    } else if (["Mrs", "Ny"].includes(titleLabel)) {
+      newJenisKelamin = "Perempuan";
     }
-  }, [titles, setValue]);
-
+  
+    if (newJenisKelamin !== currentJenisKelamin) {
+      setValue("jenisKelamin", newJenisKelamin, { shouldValidate: true });
+    }
+  }, [titlesId, currentJenisKelamin, setValue, titles]);
+  
+  
   useEffect(() => {
     if (statusKewarganegaraan === "WNI") {
       setValue("kewarganegaraan", "Indonesia");
@@ -108,6 +113,7 @@ const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmite
       rows,
       customRender,
       colSize,
+      hide,
       ...otherProps
     } = field;
 
@@ -124,6 +130,14 @@ const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmite
       ...(onChange ? { onChange } : {}),
       ...(onClick ? { onClick } : {}),
     };
+
+    if (type === "custom" && typeof customRender === "function") {
+    return (
+      <div key={id} className={className}>
+        {customRender({ field, commonProps, methods })}
+      </div>
+    );
+  }
 
     const Component = fieldComponents[field.type];
     if (!Component) {
@@ -183,10 +197,12 @@ const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmite
 
   return (
     <FormProvider {...methods}>
-      <Row>
-        <div className="pt-2">
-          <div className="d-flex justify-content-between m-3 px-5">
-            <h3 className="tracking-wide">{title}</h3>
+      <Row className=" iq-card p-2 mx-3 my-3 rounded " style={{boxShadow: "0px 0px 30px rgba(154, 247, 203, 0.93)",}}>
+        <div className="iq-card p-2 mt-5">
+        <div className="iq-card-header gap-1 d-flex justify-content-between">
+            <div className="iq-header-title">
+              <h3 className=" ">{title}</h3>
+            </div>
             <div className="d-flex gap-2">
               <ButtonNav
                 className="btn btn-secondary"
@@ -194,13 +210,13 @@ const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmite
                 path={backPath}
                 icon="ri-arrow-left-line"
               />
-              {!isAddMode && !isEditing && (
+              {!isAddMode && !isEditing && ( // Hanya tampil jika bukan add mode dan belum edit
                 <Button className="btn btn-primary" onClick={handleEdit}>
                   <i className="ri-edit-2-line"></i>
                   Edit
                 </Button>
               )}
-              {!isAddMode && isEditing && (
+              {!isAddMode && isEditing && ( // Tombol cancel hanya tampil di mode edit
                 <Button className="btn btn-danger" onClick={handleCancel}>
                   Cancel
                 </Button>
@@ -208,7 +224,7 @@ const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmite
             </div>
           </div>
 
-          <div className="px-5">
+          <div className="card-body p-3">
             <ProgressBar now={progress} className="mb-4" />
             <h4 className="mb-4">Step {currentStep + 1}: {steps[currentStep].section}</h4>
 
@@ -247,5 +263,4 @@ const DynamicStepForm = ({ title, mainFields, formConfig, onSubmit,onFormSubmite
     </FormProvider>
   );
 };
-
 export default DynamicStepForm;

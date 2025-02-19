@@ -3,9 +3,12 @@
 import { Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { useManajemenOperasi } from "@/lib/hooks/masterData/manajemen-operasi/manajemenOperasi";
-import { addOperasi } from "@/lib/hooks/masterData/manajemen-operasi/manajemenOperasi/add";
-import { OperasiEdit } from "@/lib/hooks/masterData/manajemen-operasi/manajemenOperasi/edit";
+import {
+  addOperasi,
+  OperasiEdit,
+  useManajemenOperasi,
+} from "@/lib/hooks/masterData/manajemen-operasi/manajemenOperasi";
+
 import TextField from "@/components/ui/text-field";
 import NumberField from "@/components/ui/distance-filed";
 

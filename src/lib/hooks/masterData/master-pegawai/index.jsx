@@ -1,3 +1,4 @@
+import { getHeaders } from "@/lib/headers/headers";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -11,7 +12,10 @@ export const usePegawai = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://192.168.15.213:589/api/Pegawai`
+          `http://192.168.15.213:589/api/Pegawai`,
+          {
+            headers: getHeaders(),
+          }
         );
         // console.log("Data fetched:", response.data); // Tambahkan log ini
         setPegawai(response.data);
@@ -35,10 +39,7 @@ export const addPegawai = async (data) => {
       `http://192.168.15.213:589/api/Pegawai`,
       data,
       {
-        headers: {
-          "Content-Type": "application/json", // Pastikan data dikirim sebagai JSON
-          Accept: "application/json", // Memberi tahu server untuk mengembalikan JSON
-        },
+        headers: getHeaders(),
       }
     );
 
@@ -56,7 +57,10 @@ export const addPegawai = async (data) => {
 export const PegawaiById = async (id) => {
   try {
     const response = await axios.get(
-      `http://192.168.15.213:589/api/Pegawai/${id}`
+      `http://192.168.15.213:589/api/Pegawai/${id}`,
+      {
+        headers: getHeaders(),
+      }
     );
     console.log("Response data:", response.data);
 
@@ -77,10 +81,7 @@ export const editPegawai = async (id, data) => {
       `http://192.168.15.213:589/api/Pegawai/${id}`,
       data,
       {
-        headers: {
-          "Content-Type": "application/json", // Pastikan data dikirim sebagai JSON
-          Accept: "application/json", // Memberi tahu server untuk mengembalikan JSON
-        },
+        headers: getHeaders(),
       }
     );
 
