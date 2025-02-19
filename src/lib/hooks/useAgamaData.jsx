@@ -1,66 +1,55 @@
 // hooks/useAgamaData.js
-import { useCallback, useRef, useMemo, useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAgama } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice';
+import { fetchAgamaPaged } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice';
 
 const useAgamaData = () => {
   const dispatch = useDispatch();
-  const pageRef = useRef(1);
-  const loadingRef = useRef(false);
+  const [page, setPage] = useState(1);
+  const lastFetchedPage = useRef(1);
   
   const { 
     data: agamaData, 
-    loading, 
+    loading,
     totalPages,
-    error 
+    loadedPages 
   } = useSelector((state) => state.agama);
 
-  // Load initial data
   useEffect(() => {
-    if (agamaData.length === 0) {
-      dispatch(fetchAgama({ page: 1, perPage: 10 }));
+    // Initial load
+    if (!loadedPages.includes(1)) {
+      dispatch(fetchAgamaPaged({ 
+        page: 1,
+        perPage: 10,
+        isInfiniteScroll: true 
+      }));
     }
-  }, [dispatch, agamaData.length]);
+  }, [dispatch, loadedPages]);
 
-  const handleLoadMore = useCallback(() => {
-    if (loadingRef.current || pageRef.current >= totalPages) {
-      console.log('Skip loading:', { 
-        isLoading: loadingRef.current, 
-        currentPage: pageRef.current, 
-        totalPages 
-      });
-      return;
+  const handleLoadMore = () => {
+    if (page < totalPages && !loading && !loadedPages.includes(page + 1)) {
+      const nextPage = page + 1;
+      lastFetchedPage.current = nextPage;
+      setPage(nextPage);
+      
+      dispatch(fetchAgamaPaged({ 
+        page: nextPage,
+        perPage: 10,
+        isInfiniteScroll: true 
+      }));
     }
+  };
 
-    loadingRef.current = true;
-    const nextPage = pageRef.current + 1;
-    console.log('Loading more data, page:', nextPage);
-
-    dispatch(fetchAgama({ page: nextPage, perPage: 10 }))
-      .then(() => {
-        pageRef.current = nextPage;
-        loadingRef.current = false;
-      })
-      .catch(() => {
-        loadingRef.current = false;
-      });
-  }, [dispatch, totalPages]);
-
-  // Memoize options untuk mencegah re-render
-  const agamaOptions = useMemo(() => 
-    agamaData?.map(item => ({
-      label: item.namaAgama,
-      value: item.agamaId
-    })) || [],
-    [agamaData]
-  );
+  // Transform data untuk select options
+  const agamaOptions = agamaData.map(item => ({
+    label: item.namaAgama,
+    value: item.agamaId
+  }));
 
   return {
     agamaOptions,
     loading,
-    error,
-    handleLoadMore,
-    hasMore: pageRef.current < totalPages
+    handleLoadMore
   };
 };
 

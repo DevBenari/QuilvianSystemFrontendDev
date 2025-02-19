@@ -11,8 +11,6 @@ export const fetchPekerjaan = createAsyncThunk(
         params: { page, perPage },
         headers: getHeaders(),
       });
-
-      console.log("Response API:", response.data);
       return response.data; // Pastikan API mengembalikan struktur data yang benar
     } catch (error) {
       return rejectWithValue(

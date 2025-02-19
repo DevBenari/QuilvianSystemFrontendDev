@@ -31,7 +31,6 @@ export const fetchTitleWithFilters = createAsyncThunk(
         headers: getHeaders(),
       });
 
-      console.log("Response API (Filtered):", response.data);
       return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
