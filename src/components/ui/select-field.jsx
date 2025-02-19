@@ -32,12 +32,13 @@ const SelectField = forwardRef(
 
     // Memoize options with deep comparison
     const memoizedOptions = useMemo(() => 
-      options?.map(opt => ({
+      Array.isArray(options) ? options.map(opt => ({
         label: opt.label,
         value: opt.value
-      })) || [], 
+      })) : [], 
       [options]
     );
+    
 
     // Memoize the selected value
     const selectedValue = useMemo(() => 

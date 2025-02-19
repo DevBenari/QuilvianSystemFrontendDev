@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { GetPasienSlice } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col,Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import { fetchPasienSlice, fetchPasienWithFilters } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 
 const ListPasienBaruPage = () => {
   const dispatch = useDispatch();
@@ -18,21 +18,29 @@ const ListPasienBaruPage = () => {
     data: pasienData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.pasien);
 
-  useEffect(() => {
-    dispatch(GetPasienSlice());
-  }, [dispatch]);
+  const [page,setPage] = useState(1);
+  const perPage = 10;
 
+  useEffect(() => {
+    dispatch(fetchPasienSlice({page,perPage}));
+  }, [dispatch, page]);
+
+  useEffect(() => {
+    setFilteredPatients(pasienData);
+
+  }, [pasienData])
   // Tampilkan loading jika data sedang dimuat
   if (loading) {
     return <div>Loading data pasien...</div>;
   }
 
   // Tampilkan pesan error jika ada kesalahan
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  // if (error) {
+  //   return <div>Error: {error}</div>;
+  // }
 
   return (
     <FormProvider {...methods}>
@@ -48,9 +56,8 @@ const ListPasienBaruPage = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={pasienData}
-            setFilteredPatients={setFilteredPatients}
-            onFilteredPatients={filteredPatients}
+            fetchFunction={fetchPasienWithFilters}
+            setFilteredData={setFilteredPatients}
           />
         </Col>
       </Col>
@@ -73,22 +80,41 @@ const ListPasienBaruPage = () => {
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
-              <div className="iq-card-body">
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
+                </div>
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredPatients.length === 0 ? (
+                <Alert variant="warning" className="text-center">
+                  <i className="ri-information-line me-2"></i>
+                  Tidak ada data yang tersedia.
+                </Alert>
+              ) : (
                 <CustomTableComponent
-                  data={
-                    filteredPatients.length > 0 ? filteredPatients : pasienData
-                  }
+                  data={filteredPatients}
                   columns={[
-                    { key: "kodePasien", label: "kodePasien" },
-                    { key: "noRekamMedis", label: "No Rekam Medis" },
-                    // { key: 'date', label: 'Tanggal' },
+                    { key: "no", label: "No" },
+                    { key: "kodePasien", label: "Kode Pasien" },
+                    { key: "noRekamMedis", label: "Rekam Medis" },
                     { key: "namaLengkap", label: "Nama Pasien" },
                     { key: "jenisKelamin", label: "Jenis Kelamin" },
-                    { key: "tempatLahir", label: "Tempat Lahir" },
+                    
                   ]}
-                  itemsPerPage={10}
+                  slugConfig={{ textField: "namaLengkap", idField: "pasienId" }}
+                  basePath="/"
+                  paginationProps={{
+                    currentPage: page,
+                    totalPages: totalPages,
+                    itemsPerPage: perPage,
+                    onPageChange: setPage,
+                  }}
                 />
-              </div>
+              )}
             </div>
           </Col>
         </Row>

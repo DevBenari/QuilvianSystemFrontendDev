@@ -32,7 +32,6 @@ const TableDataAgama = () => {
   }, [dispatch, page]);
 
   useEffect(() => {
-    console.log("Agama Data:", agamaData);
     setFilteredData(agamaData);
   }, [agamaData]);
 
