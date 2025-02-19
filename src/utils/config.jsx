@@ -342,6 +342,19 @@ export const menus = {
         },
       ],
     },
+    {
+      title: "Master Provinsi",
+      subItems: [
+        {
+          title: "Data Provinsi",
+          href: "/MasterData/master-wilayah/provinsi/table-provinsi",
+        },
+        // {
+        //   title: "Dokter Praktek",
+        //   href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
+        // },
+      ],
+    },
   ],
   instalasiRawatJalan: [
     {

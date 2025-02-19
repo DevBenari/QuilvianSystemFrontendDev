@@ -86,15 +86,8 @@ const EditAnggotaForm = ({ params }) => {
       fields: [
         {
           type: "text",
-          label: "Kode Anggota",
-          name: "keangotaanKode",
-          placeholder: "Masukkan Kode Anggota...",
-          colSize: 6,
-        },
-        {
-          type: "text",
           label: "Jenis Anggota",
-          name: "jenisKeangotaan",
+          name: "jenisKeanggotaan",
           placeholder: "Masukkan Jenis Anggota...",
           colSize: 6,
         },

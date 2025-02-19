@@ -8,16 +8,17 @@ import golonganSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterDa
 import pendidikanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 import pasien from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 import NegaraSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
-import provinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice";
-import kabupaten from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kabupatenSlice";
-import kecamatan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kecamatanSlice";
-import kelurahan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kelurahanSlice";
+// import provinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice";
+// import kabupaten from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kabupatenSlice";
+// import kecamatan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kecamatanSlice";
+// import kelurahan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kelurahanSlice";
 import indetitasSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 import jabatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
 import agamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 import dokterPraktekData from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
 import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 import anggotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
+import ProvinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 
 const store = configureStore({
   reducer: {
@@ -29,15 +30,16 @@ const store = configureStore({
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
     negara: NegaraSlice,
-    provinsi: provinsiSlice,
-    kabupaten: kabupaten,
-    kecamatan: kecamatan,
-    kelurahan: kelurahan,
+    // provinsi: provinsiSlice,
+    // kabupaten: kabupaten,
+    // kecamatan: kecamatan,
+    // kelurahan: kelurahan,
     dokterPraktek: dokterPraktekData,
     dokter: dokterSlice,
     identitas: indetitasSlice,
     jabatan: jabatanSlice,
     anggota: anggotaSlice,
+    Provinsi: ProvinsiSlice,
   },
 });
 

@@ -27,14 +27,6 @@ const NegaraAddForm = () => {
       fields: [
         {
           type: "text",
-          label: "Kode Negara",
-          name: "kodeNegara",
-          placeholder: "Masukkan Kode Negara...",
-          colSize: 6,
-          defaultValue: "",
-        },
-        {
-          type: "text",
           label: "Nama Negara",
           name: "namaNegara",
           placeholder: "Masukkan Nama Negara...",

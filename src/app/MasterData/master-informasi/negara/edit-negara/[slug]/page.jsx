@@ -62,14 +62,6 @@ const NegaraEditForm = ({ params }) => {
       fields: [
         {
           type: "text",
-          label: "kode Negara",
-          name: "kodeNegara",
-          placeholder: "Masukkan kode Negara...",
-          colSize: 6,
-          rules: { required: "kode negara harus diisi" },
-        },
-        {
-          type: "text",
           label: "Nama Negara",
           name: "namaNegara",
           placeholder: "Masukkan Nama Negara...",

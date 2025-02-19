@@ -107,7 +107,7 @@ const TableDataAnggota = () => {
                     columns={[
                       { key: "no", label: "No" },
                       {
-                        key: "createdDateTime",
+                        key: "createDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
@@ -115,12 +115,12 @@ const TableDataAnggota = () => {
                         label: "Dibuat Oleh",
                       },
                       { key: "kodeKeanggotaan", label: "Kode Anggota" },
-                      { key: "jenisKeangotaan", label: "Jenis Anggota" },
+                      { key: "jenisKeanggotaan", label: "Jenis Anggota" },
                       { key: "jenisPromo", label: "Jenis Promo" },
                     ]}
                     slugConfig={{
-                      textField: "jenisKeangotaan",
-                      idField: "keangotaanId",
+                      textField: "jenisKeanggotaan",
+                      idField: "keanggotaanId",
                     }}
                     basePath="/MasterData/master-anggota/edit-anggota"
                     paginationProps={{

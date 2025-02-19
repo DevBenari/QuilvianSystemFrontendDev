@@ -89,7 +89,7 @@ const TableDataIdentitas = () => {
                   data={filteredIdentitas}
                   columns={[
                     { key: "no", label: "No" },
-                    { key: "createdDateTime", label: "Tanggal Dibuat" },
+                    { key: "createDateTime", label: "Tanggal Dibuat" },
                     { key: "createByName", label: "Dibuat Oleh" },
                     { key: "kodeIdentitas", label: "Kode Identitas" },
                     { key: "jenisIdentitas", label: "Jenis Identitas" },
