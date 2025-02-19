@@ -3,13 +3,14 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
-import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
+
 import { useForm } from "react-hook-form";
 import dataWilayah from "@/utils/dataWilayah";
 import {
   editPegawai,
   PegawaiById,
 } from "@/lib/hooks/masterData/master-pegawai";
+import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 
 const PegawaiEditForm = ({ params }) => {
   const { setValue } = useForm();

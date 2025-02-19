@@ -244,7 +244,7 @@ export const menus = {
         },
         {
           title: "Daftar Tindakan Operasi",
-          href: "/MasterData//master-operasi/daftar-tindakan-operasi",
+          href: "/MasterData/master-operasi/daftar-tindakan-operasi/table-tindakan-operasi",
         },
         {
           title: "Daftar Ruangan Operasi",
