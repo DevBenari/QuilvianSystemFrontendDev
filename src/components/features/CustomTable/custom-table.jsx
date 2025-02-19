@@ -3,7 +3,6 @@ import React, { memo } from "react";
 import { Table, Button, Spinner } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { generateSlug } from "@/utils/slug";
-import { generateSlug } from "@/utils/slug";
 
 import { parseISO, format } from "date-fns";
 const CustomTableComponent = memo(

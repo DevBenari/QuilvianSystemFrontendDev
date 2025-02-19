@@ -14,7 +14,7 @@ import kecamatan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/m
 import kelurahan from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/kelurahanSlice";
 import indetitasSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 import jabatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
-import AgamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
+import agamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
 import dokterPraktekData from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
 import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 import anggotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
@@ -24,7 +24,7 @@ const store = configureStore({
     token: authLogin,
     titles: titleReducer,
     pasien: pasien,
-    agama: AgamaSlice,
+    agama: agamaSlice,
     pekerjaan: pekerjaanReducer,
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
