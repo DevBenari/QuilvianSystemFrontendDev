@@ -2,21 +2,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-// 🔹 Fetch agama dengan pagination untuk CustomTableComponent
-// ✅ Fetch semua data agama dengan pagination
-export const fetchAgamaPaged = createAsyncThunk(
-  "agama/fetchData",
+// 🔹 Fetch KabupatenKota dengan pagination untuk CustomTableComponent
+// ✅ Fetch semua data KabupatenKota dengan pagination
+export const fetchKabupatenKota = createAsyncThunk(
+  "KabupatenKota/fetchData",
   async (
     { page = 1, perPage = 10, isInfiniteScroll = false },
     { rejectWithValue, getState }
   ) => {
     try {
-      const currentState = getState().agama;
+      const currentState = getState().KabupatenKota;
       if (currentState.loadedPages.includes(page)) {
         console.log("Data already loaded for page:", page);
         return null;
       }
-      const response = await InstanceAxios.get(`/Agama`, {
+      const response = await InstanceAxios.get(`/Wilayah/KabupatenKota`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
@@ -36,12 +36,12 @@ export const fetchAgamaPaged = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch agama dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
-export const fetchAgamaWithFilters = createAsyncThunk(
-  "agama/fetchWithFilters",
+// 🔹 Fetch KabupatenKota dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
+export const fetchKabupatenKotaWithFilters = createAsyncThunk(
+  "KabupatenKota/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Agama/paged`, {
+      const response = await InstanceAxios.get(`/Wilayah/KabupatenKota/paged`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -62,12 +62,12 @@ export const fetchAgamaWithFilters = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch data agama berdasarkan ID
-export const fetchAgamaById = createAsyncThunk(
-  "agama/fetchById",
+// 🔹 Fetch data KabupatenKota berdasarkan ID
+export const fetchKabupatenKotaById = createAsyncThunk(
+  "KabupatenKota/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Agama/${id}`, {
+      const response = await InstanceAxios.get(`/Wilayah/KabupatenKota/${id}`, {
         headers: getHeaders(),
       });
 
@@ -81,62 +81,74 @@ export const fetchAgamaById = createAsyncThunk(
   }
 );
 
-// 🔹 Tambah Agama Darah
-export const createAgama = createAsyncThunk(
-  "agama/create",
+// 🔹 Tambah KabupatenKota Darah
+export const createKabupatenKota = createAsyncThunk(
+  "KabupatenKota/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Agama`, data, {
-        headers: getHeaders(),
-      });
+      const response = await InstanceAxios.post(
+        `/Wilayah/KabupatenKota`,
+        data,
+        {
+          headers: getHeaders(),
+        }
+      );
 
       console.log("Response API (Fetch By ID):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan Agama darah"
+        error.response?.data || "Gagal menambahkan KabupatenKota darah"
       );
     }
   }
 );
 
-// 🔹 Update Agama Darah berdasarkan ID
-export const updateAgama = createAsyncThunk(
-  "agama/update",
+// 🔹 Update KabupatenKota Darah berdasarkan ID
+export const updateKabupatenKota = createAsyncThunk(
+  "KabupatenKota/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Agama`, data, {
-        headers: getHeaders(),
-      });
+      const response = await InstanceAxios.post(
+        `/Wilayah/KabupatenKota`,
+        data,
+        {
+          headers: getHeaders(),
+        }
+      );
 
       console.log("Response API (Add):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui Agama "
+        error.response?.data || "Gagal memperbarui KabupatenKota "
       );
     }
   }
 );
 
-export const deleteAgama = createAsyncThunk(
-  "agama/delete",
+export const deleteKabupatenKota = createAsyncThunk(
+  "KabupatenKota/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.delete(`/Agama/${id}`, {
-        headers: getHeaders(),
-      });
+      const response = await InstanceAxios.delete(
+        `/Wilayah/KabupatenKota/${id}`,
+        {
+          headers: getHeaders(),
+        }
+      );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Gagal menghapus Agama");
+      return rejectWithValue(
+        error.response?.data || "Gagal menghapus KabupatenKota"
+      );
     }
   }
 );
 
 // 🔹 Redux Slice
-// 🔹 Redux Slice
-const agamaSlice = createSlice({
-  name: "agama",
+const KabupatenKotaSlice = createSlice({
+  name: "KabupatenKota",
   initialState: {
     data: [],
     loadedPages: [],
@@ -149,12 +161,12 @@ const agamaSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch agama hanya dengan pagination (CustomTableComponent)
-      .addCase(fetchAgamaPaged.pending, (state) => {
+      // ✅ Fetch KabupatenKota hanya dengan pagination (CustomTableComponent)
+      .addCase(fetchKabupatenKota.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAgamaPaged.fulfilled, (state, action) => {
+      .addCase(fetchKabupatenKota.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
 
         state.loading = false;
@@ -163,7 +175,8 @@ const agamaSlice = createSlice({
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
-              (existingItem) => existingItem.agamaId === newItem.agamaId
+              (existingItem) =>
+                existingItem.KabupatenKotaId === newItem.KabupatenKotaId
             )
         );
 
@@ -180,65 +193,66 @@ const agamaSlice = createSlice({
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
       })
-      .addCase(fetchAgamaPaged.rejected, (state, action) => {
+      .addCase(fetchKabupatenKota.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Terjadi kesalahan";
       })
 
-      // ✅ Fetch agama dengan search & filter (CustomSearchFilter)
-      .addCase(fetchAgamaWithFilters.pending, (state) => {
+      // ✅ Fetch KabupatenKota dengan search & filter (CustomSearchFilter)
+      .addCase(fetchKabupatenKotaWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAgamaWithFilters.fulfilled, (state, action) => {
+      .addCase(fetchKabupatenKotaWithFilters.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data?.rows || [];
         state.totalItems = action.payload.data?.totalRows || 0;
         state.totalPages = action.payload.data?.totalPages || 1;
         state.currentPage = action.payload.data?.currentPage || 1;
       })
-      .addCase(fetchAgamaWithFilters.rejected, (state, action) => {
+      .addCase(fetchKabupatenKotaWithFilters.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // Fetch By ID
-      .addCase(fetchAgamaById.pending, (state) => {
+      .addCase(fetchKabupatenKotaById.pending, (state) => {
         state.loading = true;
-        state.selectedAgama = null;
+        state.selectedKabupatenKota = null;
       })
-      .addCase(fetchAgamaById.fulfilled, (state, action) => {
+      .addCase(fetchKabupatenKotaById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedAgama = action.payload;
+        state.selectedKabupatenKota = action.payload;
       })
-      .addCase(fetchAgamaById.rejected, (state, action) => {
+      .addCase(fetchKabupatenKotaById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Tambah Agama Darah
-      .addCase(createAgama.fulfilled, (state, action) => {
+      // Tambah KabupatenKota Darah
+      .addCase(createKabupatenKota.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
-      // Update Agama Darah
-      .addCase(updateAgama.fulfilled, (state, action) => {
+      // Update KabupatenKota Darah
+      .addCase(updateKabupatenKota.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (agama) => agama.agamaId === action.payload.agamaId
+          (KabupatenKota) =>
+            KabupatenKota.KabupatenKotaId === action.payload.KabupatenKotaId
         );
         if (index !== -1) {
           state.data[index] = action.payload;
         }
       })
 
-      // Hapus agama Darah
-      .addCase(deleteAgama.fulfilled, (state, action) => {
+      // Hapus KabupatenKota Darah
+      .addCase(deleteKabupatenKota.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (agama) => agama.agamaId !== action.payload
+          (KabupatenKota) => KabupatenKota.KabupatenKotaId !== action.payload
         );
       });
   },
 });
 
-export default agamaSlice.reducer;
+export default KabupatenKotaSlice.reducer;

@@ -1,12 +1,12 @@
-import ProvinsiAddForm from "@/components/view/MasterData/master-wilayah/provinsi/add-provinsi";
+import KabupatenKotaAddForm from "@/components/view/MasterData/master-wilayah/kabupaten-kota/add-kabupaten-kota";
 import React from "react";
 
-const AddProvinsiPage = () => {
+const AddKabupatenKotaPage = () => {
   return (
     <div>
-      <ProvinsiAddForm />
+      <KabupatenKotaAddForm />
     </div>
   );
 };
 
-export default AddProvinsiPage;
+export default AddKabupatenKotaPage;

@@ -351,7 +351,7 @@ export const menus = {
         },
         {
           title: "Data Kabupaten/Kota",
-          href: "/MasterData/master-wilayah/provinsi/table-kabupaten-kota",
+          href: "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota",
         },
       ],
     },

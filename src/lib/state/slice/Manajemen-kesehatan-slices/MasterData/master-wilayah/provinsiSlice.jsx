@@ -5,15 +5,28 @@ import { getHeaders } from "@/lib/headers/headers";
 // 🔹 Fetch Provinsi
 export const fetchProvinsi = createAsyncThunk(
   "Provinsi/fetchData",
-  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
+  async (
+    { page = 1, perPage = 10, isInfiniteScroll = false },
+    { rejectWithValue, getState }
+  ) => {
     try {
+      const currentState = getState().Provinsi;
+      if (currentState.loadedPages.includes(page)) {
+        console.log("Data already loaded for page:", page);
+        return null;
+      }
+
       const response = await InstanceAxios.get(`/Wilayah/Provinsi`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
 
-      console.log("✅ Response API Provinsi:", response.data);
-      return response.data; // Tidak perlu mengambil `.rows`, karena data sudah langsung di dalam `data`
+      return {
+        data: response.data.data,
+        pagination: response.data.pagination,
+        page,
+        meta: { arg: { page, isInfiniteScroll } },
+      };
     } catch (error) {
       console.error("❌ Error API Provinsi:", error);
       return rejectWithValue(
@@ -127,6 +140,7 @@ const ProvinsiSlice = createSlice({
   name: "Provinsi",
   initialState: {
     data: [], // Data diubah menjadi array kosong agar mudah dikelola
+    loadedPages: [],
     loading: false,
     error: null,
     totalItems: 0,
@@ -136,49 +150,56 @@ const ProvinsiSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // ✅ Fetch Provinsi hanya dengan pagination (CustomTableComponent)
       .addCase(fetchProvinsi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchProvinsi.fulfilled, (state, action) => {
+        if (!action.payload) return; // Skip if we already had the data
+
         state.loading = false;
-        state.data = Array.isArray(action.payload?.data)
-          ? action.payload.data
-          : []; // ✅ Pastikan data adalah array
-        state.totalItems = action.payload?.pagination?.totalRows || 0;
-        state.totalPages = action.payload?.pagination?.totalPages || 1;
-        state.currentPage = action.payload?.pagination?.currentPage || 1;
+
+        // Add new data without duplicates
+        const newData = action.payload.data.filter(
+          (newItem) =>
+            !state.data.some(
+              (existingItem) => existingItem.ProvinsiId === newItem.ProvinsiId
+            )
+        );
+
+        if (action.meta.arg.isInfiniteScroll) {
+          // Infinite scroll - append data
+          state.data = [...state.data, ...newData];
+          state.loadedPages.push(action.payload.page);
+        } else {
+          // Regular pagination - replace data
+          state.data = action.payload.data;
+        }
+
+        state.totalItems = action.payload.pagination?.totalRows || 0;
+        state.totalPages = action.payload.pagination?.totalPages || 1;
+        state.currentPage = action.meta.arg.page;
       })
       .addCase(fetchProvinsi.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Gagal mengambil data";
+        state.error = action.payload || "Terjadi kesalahan";
       })
-
-      // ✅ Fetch dengan search & filter
+      // ✅ Fetch Provinsi dengan search & filter (CustomSearchFilter)
       .addCase(fetchProvinsiWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchProvinsiWithFilters.fulfilled, (state, action) => {
         state.loading = false;
-
-        console.log("🔍 Debugging Filtered Data:", action.payload);
-
-        if (Array.isArray(action.payload.data)) {
-          state.data = action.payload.data;
-        } else if (Array.isArray(action.payload.data?.rows)) {
-          state.data = action.payload.data.rows;
-        } else {
-          state.data = [];
-        }
-
-        state.totalItems = action.payload.pagination?.totalRows || 0;
-        state.totalPages = action.payload.pagination?.totalPages || 1;
-        state.currentPage = action.payload.pagination?.currentPage || 1;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
       })
       .addCase(fetchProvinsiWithFilters.rejected, (state, action) => {
         state.loading = false;
-        state.data = [];
+        state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 

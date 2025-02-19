@@ -14,6 +14,7 @@ import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData
 import anggotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
 import ProvinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 import asuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
+import KabupatenKotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKota";
 
 const store = configureStore({
   reducer: {
@@ -25,10 +26,6 @@ const store = configureStore({
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
     negara: NegaraSlice,
-    // provinsi: provinsiSlice,
-    // kabupaten: kabupaten,
-    // kecamatan: kecamatan,
-    // kelurahan: kelurahan,
     dokterPraktek: dokterPraktekData,
     dokter: dokterSlice,
     identitas: indetitasSlice,
@@ -36,6 +33,7 @@ const store = configureStore({
     anggota: anggotaSlice,
     Provinsi: ProvinsiSlice,
     asuransi: asuransiSlice,
+    KabupatenKota: KabupatenKotaSlice,
   },
 });
 
