@@ -34,6 +34,7 @@
     "chart.js": "^4.4.7",
     "choices.js": "^11.0.2",
     "css-loader": "^7.1.2",
+    "date-fns": "^4.1.0",
     "echarts": "^5.5.1",
     "echarts-for-react": "^3.0.2",
     "flatpickr": "^4.6.13",

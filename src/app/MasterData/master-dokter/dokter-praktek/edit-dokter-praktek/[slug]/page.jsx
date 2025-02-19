@@ -14,8 +14,6 @@ import {
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
 import { fetchDokter } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 
-
-
 const EditDokterPraktekForm = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -23,9 +21,7 @@ const EditDokterPraktekForm = ({ params }) => {
   const [dataDokterPraktek, setDataDokterPraktek] = useState(null);
   console.log("selectedDokterPraktek:", selectedDokterPraktek);
 
-   const { data: dokterData } = useSelector((state) => state.dokter);
-  
-   
+  const { data: dokterData } = useSelector((state) => state.dokter);
 
   // Fetch data saat pertama kali dimuat
   useEffect(() => {

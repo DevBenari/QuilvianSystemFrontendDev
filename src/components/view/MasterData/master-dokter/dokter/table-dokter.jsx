@@ -5,9 +5,13 @@ import ButtonNav from "@/components/ui/button-navigation";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDokter } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
+import {
+  fetchDokter,
+  fetchDokterWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
+import { set } from "date-fns";
 
 const TableDataDokter = () => {
   const methods = useForm();
@@ -17,20 +21,27 @@ const TableDataDokter = () => {
     data: dokterData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.dokter);
 
-  // 🔹 Menggunakan useMemo untuk memastikan hanya dire-render saat data berubah
-  const dokter = useMemo(() => dokterData.data || [], [dokterData.data]);
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuha
 
-  const [filteredDokter, setFilteredDokter] = useState(dokter);
+  // 🔹 Menggunakan useMemo untuk memastikan hanya dire-render saat data berubah
+  const dokter = useMemo(() => dokterData || [], [dokterData]);
+
+  const [filteredDokter, setFilteredDokter] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchDokter());
-  }, [dispatch]);
+    dispatch(fetchDokter({ page, perPage }));
+  }, [dispatch, page]);
 
   useEffect(() => {
     setFilteredDokter(dokter); // Perbarui data setelah fetch
   }, [dokter]);
+
+  console.log("dokter Data:", dokter);
 
   return (
     <FormProvider {...methods}>
@@ -49,9 +60,8 @@ const TableDataDokter = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={dokter}
-            setFilteredPatients={setFilteredDokter}
-            onFilteredPatients={filteredDokter}
+            fetchFunction={fetchDokterWithFilters}
+            setFilteredData={setFilteredDokter}
           />
         </Col>
       </Col>
@@ -73,33 +83,34 @@ const TableDataDokter = () => {
                 />
               </div>
 
-              {/* 🔹 Loading Animation */}
-              {loading && (
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "200px" }}
-                >
-                  <Spinner animation="border" variant="primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* 🔹 Error atau Data Kosong */}
-              {!loading && (error || dokter.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredDokter.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {/* 🔹 Tabel Data Dokter */}
-              {!loading && !error && dokter.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredDokter}
                     columns={[
                       { key: "no", label: "No" }, // Nomor urut
+                      {
+                        key: "createdDate",
+                        label: "Tanggal Dibuat",
+                      },
+                      {
+                        key: "createByName",
+                        label: "Dibuat Oleh",
+                      },
                       { key: "kdDokter", label: "Kode Dokter" },
                       { key: "nmDokter", label: "Nama Dokter" },
                       { key: "sip", label: "SIP" },
@@ -108,18 +119,16 @@ const TableDataDokter = () => {
                       { key: "tglStr", label: "Tanggal STR" },
                       { key: "panggilDokter", label: "Panggilan" },
                       { key: "nik", label: "NIK" },
-                      {
-                        key: "createDateTime",
-                        label: "Tanggal Dibuat",
-                      },
-                      {
-                        key: "createBy",
-                        label: "Dibuat Oleh",
-                      },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{ textField: "nmDokter", idField: "dokterId" }} // ID Dokter untuk Slug
                     basePath="/MasterData/master-dokter/dokter/edit-dokter-form"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

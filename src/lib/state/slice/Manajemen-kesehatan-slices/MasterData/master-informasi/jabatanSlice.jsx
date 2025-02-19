@@ -4,16 +4,43 @@ import { getHeaders } from "@/lib/headers/headers";
 
 // 🔹 Fetch semua Jabatan
 export const fetchJabatan = createAsyncThunk(
-  "jabatan/fetch",
-  async (_, { rejectWithValue }) => {
+  "jabatan/fetchData",
+  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get("/Jabatan", {
+      const response = await InstanceAxios.get(`/Jabatan`, {
+        params: { page, perPage },
         headers: getHeaders(),
       });
-      return response.data.data; // Mengambil data dari response
+      console.log("Response API:", response.data);
+      return response.data; // Pastikan API mengembalikan struktur data yang benar
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal mengambil data jabatan"
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
+    }
+  }
+);
+
+export const fetchJabatanWithFilters = createAsyncThunk(
+  "Jabatan/fetchWithFilters",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Jabatan/paged`, {
+        params: filters,
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Filtered):", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "Tidak ada data yang tersedia",
+          data: [],
+        });
+      }
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
       );
     }
   }
@@ -94,20 +121,47 @@ const jabatanSlice = createSlice({
     selectedJabatan: null,
     loading: false,
     error: null,
+    totalItems: 0,
+    totalPages: 1,
+    currentPage: 1,
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchJabatan.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchJabatan.fulfilled, (state, action) => {
+        console.log("API Response Data:", action.payload);
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload.data || []; // Menyimpan daftar golongan darah
+        state.totalItems = action.payload.pagination?.totalRows || 0;
+        state.totalPages = action.payload.pagination?.totalPages || 1;
+        state.currentPage = action.payload.pagination?.currentPage || 1;
       })
       .addCase(fetchJabatan.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || "Gagal mengambil data";
       })
+
+      // ✅ Fetch Jabatan dengan search & filter (CustomSearchFilter)
+      .addCase(fetchJabatanWithFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchJabatanWithFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
+      })
+      .addCase(fetchJabatanWithFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
+      })
+
       .addCase(fetchJabatanById.pending, (state) => {
         state.selectedJabatan = null;
       })

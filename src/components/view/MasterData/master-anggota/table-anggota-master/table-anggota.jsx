@@ -7,8 +7,11 @@ import ButtonNav from "@/components/ui/button-navigation";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import { fetchAnggota } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import {
+  fetchAnggota,
+  fetchAnggotaWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
 
 const TableDataAnggota = () => {
   const methods = useForm();
@@ -19,6 +22,7 @@ const TableDataAnggota = () => {
     data: AnggotaData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.anggota);
 
   // Gunakan useMemo untuk menghindari perhitungan ulang yang tidak perlu
@@ -26,18 +30,24 @@ const TableDataAnggota = () => {
     return Array.isArray(AnggotaData) ? AnggotaData : [];
   }, [AnggotaData]);
 
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 2; // Bisa diubah sesuai kebutuhan
+
   // State untuk hasil filter pencarian
-  const [filteredAnggota, setFilteredAnggota] = useState(AnggotaList);
+  const [filteredAnggota, setFilteredAnggota] = useState([]);
 
   // Fetch data saat pertama kali render
   useEffect(() => {
-    dispatch(fetchAnggota());
-  }, [dispatch]);
+    dispatch(fetchAnggota({ page, perPage }));
+  }, [dispatch, page]);
 
   // Update filteredAnggota ketika AnggotaList berubah
   useEffect(() => {
     setFilteredAnggota(AnggotaList);
   }, [AnggotaList]);
+
+  console.log("anggota Data:", AnggotaList);
 
   return (
     <FormProvider {...methods}>
@@ -50,9 +60,8 @@ const TableDataAnggota = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={AnggotaData}
-            setFilteredPatients={setFilteredAnggota}
-            onFilteredPatients={filteredAnggota}
+            fetchFunction={fetchAnggotaWithFilters}
+            setFilteredData={setFilteredAnggota}
           />
         </Col>
       </Col>
@@ -77,60 +86,50 @@ const TableDataAnggota = () => {
               </div>
 
               {/* Tampilkan loading spinner jika sedang mengambil data */}
-              {loading && (
+              {loading ? (
                 <div className="text-center p-4">
                   <Spinner animation="border" variant="primary" />
                   <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* Tampilkan pesan jika terjadi error */}
-              {!loading && error && (
-                <Alert variant="danger" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
                   {error}
                 </Alert>
-              )}
-
-              {/* Tampilkan pesan jika data kosong */}
-              {!loading && !error && AnggotaList.length === 0 && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : filteredAnggota.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {/* Tampilkan tabel jika ada data */}
-              {!loading && !error && AnggotaList.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredAnggota}
                     columns={[
-                      { key: "keangotaanKode", label: "Kode Anggota" },
-                      { key: "jenisKeangotaan", label: "Jenis Anggota" },
-                      { key: "jenisPromo", label: "Jenis Promo" },
+                      { key: "no", label: "No" },
                       {
-                        key: "createDateTime",
+                        key: "createdDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
-                        key: "createBy",
+                        key: "createByName",
                         label: "Dibuat Oleh",
                       },
-                      {
-                        key: "updateDateTime",
-                        label: "Tanggal Update",
-                      },
-                      {
-                        key: "updateBy",
-                        label: "Update Oleh",
-                      },
+                      { key: "kodeKeanggotaan", label: "Kode Anggota" },
+                      { key: "jenisKeangotaan", label: "Jenis Anggota" },
+                      { key: "jenisPromo", label: "Jenis Promo" },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
-                      textField: "keangotaanKode",
+                      textField: "jenisKeangotaan",
                       idField: "keangotaanId",
                     }}
                     basePath="/MasterData/master-anggota/edit-anggota"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

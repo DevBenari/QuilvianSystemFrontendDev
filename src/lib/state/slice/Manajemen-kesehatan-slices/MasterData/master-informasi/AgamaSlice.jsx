@@ -1,29 +1,46 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// ✅ Fetch semua data agama dengan pagination
-export const fetchAgama = createAsyncThunk(
-  "agama/fetchData",
-  async ({ page = 1, perPage = 10 }, { rejectWithValue, getState }) => {
+// 🔹 Fetch agama dengan pagination untuk CustomTableComponent
+export const fetchAgamaPaged = createAsyncThunk(
+  "agama/fetchPaged",
+  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
     try {
-      // Check if we already have the data for this page
-      const currentState = getState().agama;
-      if (currentState.loadedPages.includes(page)) {
-        return null; // Skip fetching if we already have the data
-      }
-
-      const response = await InstanceAxios.get(`/Agama`, {
+      const response = await InstanceAxios.get(`/Agama/paged`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
 
-      return { 
-        data: response.data.data,
-        pagination: response.data.pagination,
-        page
-      };
+      console.log("Response API (Paged):", response.data);
+      return response.data;
     } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
+    }
+  }
+);
+
+// 🔹 Fetch agama dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
+export const fetchAgamaWithFilters = createAsyncThunk(
+  "agama/fetchWithFilters",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.get(`/Agama/paged`, {
+        params: filters,
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Filtered):", response.data);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return rejectWithValue({
+          message: "Tidak ada data yang tersedia",
+          data: [],
+        });
+      }
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
       );
@@ -41,7 +58,7 @@ export const fetchAgamaById = createAsyncThunk(
       });
 
       console.log("Response API (Fetch By ID):", response.data);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
@@ -50,10 +67,29 @@ export const fetchAgamaById = createAsyncThunk(
   }
 );
 
-// 🔹 Tambah data agama
-export const addAgama = createAsyncThunk(
-  "agama/add",
-  async (newData, { rejectWithValue }) => {
+// 🔹 Tambah Agama Darah
+export const createAgama = createAsyncThunk(
+  "agama/create",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.post(`/Agama`, data, {
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Fetch By ID):", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Gagal menambahkan Agama darah"
+      );
+    }
+  }
+);
+
+// 🔹 Update Agama Darah berdasarkan ID
+export const updateAgama = createAsyncThunk(
+  "agama/update",
+  async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.post(`/Agama`, newData, {
         headers: getHeaders(),
@@ -63,97 +99,84 @@ export const addAgama = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan data"
+        error.response?.data || "Gagal memperbarui Agama "
       );
     }
   }
 );
 
-// 🔹 Hapus data agama berdasarkan ID
 export const deleteAgama = createAsyncThunk(
   "agama/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await InstanceAxios.delete(`/Agama/${id}`, {
+      const response = await InstanceAxios.delete(`/Agama/${id}`, {
         headers: getHeaders(),
       });
-
-      console.log(`Agama dengan ID ${id} berhasil dihapus`);
-      return id; // Mengembalikan ID yang dihapus agar bisa dihapus dari Redux store
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data || "Gagal menghapus data"
-      );
-    }
-  }
-);
-
-// 🔹 Update data agama berdasarkan ID
-export const updateAgama = createAsyncThunk(
-  "agama/update",
-  async ({ id, updatedData }, { rejectWithValue }) => {
-    try {
-      const response = await InstanceAxios.put(`/Agama/${id}`, updatedData, {
-        headers: getHeaders(),
-      });
-
-      console.log("Response API (Update):", response.data);
       return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data || "Gagal memperbarui data"
-      );
+      return rejectWithValue(error.response?.data || "Gagal menghapus Agama");
     }
   }
 );
 
 // 🔹 Redux Slice
+// 🔹 Redux Slice
 const agamaSlice = createSlice({
+  name: "agama",
   name: "agama",
   initialState: {
     data: [],
-    loadedPages: [], 
+    loadedPages: [],
     totalItems: 0,
+    totalPages: 1,
     totalPages: 1,
     currentPage: 1,
     loading: false,
     error: null,
   },
   reducers: {},
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      // **Fetch All**
-      .addCase(fetchAgama.pending, (state) => {
+      // ✅ Fetch agama hanya dengan pagination (CustomTableComponent)
+      .addCase(fetchAgamaPaged.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAgama.fulfilled, (state, action) => {
-        if (!action.payload) return; // Skip if we already had the data
-        
+
+      .addCase(fetchAgamaPaged.fulfilled, (state, action) => {
         state.loading = false;
-        
-        // Add new data without duplicates
-        const newData = action.payload.data.filter(
-          newItem => !state.data.some(
-            existingItem => existingItem.agamaId === newItem.agamaId
-          )
-        );
-        
-        state.data = [...state.data, ...newData];
-        state.loadedPages.push(action.payload.page);
-        state.totalItems = action.payload.pagination?.totalRows || 0;
-        state.totalPages = action.payload.pagination?.totalPages || 1;
-        state.currentPage = action.meta.arg.page;
+        state.data = action.payload?.data?.rows || []; // Ambil data dari `rows`
+        state.totalItems = action.payload?.data?.totalRows || 0;
+        state.totalPages = action.payload?.data?.totalPages || 1;
+        state.currentPage = action.payload?.data?.currentPage || 1;
       })
-      .addCase(fetchAgama.rejected, (state, action) => {
+      .addCase(fetchAgamaPaged.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || "Gagal mengambil data";
       })
-  
-      // **Fetch By ID**
+
+      // ✅ Fetch agama dengan search & filter (CustomSearchFilter)
+      .addCase(fetchAgamaWithFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAgamaWithFilters.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
+      })
+      .addCase(fetchAgamaWithFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
+      })
+
+      // Fetch By ID
       .addCase(fetchAgamaById.pending, (state) => {
         state.loading = true;
-        state.error = null;
         state.selectedAgama = null;
       })
       .addCase(fetchAgamaById.fulfilled, (state, action) => {
@@ -162,51 +185,29 @@ const agamaSlice = createSlice({
       })
       .addCase(fetchAgamaById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || "Gagal mengambil data";
+        state.error = action.payload;
       })
 
-      // **Add**
-      .addCase(addAgama.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(addAgama.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data.push(action.payload); // Tambahkan ke Redux store
-      })
-      .addCase(addAgama.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message || "Gagal menambahkan data";
+      // Tambah Agama Darah
+      .addCase(createAgama.fulfilled, (state, action) => {
+        state.data.push(action.payload);
       })
 
-      // **Delete**
-      .addCase(deleteAgama.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(deleteAgama.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = state.data.filter((item) => item.agamaId !== action.payload);
-      })
-      .addCase(deleteAgama.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message || "Gagal menghapus data";
-      })
-
-      // **Update**
-      .addCase(updateAgama.pending, (state) => {
-        state.loading = true;
-      })
+      // Update Agama Darah
       .addCase(updateAgama.fulfilled, (state, action) => {
-        state.loading = false;
         const index = state.data.findIndex(
-          (item) => item.agamaId === action.payload.agamaId
+          (agama) => agama.agamaId === action.payload.agamaId
         );
         if (index !== -1) {
-          state.data[index] = action.payload; // Perbarui data di Redux store
+          state.data[index] = action.payload;
         }
       })
-      .addCase(updateAgama.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message || "Gagal memperbarui data";
+
+      // Hapus agama Darah
+      .addCase(deleteAgama.fulfilled, (state, action) => {
+        state.data = state.data.filter(
+          (agama) => agama.agamaId !== action.payload
+        );
       });
   },
 });

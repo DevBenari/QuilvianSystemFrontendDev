@@ -21,26 +21,19 @@ const AgamaEditPage = ({ params }) => {
   // Mengambil data dari Redux store
   const { selectedAgama, loading, error } = useSelector((state) => state.agama);
 
-  // Fetch data Agama berdasarkan ID dari URL params
   useEffect(() => {
-    try {
-      const id = extractIdFromSlug(params.slug);
-      dispatch(fetchAgamaById(id));
-    } catch (error) {
-      console.error("Error fetching agama:", error);
-      router.push("/404");
-    }
-  }, [dispatch, params.slug, router]);
+    const id = extractIdFromSlug(params.slug);
+    dispatch(fetchAgamaById(id));
+  }, [dispatch, params.slug]);
 
-  // Update data lokal setelah data Agama berhasil di-fetch
+  // Sinkronisasi data Redux dengan State
   useEffect(() => {
     if (selectedAgama) {
-      console.log("Selected Agama:", selectedAgama);
-      setDataAgama(selectedAgama); // Update state lokal dengan data dari Redux
+      setDataAgama(selectedAgama);
     }
   }, [selectedAgama]);
 
-  // Handle form submission
+  console.log("data agama : ", dataAgama);
 
   // Konfigurasi form
   const formFields = [

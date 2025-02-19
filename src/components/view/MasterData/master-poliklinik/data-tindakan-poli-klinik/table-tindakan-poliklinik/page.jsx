@@ -7,7 +7,7 @@ import { Button, Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { tarifPoliKlinik } from "@/utils/masterData";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import TableEditSave from "@/components/features/edit-table/edit-table/table-edit-save-cancel";
 import { components } from "react-select";
 import SelectField from "@/components/ui/select-field";

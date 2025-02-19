@@ -7,7 +7,7 @@ import ButtonNav from "@/components/ui/button-navigation";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 
 import { fetchDokterPraktek } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
 
@@ -20,32 +20,39 @@ const TableDokterPraktek = () => {
     data: dokterPraktekData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.dokterPraktek);
 
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
   // Transformasi data untuk memasukkan nama dokter langsung dari objek "dokters"
   const dokterPraktekList = useMemo(() => {
     if (!Array.isArray(dokterPraktekData)) return [];
 
     return dokterPraktekData.map((praktek) => ({
       ...praktek,
-      namaDokter: praktek.dokters?.nmDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
-      kodeDokter: praktek.dokters?.kdDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
+      namaDokter: praktek.dokters.nmDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
+      kodeDokter: praktek.dokters.kdDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
     }));
   }, [dokterPraktekData]);
 
+  console.log("dokterPraktekList:", dokterPraktekList);
   // State untuk hasil filter pencarian
   const [filteredDokterPraktek, setFilteredDokterPraktek] =
     useState(dokterPraktekList);
 
   // Fetch data saat pertama kali render
   useEffect(() => {
-    dispatch(fetchDokterPraktek());
-  }, [dispatch]);
+    dispatch(fetchDokterPraktek({ page, perPage }));
+  }, [dispatch, page]);
 
   // Update filteredDokterPraktek ketika dokterPraktekList berubah
   useEffect(() => {
     setFilteredDokterPraktek(dokterPraktekList);
   }, [dokterPraktekList]);
+
+  console.log("dokterPraktekList Data:", dokterPraktekList);
 
   return (
     <FormProvider {...methods}>
@@ -61,8 +68,9 @@ const TableDokterPraktek = () => {
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
             data={dokterPraktekData}
-            setFilteredPatients={setFilteredDokterPraktek}
-            onFilteredPatients={filteredDokterPraktek}
+            setFilteredData={setFilteredDokterPraktek}
+            filterFields={["kodeDokter", "namaDokter"]}
+            dateField="createdDate"
           />
         </Col>
       </Col>
@@ -123,12 +131,18 @@ const TableDokterPraktek = () => {
                       { key: "jamMasuk", label: "Tanggal Masuk" },
                       { key: "jamKeluar", label: "Tanggal Keluar" },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
-                      textField: "dokter",
+                      textField: "namaDokter",
                       idField: "dokterPraktekId",
                     }}
                     basePath="/MasterData/master-dokter/dokter-praktek/edit-dokter-praktek"
+                    // paginationProps={{
+                    //   currentPage: page,
+                    //   totalPages: totalPages,
+                    //   itemsPerPage: perPage,
+                    //   onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    // }}
+                    // itemsPerPage={perPage}
                   />
                 </div>
               )}

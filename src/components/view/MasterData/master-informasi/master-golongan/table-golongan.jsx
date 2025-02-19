@@ -1,45 +1,51 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
-import ButtonNav from "@/components/ui/button-navigation";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchGolongan,
+  fetchGolonganDarahWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-
-import { useSelector, useDispatch } from "react-redux";
-import { fetchGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import ButtonNav from "@/components/ui/button-navigation";
 
 const TableDataGolongan = () => {
   const methods = useForm();
   const dispatch = useDispatch();
+
+  // 🔹 Ambil data dari Redux store
   const {
     data: golonganData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.golongan);
 
-  // Gunakan useMemo untuk menghitung ulang golongan hanya ketika golonganData berubah
-  const golongan = useMemo(() => golonganData?.data || [], [golonganData]);
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
 
-  const [filteredgolongan, setFilteredgolongan] = useState(golongan);
+  // 🔹 Fetch data ketika komponen pertama kali di-mount atau ketika `page` berubah
+  useEffect(() => {
+    dispatch(fetchGolongan({ page, perPage }));
+  }, [dispatch, page]);
+
+  const [filteredGolongan, setFilteredGolongan] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchGolongan());
-  }, [dispatch]);
+    console.log("Agama Data:", golonganData);
+    setFilteredGolongan(golonganData);
+  }, [golonganData]);
 
-  useEffect(() => {
-    setFilteredgolongan(golongan); // Update filteredgolongan setelah golongan diubah
-  }, [golongan]);
+  console.log("Golongan Data:", golonganData);
 
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">
-            Master Data <br></br>{" "}
-            <span className="letter-spacing fw-bold">List Daftar Golongan</span>
-          </h2>
+          <h2 className="mb-3">Master Data - List Golongan Darah</h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -49,22 +55,20 @@ const TableDataGolongan = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={golongan}
-            setFilteredPatients={setFilteredgolongan}
-            onFilteredPatients={filteredgolongan}
+            fetchFunction={fetchGolonganDarahWithFilters}
+            setFilteredData={setFilteredGolongan}
           />
         </Col>
       </Col>
+
       <div className="mt-3">
         <Row>
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-Golongan">
-                  <h4 className="card-Golongan font-widest">
-                    Tabel List Daftar Golongan
-                  </h4>
-                </div>
+                <h4 className="card-title font-widest">
+                  Tabel List Golongan Darah
+                </h4>
                 <ButtonNav
                   path="/MasterData/master-informasi/golongan-darah/add-golongan"
                   label="Add Golongan"
@@ -75,37 +79,28 @@ const TableDataGolongan = () => {
                 />
               </div>
 
-              {loading && (
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{ height: "300px" }}
-                >
-                  <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <h5 className="mt-3 text-primary fw-bold">
-                    Loading data, please wait...
-                  </h5>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* Error or No Data */}
-              {!loading && (error || golongan.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredGolongan.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {!loading && !error && golongan.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
-                    data={filteredgolongan}
+                    data={filteredGolongan}
                     columns={[
-                      { key: "no", label: "No" }, // Tambahkan kolom nomor urut
+                      { key: "no", label: "No" },
+                      { key: "createByName", label: "Dibuat Oleh" },
+                      { key: "createDateTime", label: "Tanggal Dibuat" },
                       {
                         key: "namaGolonganDarah",
                         label: "Nama Golongan Darah",
@@ -114,29 +109,19 @@ const TableDataGolongan = () => {
                         key: "kodeGolonganDarah",
                         label: "Kode Golongan Darah",
                       },
-                      {
-                        key: "createDateTime",
-                        label: "Tanggal Dibuat",
-                      },
-                      {
-                        key: "createBy",
-                        label: "Dibuat Oleh",
-                      },
-                      {
-                        key: "updateDateTime",
-                        label: "Tanggal Update",
-                      },
-                      {
-                        key: "updateBy",
-                        label: "Update Oleh",
-                      },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
                       textField: "namaGolonganDarah",
                       idField: "golonganDarahId",
                     }}
                     basePath="/MasterData/master-informasi/golongan-darah/edit-golongan"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

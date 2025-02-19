@@ -7,31 +7,41 @@ import ButtonNav from "@/components/ui/button-navigation";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
-import { fetchJabatan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import {
+  fetchJabatan,
+  fetchJabatanWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
 
 const TableDataJabatan = () => {
   const methods = useForm();
   const dispatch = useDispatch();
+
+  // 🔹 Ambil data dari Redux store
   const {
     data: jabatanData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.jabatan);
 
-  const jabatanList = useMemo(() => {
-    return Array.isArray(jabatanData) ? jabatanData : [];
-  }, [jabatanData]);
+  // 🔹 State untuk Pagination
+  const [page, setPage] = useState(1);
+  const perPage = 10; // Bisa diubah sesuai kebutuhan
 
-  const [filteredJabatan, setFilteredJabatan] = useState(jabatanList);
+  // 🔹 Data yang akan ditampilkan di tabel
+  const jabatan = useMemo(() => jabatanData || [], [jabatanData]);
+  const [filteredJabatan, setFilteredJabatan] = useState([]);
 
+  // 🔹 Fetch data ketika komponen pertama kali di-mount atau ketika `page` berubah
   useEffect(() => {
-    dispatch(fetchJabatan());
-  }, [dispatch]);
+    dispatch(fetchJabatan({ page, perPage }));
+  }, [dispatch, page]);
 
+  // 🔹 Sinkronisasi filtered data dengan data dari Redux
   useEffect(() => {
-    setFilteredJabatan(jabatanList);
-  }, [jabatanList]);
+    setFilteredJabatan(jabatan);
+  }, [jabatan]);
 
   return (
     <FormProvider {...methods}>
@@ -47,9 +57,8 @@ const TableDataJabatan = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={jabatanList}
-            setFilteredPatients={setFilteredJabatan}
-            onFilteredPatients={filteredJabatan}
+            fetchFunction={fetchJabatanWithFilters}
+            setFilteredData={setFilteredJabatan}
           />
         </Col>
       </Col>
@@ -71,56 +80,44 @@ const TableDataJabatan = () => {
             />
           </div>
 
-          {/* Tampilkan loading spinner jika sedang mengambil data */}
-          {loading && (
+          {loading ? (
             <div className="text-center p-4">
               <Spinner animation="border" variant="primary" />
               <p className="mt-2">Mengambil data, harap tunggu...</p>
             </div>
-          )}
-
-          {/* Tampilkan pesan jika terjadi error */}
-          {!loading && error && (
-            <Alert variant="danger" className="text-center mt-3">
+          ) : error ? (
+            <Alert variant="warning" className="text-center">
               {error}
             </Alert>
-          )}
-
-          {/* Tampilkan pesan jika data kosong */}
-          {!loading && !error && jabatanList.length === 0 && (
-            <Alert variant="warning" className="text-center mt-3">
+          ) : filteredJabatan.length === 0 ? (
+            <Alert variant="warning" className="text-center">
               <i className="ri-information-line me-2"></i>
               Tidak ada data yang tersedia.
             </Alert>
-          )}
-
-          {/* Tampilkan tabel jika ada data */}
-          {!loading && !error && jabatanList.length > 0 && (
+          ) : (
             <CustomTableComponent
               data={filteredJabatan}
               columns={[
                 { key: "no", label: "No" },
-                { key: "namaJabatan", label: "Nama Jabatan" },
                 {
-                  key: "createDateTime",
+                  key: "createdDate",
                   label: "Tanggal Dibuat",
                 },
                 {
-                  key: "createBy",
+                  key: "createByName",
                   label: "Dibuat Oleh",
                 },
-                {
-                  key: "updateDateTime",
-                  label: "Tanggal Update",
-                },
-                {
-                  key: "updateBy",
-                  label: "Update Oleh",
-                },
+                { key: "namaJabatan", label: "Nama Jabatan" },
               ]}
-              itemsPerPage={10}
               slugConfig={{ textField: "kodeJabatan", idField: "jabatanId" }}
               basePath="/MasterData/master-informasi/jabatan/edit-jabatan"
+              paginationProps={{
+                currentPage: page,
+                totalPages: totalPages,
+                itemsPerPage: perPage,
+                onPageChange: setPage, // Fungsi untuk mengubah halaman
+              }}
+              itemsPerPage={perPage}
             />
           )}
         </div>

@@ -10,7 +10,7 @@ import DateInput from "@/components/ui/date-input";
  * @param {Function} fetchFunction - Fungsi Redux untuk fetch data (contoh: fetchAgamaWithFilters)
  * @param {Function} setFilteredData - Fungsi untuk menyimpan hasil pencarian
  */
-const CustomSearchFilterApi = ({ fetchFunction, setFilteredData }) => {
+const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
   const dispatch = useDispatch();
 
   // 🔹 State untuk menyimpan filter pencarian
@@ -77,22 +77,6 @@ const CustomSearchFilterApi = ({ fetchFunction, setFilteredData }) => {
           />
         </Col>
 
-        {/* 🔹 Pilihan Sort Direction (ASC / DESC) */}
-        <Col md="3">
-          <Form.Group>
-            <Form.Label>Urutan Sortir:</Form.Label>
-            <Form.Select
-              value={filters.sortDirection}
-              onChange={(e) =>
-                setFilters({ ...filters, sortDirection: e.target.value })
-              }
-            >
-              <option value="desc">Terbaru</option>
-              <option value="asc">Terlama</option>
-            </Form.Select>
-          </Form.Group>
-        </Col>
-
         {/* 🔹 Dropdown Periode */}
         <Col md="3">
           <Form.Group>
@@ -129,4 +113,4 @@ const CustomSearchFilterApi = ({ fetchFunction, setFilteredData }) => {
   );
 };
 
-export default CustomSearchFilterApi;
+export default CustomSearchFilter;
