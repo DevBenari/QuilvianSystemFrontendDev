@@ -349,10 +349,10 @@ export const menus = {
           title: "Data Provinsi",
           href: "/MasterData/master-wilayah/provinsi/table-provinsi",
         },
-        // {
-        //   title: "Dokter Praktek",
-        //   href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
-        // },
+        {
+          title: "Data Kabupaten/Kota",
+          href: "/MasterData/master-wilayah/provinsi/table-kabupaten-kota",
+        },
       ],
     },
   ],
