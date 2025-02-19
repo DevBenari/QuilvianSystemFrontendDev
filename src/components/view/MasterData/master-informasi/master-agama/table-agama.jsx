@@ -31,11 +31,11 @@ const TableDataAgama = () => {
   }, [dispatch, currentPage, perPage]);
 
   // Fungsi untuk menangani perubahan halaman
-  // const handlePageChange = (newPage) => {
-  //   if (newPage >= 1 && newPage <= agamaData.totalPages) {
-  //     dispatch(fetchAgama({ page: newPage, perPage }));
-  //   }
-  // };
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= agamaData.totalPages) {
+      dispatch(fetchAgama({ page: newPage, perPage }));
+    }
+  };
 
   useEffect(() => {
     setFilteredData(agama);
