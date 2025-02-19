@@ -75,6 +75,8 @@ export const createAgama = createAsyncThunk(
       const response = await InstanceAxios.post(`/Agama`, data, {
         headers: getHeaders(),
       });
+
+      console.log("Response API (Fetch By ID):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -89,9 +91,11 @@ export const updateAgama = createAsyncThunk(
   "agama/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.put(`/Agama/${id}`, data, {
+      const response = await InstanceAxios.post(`/Agama`, newData, {
         headers: getHeaders(),
       });
+
+      console.log("Response API (Add):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -116,16 +120,21 @@ export const deleteAgama = createAsyncThunk(
 );
 
 // 🔹 Redux Slice
+// 🔹 Redux Slice
 const agamaSlice = createSlice({
+  name: "agama",
   name: "agama",
   initialState: {
     data: [],
+    loadedPages: [],
     totalItems: 0,
+    totalPages: 1,
     totalPages: 1,
     currentPage: 1,
     loading: false,
     error: null,
   },
+  reducers: {},
   reducers: {},
   extraReducers: (builder) => {
     builder

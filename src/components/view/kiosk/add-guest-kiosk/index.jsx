@@ -1,5 +1,5 @@
 'use client'
-import React, {  Fragment, memo, useEffect, useState } from 'react'
+import React, {  Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 // import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import DynamicStepForm from '@/components/features/dynamic-form/dynamicForm/dynamicFormSteps';
@@ -13,11 +13,12 @@ import { fetchAgama } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterD
 import { fetchPendidikan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice';
 import { fetchTitles } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice';
 import { fetchPekerjaan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice';
-import { GetNegaraSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
+import { fetchNegara} from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
 import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice';
 import { GetProvinsiSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice';
 import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice';
 import { useRouter } from 'next/navigation';
+import useAgamaData from '@/lib/hooks/useAgamaData';
 
 const KioskPendaftaranPasien = memo(() => {
     const { setValue } = useForm();
@@ -37,11 +38,14 @@ const KioskPendaftaranPasien = memo(() => {
     //     handleChange,
     // } = UseSelectWilayah(setValue);
 
-
+    const { 
+        agamaOptions, 
+        loading: agamaLoading, 
+        handleLoadMore 
+      } = useAgamaData();
     const dispatch = useDispatch();
 
-    const {data: agamaData, loading, error} = useSelector((state) => state.agama)
-    const {data: pendidikanData} = useSelector((state) => state.pendidikan)
+    const {data: pendidikanData, error, loading} = useSelector((state) => state.pendidikan)
     const {data: titles} = useSelector((state) => state.titles)
     const {data: pekerjaanData} = useSelector((state) => state.pekerjaan)
     const {data: negara} = useSelector((state) => state.negara)
@@ -51,33 +55,44 @@ const KioskPendaftaranPasien = memo(() => {
     const {data: pasien} = useSelector((state) => state.pasien)
 
     useEffect(() => {
-        dispatch(fetchAgama())
         dispatch(fetchPendidikan())
         dispatch(fetchTitles())
         dispatch(fetchPekerjaan())
-        dispatch(GetNegaraSlice())
+        dispatch(fetchNegara())
         dispatch(fetchGolongan())
         dispatch(GetProvinsiSlice())
         dispatch(fetchIdentitas())
     }, [dispatch]);
 
+    const lastFetchedPage = useRef(1);
+
+    // const handleLoadMore = useCallback(() => {
+    //     if (page < totalPages && lastFetchedPage.current !== page + 1) {
+    //         console.log(`📡 Fetching next page: ${page + 1}`);
+    //         lastFetchedPage.current = page + 1; // Update ref agar tidak fetch ulang
+    //         setPage(prevPage => prevPage + 1);
+    //     } else {
+    //         console.log(`✅ No more pages to fetch`);
+    //     }
+    // }, [page, totalPages]);
+
+    
+    // Tampilkan pesan error jika ada kesalahan
+
+    const titlesOptions = titles?.data.map(item => ({
+        label: item.namaTitle, // Label seperti "Tn", "Ny", "Mr"
+        value: item.titleId    // ID untuk value
+      })) || [];
+
     useEffect(() => {
-        if (pasien) {
-          router.push("/error-page");
+        if (error) {
+            router.push("/error-page");
         }
-      }, [router]);
+    }, [error, router]);
     
     if (loading) {
         return <div>Loading data pasien...</div>;
     }
-
-    // Tampilkan pesan error jika ada kesalahan
-   
-
-    const titlesOptions = titles?.data.map(item => ({
-        label: item.kodeTitle, // Label seperti "Tn", "Ny", "Mr"
-        value: item.titleId    // ID untuk value
-      })) || [];
 
     const formFields = 
     [
@@ -169,15 +184,18 @@ const KioskPendaftaranPasien = memo(() => {
                     colSize: 6
                 },
                 {
-                    type:"select",
+                    type: "select",
                     id: "agamaId",
                     label: "Agama",
-                    name:"agamaId",
-                    placeholder: "Agama",
-                    options: agamaData?.data.map(item => ({ label: item.namaAgama, value: item.agamaId })) || [],
+                    name: "agamaId",
+                    placeholder: "Pilih Agama",
+                    options: agamaOptions,
                     rules: { required: "Agama is required" },
-                    colSize: 6
+                    colSize: 6,
+                    onMenuScrollToBottom: handleLoadMore,
+                    isLoading: agamaLoading
                 },
+                
                 {
                     type: "select",
                     id: "pendidikanTerakhirId",
