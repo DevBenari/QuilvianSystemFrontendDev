@@ -1,8 +1,9 @@
+import DashboardLayananPoli from '@/components/view/kiosk/layanan-poli-kiosk'
 import React from 'react'
 const PendaftaranLayananPoli = () => {
     return (
         <div>
-            <h1>Pendaftaran Layanan Poli</h1>
+            <DashboardLayananPoli />
         </div>
     )
 }

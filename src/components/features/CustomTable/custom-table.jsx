@@ -1,99 +1,159 @@
-'use client';
-import React, { useState, memo, useCallback } from 'react';
-import { Table, Button } from 'react-bootstrap';
-import { useRouter } from 'next/navigation';
-import { generateSlug } from '@/utils/slug';
+"use client";
+import React, { memo } from "react";
+import { Table, Button, Spinner } from "react-bootstrap";
+import { useRouter } from "next/navigation";
+import { generateSlug } from "@/utils/slug";
 
-const CustomTableComponent = memo(({ 
-    data, 
-    columns, 
-    itemsPerPage = 10,
-    slugConfig = { // Configuration for generating slugs
-        textField: 'name', // Field to use for generating slug text
-        idField: 'id'     // Field containing the actual ID
+import { parseISO, format } from "date-fns";
+const CustomTableComponent = memo(
+  ({
+    data = [],
+    columns = [],
+    paginationProps = {
+      currentPage: 1,
+      totalPages: 1,
+      itemsPerPage: 10,
+      onPageChange: () => {},
     },
-    basePath = '/', // Default path (can be overridden)
-}) => {
+    slugConfig = { textField: "name", idField: "id" },
+    basePath = "/",
+    actions = [],
+    showActions = false,
+    loading,
+  }) => {
     const router = useRouter();
-    const [currentPage, setCurrentPage] = useState(1);
 
-    // Calculate pagination
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-    // Handle double click with slug generation
-    const handleDoubleClick = useCallback((item) => {
-        const textField = item[slugConfig.textField];
-        const idField = item[slugConfig.idField];
-
-        if (!textField || !idField) {
-            console.error('Missing required fields for slug generation:', { textField, idField });
-            return;
-        }
-
-        const slug = generateSlug(textField, idField);
-        const fullPath = `${basePath}/${slug}`; // Dynamic base path
-        router.push(fullPath);
-    }, [router, slugConfig, basePath]);
-
-    // Pagination handlers
-    const handleNextPage = () => {
-        if (currentPage < Math.ceil(data.length / itemsPerPage)) {
-            setCurrentPage(currentPage + 1);
-        }
+    const formatDate = (date) => {
+      if (!date) return "-"; // Jika tanggal null/undefined, tampilkan "-"
+      return format(parseISO(date), "dd/MM/yyyy");
     };
 
-    const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
+    const handleDoubleClick = (item) => {
+      const textField = item[slugConfig.textField];
+      const idField = item[slugConfig.idField];
+
+      if (!textField || !idField) {
+        console.error("Missing required fields for slug generation:", {
+          textField,
+          idField,
+        });
+        return;
+      }
+
+      const slug = generateSlug(textField, idField);
+      router.push(`${basePath}/${slug}`);
     };
 
     return (
-        <div>
-            <div className="table-responsive-md" style={{ maxHeight: '400px', overflowX: 'auto' }}>
-                <Table bordered striped hover responsive  className="text-center" >
-                    <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa', zIndex: 1 }}>
-                        <tr>
-                            {columns.map((col, index) => (
-                                <th key={index}>{col.label}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentItems.map((item, index) => (
-                            <tr 
-                                key={item[slugConfig.idField]}
-                                onDoubleClick={() => handleDoubleClick(item)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                {columns.map((col, i) => (
-                                    <td key={i}>{item[col.key]}</td>
-                                ))}
-                            </tr>
+      <div>
+        <div className="table-responsive">
+          <Table bordered striped hover>
+            <thead>
+              <tr>
+                {columns.map((col, index) => (
+                  <th key={index}>{col.label}</th>
+                ))}
+                {showActions && <th>Actions</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan={columns.length + (showActions ? 1 : 0)}
+                    className="text-center"
+                  >
+                    <Spinner animation="border" role="status" />
+                    <p>Memuat data...</p>
+                  </td>
+                </tr>
+              ) : data.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={columns.length + (showActions ? 1 : 0)}
+                    className="text-center"
+                  >
+                    Tidak ada data yang tersedia
+                  </td>
+                </tr>
+              ) : (
+                data.map((item, index) => (
+                  <tr
+                    key={item[slugConfig.idField]}
+                    onDoubleClick={() => handleDoubleClick(item)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {columns.map((col, i) => (
+                      <td key={i}>
+                        {col.key === "no"
+                          ? (paginationProps.currentPage - 1) *
+                              paginationProps.itemsPerPage +
+                            index +
+                            1
+                          : col.key === "createdDate" ||
+                            col.key === "createDateTime" ||
+                            col.key === "tanggalDaftar" ||
+                            col.key === "tglSip" ||
+                            col.key === "tglStr"
+                          ? formatDate(item[col.key])
+                          : item
+                          ? item[col.key] ?? "-"
+                          : "-"}
+                      </td>
+                    ))}
+
+                    {showActions && (
+                      <td>
+                        {actions.map((action) => (
+                          <Button
+                            key={action.type}
+                            variant={action.variant}
+                            size="sm"
+                            onClick={() => action.onClick(item)}
+                            className="mx-1"
+                          >
+                            {action.label}
+                          </Button>
                         ))}
-                    </tbody>
-                </Table>
-            </div>
-            <div className="d-flex justify-content-between mt-3">
-                <Button variant="dark" disabled={currentPage === 1} onClick={handlePrevPage}>
-                    Previous
-                </Button>
-                <span>
-                    Page {currentPage} of {Math.ceil(data.length / itemsPerPage)}
-                </span>
-                <Button
-                    variant="dark"
-                    disabled={currentPage === Math.ceil(data.length / itemsPerPage)}
-                    onClick={handleNextPage}
-                >
-                    Next
-                </Button>
-            </div>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </Table>
         </div>
+
+        {/* 🔹 Pagination Controls */}
+        <div className="d-flex justify-content-between mt-3">
+          <Button
+            className="btn btn-secondary"
+            onClick={() =>
+              paginationProps.onPageChange(paginationProps.currentPage - 1)
+            }
+            disabled={paginationProps.currentPage === 1}
+          >
+            Previous
+          </Button>
+
+          <span>
+            Page {paginationProps.currentPage} of {paginationProps.totalPages}
+          </span>
+
+          <Button
+            className="btn btn-primary"
+            onClick={() =>
+              paginationProps.onPageChange(paginationProps.currentPage + 1)
+            }
+            disabled={paginationProps.currentPage >= paginationProps.totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
     );
-});
+  }
+);
 
 CustomTableComponent.displayName = "CustomTableComponent";
 export default CustomTableComponent;

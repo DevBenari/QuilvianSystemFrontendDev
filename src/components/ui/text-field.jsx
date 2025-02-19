@@ -9,6 +9,7 @@ const TextField = ({
   className,
   placeholder,
   rules,
+  disabled = false, // Tambahkan properti disabled
   ...props
 }) => {
   const {
@@ -33,6 +34,7 @@ const TextField = ({
             placeholder={placeholder}
             isInvalid={!!errors[name]}
             {...props}
+            disabled={disabled}
           />
         )}
       />

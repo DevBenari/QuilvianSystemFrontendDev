@@ -3,11 +3,13 @@
 import { Row, Col, Button } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import CustomTableComponent from "@/components/features/custom-table/CustomTable/custom-table";
-import { useTindakanOperasi } from "@/lib/hooks/manajemen-operasi/tindakan-operasi";
+
+import { useTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi";
+import CustomTableComponent from "@/components/features/edit-table/custom-table/custom-table-edit-remove";
+// import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const TableTindakanOperasi = () => {
   const methods = useForm();

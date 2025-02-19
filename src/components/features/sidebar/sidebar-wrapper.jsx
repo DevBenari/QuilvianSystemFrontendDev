@@ -8,12 +8,16 @@ const SideBarWrapper = ({children}) => {
 
     const isKioskRoute = pathname.startsWith("/kiosk");
     const isLogin = pathname === "/Login";
+    const isError = pathname === "/error-page";
     
     if(isKioskRoute) {
         return <div className="content-page-login">{children}</div>
     } else if(isLogin){
         return <div className="content-page-login">{children}</div>
-    }else{
+    }else if(isError){
+        return <div className="content-page-login">{children}</div>
+    }
+    else{
         return (
             <div className="wrapper">
                 <Sidebar />

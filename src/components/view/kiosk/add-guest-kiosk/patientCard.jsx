@@ -1,49 +1,124 @@
-import React, { Fragment, memo, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Card, Button, Image, Container, Row, Col } from 'react-bootstrap';
-// import { Printer, UserCircle } from 'lucide-react';
-import ButtonNav from '@/components/ui/button-navigation';
+import React from 'react';
+import { Card, Image } from 'react-bootstrap';
 
-const PrintPatientCard = ({patientData}) => {
-    return (
-    <div className="print-only">
-      <Card style={{ width: '540px', height: '250px', background:"#ceebee" }} className="px-3">
-        <Card.Body className='d-flex flex-column justify-content-center align-items-center'>
-          <Row className="mb-3">
-            <Col>
-              <h2 className="h4 fw-bold text-dark mb-1">KARTU PASIEN</h2>
-            </Col>
-            <Col xs="auto">
-              {/* <UserCircle size={40} className="text-primary" /> */}
-            </Col>
-          </Row>
-          
-          <div className='d-flex justify-content-center align-items-center flex-column' style={{ width:"500px" }}>
-            <Row className="mb-1 w-100">
-              <Col xs={4} className="fw-bold">No. RM</Col>
-              <Col xs={8}>: {patientData.noRekamMedis || '-'}</Col>
-            </Row>
-            <Row className="mb-1 w-100">
-              <Col xs={4} className="fw-bold">Nama</Col>
-              <Col xs={8}>: {patientData.namaPasien || '-'}</Col>
-            </Row>
-            <Row className="mb-1 w-100">
-              <Col xs={4} className="fw-bold">Tgl Lahir</Col>
-              <Col xs={8}>: {patientData.tglLahir || '-'}</Col>
-            </Row>
-            <Row className="mb-1 w-100">
-              <Col xs={4} className="fw-bold">NIK</Col>
-              <Col xs={8}>: {patientData.noIdentitas || '-'}</Col>
-            </Row>
-            <Row className="mb-1 w-100">
-              <Col xs={4} className="fw-bold">Alamat</Col>
-              <Col xs={8}>: {patientData.alamat || '-'}</Col>
-            </Row>
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
-    )
-}
+const PrintPatientCard = ({ patientData }) => {
+  // Destructure data yang diperlukan dari patientData
+  const { 
+    noRekamMedis, 
+    noIdentitas,  // NIK dari form
+    namaLengkap   // Nama dari form
+  } = patientData || {};
 
-export default PrintPatientCard
+  return (
+    <Card 
+      style={{
+        width: '34rem',
+        height: '18rem',
+        background: 'linear-gradient(to right, #089bab, #60a5fa)',
+        color: 'white',
+        borderRadius: '0.75rem',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: '1.5rem'
+      }}
+    >
+      {/* Hospital Logo Placeholder */}
+      <div style={{
+        position: 'absolute',
+        top: '1rem',
+        right: '1rem',
+        opacity: '0.5'
+      }}>
+        <div style={{
+          width: '5rem',
+          height: '4rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: '0.5rem'
+        }}>
+          <Image src="/Images/logo_mmc.jpeg" alt="Hospital Logo" className='img-fluid' />
+        </div>
+      </div>
+      
+      {/* Chip Card Design */}
+      <div style={{
+        position: 'absolute',
+        top: '1.5rem',
+        left: '1.5rem'
+      }}>
+        <div style={{
+          width: '3rem',
+          height: '2.5rem',
+          border: '2px solid rgba(255,255,255,0.3)',
+          borderRadius: '0.375rem',
+          background: 'linear-gradient(to bottom right, #fbbf24, #d97706)'
+        }} />
+      </div>
+      
+      {/* Patient Information */}
+      <div style={{ marginTop: '4rem' }}>
+        <div className='mb-1'>
+          <h5 style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.7)' }}>
+            Nomor Rekam Medis
+          </h5>
+          <h5 style={{ 
+            fontSize: '1rem', 
+            fontWeight: 'bold',
+            letterSpacing: '0.05em',
+            color: 'rgba(255,255,255,0.7)'
+          }}>
+            {noRekamMedis || 'RM-XXXXXXXX'}
+          </h5>
+        </div>
+        <div className='mb-1'>
+          <h5 style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.7)' }}>
+            NIK
+          </h5>
+          <h5 style={{ 
+            fontSize: '1rem', 
+            fontWeight: 'bold',
+            letterSpacing: '0.05em',
+            color: 'rgba(255,255,255,0.7)'
+          }}>
+            {noIdentitas || '00000000'}
+          </h5>
+        </div>
+        
+        <div className='mb-1'>
+          <h5 style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.7)' }}>
+            Nama Pasien
+          </h5>
+          <h5 style={{ 
+            fontSize: '1.125rem', 
+            fontWeight: 'bold',
+            color: 'rgba(255,255,255,0.7)'
+          }}>
+            {namaLengkap || 'NAMA PASIEN'}
+          </h5>
+        </div>
+      </div>
+      
+      {/* Footer */}
+      <div style={{
+        position: 'absolute',
+        bottom: '1rem',
+        left: '1.5rem',
+        right: '1.5rem'
+      }}>
+        <div style={{
+          fontSize: '0.75rem',
+          color: 'rgba(255,255,255,0.7)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span>Kartu Identitas Pasien</span>
+          <span>RS Metropolitan Medical Centre</span>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+export default PrintPatientCard;

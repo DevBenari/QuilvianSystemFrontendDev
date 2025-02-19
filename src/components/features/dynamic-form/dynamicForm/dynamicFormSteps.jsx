@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { Row, Col, Form, Button, ProgressBar} from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
@@ -17,7 +17,7 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath, isAddMode = false }) => {
+const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath, isAddMode = false, externalOptions = {} }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isEditing, setIsEditing] = useState(isAddMode);
   const [submittedData, setSubmittedData] = useState(null);
@@ -64,20 +64,29 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     trigger,
   } = methods;
 
-  const titles = watch("title");
+  
+  const {titles = []} = externalOptions;
+   // Gunakan useWatch agar tidak memicu re-render berulang
+  const currentJenisKelamin = useWatch({ control: methods.control, name: "jenisKelamin" });
+  const titlesId = useWatch({ control: methods.control, name: "titlesId" });
   const statusKewarganegaraan = watch("statusKewarganegaraan");
   const kewarganegaraan = watch("kewarganegaraan");
 
   useEffect(() => {
-    if (["Tn", "Mr", "Mrs"].includes(titles)) {
-      setValue("jenisKelamin", "Laki-Laki");
-    } else if (["Mrs", "Miss", "Ny", "Nn"].includes(titles)) {
-      setValue("jenisKelamin", "Perempuan");
-    } else {
-      setValue("jenisKelamin", "");
+    const titleLabel = titles.find(option => option.value === titlesId)?.label;
+    let newJenisKelamin = "";
+    if (["Tn", "Mr"].includes(titleLabel)) {
+      newJenisKelamin = "Laki-Laki";
+    } else if (["Mrs", "Ny"].includes(titleLabel)) {
+      newJenisKelamin = "Perempuan";
     }
-  }, [titles, setValue]);
-
+  
+    if (newJenisKelamin !== currentJenisKelamin) {
+      setValue("jenisKelamin", newJenisKelamin, { shouldValidate: true });
+    }
+  }, [titlesId, currentJenisKelamin, setValue, titles]);
+  
+  
   useEffect(() => {
     if (statusKewarganegaraan === "WNI") {
       setValue("kewarganegaraan", "Indonesia");
@@ -104,6 +113,7 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
       rows,
       customRender,
       colSize,
+      hide,
       ...otherProps
     } = field;
 
@@ -120,6 +130,14 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
       ...(onChange ? { onChange } : {}),
       ...(onClick ? { onClick } : {}),
     };
+
+    if (type === "custom" && typeof customRender === "function") {
+    return (
+      <div key={id} className={className}>
+        {customRender({ field, commonProps, methods })}
+      </div>
+    );
+  }
 
     const Component = fieldComponents[field.type];
     if (!Component) {
@@ -179,7 +197,7 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
 
   return (
     <FormProvider {...methods}>
-      <Row className=" iq-card p-2 mx-3 my-3 rounded" style={{boxShadow: "0px 0px 30px rgba(154, 247, 203, 0.93)"}}>
+      <Row className=" iq-card p-2 mx-3 my-3 rounded " style={{boxShadow: "0px 0px 30px rgba(154, 247, 203, 0.93)",}}>
         <div className="iq-card p-2 mt-5">
         <div className="iq-card-header gap-1 d-flex justify-content-between">
             <div className="iq-header-title">
@@ -245,5 +263,4 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     </FormProvider>
   );
 };
-
 export default DynamicStepForm;

@@ -650,7 +650,7 @@ a:hover {
 -----------------------------------------------------------------------*/
 .sign-in-page {
   height: 85vh;
-  margin-top: -70px;
+  margin-top: 50px;
   margin-left: -120px;
 }
 
@@ -771,6 +771,7 @@ a:hover {
 }
 
 .particle {
+  margin-top: 20px;
   position: absolute;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 50%;

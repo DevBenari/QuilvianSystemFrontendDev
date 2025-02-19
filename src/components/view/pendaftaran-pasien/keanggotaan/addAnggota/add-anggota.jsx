@@ -1,7 +1,8 @@
 "use client";
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import { addAnggota } from "@/lib/hooks/keanggotaan/add";
+import { addAnggota } from "@/lib/hooks/admisi/keanggotaan";
+
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
 
@@ -263,7 +264,11 @@ const PendaftaranPasienAnggota = () => {
 
   return (
     <Fragment>
-      <DynamicForm formConfig={formFields} onSubmit={handleSubmit} />
+      <DynamicForm
+        formConfig={formFields}
+        onSubmit={handleSubmit}
+        isAddMode={true}
+      />
     </Fragment>
   );
 };
