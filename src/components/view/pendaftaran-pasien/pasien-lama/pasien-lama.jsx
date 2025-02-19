@@ -4,8 +4,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Col, Row, Spinner } from "react-bootstrap";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+
 import { pasienLama } from "@/utils/dataPasien";
+import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";
 
 const PasienLama = memo(() => {
   const methods = useForm();

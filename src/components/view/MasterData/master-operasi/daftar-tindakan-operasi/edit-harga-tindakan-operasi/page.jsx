@@ -4,8 +4,6 @@ import CustomSearchText from "@/components/features/custom-search/CustomSearchCo
 import EditableTable from "@/components/features/edit-table/edit-table/edit-table";
 import DynamicFormTable from "@/components/features/dynamic-form/dynamicFormTable/dynamicFormTable";
 
-import { getbyidTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi/getById";
-
 import {
   DataAnestesi,
   DataAsistenAnestesi,
@@ -20,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { Button, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
+import { getbyidTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi";
 
 const EditHargaTindakanOperasi = () => {
   const methods = useForm();

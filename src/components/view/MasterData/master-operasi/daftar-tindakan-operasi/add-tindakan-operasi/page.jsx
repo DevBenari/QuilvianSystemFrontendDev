@@ -1,10 +1,12 @@
 "use client";
 
-import DynamicFormEdit from "@/components/features/dynamic-form/dynamicForm-Edit-Add/dynamicFormEditAdd";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import { addTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi/add";
-import { editByIdTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi/edit";
-import { getbyidTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi/getById";
+import {
+  addTindakanOperasi,
+  editByIdTindakanOperasi,
+  getbyidTindakanOperasi,
+} from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi";
+
 import { jenisOperasi, kategoriOperasi } from "@/utils/masterData";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -151,7 +153,7 @@ const AddEditOperasiForm = () => {
   ];
 
   return (
-    <DynamicFormEdit
+    <DynamicForm
       title={isEditMode ? "Edit Tindakan Operasi" : "Tambah Tindakan Operasi"}
       formConfig={formFields}
       onSubmit={handleSubmit}
