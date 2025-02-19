@@ -47,7 +47,7 @@ const useKabupatenKotaData = () => {
   // Transform data untuk select options
   const KabupatenKotaOptions = KabupatenKotaData.map((item) => ({
     label: item.namaKabupatenKota,
-    value: item.KabupatenKotaId,
+    value: item.kabupatenKotaId,
   }));
 
   return {
