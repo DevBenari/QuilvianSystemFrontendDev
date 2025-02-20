@@ -46,8 +46,8 @@ const KioskPendaftaranPasien = memo(() => {
         handleLoadMoreKabupaten,
     } = useSelectWilayah();
 
-    console.log(selectedNegara)
-    console.log(provinsiOptions)
+    // console.log(selectedNegara)
+    console.log(selectedProvinsi)
     
     // const {provinsiOptions, loading: provinsiLoading, handleLoadMore } = UseProvinsiData();
     const { agamaOptions, loading: agamaLoading, handleLoadMore: handleLoadMoreAgama } = useAgamaData();
@@ -560,6 +560,7 @@ const KioskPendaftaranPasien = memo(() => {
 
 
     const handleSubmit = (data) => {
+        console.log("Data yang dikirim ke backend:", data);
         dispatch(AddPasienSlice(data))
             .then((result) => {
                 if (AddPasienSlice.fulfilled.match(result)) {
@@ -577,6 +578,7 @@ const KioskPendaftaranPasien = memo(() => {
 
         const enhancedData = {
             ...data,
+            provinsiId: data.provinsiId || null, 
             noRekamMedis: `RM-${new Date().getTime()}`,
             queueNumber: `A-${Math.floor(Math.random() * 100)}`,
             registrationDate: new Date().toLocaleDateString('id-ID'),

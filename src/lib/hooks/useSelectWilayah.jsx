@@ -44,6 +44,14 @@ const useSelectWilayah = () => {
     loadedPages: kabupatenLoadedPages 
   } = useSelector(state => state.KabupatenKota);
 
+  useEffect(() => {
+    if (selectedProvinsi) {
+      if (!/^[0-9a-fA-F-]{36}$/.test(selectedProvinsi)) {
+        console.error("❌ ERROR: Provinsi ID bukan GUID yang valid!", selectedProvinsi);
+      }
+    }
+  }, [selectedProvinsi]);
+
   // Initial data fetching
   useEffect(() => {
     if(!negaraLoadedPages.includes(1)) {
