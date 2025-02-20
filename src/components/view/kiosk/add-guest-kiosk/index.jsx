@@ -42,7 +42,7 @@ const KioskPendaftaranPasien = memo(() => {
 
     const dispatch = useDispatch();
 
-    const {data: agamaData, loading, error, currentPage,perPage} = useSelector((state) => state.agama)
+    const { data: agamaData, loading, totalPages } = useSelector((state) => state.agama);
     const {data: pendidikanData} = useSelector((state) => state.pendidikan)
     const {data: titles} = useSelector((state) => state.titles)
     const {data: pekerjaanData} = useSelector((state) => state.pekerjaan)
@@ -53,7 +53,7 @@ const KioskPendaftaranPasien = memo(() => {
     const {data: pasien} = useSelector((state) => state.pasien)
 
     useEffect(() => {
-        dispatch(fetchAgama({page: currentPage, perPage : perPage}))
+        dispatch(fetchAgama({ page, perPage: 10 }))
         dispatch(fetchPendidikan())
         dispatch(fetchTitles())
         dispatch(fetchPekerjaan())
@@ -61,33 +61,35 @@ const KioskPendaftaranPasien = memo(() => {
         dispatch(fetchGolongan())
         dispatch(GetProvinsiSlice())
         dispatch(fetchIdentitas())
-    }, [dispatch, currentPage, perPage]);
+    }, [dispatch, page]);
 
-    useEffect(() => {
-        if (error) {
-          router.push("/error-page");
-        }
-      }, [error, router]);
+    // useEffect(() => {
+    //     if (error) {
+    //       router.push("/error-page");
+    //     }
+    //   }, [error, router]);
 
-    const handleSearchChange = (inputValue) => {
-        setSearchQuery(inputValue);
-      };
     
     if (loading) {
         return <div>Loading data pasien...</div>;
     }
 
-    const filteredAgama = searchQuery
-    ? agamaData.filter((item) =>
-        item.namaAgama.includes(searchQuery.toLowerCase())
-        )
-    : agamaData;
-    
-    const handleLoadMore = () => {
-        if (page < totalPages) {
-          setPage((prev) => prev + 1);
-        }
+    const handleSearchChange = (inputValue) => {
+        setSearchQuery(inputValue);
       };
+
+      const filteredAgama = searchQuery
+      ? agamaData.filter((item) =>
+          item.namaAgama.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : agamaData;
+    
+    // **Handle saat scroll ke bawah**
+    const handleLoadMore = () => {
+      if (page < totalPages) {
+        setPage((prev) => prev + 1);
+      }
+    };
 
     // Tampilkan pesan error jika ada kesalahan
     console.log(filteredAgama)
@@ -194,7 +196,7 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Agama",
                     name:"agamaId",
                     placeholder: "Agama",
-                    options: agamaData?.map(item => ({ label: item.namaAgama, value: item.agamaId })) || [],
+                    options: filteredAgama.map(item => ({ label: item.namaAgama, value: item.agamaId })),
                     rules: { required: "Agama is required" },
                     colSize: 6,
                     onSearchChange: handleSearchChange, 
