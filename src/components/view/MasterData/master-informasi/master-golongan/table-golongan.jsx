@@ -121,7 +121,6 @@ const TableDataGolongan = () => {
                       itemsPerPage: perPage,
                       onPageChange: setPage, // Fungsi untuk mengubah halaman
                     }}
-                    itemsPerPage={perPage}
                   />
                 </div>
               )}

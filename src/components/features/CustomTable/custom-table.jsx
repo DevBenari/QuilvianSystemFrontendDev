@@ -94,7 +94,9 @@ const CustomTableComponent = memo(
                             col.key === "createDateTime" ||
                             col.key === "tanggalDaftar" ||
                             col.key === "tglSip" ||
-                            col.key === "tglStr"
+                            col.key === "tglStr" ||
+                            col.key === "tanggalMulaiKerjasama" ||
+                            col.key === "tanggalAkhirKerjasama"
                           ? formatDate(item[col.key])
                           : item
                           ? item[col.key] ?? "-"

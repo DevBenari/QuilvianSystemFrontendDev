@@ -1,7 +1,7 @@
 // hooks/useKecamatanData.js
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchKecamatan } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/Kecamatan";
+import { fetchKecamatan } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
 
 const useKecamatanData = () => {
   const dispatch = useDispatch();

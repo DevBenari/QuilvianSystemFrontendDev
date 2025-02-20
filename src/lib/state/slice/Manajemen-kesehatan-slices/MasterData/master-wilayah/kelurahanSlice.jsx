@@ -2,21 +2,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-// 🔹 Fetch KabupatenKota dengan pagination untuk CustomTableComponent
-// ✅ Fetch semua data KabupatenKota dengan pagination
-export const fetchKabupatenKota = createAsyncThunk(
-  "KabupatenKota/fetchData",
+// 🔹 Fetch Kelurahan dengan pagination untuk CustomTableComponent
+// ✅ Fetch semua data Kelurahan dengan pagination
+export const fetchKelurahan = createAsyncThunk(
+  "Kelurahan/fetchData",
   async (
     { page = 1, perPage = 10, isInfiniteScroll = false },
     { rejectWithValue, getState }
   ) => {
     try {
-      const currentState = getState().KabupatenKota;
+      const currentState = getState().Kelurahan;
       if (currentState.loadedPages.includes(page)) {
         console.log("Data already loaded for page:", page);
         return null;
       }
-      const response = await InstanceAxios.get(`/Wilayah/KabupatenKota`, {
+      const response = await InstanceAxios.get(`/Wilayah/Kelurahan`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
@@ -36,12 +36,12 @@ export const fetchKabupatenKota = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch KabupatenKota dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
-export const fetchKabupatenKotaWithFilters = createAsyncThunk(
-  "KabupatenKota/fetchWithFilters",
+// 🔹 Fetch Kelurahan dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
+export const fetchKelurahanWithFilters = createAsyncThunk(
+  "Kelurahan/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Wilayah/KabupatenKota/paged`, {
+      const response = await InstanceAxios.get(`/Wilayah/PagedKelurahan`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -62,12 +62,12 @@ export const fetchKabupatenKotaWithFilters = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch data KabupatenKota berdasarkan ID
-export const fetchKabupatenKotaById = createAsyncThunk(
-  "KabupatenKota/fetchById",
+// 🔹 Fetch data Kelurahan berdasarkan ID
+export const fetchKelurahanById = createAsyncThunk(
+  "Kelurahan/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Wilayah/KabupatenKota/${id}`, {
+      const response = await InstanceAxios.get(`/Wilayah/KelurahanById/${id}`, {
         headers: getHeaders(),
       });
 
@@ -81,74 +81,70 @@ export const fetchKabupatenKotaById = createAsyncThunk(
   }
 );
 
-// 🔹 Tambah KabupatenKota Darah
-export const createKabupatenKota = createAsyncThunk(
-  "KabupatenKota/create",
+// 🔹 Tambah Kelurahan Darah
+export const createKelurahan = createAsyncThunk(
+  "Kelurahan/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(
-        `/Wilayah/KabupatenKota`,
-        data,
-        {
-          headers: getHeaders(),
-        }
-      );
+      const response = await InstanceAxios.post(`/Wilayah/Kelurahan`, data, {
+        headers: getHeaders(),
+      });
 
       console.log("Response API (Fetch By ID):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan KabupatenKota darah"
+        error.response?.data || "Gagal menambahkan Kelurahan darah"
       );
     }
   }
 );
 
-// 🔹 Update KabupatenKota Darah berdasarkan ID
-export const updateKabupatenKota = createAsyncThunk(
-  "KabupatenKota/update",
+// 🔹 Update Kelurahan Darah berdasarkan ID
+export const updateKelurahan = createAsyncThunk(
+  "Kelurahan/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(
-        `/Wilayah/KabupatenKota`,
+      console.log("📢 PUT Request ke API:", `/Wilayah/Kelurahan/${id}`, data);
+
+      const response = await InstanceAxios.put(
+        `/Wilayah/Kelurahan/${id}`,
         data,
         {
           headers: getHeaders(),
         }
       );
 
-      console.log("Response API (Add):", response.data);
+      console.log("✅ Response API Update Kelurahan:", response.data);
       return response.data;
     } catch (error) {
+      console.error("❌ Gagal Update API:", error.response?.data || error);
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui KabupatenKota "
+        error.response?.data?.message || "Gagal memperbarui data Kelurahan"
       );
     }
   }
 );
 
-export const deleteKabupatenKota = createAsyncThunk(
-  "KabupatenKota/delete",
+export const deleteKelurahan = createAsyncThunk(
+  "Kelurahan/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.delete(
-        `/Wilayah/KabupatenKota/${id}`,
-        {
-          headers: getHeaders(),
-        }
-      );
+      const response = await InstanceAxios.delete(`/Wilayah/Kelurahan/${id}`, {
+        headers: getHeaders(),
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menghapus KabupatenKota"
+        error.response?.data || "Gagal menghapus Kelurahan"
       );
     }
   }
 );
 
 // 🔹 Redux Slice
-const KabupatenKotaSlice = createSlice({
-  name: "KabupatenKota",
+const KelurahanSlice = createSlice({
+  name: "Kelurahan",
   initialState: {
     data: [],
     loadedPages: [],
@@ -161,12 +157,12 @@ const KabupatenKotaSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch KabupatenKota hanya dengan pagination (CustomTableComponent)
-      .addCase(fetchKabupatenKota.pending, (state) => {
+      // ✅ Fetch Kelurahan hanya dengan pagination (CustomTableComponent)
+      .addCase(fetchKelurahan.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchKabupatenKota.fulfilled, (state, action) => {
+      .addCase(fetchKelurahan.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
 
         state.loading = false;
@@ -175,8 +171,7 @@ const KabupatenKotaSlice = createSlice({
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
-              (existingItem) =>
-                existingItem.KabupatenKotaId === newItem.KabupatenKotaId
+              (existingItem) => existingItem.kelurahanId === newItem.kelurahanId
             )
         );
 
@@ -193,66 +188,65 @@ const KabupatenKotaSlice = createSlice({
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
       })
-      .addCase(fetchKabupatenKota.rejected, (state, action) => {
+      .addCase(fetchKelurahan.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Terjadi kesalahan";
       })
 
-      // ✅ Fetch KabupatenKota dengan search & filter (CustomSearchFilter)
-      .addCase(fetchKabupatenKotaWithFilters.pending, (state) => {
+      // ✅ Fetch Kelurahan dengan search & filter (CustomSearchFilter)
+      .addCase(fetchKelurahanWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchKabupatenKotaWithFilters.fulfilled, (state, action) => {
+      .addCase(fetchKelurahanWithFilters.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data?.rows || [];
         state.totalItems = action.payload.data?.totalRows || 0;
         state.totalPages = action.payload.data?.totalPages || 1;
         state.currentPage = action.payload.data?.currentPage || 1;
       })
-      .addCase(fetchKabupatenKotaWithFilters.rejected, (state, action) => {
+      .addCase(fetchKelurahanWithFilters.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // Fetch By ID
-      .addCase(fetchKabupatenKotaById.pending, (state) => {
+      .addCase(fetchKelurahanById.pending, (state) => {
         state.loading = true;
-        state.selectedKabupatenKota = null;
+        state.selectedKelurahan = null;
       })
-      .addCase(fetchKabupatenKotaById.fulfilled, (state, action) => {
+      .addCase(fetchKelurahanById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedKabupatenKota = action.payload;
+        state.selectedKelurahan = action.payload;
       })
-      .addCase(fetchKabupatenKotaById.rejected, (state, action) => {
+      .addCase(fetchKelurahanById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Tambah KabupatenKota Darah
-      .addCase(createKabupatenKota.fulfilled, (state, action) => {
+      // Tambah Kelurahan Darah
+      .addCase(createKelurahan.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
-      // Update KabupatenKota Darah
-      .addCase(updateKabupatenKota.fulfilled, (state, action) => {
+      // Update Kelurahan Darah
+      .addCase(updateKelurahan.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (KabupatenKota) =>
-            KabupatenKota.KabupatenKotaId === action.payload.KabupatenKotaId
+          (kelurahan) => kelurahan.kelurahanId === action.payload.kelurahanId
         );
         if (index !== -1) {
           state.data[index] = action.payload;
         }
       })
 
-      // Hapus KabupatenKota Darah
-      .addCase(deleteKabupatenKota.fulfilled, (state, action) => {
+      // Hapus kelurahan Darah
+      .addCase(deleteKelurahan.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (KabupatenKota) => KabupatenKota.KabupatenKotaId !== action.payload
+          (kelurahan) => kelurahan.kelurahanId !== action.payload
         );
       });
   },
 });
 
-export default KabupatenKotaSlice.reducer;
+export default KelurahanSlice.reducer;

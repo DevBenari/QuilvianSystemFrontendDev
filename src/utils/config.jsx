@@ -353,6 +353,14 @@ export const menus = {
           title: "Data Kabupaten/Kota",
           href: "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota",
         },
+        {
+          title: "Data kecamatan",
+          href: "/MasterData/master-wilayah/kecamatan/table-kecamatan",
+        },
+        {
+          title: "Data Kelurahan",
+          href: "/MasterData/master-wilayah/kelurahan/table-kelurahan",
+        },
       ],
     },
   ],

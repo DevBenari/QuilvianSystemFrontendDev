@@ -77,7 +77,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
           />
         </Col>
 
-        {/* <Col md="3">
+        <Col md="3">
           <Form.Group>
             <Form.Label>Urutan Sortir:</Form.Label>
             <Form.Select
@@ -90,7 +90,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
               <option value="asc">Terlama</option>
             </Form.Select>
           </Form.Group>
-        </Col> */}
+        </Col>
 
         {/* 🔹 Dropdown Periode */}
         <Col md="3">

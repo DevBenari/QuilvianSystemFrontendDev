@@ -6,7 +6,6 @@ import { fetchProvinsi } from "../state/slice/Manajemen-kesehatan-slices/MasterD
 const useProvinsiData = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const lastFetchedPage = useRef(1);
 
   const {
     data: ProvinsiData,
@@ -16,35 +15,23 @@ const useProvinsiData = () => {
   } = useSelector((state) => state.Provinsi);
 
   useEffect(() => {
-    // Initial load
     if (!loadedPages.includes(1)) {
-      dispatch(
-        fetchProvinsi({
-          page: 1,
-          perPage: 10,
-          isInfiniteScroll: true,
-        })
-      );
+      dispatch(fetchProvinsi({ page: 1, perPage: 10, isInfiniteScroll: true }));
     }
   }, [dispatch, loadedPages]);
 
   const handleLoadMore = () => {
     if (page < totalPages && !loading && !loadedPages.includes(page + 1)) {
       const nextPage = page + 1;
-      lastFetchedPage.current = nextPage;
       setPage(nextPage);
 
+      console.log(`🔄 Fetching page ${nextPage}...`);
       dispatch(
-        fetchProvinsi({
-          page: nextPage,
-          perPage: 10,
-          isInfiniteScroll: true,
-        })
+        fetchProvinsi({ page: nextPage, perPage: 10, isInfiniteScroll: true })
       );
     }
   };
 
-  // Transform data untuk select options
   const ProvinsiOptions = ProvinsiData.map((item) => ({
     label: item.namaProvinsi,
     value: item.provinsiId,

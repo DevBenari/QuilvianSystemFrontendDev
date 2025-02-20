@@ -6,67 +6,80 @@ import { extractIdFromSlug } from "@/utils/slug";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { showAlert } from "@/components/features/alert/custom-alert";
 import {
-  updateProvinsi,
-  fetchProvinsiById,
-  deleteProvinsi,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
+  updateKabupatenKota,
+  fetchKabupatenKotaById,
+  deleteKabupatenKota,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
+import useProvinsiData from "@/lib/hooks/useProvinsiData";
 
-const ProvinsiEditForm = ({ params }) => {
+const KabupatenKotaEditForm = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { selectedProvinsi, loading, error } = useSelector(
-    (state) => state.Provinsi
+
+  const { selectedKabupatenKota, loading, error } = useSelector(
+    (state) => state.KabupatenKota
   );
-  const [dataProvinsi, setDataProvinsi] = useState(null);
+  const [dataKabupatenKota, setDataKabupatenKota] = useState(null);
+
+  // untuk option data kabupaten kota
+
+  const {
+    ProvinsiOptions,
+    loading: provinsiLoading,
+    handleLoadMore,
+  } = useProvinsiData();
 
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);
-    dispatch(fetchProvinsiById(id));
+    dispatch(fetchKabupatenKotaById(id));
   }, [dispatch, params.slug]);
 
   useEffect(() => {
-    if (selectedProvinsi) {
-      setDataProvinsi(selectedProvinsi);
+    if (selectedKabupatenKota) {
+      setDataKabupatenKota(selectedKabupatenKota);
     }
-  }, [selectedProvinsi]);
+  }, [selectedKabupatenKota]);
 
   const handleSubmit = async (data) => {
     try {
-      const id = dataProvinsi?.provinsiId; // Pastikan ID tidak undefined
+      const id = dataKabupatenKota?.kabupatenKotaId; // Pastikan ID tidak undefined
       if (!id) {
-        console.error("❌ ID Provinsi tidak ditemukan, gagal update.");
+        console.error("❌ ID KabupatenKota tidak ditemukan, gagal update.");
         return;
       }
+      console.log("📢 Data yang dikirim ke API (PUT):", { id, data });
 
-      const formData = {
-        ...data,
-        negaraId: "a7b29b3f-a944-4982-bdd0-9f0fac0beed5", // ID negara tetap Indonesia
-      };
-
-      console.log("📢 Data yang dikirim ke API (PUT):", { id, ...formData });
-
-      await dispatch(updateProvinsi({ id, data: formData })).unwrap();
-      showAlert.success("Data Provinsi berhasil diperbarui!", () => {
-        router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
+      await dispatch(updateKabupatenKota({ id, data })).unwrap();
+      showAlert.success("Data Kabupaten Kota berhasil diperbarui!", () => {
+        router.push(
+          "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
+        );
       });
     } catch (error) {
-      console.error("❌ Gagal memperbarui data Provinsi:", error);
-      showAlert.error("Gagal memperbarui data Provinsi.");
+      console.error("❌ Gagal memperbarui data Kabupaten Kota:", error);
+      showAlert.error("Gagal memperbarui data Kabupaten Kota.");
     }
   };
 
   const handleDelete = async () => {
-    showAlert.confirmDelete("Data Provinsi akan dihapus permanen", async () => {
-      try {
-        await dispatch(deleteProvinsi(dataProvinsi.provinsiId)).unwrap();
-        showAlert.success("Data Provinsi berhasil dihapus!", () => {
-          router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
-        });
-      } catch (error) {
-        console.error("❌ Gagal menghapus data Provinsi:", error);
-        showAlert.error("Gagal menghapus data Provinsi.");
+    showAlert.confirmDelete(
+      "Data KabupatenKota akan dihapus permanen",
+      async () => {
+        try {
+          await dispatch(
+            deleteKabupatenKota(dataKabupatenKota.kabupatenKotaId)
+          ).unwrap();
+          showAlert.success("Data Kabupaten Kota berhasil dihapus!", () => {
+            router.push(
+              "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
+            );
+          });
+        } catch (error) {
+          console.error("❌ Gagal menghapus data Kabupaten Kota:", error);
+          showAlert.error("Gagal menghapus data Kabupaten Kota.");
+        }
       }
-    });
+    );
   };
 
   const formFields = [
@@ -74,11 +87,23 @@ const ProvinsiEditForm = ({ params }) => {
       fields: [
         {
           type: "text",
-          label: "Nama Provinsi",
-          name: "namaProvinsi",
-          placeholder: "Masukkan Nama Provinsi...",
+          label: "Nama Kabupaten / Kota",
+          name: "namaKabupatenKota",
+          placeholder: "Masukkan Nama Kabupaten  / Kota...",
           colSize: 6,
-          rules: { required: "Nama Provinsi harus diisi" },
+          rules: { required: "Nama Kabupaten Kota harus diisi" },
+        },
+        {
+          type: "select",
+          id: "provinsiId",
+          label: "Provinsi",
+          name: "provinsiId",
+          placeholder: "Pilih Provinsi",
+          options: ProvinsiOptions,
+          rules: { required: "Provinsi is required" },
+          colSize: 6,
+          onMenuScrollToBottom: handleLoadMore,
+          isLoading: provinsiLoading,
         },
       ],
     },
@@ -91,23 +116,23 @@ const ProvinsiEditForm = ({ params }) => {
     ...section,
     fields: section.fields.map((field) => ({
       ...field,
-      value: dataProvinsi?.[field.name] ?? "",
+      value: dataKabupatenKota?.[field.name] ?? "",
     })),
   }));
 
   return (
     <Fragment>
       <DynamicForm
-        title="Edit Data Provinsi"
+        title="Edit Data KabupatenKota"
         formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         handleDelete={handleDelete}
-        backPath="/MasterData/master-wilayah/provinsi/table-provinsi"
+        backPath="/MasterData/master-wilayah/KabupatenKota/table-KabupatenKota"
         isAddMode={false}
-        userData={dataProvinsi}
+        userData={dataKabupatenKota}
       />
     </Fragment>
   );
 };
 
-export default ProvinsiEditForm;
+export default KabupatenKotaEditForm;

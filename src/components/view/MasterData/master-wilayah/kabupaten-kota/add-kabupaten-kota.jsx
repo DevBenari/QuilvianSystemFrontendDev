@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { showAlert } from "@/components/features/alert/custom-alert";
 
-import useProvinsiData from "@/lib/hooks/useProvinsi";
-import { createKabupatenKota } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKota";
+import useProvinsiData from "@/lib/hooks/useProvinsiData";
+import { createKabupatenKota } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
 
 const KabupatenKotaAddForm = () => {
   const router = useRouter();
@@ -66,7 +66,7 @@ const KabupatenKotaAddForm = () => {
         title="Tambah Data Kabupaten Kota"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath="/MasterData/master-informasi/KabupatenKota/table-KabupatenKota"
+        backPath="/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
         isAddMode={true}
       />
     </Fragment>

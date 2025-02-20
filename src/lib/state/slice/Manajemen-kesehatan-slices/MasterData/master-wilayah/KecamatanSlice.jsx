@@ -41,7 +41,7 @@ export const fetchKecamatanWithFilters = createAsyncThunk(
   "Kecamatan/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Wilayah/Kecamatan/paged`, {
+      const response = await InstanceAxios.get(`/Wilayah/PagedKecamatan`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -67,7 +67,7 @@ export const fetchKecamatanById = createAsyncThunk(
   "Kecamatan/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Wilayah/Kecamatan/${id}`, {
+      const response = await InstanceAxios.get(`/Wilayah/KecamatanById/${id}`, {
         headers: getHeaders(),
       });
 
@@ -105,15 +105,22 @@ export const updateKecamatan = createAsyncThunk(
   "Kecamatan/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Wilayah/Kecamatan`, data, {
-        headers: getHeaders(),
-      });
+      console.log("📢 PUT Request ke API:", `/Wilayah/Kecamatan/${id}`, data);
 
-      console.log("Response API (Add):", response.data);
+      const response = await InstanceAxios.put(
+        `/Wilayah/Kecamatan/${id}`,
+        data,
+        {
+          headers: getHeaders(),
+        }
+      );
+
+      console.log("✅ Response API Update Kecamatan:", response.data);
       return response.data;
     } catch (error) {
+      console.error("❌ Gagal Update API:", error.response?.data || error);
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui Kecamatan "
+        error.response?.data?.message || "Gagal memperbarui data Kecamatan"
       );
     }
   }

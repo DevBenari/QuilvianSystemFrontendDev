@@ -4,17 +4,35 @@ import { Form } from "react-bootstrap";
 import Select from "react-select";
 
 const SelectField = forwardRef(
-  ({ name, label, options, rules, placeholder, onInputChange, onMenuScrollToBottom, ...props }, ref) => {
+  (
+    {
+      name,
+      label,
+      options,
+      rules,
+      placeholder,
+      onInputChange,
+      onMenuScrollToBottom,
+      ...props
+    },
+    ref
+  ) => {
     const { control } = useFormContext();
-    const { field, fieldState: { error } } = useController({ name, control, rules });
+    const {
+      field,
+      fieldState: { error },
+    } = useController({ name, control, rules });
 
     const scrollTimeout = useRef(null);
     const isFetching = useRef(false);
 
     // Memoize the handleChange callback
-    const handleChange = useCallback((selected) => {
-      field.onChange(selected ? selected.value : null);
-    }, [field]);
+    const handleChange = useCallback(
+      (selected) => {
+        field.onChange(selected ? selected.value : null);
+      },
+      [field]
+    );
 
     // Memoize the scroll handler
     const handleScrollToBottom = useCallback(() => {
@@ -31,18 +49,21 @@ const SelectField = forwardRef(
     }, [onMenuScrollToBottom]);
 
     // Memoize options with deep comparison
-    const memoizedOptions = useMemo(() => 
-      Array.isArray(options) ? options.map(opt => ({
-        label: opt.label,
-        value: opt.value
-      })) : [], 
+    const memoizedOptions = useMemo(
+      () =>
+        Array.isArray(options)
+          ? options.map((opt) => ({
+              label: opt.label,
+              value: opt.value,
+            }))
+          : [],
       [options]
     );
-    
 
     // Memoize the selected value
-    const selectedValue = useMemo(() => 
-      memoizedOptions.find((option) => option.value === field.value) || null,
+    const selectedValue = useMemo(
+      () =>
+        memoizedOptions.find((option) => option.value === field.value) || null,
       [memoizedOptions, field.value]
     );
 
@@ -61,7 +82,11 @@ const SelectField = forwardRef(
           isClearable
           isLoading={props.isLoading}
         />
-        {error && <Form.Control.Feedback type="invalid">{error.message}</Form.Control.Feedback>}
+        {error && (
+          <Form.Control.Feedback type="invalid">
+            {error.message}
+          </Form.Control.Feedback>
+        )}
       </Form.Group>
     );
   }
