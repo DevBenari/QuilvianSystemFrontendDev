@@ -271,11 +271,11 @@ export const menus = {
       ],
     },
     {
-      title: "Departemen",
+      title: "Departement",
       subItems: [
         {
-          title: "Manajemen Departemen",
-          href: "/MasterData/master-departemen/manajemen-departemen/tables-departemen",
+          title: "Manajemen departement",
+          href: "/MasterData/master-departement/table-departement",
         },
       ],
     },
