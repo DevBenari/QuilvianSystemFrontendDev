@@ -105,7 +105,7 @@ export const updateAgama = createAsyncThunk(
   "agama/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Agama`, data, {
+      const response = await InstanceAxios.post(`/Agama/${id}`, data, {
         headers: getHeaders(),
       });
 

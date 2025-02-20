@@ -1,13 +1,6 @@
-"use client";
-import React, {
-  Fragment,
-  memo,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useForm } from "react-hook-form";
+'use client'
+import React, {  Fragment, memo, useCallback, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 // import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import DynamicStepForm from '@/components/features/dynamic-form/dynamicForm/dynamicFormSteps';
 import { Button, Card, Col, Image, Row } from 'react-bootstrap';
@@ -24,36 +17,41 @@ import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/Mast
 import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice';
 import { useRouter } from 'next/navigation';
 import useAgamaData from '@/lib/hooks/useAgamaData';
+import UseProvinsiData from '@/lib/hooks/masterData/useProvinsi';
+import useSelectWilayah from '@/lib/hooks/useSelectWilayah';
+// import UseSelectWilayah from '@/lib/hooks/useSelectWilayah';
 
 const KioskPendaftaranPasien = memo(() => {
-  const { setValue } = useForm();
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submittedData, setSubmittedData] = useState(null);
-  const [selectedPrintType, setSelectedPrintType] = useState(null);
-  const router = useRouter();
-  // fungsi untuk melakukan select provinsi
-  // const {
-  //     provinsi,
-  //     kabupaten,
-  //     kecamatan,
-  //     kelurahan,
-  //     // loadingProvinsi,
-  //     // loadingKabupaten,
-  //     // loadingKecamatan,
-  //     handleChange,
-  // } = UseSelectWilayah(setValue);
-
-  const {
-    agamaOptions,
-    loading: agamaLoading,
-    handleLoadMore,
-  } = useAgamaData();
-  const dispatch = useDispatch();
+    const { setValue } = useForm();
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [submittedData, setSubmittedData] = useState(null);
+    const [selectedPrintType, setSelectedPrintType] = useState(null);
+    const router = useRouter();
+    // fungsi untuk melakukan select provinsi
+    const {
+        negaraOptions,
+        negaraLoading,
+        selectedNegara,
+        setSelectedNegara,
+        provinsi,
+        provinsiLoading,
+        selectedProvinsi,
+        setSelectedProvinsi,
+        kabupaten,
+        kabupatenLoading,
+        handleLoadMoreNegara,
+        handleLoadMoreProvinsi,
+        handleLoadMoreKabupaten,
+    } = useSelectWilayah();
+    
+    // const {provinsiOptions, loading: provinsiLoading, handleLoadMore } = UseProvinsiData();
+    const { agamaOptions, loading: agamaLoading, handleLoadMore: handleLoadMoreAgama } = useAgamaData();
+    const dispatch = useDispatch();
 
     const {data: pendidikanData, error, loading, totalPage} = useSelector((state) => state.pendidikan)
     const {data: titles, } = useSelector((state) => state.titles)
     const {data: pekerjaanData} = useSelector((state) => state.pekerjaan)
-    const {data: negara} = useSelector((state) => state.negara)
+    // const {data: negara} = useSelector((state) => state.negara)
     const {data: GolonganDarah} = useSelector((state) => state.golongan)
     const {data: identitas} = useSelector((state) => state.identitas)
     const [page, setPage] = useState(1);
@@ -62,24 +60,11 @@ const KioskPendaftaranPasien = memo(() => {
         dispatch(fetchPendidikan({page, totalPage}))
         dispatch(fetchTitle({page, totalPage}))
         dispatch(fetchPekerjaan({page, totalPage}))
-        dispatch(fetchNegara({page, totalPage}))
+        // dispatch(fetchNegara({page, totalPage}))
         dispatch(fetchGolongan({page, totalPage}))
         dispatch(AddPasienSlice())
         dispatch(fetchIdentitas({page, totalPage}))
     }, [dispatch, page, totalPage]);
-
-    // const handleLoadMore = useCallback(() => {
-    //     if (page < totalPages && lastFetchedPage.current !== page + 1) {
-    //         console.log(`📡 Fetching next page: ${page + 1}`);
-    //         lastFetchedPage.current = page + 1; // Update ref agar tidak fetch ulang
-    //         setPage(prevPage => prevPage + 1);
-    //     } else {
-    //         console.log(`✅ No more pages to fetch`);
-    //     }
-    // }, [page, totalPages]);
-
-    // console.log(titles)
-    // Tampilkan pesan error jika ada kesalahan
 
     const titlesOptions = titles.map(item => ({
         label: item.namaTitle, // Label seperti "Tn", "Ny", "Mr"
@@ -207,7 +192,7 @@ const KioskPendaftaranPasien = memo(() => {
                     options: agamaOptions,
                     rules: { required: "Agama is required" },
                     colSize: 6,
-                    onMenuScrollToBottom: handleLoadMore,
+                    onMenuScrollToBottom: handleLoadMoreAgama,
                     isLoading: agamaLoading
                 },
                 
@@ -257,33 +242,43 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Negara",
                     name: "negaraId",
                     placeholder: "Negara",
-                    options: negara.map(item => ({label: item.namaNegara, value: item.negaraId})) || [],
+                    options: negaraOptions,
+                      onChange: (option) => setSelectedNegara(option.value),
                     colSize: 6
                 },
-                // {
-                //     type: "select",
-                //     id: "provinsiId",
-                //     label: "Provinsi Pasien",
-                //     name: "provinsiId",
-                //     placeholder: "Pilih Provinsi",
-                //     options: provinsi.map((item) => ({
-                //       label: item.namaProvinsi,
-                //       value: item.provinsiId,
-                //     })),
-                //     rules: { required: "Provinsi is required" },
-                //     colSize: 6,
-                //     // onChangeCallback: (value) => handleChange("pasien","provinsi", value),
-                // },
+                {
+                    type: "select",
+                    id: "provinsiId",
+                    label: "Provinsi Pasien",
+                    name: "provinsiId",
+                    placeholder: "Pilih Provinsi",
+                    isLoading: provinsiLoading,
+                    options: negaraOptions.namaNegara === "Indonesia"
+                        ? provinsi?.map((item) => ({
+                            label: item.namaProvinsi,
+                            value: item.idProvinsi,
+                        }))
+                        : [],
+                    onChange: (option) => setSelectedProvinsi(option.value),
+                    onMenuScrollToBottom: handleLoadMoreProvinsi,
+                    colSize: 6,
+                    // onChangeCallback: (value) => handleChange("pasien","provinsi", value),
+                },
                 // {
                 //     type: "select",
                 //     id: "kabupatenId",
                 //     label: "Kabupaten/Kota",
                 //     name: "kabupatenId",
                 //     placeholder: "Pilih Kabupaten/Kota",
-                //     options: kabupaten.map(item => ({ label: item.kabupatenKotaName, value: item.kabupatenKotaId })),
-                //     rules: { required: "Kabupaten is required" },
+                //     options: kabupaten?.map((item) => ({
+                //         label: item.namaKabupatenKota,
+                //         value: item.kabupatenKotaId,
+                //     })),
+                //     isLoading: kabupatenLoading,
+                //     onMenuScrollToBottom: handleLoadMoreKabupaten,
+                //     onChange: (option) => handleChange("kabupaten", option.value), // Disable until province is selected
                 //     colSize: 6,
-                //     onChangeCallback: (value) => handleChange("pasien", "kabupaten", value),
+                //     // onChangeCallback: (value) => handleChange("pasien", "kabupaten", value),
                 // },
                 // {
                 //     type: "select",
@@ -562,120 +557,115 @@ const KioskPendaftaranPasien = memo(() => {
     ]
 
 
-  const handleSubmit = (data) => {
-    dispatch(AddPasienSlice(data))
-      .then((result) => {
-        if (AddPasienSlice.fulfilled.match(result)) {
-          console.log("Data pasien berhasil dikirim:", result.payload);
-          alert("Data pasien berhasil dikirim!");
-        } else {
-          console.error("Gagal mengirim data:", result.error.message);
-          alert("Gagal mengirim data pasien!");
-        }
-      })
-      .catch((error) => {
-        console.error("Error saat dispatch:", error);
-        alert("Terjadi kesalahan saat mengirim data pasien!");
-      });
+    const handleSubmit = (data) => {
+        dispatch(AddPasienSlice(data))
+            .then((result) => {
+                if (AddPasienSlice.fulfilled.match(result)) {
+                    console.log("Data pasien berhasil dikirim:", result.payload);
+                    alert("Data pasien berhasil dikirim!");
+                } else {
+                    console.error("Gagal mengirim data:", result.error.message);
+                    alert("Gagal mengirim data pasien!");
+                }
+            })
+            .catch((error) => {
+                console.error("Error saat dispatch:", error);
+                alert("Terjadi kesalahan saat mengirim data pasien!");
+            });
 
-    const enhancedData = {
-      ...data,
-      noRekamMedis: `RM-${new Date().getTime()}`,
-      queueNumber: `A-${Math.floor(Math.random() * 100)}`,
-      registrationDate: new Date().toLocaleDateString("id-ID"),
-      noIdentitas: `${data.noIdentitas}`,
+        const enhancedData = {
+            ...data,
+            noRekamMedis: `RM-${new Date().getTime()}`,
+            queueNumber: `A-${Math.floor(Math.random() * 100)}`,
+            registrationDate: new Date().toLocaleDateString('id-ID'),
+            noIdentitas: `${data.noIdentitas}`,
+        };
+
+        setSubmittedData(enhancedData);
+        setIsSubmitted(true);
     };
 
-    setSubmittedData(enhancedData);
-    setIsSubmitted(true);
-  };
+      const handlePrint = (type) => {
+        setSelectedPrintType(type);
+        setTimeout(() => {
+          window.print();
+          setSelectedPrintType(null);
+        }, 100);
+      };
 
-  const handlePrint = (type) => {
-    setSelectedPrintType(type);
-    setTimeout(() => {
-      window.print();
-      setSelectedPrintType(null);
-    }, 100);
-  };
-
-  if (isSubmitted && submittedData) {
-    return (
-      <Card className="m-4">
-        <Card.Body>
-          <div className="kiosk-logo mb-4">
-            <Image src="/Images/pngwing-com.png" fluid alt="logo" />
-          </div>
-          <h4 className="text-success text-center mt-4">
-            Data Pendaftaran Pasien Berhasil Disimpan
-          </h4>
-
-          <Row className="no-print">
-            <Col lg={12}>
-              <Card className="d-flex justify-content-center align-items-center">
-                <Card.Body>
+      if (isSubmitted && submittedData) {
+        return (
+          <Card className="m-4">
+            <Card.Body>
+              <div className="kiosk-logo mb-4">
+                <Image src="/Images/pngwing-com.png" fluid alt="logo" />
+              </div>
+                <h4 className="text-success text-center mt-4">Data Pendaftaran Pasien Berhasil Disimpan</h4>
+    
+              <Row className="no-print">
+                <Col lg={12}>
+                <Card className="d-flex justify-content-center align-items-center">
+                  <Card.Body>
+                    <PrintPatientCard patientData={submittedData} />
+                  </Card.Body>
+                </Card>
+                </Col>
+              </Row>
+    
+              {selectedPrintType === 'card' && (
+                <div className="print-only">
                   <PrintPatientCard patientData={submittedData} />
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+                </div>
+              )}
+              {selectedPrintType === 'queue' && (
+                <div className="print-only">
+                  <PrintableQueueNumber 
+                    queueData={{
+                      queueNumber: submittedData.queueNumber,
+                      service: "Poli Umum",
+                      date: submittedData.registrationDate,
+                      patientName: submittedData.namaPasien
+                    }} 
+                  />
+                </div>
+              )}
+    
+              <div className="d-flex justify-content-between mt-4 no-print">
+                <ButtonNav
+                  label="Kembali ke Halaman Utama"
+                  variant="primary"
+                  path="/kiosk" 
 
-          {selectedPrintType === "card" && (
-            <div className="print-only">
-              <PrintPatientCard patientData={submittedData} />
-            </div>
-          )}
-          {selectedPrintType === "queue" && (
-            <div className="print-only">
-              <PrintableQueueNumber
-                queueData={{
-                  queueNumber: submittedData.queueNumber,
-                  service: "Poli Umum",
-                  date: submittedData.registrationDate,
-                  patientName: submittedData.namaPasien,
-                }}
-              />
-            </div>
-          )}
+                />
+                <Button variant="primary" onClick={() => handlePrint('card')} className="text-center mt-3 ml-5">
+                      {/* <Printer className="me-2" size={20} /> */}
+                      Cetak Kartu Pasien
+                    </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        );
+      }
 
-          <div className="d-flex justify-content-between mt-4 no-print">
-            <ButtonNav
-              label="Kembali ke Halaman Utama"
-              variant="primary"
-              path="/kiosk"
+    const handleFormSubmit = (data) => {
+        setIsSubmitted(true);
+        setSubmittedData(data);
+    }
+
+    return (
+        <Fragment>
+            <DynamicStepForm
+                title="Pendaftaran Pasien"
+                formConfig={formFields}
+                onSubmit={handleSubmit}
+                onFormSubmit={handleFormSubmit}
+                externalOptions={{ titles: titlesOptions }}
+                backPath="/kiosk"
+                isAddMode={true}
             />
-            <Button
-              variant="primary"
-              onClick={() => handlePrint("card")}
-              className="text-center mt-3 ml-5"
-            >
-              {/* <Printer className="me-2" size={20} /> */}
-              Cetak Kartu Pasien
-            </Button>
-          </div>
-        </Card.Body>
-      </Card>
-    );
-  }
+        </Fragment>
+    )
+})
 
-  const handleFormSubmit = (data) => {
-    setIsSubmitted(true);
-    setSubmittedData(data);
-  };
-
-  return (
-    <Fragment>
-      <DynamicStepForm
-        title="Pendaftaran Pasien"
-        formConfig={formFields}
-        onSubmit={handleSubmit}
-        onFormSubmit={handleFormSubmit}
-        externalOptions={{ titles: titlesOptions }}
-        backPath="/kiosk"
-        isAddMode={true}
-      />
-    </Fragment>
-  );
-});
-
-KioskPendaftaranPasien.displayName = "KioskPendaftaranPasien";
+KioskPendaftaranPasien.displayName = "KioskPendaftaranPasien"
 export default KioskPendaftaranPasien;
