@@ -1,10 +1,12 @@
 "use client";
 
-import DynamicFormEdit from "@/components/features/dynamic-form/dynamicForm-Edit-Add/dynamicFormEditAdd";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
-import { addTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi/add";
-import { editByIdTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi/edit";
-import { getbyidTindakanOperasi } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi/getById";
+import {
+  addTindakanOperasi,
+  editByIdTindakanOperasi,
+  getbyidTindakanOperasi,
+} from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi";
+
 import { jenisOperasi, kategoriOperasi } from "@/utils/masterData";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -47,7 +49,9 @@ const AddEditOperasiForm = () => {
         alert("Data berhasil ditambahkan");
         console.log("Add Response:", data);
       }
-      router.push("/MasterData/daftar-tindakan-operasi");
+      router.push(
+        "MasterData/master-operasi/daftar-tindakan-operasi/daftar-tindakan-operasi"
+      );
     } catch (error) {
       console.error("Error:", error);
       alert("Gagal menyimpan data");
@@ -151,7 +155,7 @@ const AddEditOperasiForm = () => {
   ];
 
   return (
-    <DynamicFormEdit
+    <DynamicForm
       title={isEditMode ? "Edit Tindakan Operasi" : "Tambah Tindakan Operasi"}
       formConfig={formFields}
       onSubmit={handleSubmit}

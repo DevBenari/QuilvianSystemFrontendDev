@@ -8,8 +8,8 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 import { useEffect, useState } from "react";
 
 import TextField from "@/components/ui/text-field";
-import { useAboutOperasi } from "@/lib/hooks/masterData/manajemen-operasi/about-operasi";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import { useAboutOperasi } from "@/lib/hooks/masterData/manajemen-operasi/about-operasi";
 
 const TableAboutOperasi = () => {
   const methods = useForm({

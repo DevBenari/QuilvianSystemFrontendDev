@@ -1,4 +1,4 @@
-import TableManajemenOperasi from "@/components/view/MasterData/master-operasi/daftar-manajemen-operasi/page";
+import TableManajemenOperasi from "@/components/view/MasterData/master-operasi/daftar-manajemen-operasi/daftar-manajemn-operasi";
 import React from "react";
 const PageTableManajemenOperasi = () => {
   return (

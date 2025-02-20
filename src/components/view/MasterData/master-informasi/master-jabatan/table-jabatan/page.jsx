@@ -100,7 +100,7 @@ const TableDataJabatan = () => {
               columns={[
                 { key: "no", label: "No" },
                 {
-                  key: "createdDate",
+                  key: "createDateTime",
                   label: "Tanggal Dibuat",
                 },
                 {

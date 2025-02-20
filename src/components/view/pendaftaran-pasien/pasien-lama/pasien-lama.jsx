@@ -4,8 +4,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Col, Row, Spinner } from "react-bootstrap";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import DynamicFormTable from "@/components/features/dynamicFormTable/dynamicFormTable";
+DynamicForm;
 import { pasienLama } from "@/utils/dataPasien";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 const PasienLama = memo(() => {
   const methods = useForm();
@@ -18,7 +19,7 @@ const PasienLama = memo(() => {
 
   return (
     <FormProvider {...methods}>
-      <DynamicFormTable title="Pencarian Pasien Lama" />
+      <DynamicForm title="Pencarian Pasien Lama" />
 
       <Col lg="12" className="iq-card p-4 mt-3">
         <div className="d-flex justify-content-between iq-card-header">

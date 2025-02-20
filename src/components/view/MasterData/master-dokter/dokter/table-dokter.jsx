@@ -104,11 +104,11 @@ const TableDataDokter = () => {
                     columns={[
                       { key: "no", label: "No" }, // Nomor urut
                       {
-                        key: "createdDate",
+                        key: "createDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
-                        key: "createByName",
+                        key: "createdByName",
                         label: "Dibuat Oleh",
                       },
                       { key: "kdDokter", label: "Kode Dokter" },

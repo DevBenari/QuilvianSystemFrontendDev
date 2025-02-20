@@ -6,7 +6,6 @@ import { Fragment, useEffect } from "react";
 
 import { showAlert } from "@/components/features/alert/custom-alert";
 import { createDokterPraktek } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDokter } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 
@@ -104,7 +103,7 @@ const AddFormDokterPraktek = () => {
           name: "dokterId",
           placeholder: "Pilih Dokter...",
           colSize: 6,
-          options: dokterData.data.map((item) => ({
+          options: dokterData.map((item) => ({
             label: item.nmDokter,
             value: item.dokterId,
           })),

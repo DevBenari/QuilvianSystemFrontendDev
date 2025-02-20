@@ -6,11 +6,14 @@ import { getHeaders } from "@/lib/headers/headers";
 // ✅ Fetch semua data agama dengan pagination
 export const fetchAgamaPaged = createAsyncThunk(
   "agama/fetchData",
-  async ({ page = 1, perPage = 10, isInfiniteScroll = false }, { rejectWithValue, getState }) => {
+  async (
+    { page = 1, perPage = 10, isInfiniteScroll = false },
+    { rejectWithValue, getState }
+  ) => {
     try {
       const currentState = getState().agama;
       if (currentState.loadedPages.includes(page)) {
-        console.log('Data already loaded for page:', page);
+        console.log("Data already loaded for page:", page);
         return null;
       }
       const response = await InstanceAxios.get(`/Agama`, {
@@ -18,14 +21,14 @@ export const fetchAgamaPaged = createAsyncThunk(
         headers: getHeaders(),
       });
 
-      return { 
+      return {
         data: response.data.data,
         pagination: response.data.pagination,
         page,
-        meta: { arg: { page, isInfiniteScroll } }
+        meta: { arg: { page, isInfiniteScroll } },
       };
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
       );
@@ -102,7 +105,7 @@ export const updateAgama = createAsyncThunk(
   "agama/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Agama`, newData, {
+      const response = await InstanceAxios.post(`/Agama`, data, {
         headers: getHeaders(),
       });
 
@@ -153,16 +156,17 @@ const agamaSlice = createSlice({
       })
       .addCase(fetchAgamaPaged.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
-        
+
         state.loading = false;
-        
+
         // Add new data without duplicates
         const newData = action.payload.data.filter(
-          newItem => !state.data.some(
-            existingItem => existingItem.agamaId === newItem.agamaId
-          )
+          (newItem) =>
+            !state.data.some(
+              (existingItem) => existingItem.agamaId === newItem.agamaId
+            )
         );
-        
+
         if (action.meta.arg.isInfiniteScroll) {
           // Infinite scroll - append data
           state.data = [...state.data, ...newData];
@@ -171,7 +175,7 @@ const agamaSlice = createSlice({
           // Regular pagination - replace data
           state.data = action.payload.data;
         }
-        
+
         state.totalItems = action.payload.pagination?.totalRows || 0;
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;

@@ -4,11 +4,15 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
-import { useRuanganOperasi } from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi";
-import { RuanganOperasiEdit } from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi/edit";
-import { addRuanganOperasi } from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi/add";
+
 // import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomTableComponent from "@/components/features/edit-table/custom-table/custom-table-edit-remove";
+
+import {
+  addRuanganOperasi,
+  RuanganOperasiEdit,
+  useRuanganOperasi,
+} from "@/lib/hooks/masterData/manajemen-operasi/ruangan-operasi";
 
 const TableRuanganOperasi = () => {
   const methods = useForm();
