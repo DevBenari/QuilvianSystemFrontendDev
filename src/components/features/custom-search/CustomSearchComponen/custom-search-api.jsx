@@ -1,147 +1,114 @@
 "use client";
 import React, { useState } from "react";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Form } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import TextField from "@/components/ui/text-field";
-import SelectField from "@/components/ui/select-field";
 import DateInput from "@/components/ui/date-input";
 
-const CustomSearchFilterApi = ({ onSearch }) => {
+/**
+ * Base Component untuk pencarian dinamis
+ * @param {Function} fetchFunction - Fungsi Redux untuk fetch data (contoh: fetchAgamaWithFilters)
+ * @param {Function} setFilteredData - Fungsi untuk menyimpan hasil pencarian
+ */
+const CustomSearchFilterApi = ({ fetchFunction, setFilteredData }) => {
+  const dispatch = useDispatch();
+
+  // 🔹 State untuk menyimpan filter pencarian
   const [filters, setFilters] = useState({
     search: "",
-    periode: "",
+    orderBy: "CreateDateTime",
+    sortDirection: "desc",
     startDate: "",
     endDate: "",
-    orderBy: "",
-    sortDirection: "asc",
-    page: 1,
-    perPage: 10,
+    periode: "", // Tambahan filter Periode
   });
 
-  const handleInputChange = (name, value) => {
-    setFilters((prev) => ({ ...prev, [name]: value }));
+  // 🔹 Handle perubahan pada input
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = () => {
-    if (typeof onSearch === "function") {
-      onSearch(filters);
-    } else {
-      console.error("onSearch is not defined as a function");
-    }
+  // 🔹 Handle pencarian dengan Redux Thunk
+  const handleSearch = () => {
+    dispatch(fetchFunction(filters)).then((result) => {
+      if (fetchFunction.fulfilled.match(result)) {
+        setFilteredData(result.payload?.data?.rows || []);
+      }
+    });
   };
 
   return (
     <Col lg="12" className="mt-2">
       <Row>
-        {/* Pencarian berdasarkan Nama */}
+        {/* 🔹 Input Search */}
         <Col md="3">
           <TextField
-            label="Cari Nama Agama:"
+            label="Cari Data:"
             name="search"
             type="text"
-            placeholder="Masukkan nama agama..."
+            placeholder="Masukkan kata kunci..."
             className="form-control mb-0"
             value={filters.search}
-            onChange={(e) => handleInputChange("search", e.target.value)}
+            onChange={handleInputChange}
           />
         </Col>
 
-        {/* Filter berdasarkan Periode */}
-        <Col md="2">
-          <SelectField
-            name="periode"
-            label="Periode:"
-            placeholder="Pilih Periode"
-            options={[
-              { value: "ThisYear", label: "Tahun Ini" },
-              { value: "LastYear", label: "Tahun Lalu" },
-            ]}
-            onChangeCallback={(value) => handleInputChange("periode", value)}
-          />
-        </Col>
-
-        {/* Filter berdasarkan Tanggal Mulai */}
+        {/* 🔹 Input Start Date */}
         <Col md="3">
           <DateInput
             name="startDate"
-            label="Tanggal Mulai:"
+            label="Tanggal Awal:"
             placeholder="Pilih tanggal awal"
-            onChange={(value) => handleInputChange("startDate", value)}
+            onChange={(value) => setFilters({ ...filters, startDate: value })}
           />
         </Col>
 
-        {/* Filter berdasarkan Tanggal Akhir */}
+        {/* 🔹 Input End Date */}
         <Col md="3">
           <DateInput
             name="endDate"
             label="Tanggal Akhir:"
             placeholder="Pilih tanggal akhir"
-            onChange={(value) => handleInputChange("endDate", value)}
+            onChange={(value) => setFilters({ ...filters, endDate: value })}
           />
         </Col>
 
-        {/* Tombol Pencarian */}
-        <Col md="1" className="mt-2">
-          <Button onClick={handleSubmit} className="btn btn-info mt-4">
-            <i className="ri-search-line"></i> Cari
+        {/* 🔹 Pilihan Sort Direction (ASC / DESC) */}
+
+        {/* 🔹 Dropdown Periode */}
+        <Col md="3">
+          <Form.Group>
+            <Form.Label>Periode:</Form.Label>
+            <Form.Select
+              name="periode"
+              value={filters.periode}
+              onChange={handleInputChange}
+            >
+              <option value="">-- Pilih Periode --</option>
+              <option value="Today">Hari Ini</option>
+              <option value="ThisWeek">Minggu Ini</option>
+              <option value="LastWeek">Minggu Lalu</option>
+              <option value="ThisMonth">Bulan Ini</option>
+              <option value="LastMonth">Bulan Lalu</option>
+              <option value="ThisYear">Tahun Ini</option>
+              <option value="LastYear">Tahun Lalu</option>
+              <option value="Last3Months">3 Bulan Terakhir</option>
+              <option value="Last6Months">6 Bulan Terakhir</option>
+            </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      {/* 🔹 Tombol Cari */}
+      <Row className="mt-3">
+        <Col md="12" className="d-flex justify-content-end">
+          <Button variant="primary" onClick={handleSearch}>
+            Cari
           </Button>
-        </Col>
-
-        {/* Sort Direction */}
-        <Col md="3" className="mt-3">
-          <SelectField
-            name="sortDirection"
-            label="Urutan:"
-            placeholder="Pilih Urutan"
-            options={[
-              { value: "asc", label: "Ascending" },
-              { value: "desc", label: "Descending" },
-            ]}
-            onChangeCallback={(value) =>
-              handleInputChange("sortDirection", value)
-            }
-          />
-        </Col>
-
-        {/* Urutan berdasarkan (OrderBy) */}
-        <Col md="3" className="mt-3">
-          <SelectField
-            name="orderBy"
-            label="Urutkan Berdasarkan:"
-            placeholder="Pilih OrderBy"
-            options={[
-              { value: "CreateDateTime", label: "Tanggal Dibuat" },
-              { value: "NamaAgama", label: "Nama Agama" },
-            ]}
-            onChangeCallback={(value) => handleInputChange("orderBy", value)}
-          />
-        </Col>
-
-        {/* Per Page */}
-        <Col md="2" className="mt-3">
-          <TextField
-            label="Data per Halaman:"
-            name="perPage"
-            type="number"
-            min="1"
-            placeholder="Jumlah data per halaman"
-            className="form-control mb-0"
-            value={filters.perPage}
-            onChange={(e) => handleInputChange("perPage", e.target.value)}
-          />
-        </Col>
-
-        {/* Pagination Page */}
-        <Col md="2" className="mt-3">
-          <TextField
-            label="Halaman:"
-            name="page"
-            type="number"
-            min="1"
-            placeholder="Halaman"
-            className="form-control mb-0"
-            value={filters.page}
-            onChange={(e) => handleInputChange("page", e.target.value)}
-          />
         </Col>
       </Row>
     </Col>

@@ -244,7 +244,7 @@ export const menus = {
         },
         {
           title: "Daftar Tindakan Operasi",
-          href: "/MasterData//master-operasi/daftar-tindakan-operasi",
+          href: "/MasterData/master-operasi/daftar-tindakan-operasi/table-tindakan-operasi",
         },
         {
           title: "Daftar Ruangan Operasi",
@@ -339,6 +339,19 @@ export const menus = {
         {
           title: "Dokter Praktek",
           href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
+        },
+      ],
+    },
+    {
+      title: "Master Provinsi",
+      subItems: [
+        {
+          title: "Data Provinsi",
+          href: "/MasterData/master-wilayah/provinsi/table-provinsi",
+        },
+        {
+          title: "Data Kabupaten/Kota",
+          href: "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota",
         },
       ],
     },

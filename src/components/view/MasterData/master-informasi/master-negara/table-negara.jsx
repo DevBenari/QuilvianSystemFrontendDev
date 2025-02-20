@@ -4,9 +4,12 @@ import ButtonNav from "@/components/ui/button-navigation";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNegara } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
+import {
+  fetchNegara,
+  fetchNegaraWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 
 const TableDataNegara = () => {
   const methods = useForm();
@@ -16,22 +19,27 @@ const TableDataNegara = () => {
     data: negaraData,
     loading,
     error,
+    totalPages,
   } = useSelector((state) => state.negara);
 
-  // Gunakan useMemo untuk menghitung ulang negara hanya ketika negaraData berubah
-  const negaraList = useMemo(() => negaraData?.data || [], [negaraData]);
+  const [page, setPage] = useState(1);
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
 
-  const [filteredNegara, setFilteredNegara] = useState(negaraList);
+  // Gunakan useMemo untuk menghitung ulang negara hanya ketika negaraData berubah
+  const negaraList = useMemo(() => negaraData || [], [negaraData]);
+  const [filteredNegara, setFilteredNegara] = useState([]);
 
   // Fetch data negara saat komponen di-mount
   useEffect(() => {
-    dispatch(fetchNegara());
-  }, [dispatch]);
+    dispatch(fetchNegara({ page, perPage }));
+  }, [dispatch, page]);
 
   // Update filteredNegara setelah negaraList diubah
   useEffect(() => {
     setFilteredNegara(negaraList);
   }, [negaraList]);
+
+  console.log("negara list", negaraList);
 
   return (
     <FormProvider {...methods}>
@@ -50,9 +58,8 @@ const TableDataNegara = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={negaraList}
-            setFilteredPatients={setFilteredNegara}
-            onFilteredPatients={filteredNegara}
+            fetchFunction={fetchNegaraWithFilters}
+            setFilteredData={setFilteredNegara}
           />
         </Col>
       </Col>
@@ -75,64 +82,49 @@ const TableDataNegara = () => {
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
-              {/* Loading Animation */}
-              {loading && (
-                <div
-                  className="d-flex flex-column justify-content-center align-items-center"
-                  style={{ height: "300px" }}
-                >
-                  <Spinner
-                    animation="border"
-                    variant="primary"
-                    role="status"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <h5 className="mt-3 text-primary fw-bold">
-                    Loading data, please wait...
-                  </h5>
+              {loading ? (
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
                 </div>
-              )}
-
-              {/* Error or No Data */}
-              {!loading && (error || negaraList.length === 0) && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
+                  {error}
+                </Alert>
+              ) : filteredNegara.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {!loading && !error && negaraList.length > 0 && (
+              ) : (
                 <div className="iq-card-body">
                   <CustomTableComponent
                     data={filteredNegara}
                     columns={[
                       { key: "no", label: "No" }, // Kolom nomor urut
-
-                      { key: "kodeNegara", label: "Kode Negara" },
-                      { key: "namaNegara", label: "Nama Negara" },
                       {
-                        key: "createDateTime",
+                        key: "createdDate",
                         label: "Tanggal Dibuat",
                       },
                       {
-                        key: "createBy",
+                        key: "createByName",
                         label: "Dibuat Oleh",
                       },
-                      {
-                        key: "updateDateTime",
-                        label: "Tanggal Update",
-                      },
-                      {
-                        key: "updateBy",
-                        label: "Update Oleh",
-                      },
+                      { key: "kodeNegara", label: "Kode Negara" },
+                      { key: "namaNegara", label: "Nama Negara" },
                     ]}
-                    itemsPerPage={10}
                     slugConfig={{
                       textField: "namaNegara",
                       idField: "negaraId",
                     }}
                     basePath="/MasterData/master-informasi/negara/edit-negara"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage, // Fungsi untuk mengubah halaman
+                    }}
+                    itemsPerPage={perPage}
                   />
                 </div>
               )}

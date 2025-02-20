@@ -7,7 +7,7 @@ import { Col, Row } from "react-bootstrap";
 
 import ButtonNav from "@/components/ui/button-navigation";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 
 const DashboardPerjanjian = memo(() => {
   const methods = useForm();

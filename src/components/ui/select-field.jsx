@@ -1,93 +1,57 @@
-import React, { forwardRef, useState, useEffect } from "react";
+import React, { forwardRef, useRef, useMemo, useCallback } from "react";
 import { useController, useFormContext } from "react-hook-form";
 import { Form } from "react-bootstrap";
 import Select from "react-select";
-import debounce from "lodash/debounce";
 
 const SelectField = forwardRef(
-  (
-    {
-      name,
-      label,
-      options,
-      rules,
-      placeholder,
-      className,
-      readOnly = false,
-      onChangeCallback,
-      onSearch,
-      onLoadMore, // Tambahan untuk memuat halaman berikutnya
-      isSearchable = true,
-      menuPlacement = "auto",
-      ...props
-    },
-    ref
-  ) => {
+  ({ name, label, options, rules, placeholder, className, onChange: externalOnChange, onMenuScrollToBottom, ...props }, ref) => {
     const { control } = useFormContext();
-    const [searchQuery, setSearchQuery] = useState("");
-    const [filteredOptions, setFilteredOptions] = useState(options);
     
     const {
       field,
       fieldState: { error },
     } = useController({ name, control, rules });
 
-    const customStyles = {
-      control: (provided) => ({
-        ...provided,
-        border: "1px solid #ced4da",
-        borderRadius: "0.25rem",
-        boxShadow: "none",
-        minHeight: "calc(1.5em + 0.75rem + 2px)",
-      }),
-      menu: (provided) => ({
-        ...provided,
-        zIndex: 9999,
-      }),
-      placeholder: (provided) => ({
-        ...provided,
-        color: "#6c757d",
-      }),
-    };
+    const scrollTimeout = useRef(null);
+    const isFetching = useRef(false);
 
-    // Debounced search function
-    const debouncedSearch = debounce((inputValue) => {
-      setSearchQuery(inputValue);
-      
-      if (typeof onSearch === "function") {
-        // Jika ada fungsi pencarian dari parent, gunakan
-        onSearch(inputValue);
-      } else {
-        // Jika tidak, lakukan filtering di frontend
-        const filtered = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase())
-        );
-        setFilteredOptions(filtered);
+    // Handle both internal form control and external onChange
+    const handleChange = useCallback((selected) => {
+      const value = selected ? selected.value : null;
+      field.onChange(value);
+      if (externalOnChange) {
+        externalOnChange(selected);
       }
-    }, 300);
+    }, [field, externalOnChange]);
 
-    useEffect(() => {
-      setFilteredOptions(options);
-    }, [options]);
+    // Memoize the scroll handler
+    const handleScrollToBottom = useCallback(() => {
+      if (scrollTimeout.current || isFetching.current) return;
 
-    const handleChange = (selected) => {
-      field.onChange(selected ? selected.value : null);
-      if (onChangeCallback) {
-        onChangeCallback(selected ? selected.value : null);
-      }
-    };
+      isFetching.current = true;
+      scrollTimeout.current = setTimeout(() => {
+        if (onMenuScrollToBottom) {
+          onMenuScrollToBottom();
+        }
+        isFetching.current = false;
+        scrollTimeout.current = null;
+      }, 300);
+    }, [onMenuScrollToBottom]);
 
-    const handleInputChange = (inputValue, { action }) => {
-      if (action === "input-change") {
-        debouncedSearch(inputValue);
-      }
-    };
+    // Memoize options with deep comparison
+    const memoizedOptions = useMemo(() => 
+      Array.isArray(options) ? options.map(opt => ({
+        label: opt.label,
+        value: opt.value
+      })) : [], 
+      [options]
+    );
 
-    const handleMenuScrollToBottom = () => {
-      if (typeof onLoadMore === "function") {
-        onLoadMore(); // Panggil fungsi load halaman berikutnya
-      }
-    };
+    // Memoize the selected value
+    const selectedValue = useMemo(() => 
+      memoizedOptions.find((option) => option.value === field.value) || null,
+      [memoizedOptions, field.value]
+    );
 
     return (
       <Form.Group className={className}>
@@ -95,19 +59,13 @@ const SelectField = forwardRef(
         <Select
           {...field}
           {...props}
-          options={filteredOptions}
-          placeholder={placeholder || "Search and select an option"}
-          styles={customStyles}
-          value={filteredOptions.find((option) => option.value === field.value) || null}
+          options={memoizedOptions}
+          placeholder={placeholder || "Pilih opsi"}
+          value={selectedValue}
           onChange={handleChange}
-          onInputChange={handleInputChange}
-          onMenuScrollToBottom={handleMenuScrollToBottom} // Tambahkan event saat scroll ke bawah
-          isSearchable={isSearchable}
+          onMenuScrollToBottom={handleScrollToBottom}
           isClearable
-          isDisabled={readOnly}
-          menuIsOpen={readOnly ? false : undefined}
-          menuPlacement={menuPlacement}
-          filterOption={null} // Disable default filtering
+          isLoading={props.isLoading}
         />
         {error && (
           <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
@@ -121,4 +79,4 @@ const SelectField = forwardRef(
 
 SelectField.displayName = "SelectField";
 
-export default SelectField;
+export default React.memo(SelectField);
