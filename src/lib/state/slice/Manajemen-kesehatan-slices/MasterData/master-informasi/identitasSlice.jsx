@@ -12,7 +12,6 @@ export const fetchIdentitas = createAsyncThunk(
         headers: getHeaders(),
       });
 
-      console.log("Response API Identitas:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -31,8 +30,7 @@ export const fetchIdentitasWithFilters = createAsyncThunk(
         params: filters,
         headers: getHeaders(),
       });
-
-      console.log("Response API (Filtered):", response.data);
+      
       return response.data;
     } catch (error) {
       if (error.response?.status === 404) {

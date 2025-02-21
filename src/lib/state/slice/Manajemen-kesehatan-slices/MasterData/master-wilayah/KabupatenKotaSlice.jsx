@@ -7,7 +7,7 @@ import { getHeaders } from "@/lib/headers/headers";
 export const fetchKabupatenKota = createAsyncThunk(
   "KabupatenKota/fetchData",
   async (
-    { page = 1, perPage = 10, isInfiniteScroll = false },
+    { page = 1, perPage = 10, isInfiniteScroll = false, provinsiId = null },
     { rejectWithValue, getState }
   ) => {
     try {
@@ -17,7 +17,7 @@ export const fetchKabupatenKota = createAsyncThunk(
         return null;
       }
       const response = await InstanceAxios.get(`/Wilayah/KabupatenKota`, {
-        params: { page, perPage },
+        params: { page, perPage, provinsiId},
         headers: getHeaders(),
       });
 

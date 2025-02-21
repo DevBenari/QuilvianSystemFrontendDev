@@ -17,7 +17,7 @@ export const fetchProvinsi = createAsyncThunk(
       }
 
       const response = await InstanceAxios.get(`/Wilayah/Provinsi`, {
-        params: { page, perPage },
+        params: { negaraId ,page, perPage },
         headers: getHeaders(),
       });
 
@@ -139,14 +139,13 @@ export const deleteProvinsi = createAsyncThunk(
 const ProvinsiSlice = createSlice({
   name: "Provinsi",
   initialState: {
-    data: [], // Data diubah menjadi array kosong agar mudah dikelola
+    data: [],
     loadedPages: [],
-    loading: false,
-    error: null,
     totalItems: 0,
     totalPages: 1,
     currentPage: 1,
-    selectedProvinsi: null,
+    loading: false,
+    error: null,
   },
   extraReducers: (builder) => {
     builder

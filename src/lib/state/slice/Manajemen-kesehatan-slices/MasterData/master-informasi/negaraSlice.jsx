@@ -5,14 +5,25 @@ import { getHeaders } from "@/lib/headers/headers";
 // CRUD Thunks
 export const fetchNegara = createAsyncThunk(
   "negara/fetchData",
-  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
+  async ({ page = 1, perPage = 10, isInfiniteScroll = false }, { rejectWithValue, getState }) => {
     try {
+      const currentState = getState().negara;
+      if(currentState.loadedPages.includes(page)) {
+        console.log("Data already loaded for page:", page);
+        return null;
+      }
+
       const response = await InstanceAxios.get(`/Negara`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
 
-      return response.data; // Pastikan API mengembalikan struktur data yang benar
+      return {
+        data: response.data.data,
+        pagination: response.data.pagination,
+        page,
+        meta: { arg: { page, isInfiniteScroll } },
+      };// Pastikan API mengembalikan struktur data yang benar
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
@@ -114,6 +125,7 @@ const negaraSlice = createSlice({
   name: "negara",
   initialState: {
     data: [],
+    loadedPages: [],
     selectedNegara: null,
     loading: false,
     error: null,
@@ -128,16 +140,34 @@ const negaraSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchNegara.fulfilled, (state, action) => {
-        console.log("API Response Data:", action.payload);
+        if (!action.payload) return; // Skip if we already had the data
+
         state.loading = false;
-        state.data = action.payload.data || []; // Menyimpan daftar golongan darah
+
+        // Add new data without duplicates
+        const newData = action.payload.data.filter(
+          (newItem) =>
+            !state.data.some(
+              (existingItem) => existingItem.negaraId === newItem.negaraId
+            )
+        );
+
+        if (action.meta.arg.isInfiniteScroll) {
+          // Infinite scroll - append data
+          state.data = [...state.data, ...newData];
+          state.loadedPages.push(action.payload.page);
+        } else {
+          // Regular pagination - replace data
+          state.data = action.payload.data;
+        }
+
         state.totalItems = action.payload.pagination?.totalRows || 0;
         state.totalPages = action.payload.pagination?.totalPages || 1;
-        state.currentPage = action.payload.pagination?.currentPage || 1;
+        state.currentPage = action.meta.arg.page;
       })
       .addCase(fetchNegara.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Gagal mengambil data";
+        state.error = action.payload || "Terjadi kesalahan";
       })
 
       // ✅ Fetch Negara dengan search & filter (CustomSearchFilter)

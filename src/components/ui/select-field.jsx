@@ -11,13 +11,15 @@ const SelectField = forwardRef(
       options,
       rules,
       placeholder,
-      onInputChange,
+      className,
+      onChange: externalOnChange,
       onMenuScrollToBottom,
       ...props
     },
     ref
   ) => {
     const { control } = useFormContext();
+
     const {
       field,
       fieldState: { error },
@@ -26,12 +28,16 @@ const SelectField = forwardRef(
     const scrollTimeout = useRef(null);
     const isFetching = useRef(false);
 
-    // Memoize the handleChange callback
+    // Handle both internal form control and external onChange
     const handleChange = useCallback(
       (selected) => {
-        field.onChange(selected ? selected.value : null);
+        const value = selected ? selected.value : null;
+        field.onChange(value);
+        if (externalOnChange) {
+          externalOnChange(selected);
+        }
       },
-      [field]
+      [field, externalOnChange]
     );
 
     // Memoize the scroll handler
@@ -45,7 +51,7 @@ const SelectField = forwardRef(
         }
         isFetching.current = false;
         scrollTimeout.current = null;
-      }, 300); // Reduced debounce time
+      }, 300);
     }, [onMenuScrollToBottom]);
 
     // Memoize options with deep comparison
@@ -68,7 +74,7 @@ const SelectField = forwardRef(
     );
 
     return (
-      <Form.Group>
+      <Form.Group className={className}>
         {label && <Form.Label>{label}</Form.Label>}
         <Select
           {...field}
@@ -77,13 +83,12 @@ const SelectField = forwardRef(
           placeholder={placeholder || "Pilih opsi"}
           value={selectedValue}
           onChange={handleChange}
-          onInputChange={onInputChange}
           onMenuScrollToBottom={handleScrollToBottom}
           isClearable
           isLoading={props.isLoading}
         />
         {error && (
-          <Form.Control.Feedback type="invalid">
+          <Form.Control.Feedback type="invalid" style={{ display: "block" }}>
             {error.message}
           </Form.Control.Feedback>
         )}
@@ -94,11 +99,4 @@ const SelectField = forwardRef(
 
 SelectField.displayName = "SelectField";
 
-export default React.memo(SelectField, (prevProps, nextProps) => {
-  // Custom comparison for React.memo
-  return (
-    prevProps.options === nextProps.options &&
-    prevProps.value === nextProps.value &&
-    prevProps.isLoading === nextProps.isLoading
-  );
-});
+export default React.memo(SelectField);

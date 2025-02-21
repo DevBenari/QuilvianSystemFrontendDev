@@ -12,7 +12,6 @@ export const fetchTitle = createAsyncThunk(
         headers: getHeaders(),
       });
 
-      console.log("Response API:", response.data);
       return response.data; // Pastikan API mengembalikan struktur data yang benar
     } catch (error) {
       return rejectWithValue(
