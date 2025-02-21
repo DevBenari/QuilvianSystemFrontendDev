@@ -45,18 +45,6 @@ const KecamatanAddForm = () => {
       fields: [
         {
           type: "select",
-          id: "provinsiId",
-          label: "Provinsi",
-          name: "provinsiId",
-          placeholder: "Pilih Provinsi",
-          options: ProvinsiOptions,
-          rules: { required: "Provinsi is required" },
-          colSize: 6,
-          onMenuScrollToBottom: handleLoadMoreProvinsi,
-          isLoading: provinsiLoading,
-        },
-        {
-          type: "select",
           id: "kabupatenKotaId",
           label: "Kabupaten Kota",
           name: "kabupatenKotaId",

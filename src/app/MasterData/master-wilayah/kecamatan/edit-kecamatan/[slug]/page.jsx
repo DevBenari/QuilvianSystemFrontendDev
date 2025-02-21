@@ -91,19 +91,6 @@ const KecamatanEditForm = ({ params }) => {
       fields: [
         {
           type: "select",
-          id: "provinsiId",
-          label: "Provinsi",
-          name: "provinsiId",
-          placeholder: "Pilih Provinsi",
-          options: ProvinsiOptions,
-          rules: { required: "Provinsi is required" },
-          colSize: 6,
-          onMenuScrollToBottom: handleLoadMoreProvinsi,
-          isLoading: provinsiLoading,
-          rules: { required: "Provinsi is required" },
-        },
-        {
-          type: "select",
           id: "kabupatenKotaId",
           label: "Kabupaten /  Kota",
           name: "kabupatenKotaId",

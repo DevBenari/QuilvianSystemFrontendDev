@@ -37,14 +37,6 @@ const KabupatenKotaAddForm = () => {
     {
       fields: [
         {
-          type: "text",
-          label: "Nama Kabupaten / Kota",
-          name: "namaKabupatenKota",
-          placeholder: "Masukkan Nama Kabupaten  / Kota...",
-          colSize: 6,
-          rules: { required: "Nama Kabupaten Kota harus diisi" },
-        },
-        {
           type: "select",
           id: "provinsiId",
           label: "Provinsi",
@@ -55,6 +47,14 @@ const KabupatenKotaAddForm = () => {
           colSize: 6,
           onMenuScrollToBottom: handleLoadMore,
           isLoading: provinsiLoading,
+        },
+        {
+          type: "text",
+          label: "Nama Kabupaten / Kota",
+          name: "namaKabupatenKota",
+          placeholder: "Masukkan Nama Kabupaten  / Kota...",
+          colSize: 6,
+          rules: { required: "Nama Kabupaten Kota harus diisi" },
         },
       ],
     },
