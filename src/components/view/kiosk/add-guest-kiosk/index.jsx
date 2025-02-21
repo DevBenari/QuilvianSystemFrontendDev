@@ -17,7 +17,6 @@ import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/Mast
 import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice';
 import { useRouter } from 'next/navigation';
 import useAgamaData from '@/lib/hooks/useAgamaData';
-import UseProvinsiData from '@/lib/hooks/masterData/useProvinsi';
 import useSelectWilayah from '@/lib/hooks/useSelectWilayah';
 // import UseSelectWilayah from '@/lib/hooks/useSelectWilayah';
 
@@ -35,19 +34,38 @@ const KioskPendaftaranPasien = memo(() => {
         setSelectedProvinsi,
         selectedKabupaten,
         setSelectedKabupaten,
+        selectedKecamatan,
+        setSelectedKecamatan,
+        selectedKelurahan,
+        setSelectedKelurahan,
         negaraOptions,
         provinsiOptions,
         kabupatenOptions,
+        kecamatanOptions,
+        kelurahanOptions,
         negaraLoading,
         provinsiLoading,
         kabupatenLoading,
+        kecamatanLoading,
         handleLoadMoreNegara,
         handleLoadMoreProvinsi,
         handleLoadMoreKabupaten,
-    } = useSelectWilayah();
+        handleLoadMoreKecamatan,
+        handleLoadMoreKelurahan
+      } = useSelectWilayah();
 
-    // console.log(selectedNegara)
-    console.log(selectedProvinsi)
+      useEffect(() => {
+        if (selectedNegara) {
+          const isIndonesia = negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia';
+          if (!isIndonesia) {
+            // Reset nilai provinsi dan kabupaten jika bukan Indonesia
+            setValue('provinsiId', null);
+            setValue('kabupatenKotaId', null);
+          }
+        }
+      }, [selectedNegara, setValue, negaraOptions]);
+    console.log(selectedKecamatan)
+    
     
     // const {provinsiOptions, loading: provinsiLoading, handleLoadMore } = UseProvinsiData();
     const { agamaOptions, loading: agamaLoading, handleLoadMore: handleLoadMoreAgama } = useAgamaData();
@@ -56,7 +74,6 @@ const KioskPendaftaranPasien = memo(() => {
     const {data: pendidikanData, error, loading, totalPage} = useSelector((state) => state.pendidikan)
     const {data: titles, } = useSelector((state) => state.titles)
     const {data: pekerjaanData} = useSelector((state) => state.pekerjaan)
-    // const {data: negara} = useSelector((state) => state.negara)
     const {data: GolonganDarah} = useSelector((state) => state.golongan)
     const {data: identitas} = useSelector((state) => state.identitas)
     const [page, setPage] = useState(1);
@@ -65,7 +82,6 @@ const KioskPendaftaranPasien = memo(() => {
         dispatch(fetchPendidikan({page, totalPage}))
         dispatch(fetchTitle({page, totalPage}))
         dispatch(fetchPekerjaan({page, totalPage}))
-        // dispatch(fetchNegara({page, totalPage}))
         dispatch(fetchGolongan({page, totalPage}))
         dispatch(AddPasienSlice())
         dispatch(fetchIdentitas({page, totalPage}))
@@ -246,65 +262,100 @@ const KioskPendaftaranPasien = memo(() => {
                     id: "negaraId",
                     label: "Negara",
                     name: "negaraId",
-                    placeholder: "Negara",
+                    placeholder: "Pilih Negara",
                     options: negaraOptions,
                     isLoading: negaraLoading,
-                    onChange: (selected) => setSelectedNegara(selected?.value),  // Changed from onInputChange
+                    onChange: (selected) => {
+                      setSelectedNegara(selected?.value);
+                      // Reset nilai provinsi dan kabupaten
+                      setValue('provinsiId', null);
+                      setValue('kabupatenKotaId', null);
+                    },
                     onMenuScrollToBottom: handleLoadMoreNegara,
+                    rules: { required: "Negara harus dipilih" },
                     colSize: 6
                 },
                 {
                     type: "select",
                     id: "provinsiId",
-                    label: "Provinsi Pasien",
+                    label: "Provinsi",
                     name: "provinsiId",
                     placeholder: "Pilih Provinsi",
                     options: provinsiOptions,
                     isLoading: provinsiLoading,
-                    onChange: (selected) => setSelectedProvinsi(selected?.value),  // Changed from onInputChange
+                    onChange: (selected) => {
+                        setSelectedProvinsi(selected?.value);
+                        // Reset nilai kabupaten ketika provinsi berubah
+                        setValue('kabupatenKotaId', null);
+                    },
                     onMenuScrollToBottom: handleLoadMoreProvinsi,
-                    colSize: 6,
-                    disabled: !selectedNegara
+                    disabled: !selectedNegara || (
+                        negaraOptions.find(opt => opt.value === selectedNegara)?.label !== 'Indonesia'
+                    ),
+                    rules: { 
+                        required: {
+                        value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                        message: "Provinsi harus dipilih untuk warga Indonesia"
+                        }
+                    },
+                    colSize: 6
                 },
-                // {
-                //     type: "select",
-                //     id: "kabupatenId",
-                //     label: "Kabupaten/Kota",
-                //     name: "kabupatenId",
-                //     placeholder: "Pilih Kabupaten/Kota",
-                //     options: kabupaten?.map((item) => ({
-                //         label: item.namaKabupatenKota,
-                //         value: item.kabupatenKotaId,
-                //     })),
-                //     isLoading: kabupatenLoading,
-                //     onMenuScrollToBottom: handleLoadMoreKabupaten,
-                //     onChange: (option) => handleChange("kabupaten", option.value), // Disable until province is selected
-                //     colSize: 6,
-                //     // onChangeCallback: (value) => handleChange("pasien", "kabupaten", value),
-                // },
-                // {
-                //     type: "select",
-                //     id: "kecamatanId",
-                //     label: "Kecamatan",
-                //     name: "kecamatanId",
-                //     placeholder: "Pilih Kecamatan",
-                //     options: kecamatan.map(item => ({ label: item.kecamatanName, value: item.kecamatanId })),
-                //     rules: { required: "Kecamatan is required" },
-                //     colSize: 6,
-                // },
-                // {
-                //     type: "select",
-                //     id: "kelurahanId",
-                //     label: "Kelurahan",
-                //     name: "kelurahanId",
-                //     placeholder: "Pilih Kelurahan",
-                //     options: kelurahan ? kelurahan.map((item) => ({
-                //         label: item.kelurahanName,
-                //         value: item.kelurahanId,
-                //     })) : [], // Cegah error jika kelurahan masih undefined
-                //     rules: { required: "Kelurahan is required" },
-                //     colSize: 6,
-                // },
+                {
+                    type: "select",
+                    id: "kabupatenKotaId",
+                    label: "Kabupaten/Kota",
+                    name: "kabupatenKotaId",
+                    placeholder: "Pilih Kabupaten/Kota",
+                    options: kabupatenOptions,
+                    // isLoading: kabupatenLoading,
+                    onChange: (selected) => setSelectedKabupaten(selected?.value),
+                    onMenuScrollToBottom: handleLoadMoreKabupaten,
+                    disabled: !selectedProvinsi,
+                    rules: { 
+                        required: {
+                        value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                        message: "Kabupaten/Kota harus dipilih untuk warga Indonesia"
+                        }
+                    },
+                    colSize: 6
+                },
+                {
+                    type: "select",
+                    id: "kecamatanId",
+                    label: "Kecamatan",
+                    name: "kecamatanId",
+                    placeholder: "Pilih Kecamatan",
+                    options: kecamatanOptions,
+                    // isLoading: kecamatanLoading,
+                    onChange: (selected) => setSelectedKecamatan(selected?.value),
+                    onMenuScrollToBottom: handleLoadMoreKecamatan,
+                    disabled: !selectedKabupaten,
+                    rules: { 
+                        required: {
+                            value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                            message: "Provinsi harus dipilih untuk warga Indonesia"
+                        }
+                    },
+                    colSize: 6
+                },
+                {
+                    type: "select",
+                    id: "kelurahanId",
+                    label: "Kelurahan",
+                    name: "kelurahanId",
+                    placeholder: "Pilih Kelurahan",
+                    options: kelurahanOptions,
+                    onChange: (selected) => setSelectedKelurahan(selected?.value),
+                    onMenuScrollToBottom: handleLoadMoreKelurahan,
+                    disabled: !selectedKecamatan,
+                    rules: { 
+                        required: {
+                            value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                            message: "Provinsi harus dipilih untuk warga Indonesia"
+                        }
+                    },
+                    colSize: 6
+                },
                 {
                     type:"text",
                     id: "kodePos",

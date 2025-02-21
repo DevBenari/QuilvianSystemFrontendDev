@@ -18,6 +18,7 @@ export const fetchProvinsi = createAsyncThunk(
 
       const response = await InstanceAxios.get(`/Wilayah/Provinsi`, {
         params: { page, perPage },
+        params: { page, perPage },
         headers: getHeaders(),
       });
 
