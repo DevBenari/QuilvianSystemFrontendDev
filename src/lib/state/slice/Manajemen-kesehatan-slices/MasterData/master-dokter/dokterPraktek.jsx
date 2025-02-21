@@ -116,7 +116,8 @@ const dokterPraktekSlice = createSlice({
       })
       .addCase(fetchDokterPraktek.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Gagal mengambil data";
+        state.data = [];
+        state.error = action.payload?.messege || "Data Tidak Ada";
       })
 
       .addCase(fetchDokterPraktekById.pending, (state) => {

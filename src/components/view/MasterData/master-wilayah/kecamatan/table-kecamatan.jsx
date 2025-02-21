@@ -40,7 +40,12 @@ const TableDataKecamatan = () => {
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Master Data - List Daftar Kecamatan</h2>
+          <h2 className="mb-3">
+            Master Data <br></br>{" "}
+            <span className="letter-spacing fw-bold">
+              List Daftar Kecamatan
+            </span>
+          </h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}

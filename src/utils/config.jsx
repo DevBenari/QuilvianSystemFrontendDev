@@ -226,12 +226,12 @@ export const menus = {
       title: "Peralatan kesehatan",
       subItems: [
         {
-          title: "Data Peralatan Medis",
-          href: "/MasterData/master-peralatan-medis/list-peralatan-medis",
+          title: "Data kategori Peralatan ",
+          href: "/MasterData/master-kategori-peralatan/kategori-peralatan/table-kategori-peralatan",
         },
         {
-          title: "Kategori Peralatan Medis",
-          href: "/MasterData/master-peralatan-medis/kategori-peralatan-medis",
+          title: "Data  Peralatan ",
+          href: "/MasterData/master-kategori-peralatan/peralatan/table-peralatan",
         },
       ],
     },

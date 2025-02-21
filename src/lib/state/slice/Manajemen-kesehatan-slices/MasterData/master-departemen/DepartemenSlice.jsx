@@ -183,7 +183,8 @@ const DepartementSlice = createSlice({
       })
       .addCase(fetchDepartement.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Terjadi kesalahan";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // ✅ Fetch Departement dengan search & filter (CustomSearchFilter)

@@ -142,7 +142,8 @@ const dokterSlice = createSlice({
       })
       .addCase(fetchDokter.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Gagal mengambil data";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // ✅ Fetch Dokter dengan search & filter (CustomSearchFilter)

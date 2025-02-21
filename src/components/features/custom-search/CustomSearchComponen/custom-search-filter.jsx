@@ -4,6 +4,7 @@ import { Row, Col, Button, Form } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import TextField from "@/components/ui/text-field";
 import DateInput from "@/components/ui/date-input";
+import { FaSearch } from "react-icons/fa"; // 🔹 Tambahkan ikon search
 
 /**
  * Base Component untuk pencarian dinamis
@@ -43,9 +44,9 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
 
   return (
     <Col lg="12" className="mt-2">
-      <Row>
+      <Row className="mx-2 ">
         {/* 🔹 Input Search */}
-        <Col md="3">
+        <Col md="4" className="mb-2">
           <TextField
             label="Cari Data:"
             name="search"
@@ -58,7 +59,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
         </Col>
 
         {/* 🔹 Input Start Date */}
-        <Col md="3">
+        <Col md="4" className="mb-2">
           <DateInput
             name="startDate"
             label="Tanggal Awal:"
@@ -68,7 +69,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
         </Col>
 
         {/* 🔹 Input End Date */}
-        <Col md="3">
+        <Col md="4" className="mb-2">
           <DateInput
             name="endDate"
             label="Tanggal Akhir:"
@@ -77,7 +78,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
           />
         </Col>
 
-        <Col md="3">
+        <Col md="4" className="mb-2">
           <Form.Group>
             <Form.Label>Urutan Sortir:</Form.Label>
             <Form.Select
@@ -93,7 +94,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
         </Col>
 
         {/* 🔹 Dropdown Periode */}
-        <Col md="3">
+        <Col md="4" className="mb-2">
           <Form.Group>
             <Form.Label>Periode:</Form.Label>
             <Form.Select
@@ -119,8 +120,25 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
       {/* 🔹 Tombol Cari */}
       <Row className="mt-3">
         <Col md="12" className="d-flex justify-content-end">
-          <Button variant="primary" onClick={handleSearch}>
-            Cari
+          <Button
+            variant="primary"
+            onClick={handleSearch}
+            style={{
+              background: "linear-gradient(135deg, #007bff, #0056b3)",
+              border: "none",
+              borderRadius: "8px",
+              padding: "10px 20px",
+              fontSize: "16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "0.3s ease",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+            }}
+            onMouseOver={(e) => (e.target.style.opacity = "0.9")}
+            onMouseOut={(e) => (e.target.style.opacity = "1")}
+          >
+            <FaSearch /> Cari
           </Button>
         </Col>
       </Row>
