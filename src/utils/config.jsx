@@ -188,22 +188,22 @@ export const menus = {
         },
       ],
     },
-    {
-      title: "Data Pegawai",
-      subItems: [
-        {
-          title: "Daftar Pegawai",
-          href: "/MasterData/master-pegawai/daftar-pegawai",
-        },
-        {
-          title: "Tambah Data Pegawai",
-          href: "/MasterData/master-pegawai/add-pegawai",
-        },
-        { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
-        { title: "User Akses", href: "/master-data/akses-pegawai" },
-        { title: "Akses User Login", href: "/master-data/log-aktivitas" },
-      ],
-    },
+    // {
+    //   title: "Data Pegawai",
+    //   subItems: [
+    //     {
+    //       title: "Daftar Pegawai",
+    //       href: "/MasterData/master-pegawai/daftar-pegawai",
+    //     },
+    //     {
+    //       title: "Tambah Data Pegawai",
+    //       href: "/MasterData/master-pegawai/add-pegawai",
+    //     },
+    //     { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
+    //     { title: "User Akses", href: "/master-data/akses-pegawai" },
+    //     { title: "Akses User Login", href: "/master-data/log-aktivitas" },
+    //   ],
+    // },
     {
       title: "Asuransi",
       subItems: [
@@ -211,14 +211,14 @@ export const menus = {
           title: "Daftar Asuransi",
           href: "/MasterData/master-asuransi/daftar-asuransi",
         },
-        {
-          title: "Asuransi Rawat Jalan",
-          href: "/master-data/asuransi-rawat-jalan",
-        },
-        {
-          title: "Asuransi Rawat Inap",
-          href: "/master-data/asuransi-rawat-inap",
-        },
+        // {
+        //   title: "Asuransi Rawat Jalan",
+        //   href: "/master-data/asuransi-rawat-jalan",
+        // },
+        // {
+        //   title: "Asuransi Rawat Inap",
+        //   href: "/master-data/asuransi-rawat-inap",
+        // },
       ],
     },
     {
@@ -256,12 +256,8 @@ export const menus = {
       title: "Admisi",
       subItems: [
         {
-          title: "Tarif Admisi",
-          href: "/MasterData/master-administrasi/administrasi/tables-administrasi",
-        },
-        {
           title: "Tarif Rawat Jalan",
-          href: "/MasterData/master-administrasi/administrasi-rawat-jalan",
+          href: "/MasterData/master-administrasi/administrasi/tables-administrasi",
         },
         {
           title: "Tarif Rawat Inap",

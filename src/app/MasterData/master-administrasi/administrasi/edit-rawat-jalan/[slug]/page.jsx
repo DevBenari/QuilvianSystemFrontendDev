@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import TableEditSave from "@/components/features/edit-table/edit-table/table-edit-save-cancel";
-import { extractIdFromSlug } from "@/utils/slug";
+import { extractIdFromSlug, extractIdFromSlugDummy } from "@/utils/slug";
 import { administrasiRawatJalan } from "@/utils/masterData";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -14,7 +14,7 @@ const RawatJalanEdit = ({ params }) => {
   const [selectedData, setSelectedData] = useState(null);
 
   useEffect(() => {
-    const id = extractIdFromSlug(params.slug);
+    const id = extractIdFromSlugDummy(params.slug);
     const data = administrasiRawatJalan.find(
       (item) => item.id === parseInt(id, 10)
     );

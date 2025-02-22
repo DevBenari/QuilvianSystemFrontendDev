@@ -2,7 +2,7 @@
 import React, { memo } from "react";
 import { Table, Button, Spinner } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import { generateSlug } from "@/utils/slug";
+import { generateSlug, generateSlugDummy } from "@/utils/slug";
 
 import { parseISO, format } from "date-fns";
 const CustomTableComponent = memo(
@@ -40,7 +40,9 @@ const CustomTableComponent = memo(
         return;
       }
 
-      const slug = generateSlug(textField, idField);
+      const slug =
+        generateSlug(textField, idField) ||
+        generateSlugDummy(textField, idField);
       router.push(`${basePath}/${slug}`);
     };
 
