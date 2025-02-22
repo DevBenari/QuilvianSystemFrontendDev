@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import TextField from "@/components/ui/text-field";
 import DateInput from "@/components/ui/date-input";
 import { FaSearch } from "react-icons/fa"; // 🔹 Tambahkan ikon search
+import { showAlert } from "../../alert/custom-alert";
 
 /**
  * Base Component untuk pencarian dinamis
@@ -35,6 +36,20 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
 
   // 🔹 Handle pencarian dengan Redux Thunk
   const handleSearch = () => {
+    const { search, startDate, endDate, periode } = filters;
+
+    if (!search && !periode && (!startDate || !endDate)) {
+      showAlert.warning(
+        "Harap pilih isi Nama, Tanggal Awal, Tanggal Akhir , Periode sebelum melakukan pencarian."
+      );
+      if (!startDate || !endDate) {
+        showAlert.warning(
+          "Harap pilih isi Tanggal Awal dan Tanggal Akhir sebelum melakukan pencarian."
+        );
+      }
+      return;
+    }
+
     dispatch(fetchFunction(filters)).then((result) => {
       if (fetchFunction.fulfilled.match(result)) {
         setFilteredData(result.payload?.data?.rows || []);
@@ -46,7 +61,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
     <Col lg="12" className="mt-2">
       <Row className="mx-2 ">
         {/* 🔹 Input Search */}
-        <Col md="4" className="mb-2">
+        <Col md="3" className="mb-2">
           <TextField
             label="Cari Data:"
             name="search"
@@ -59,7 +74,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
         </Col>
 
         {/* 🔹 Input Start Date */}
-        <Col md="4" className="mb-2">
+        <Col md="3" className="mb-2">
           <DateInput
             name="startDate"
             label="Tanggal Awal:"
@@ -69,7 +84,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
         </Col>
 
         {/* 🔹 Input End Date */}
-        <Col md="4" className="mb-2">
+        <Col md="3" className="mb-2">
           <DateInput
             name="endDate"
             label="Tanggal Akhir:"
@@ -78,7 +93,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
           />
         </Col>
 
-        <Col md="4" className="mb-2">
+        {/* <Col md="3" className="mb-2">
           <Form.Group>
             <Form.Label>Urutan Sortir:</Form.Label>
             <Form.Select
@@ -91,10 +106,10 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
               <option value="asc">Terlama</option>
             </Form.Select>
           </Form.Group>
-        </Col>
+        </Col> */}
 
         {/* 🔹 Dropdown Periode */}
-        <Col md="4" className="mb-2">
+        <Col md="3" className="mb-2">
           <Form.Group>
             <Form.Label>Periode:</Form.Label>
             <Form.Select
@@ -133,7 +148,7 @@ const CustomSearchFilter = ({ fetchFunction, setFilteredData }) => {
               alignItems: "center",
               gap: "8px",
               transition: "0.3s ease",
-              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+              boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.2)",
             }}
             onMouseOver={(e) => (e.target.style.opacity = "0.9")}
             onMouseOut={(e) => (e.target.style.opacity = "1")}

@@ -126,7 +126,6 @@ export const menus = {
           title: "Pasien Perjanjian Reguler",
           href: "/perjanjian/perjanjian-reguler",
         },
-        { title: "Pasien Perjanjian ODC", href: "/perjanjian/odc" },
         {
           title: "Pasien Perjanjian Rawat Jalan",
           href: "/perjanjian/rawat-jalan",

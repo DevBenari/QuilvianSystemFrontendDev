@@ -26,6 +26,16 @@ export const showAlert = {
     });
   },
 
+  warning: (message) => {
+    Swal.fire({
+      icon: "warning",
+      title: "Peringatan",
+      text: message,
+      confirmButtonColor: "#f0ad4e",
+      confirmButtonText: "OK",
+    });
+  },
+
   confirm: (message, callback) => {
     Swal.fire({
       icon: "warning",
