@@ -10,6 +10,7 @@ import {
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 import ButtonNav from "@/components/ui/button-navigation";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
 
 const TableDataProvinsi = () => {
   const methods = useForm();
@@ -77,7 +78,10 @@ const TableDataProvinsi = () => {
                 />
               </div>
               {loading ? (
-                <Spinner animation="border" variant="primary" />
+                <LoadingScreen
+                  text="Mengambil data, harap tunggu..."
+                  variant="primary"
+                />
               ) : error ? (
                 <Alert variant="warning">{error}</Alert>
               ) : filteredData.length === 0 ? (

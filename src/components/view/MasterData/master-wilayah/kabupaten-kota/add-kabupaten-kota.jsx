@@ -5,18 +5,43 @@ import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { showAlert } from "@/components/features/alert/custom-alert";
 
-import useProvinsiData from "@/lib/hooks/useProvinsiData";
 import { createKabupatenKota } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
+import useWilayahData from "@/lib/hooks/useWilayahData";
 
 const KabupatenKotaAddForm = () => {
   const router = useRouter();
-  const {
-    ProvinsiOptions,
-    loading: provinsiLoading,
-    handleLoadMore,
-  } = useProvinsiData();
 
   const dispatch = useDispatch();
+
+  const { ProvinsiOptions, loadingProvinsi, handleLoadMoreProvinsi } =
+    useWilayahData();
+
+  const formFields = [
+    {
+      fields: [
+        {
+          type: "select",
+          id: "provinsiId",
+          label: "Provinsi",
+          name: "provinsiId",
+          placeholder: "Pilih Provinsi",
+          options: ProvinsiOptions,
+          rules: { required: "Provinsi is required" },
+          colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreProvinsi,
+          isLoading: loadingProvinsi,
+        },
+        {
+          type: "text",
+          label: "Nama Kabupaten / Kota",
+          name: "namaKabupatenKota",
+          placeholder: "Masukkan Nama Kabupaten  / Kota...",
+          colSize: 6,
+          rules: { required: "Nama Kabupaten Kota harus diisi" },
+        },
+      ],
+    },
+  ];
 
   const handleSubmit = async (data) => {
     try {
@@ -32,33 +57,6 @@ const KabupatenKotaAddForm = () => {
       showAlert.error("Gagal menambahkan data Kabupaten Kota");
     }
   };
-
-  const formFields = [
-    {
-      fields: [
-        {
-          type: "select",
-          id: "provinsiId",
-          label: "Provinsi",
-          name: "provinsiId",
-          placeholder: "Pilih Provinsi",
-          options: ProvinsiOptions,
-          rules: { required: "Provinsi is required" },
-          colSize: 6,
-          onMenuScrollToBottom: handleLoadMore,
-          isLoading: provinsiLoading,
-        },
-        {
-          type: "text",
-          label: "Nama Kabupaten / Kota",
-          name: "namaKabupatenKota",
-          placeholder: "Masukkan Nama Kabupaten  / Kota...",
-          colSize: 6,
-          rules: { required: "Nama Kabupaten Kota harus diisi" },
-        },
-      ],
-    },
-  ];
 
   return (
     <Fragment>

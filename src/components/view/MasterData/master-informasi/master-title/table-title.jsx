@@ -83,10 +83,10 @@ const TableDataTitle = () => {
               </div>
               {/* Loading Animation */}
               {loading ? (
-                <div className="text-center p-4">
-                  <Spinner animation="border" variant="primary" />
-                  <p className="mt-2">Mengambil data, harap tunggu...</p>
-                </div>
+                <LoadingScreen
+                  text="Mengambil data, harap tunggu..."
+                  variant="primary"
+                />
               ) : error ? (
                 <Alert variant="warning" className="text-center">
                   {error}

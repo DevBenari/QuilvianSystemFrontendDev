@@ -6,15 +6,12 @@ import { extractIdFromSlug } from "@/utils/slug";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { showAlert } from "@/components/features/alert/custom-alert";
 
-import useProvinsiData from "@/lib/hooks/useProvinsiData";
-
-import useKabupatenKotaData from "@/lib/hooks/useKabupatenKotaData";
 import {
   updateKelurahan,
   deleteKelurahan,
   fetchKelurahanById,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
-import useKecamatanData from "@/lib/hooks/useKecamatanData";
+import useWilayahData from "@/lib/hooks/useWilayahData";
 
 const KelurahanEditForm = ({ params }) => {
   const router = useRouter();
@@ -24,28 +21,6 @@ const KelurahanEditForm = ({ params }) => {
     (state) => state.Kelurahan
   );
   const [dataKelurahan, setDataKelurahan] = useState(null);
-
-  // Start option data kabupaten kota dan provinsi
-
-  const {
-    KecamatanOptions,
-    loading: KecamatanLoading,
-    handleLoadMore: handleLoadMoreKecamatan,
-  } = useKecamatanData();
-
-  const {
-    KabupatenKotaOptions,
-    loading: KabupatenKotaLoading,
-    handleLoadMore: handleLoadMoreKabupatenKota,
-  } = useKabupatenKotaData();
-
-  const {
-    ProvinsiOptions,
-    loading: provinsiLoading,
-    handleLoadMore: handleLoadMoreProvinsi,
-  } = useProvinsiData();
-
-  // End  option data kabupaten kota dan provinsi
 
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);
@@ -58,41 +33,8 @@ const KelurahanEditForm = ({ params }) => {
     }
   }, [selectedKelurahan]);
 
-  const handleSubmit = async (data) => {
-    try {
-      const id = dataKelurahan?.kelurahanId; // Pastikan ID tidak undefined
-      if (!id) {
-        console.error("❌ ID Kelurahan tidak ditemukan, gagal update.");
-        return;
-      }
-      console.log("📢 Data yang dikirim ke API (PUT):", { id, data });
-
-      await dispatch(updateKelurahan({ id, data })).unwrap();
-      showAlert.success("Data Kelurahan berhasil diperbarui!", () => {
-        router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
-      });
-    } catch (error) {
-      console.error("❌ Gagal memperbarui data Kelurahan:", error);
-      showAlert.error("Gagal memperbarui data Kelurahan.");
-    }
-  };
-
-  const handleDelete = async () => {
-    showAlert.confirmDelete(
-      "Data Kelurahan akan dihapus permanen",
-      async () => {
-        try {
-          await dispatch(deleteKelurahan(dataKelurahan.kelurahanId)).unwrap();
-          showAlert.success("Data Kelurahan berhasil dihapus!", () => {
-            router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
-          });
-        } catch (error) {
-          console.error("❌ Gagal menghapus data Kelurahan:", error);
-          showAlert.error("Gagal menghapus data Kelurahan.");
-        }
-      }
-    );
-  };
+  const { KecamatanOptions, KecamatanLoading, handleLoadMoreKecamatan } =
+    useWilayahData();
 
   const formFields = [
     {
@@ -131,6 +73,42 @@ const KelurahanEditForm = ({ params }) => {
       value: dataKelurahan?.[field.name] ?? "",
     })),
   }));
+
+  const handleSubmit = async (data) => {
+    try {
+      const id = dataKelurahan?.kelurahanId; // Pastikan ID tidak undefined
+      if (!id) {
+        console.error("❌ ID Kelurahan tidak ditemukan, gagal update.");
+        return;
+      }
+      console.log("📢 Data yang dikirim ke API (PUT):", { id, data });
+
+      await dispatch(updateKelurahan({ id, data })).unwrap();
+      showAlert.success("Data Kelurahan berhasil diperbarui!", () => {
+        router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
+      });
+    } catch (error) {
+      console.error("❌ Gagal memperbarui data Kelurahan:", error);
+      showAlert.error("Gagal memperbarui data Kelurahan.");
+    }
+  };
+
+  const handleDelete = async () => {
+    showAlert.confirmDelete(
+      "Data Kelurahan akan dihapus permanen",
+      async () => {
+        try {
+          await dispatch(deleteKelurahan(dataKelurahan.kelurahanId)).unwrap();
+          showAlert.success("Data Kelurahan berhasil dihapus!", () => {
+            router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
+          });
+        } catch (error) {
+          console.error("❌ Gagal menghapus data Kelurahan:", error);
+          showAlert.error("Gagal menghapus data Kelurahan.");
+        }
+      }
+    );
+  };
 
   return (
     <Fragment>

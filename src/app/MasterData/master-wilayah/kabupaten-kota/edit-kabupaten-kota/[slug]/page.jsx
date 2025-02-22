@@ -10,7 +10,8 @@ import {
   fetchKabupatenKotaById,
   deleteKabupatenKota,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
-import useProvinsiData from "@/lib/hooks/useProvinsiData";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
+import useWilayahData from "@/lib/hooks/useWilayahData";
 
 const KabupatenKotaEditForm = ({ params }) => {
   const router = useRouter();
@@ -23,12 +24,6 @@ const KabupatenKotaEditForm = ({ params }) => {
 
   // untuk option data kabupaten kota
 
-  const {
-    ProvinsiOptions,
-    loading: provinsiLoading,
-    handleLoadMore,
-  } = useProvinsiData();
-
   useEffect(() => {
     const id = extractIdFromSlug(params.slug);
     dispatch(fetchKabupatenKotaById(id));
@@ -39,6 +34,47 @@ const KabupatenKotaEditForm = ({ params }) => {
       setDataKabupatenKota(selectedKabupatenKota);
     }
   }, [selectedKabupatenKota]);
+
+  const { ProvinsiOptions, loadingProvinsi, handleLoadMoreProvinsi } =
+    useWilayahData();
+
+  const formFields = [
+    {
+      fields: [
+        {
+          type: "select",
+          id: "provinsiId",
+          label: "Provinsi",
+          name: "provinsiId",
+          placeholder: "Pilih Provinsi",
+          options: ProvinsiOptions,
+          rules: { required: "Provinsi is required" },
+          colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreProvinsi,
+          isLoading: loadingProvinsi,
+        },
+        {
+          type: "text",
+          label: "Nama Kabupaten / Kota",
+          name: "namaKabupatenKota",
+          placeholder: "Masukkan Nama Kabupaten  / Kota...",
+          colSize: 6,
+          rules: { required: "Nama Kabupaten Kota harus diisi" },
+        },
+      ],
+    },
+  ];
+
+  if (loading) return <LoadingScreen text="Please wait, loading..." />;
+  if (error) return <div>Terjadi kesalahan: {error}</div>;
+
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataKabupatenKota?.[field.name] ?? "",
+    })),
+  }));
 
   const handleSubmit = async (data) => {
     try {
@@ -81,44 +117,6 @@ const KabupatenKotaEditForm = ({ params }) => {
       }
     );
   };
-
-  const formFields = [
-    {
-      fields: [
-        {
-          type: "text",
-          label: "Nama Kabupaten / Kota",
-          name: "namaKabupatenKota",
-          placeholder: "Masukkan Nama Kabupaten  / Kota...",
-          colSize: 6,
-          rules: { required: "Nama Kabupaten Kota harus diisi" },
-        },
-        {
-          type: "select",
-          id: "provinsiId",
-          label: "Provinsi",
-          name: "provinsiId",
-          placeholder: "Pilih Provinsi",
-          options: ProvinsiOptions,
-          rules: { required: "Provinsi is required" },
-          colSize: 6,
-          onMenuScrollToBottom: handleLoadMore,
-          isLoading: provinsiLoading,
-        },
-      ],
-    },
-  ];
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Terjadi kesalahan: {error}</div>;
-
-  const formFieldsWithData = formFields.map((section) => ({
-    ...section,
-    fields: section.fields.map((field) => ({
-      ...field,
-      value: dataKabupatenKota?.[field.name] ?? "",
-    })),
-  }));
 
   return (
     <Fragment>

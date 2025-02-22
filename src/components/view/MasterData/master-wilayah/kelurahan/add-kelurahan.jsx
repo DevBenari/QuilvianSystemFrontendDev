@@ -4,47 +4,16 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { showAlert } from "@/components/features/alert/custom-alert";
-
-import useKabupatenKotaData from "@/lib/hooks/useKabupatenKotaData";
-import useProvinsiData from "@/lib/hooks/useProvinsiData";
-import useKecamatanData from "@/lib/hooks/useKecamatanData";
 import { createKelurahan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
+import useWilayahData from "@/lib/hooks/useWilayahData";
 
 const KelurahanAddForm = () => {
   const router = useRouter();
 
   const dispatch = useDispatch();
 
-  const {
-    KecamatanOptions,
-    loading: KecamatanLoading,
-    handleLoadMore: handleLoadMoreKecamatan,
-  } = useKecamatanData();
-
-  const {
-    KabupatenKotaOptions,
-    loading: KabupatenKotaLoading,
-    handleLoadMore: handleLoadMoreKabupatenKota,
-  } = useKabupatenKotaData();
-
-  const {
-    ProvinsiOptions,
-    loading: provinsiLoading,
-    handleLoadMore: handleLoadMoreProvinsi,
-  } = useProvinsiData();
-
-  const handleSubmit = async (data) => {
-    try {
-      // Tambahkan negaraId secara default saat submit
-      await dispatch(createKelurahan(data)).unwrap();
-      showAlert.success("Data berhasil disimpan", () => {
-        router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
-      });
-    } catch (error) {
-      console.error("Gagal menambahkan Kabupaten Kota:", error);
-      showAlert.error("Gagal menambahkan data Kabupaten Kota");
-    }
-  };
+  const { KecamatanOptions, KecamatanLoading, handleLoadMoreKecamatan } =
+    useWilayahData();
 
   const formFields = [
     {
@@ -72,6 +41,19 @@ const KelurahanAddForm = () => {
       ],
     },
   ];
+
+  const handleSubmit = async (data) => {
+    try {
+      // Tambahkan negaraId secara default saat submit
+      await dispatch(createKelurahan(data)).unwrap();
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan Kabupaten Kota:", error);
+      showAlert.error("Gagal menambahkan data Kabupaten Kota");
+    }
+  };
 
   return (
     <Fragment>
