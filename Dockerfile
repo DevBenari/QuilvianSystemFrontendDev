@@ -7,8 +7,9 @@ RUN npm install
 
 COPY next.config.js ./next.config.js
 
-
+COPY public ./public
 COPY components ./components
+COPY assets ./assets
 COPY lib ./lib
 COPY style ./style
 COPY utils ./utils
