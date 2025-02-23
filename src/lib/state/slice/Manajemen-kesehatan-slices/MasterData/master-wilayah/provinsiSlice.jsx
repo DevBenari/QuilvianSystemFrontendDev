@@ -17,7 +17,8 @@ export const fetchProvinsi = createAsyncThunk(
       }
 
       const response = await InstanceAxios.get(`/Wilayah/Provinsi`, {
-        params: {page, perPage },
+        params: { page, perPage },
+        params: { page, perPage },
         headers: getHeaders(),
       });
 
@@ -40,7 +41,7 @@ export const fetchProvinsiWithFilters = createAsyncThunk(
   "Provinsi/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/PagedProvinsi`, {
+      const response = await InstanceAxios.get(`/Wilayah/PagedProvinsi`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -226,7 +227,7 @@ const ProvinsiSlice = createSlice({
 
       .addCase(deleteProvinsi.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (item) => item.ProvinsiId !== action.payload
+          (item) => item.provinsiId !== action.payload
         );
       });
   },

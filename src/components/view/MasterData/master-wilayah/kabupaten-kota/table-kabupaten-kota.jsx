@@ -10,7 +10,7 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 import {
   fetchKabupatenKota,
   fetchKabupatenKotaWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKota";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
 
 const TableDataKabupatenKota = () => {
   const methods = useForm();
@@ -21,7 +21,6 @@ const TableDataKabupatenKota = () => {
     loading,
     error,
     totalPages,
-    currentPage,
   } = useSelector((state) => state.KabupatenKota);
 
   const [page, setPage] = useState(1);
@@ -40,7 +39,12 @@ const TableDataKabupatenKota = () => {
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Master Data - List Daftar KabupatenKota</h2>
+          <h2 className="mb-3">
+            Master Data <br></br>{" "}
+            <span className="letter-spacing fw-bold">
+              List Daftar Kabupaten / Kota
+            </span>
+          </h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -61,9 +65,9 @@ const TableDataKabupatenKota = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-Negara">
-                  <h4 className="card-Negara font-widest">
-                    Tabel List Daftar Negara
+                <div className="iq-header-Kabupaten Kota">
+                  <h4 className="card-Kabupaten Kota font-widest">
+                    Tabel List Daftar Kabupaten / Kota
                   </h4>
                 </div>
                 <ButtonNav
@@ -85,6 +89,7 @@ const TableDataKabupatenKota = () => {
                 <CustomTableComponent
                   data={filteredData}
                   columns={[
+                    { key: "no", label: "No" },
                     { key: "createDateTime", label: "Tanggal Dibuat" },
                     { key: "createByName", label: "Dibuat Oleh" },
                     {
@@ -93,18 +98,23 @@ const TableDataKabupatenKota = () => {
                     },
                     {
                       key: "namaKabupatenKota",
-                      label: "Nama Kabupaten / Kota",
+                      label: " Kabupaten / Kota",
+                    },
+                    {
+                      key: "namaProvinsi",
+                      label: "Provinsi",
                     },
                   ]}
                   basePath="/MasterData/master-wilayah/kabupaten-kota/edit-kabupaten-kota"
                   slugConfig={{
                     textField: "namaKabupatenKota",
-                    idField: "KabupatenKotaId",
+                    idField: "kabupatenKotaId",
                   }}
                   paginationProps={{
-                    currentPage: currentPage,
+                    currentPage: page,
                     totalPages: totalPages,
-                    onPageChange: setPage,
+                    itemsPerPage: perPage,
+                    onPageChange: setPage, // Fungsi untuk mengubah halaman
                   }}
                 />
               )}

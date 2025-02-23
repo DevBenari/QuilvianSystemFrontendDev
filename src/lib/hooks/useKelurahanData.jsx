@@ -1,7 +1,7 @@
 // hooks/useKelurahanData.js
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchKelurahan } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahan";
+import { fetchKelurahan } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
 
 const useKelurahanData = () => {
   const dispatch = useDispatch();

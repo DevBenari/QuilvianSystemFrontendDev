@@ -226,12 +226,12 @@ export const menus = {
       title: "Peralatan kesehatan",
       subItems: [
         {
-          title: "Data Peralatan Medis",
-          href: "/MasterData/master-peralatan-medis/list-peralatan-medis",
+          title: "Data kategori Peralatan ",
+          href: "/MasterData/master-kategori-peralatan/kategori-peralatan/table-kategori-peralatan",
         },
         {
-          title: "Kategori Peralatan Medis",
-          href: "/MasterData/master-peralatan-medis/kategori-peralatan-medis",
+          title: "Data  Peralatan ",
+          href: "/MasterData/master-kategori-peralatan/peralatan/table-peralatan",
         },
       ],
     },
@@ -271,11 +271,11 @@ export const menus = {
       ],
     },
     {
-      title: "Departemen",
+      title: "Departement",
       subItems: [
         {
-          title: "Manajemen Departemen",
-          href: "/MasterData/master-departemen/manajemen-departemen/tables-departemen",
+          title: "Manajemen departement",
+          href: "/MasterData/master-departement/table-departement",
         },
       ],
     },
@@ -352,6 +352,14 @@ export const menus = {
         {
           title: "Data Kabupaten/Kota",
           href: "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota",
+        },
+        {
+          title: "Data kecamatan",
+          href: "/MasterData/master-wilayah/kecamatan/table-kecamatan",
+        },
+        {
+          title: "Data Kelurahan",
+          href: "/MasterData/master-wilayah/kelurahan/table-kelurahan",
         },
       ],
     },

@@ -9,8 +9,8 @@ import {
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 import { FormProvider, useForm } from "react-hook-form";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-api";
 import ButtonNav from "@/components/ui/button-navigation";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 
 const TableDataAgama = () => {
   const methods = useForm();
@@ -40,7 +40,7 @@ const TableDataAgama = () => {
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">
-            Master Data <br />
+            Master Data <br></br>
             <span className="letter-spacing fw-bold">List Daftar Agama</span>
           </h2>
           <button

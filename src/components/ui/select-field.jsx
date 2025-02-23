@@ -4,9 +4,22 @@ import { Form } from "react-bootstrap";
 import Select from "react-select";
 
 const SelectField = forwardRef(
-  ({ name, label, options, rules, placeholder, className, onChange: externalOnChange, onMenuScrollToBottom, ...props }, ref) => {
+  (
+    {
+      name,
+      label,
+      options,
+      rules,
+      placeholder,
+      className,
+      onChange: externalOnChange,
+      onMenuScrollToBottom,
+      ...props
+    },
+    ref
+  ) => {
     const { control } = useFormContext();
-    
+
     const {
       field,
       fieldState: { error },
@@ -16,13 +29,16 @@ const SelectField = forwardRef(
     const isFetching = useRef(false);
 
     // Handle both internal form control and external onChange
-    const handleChange = useCallback((selected) => {
-      const value = selected ? selected.value : null;
-      field.onChange(value);
-      if (externalOnChange) {
-        externalOnChange(selected);
-      }
-    }, [field, externalOnChange]);
+    const handleChange = useCallback(
+      (selected) => {
+        const value = selected ? selected.value : null;
+        field.onChange(value);
+        if (externalOnChange) {
+          externalOnChange(selected);
+        }
+      },
+      [field, externalOnChange]
+    );
 
     // Memoize the scroll handler
     const handleScrollToBottom = useCallback(() => {
@@ -39,17 +55,21 @@ const SelectField = forwardRef(
     }, [onMenuScrollToBottom]);
 
     // Memoize options with deep comparison
-    const memoizedOptions = useMemo(() => 
-      Array.isArray(options) ? options.map(opt => ({
-        label: opt.label,
-        value: opt.value
-      })) : [], 
+    const memoizedOptions = useMemo(
+      () =>
+        Array.isArray(options)
+          ? options.map((opt) => ({
+              label: opt.label,
+              value: opt.value,
+            }))
+          : [],
       [options]
     );
 
     // Memoize the selected value
-    const selectedValue = useMemo(() => 
-      memoizedOptions.find((option) => option.value === field.value) || null,
+    const selectedValue = useMemo(
+      () =>
+        memoizedOptions.find((option) => option.value === field.value) || null,
       [memoizedOptions, field.value]
     );
 
@@ -68,7 +88,7 @@ const SelectField = forwardRef(
           isLoading={props.isLoading}
         />
         {error && (
-          <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
+          <Form.Control.Feedback type="invalid" style={{ display: "block" }}>
             {error.message}
           </Form.Control.Feedback>
         )}

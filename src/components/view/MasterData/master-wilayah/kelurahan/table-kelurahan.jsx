@@ -10,7 +10,7 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 import {
   fetchKelurahan,
   fetchKelurahanWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahan";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
 
 const TableDataKelurahan = () => {
   const methods = useForm();
@@ -40,7 +40,12 @@ const TableDataKelurahan = () => {
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Master Data - List Daftar Kelurahan</h2>
+          <h2 className="mb-3">
+            Master Data <br></br>{" "}
+            <span className="letter-spacing fw-bold">
+              List Daftar kelurahan
+            </span>
+          </h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -61,9 +66,9 @@ const TableDataKelurahan = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-Negara">
-                  <h4 className="card-Negara font-widest">
-                    Tabel List Daftar Negara
+                <div className="iq-header-kelurahan">
+                  <h4 className="card-kelurahan font-widest">
+                    Tabel List Daftar kelurahan
                   </h4>
                 </div>
                 <ButtonNav
@@ -85,12 +90,27 @@ const TableDataKelurahan = () => {
                 <CustomTableComponent
                   data={filteredData}
                   columns={[
+                    { key: "no", label: "No" },
                     { key: "createDateTime", label: "Tanggal Dibuat" },
                     { key: "createByName", label: "Dibuat Oleh" },
                     {
                       key: "kodeKelurahan",
                       label: "Kode Kelurahan",
                     },
+                    {
+                      key: "namaProvinsi",
+                      label: "Nama Provinsi",
+                    },
+                    {
+                      key: "namaKabupatenKota",
+                      label: "Nama Kabupaten / Kota",
+                    },
+
+                    {
+                      key: "namaKecamatan",
+                      label: "Nama Kecamatan",
+                    },
+
                     {
                       key: "namaKelurahan",
                       label: "Nama Kelurahan",
@@ -102,7 +122,8 @@ const TableDataKelurahan = () => {
                     idField: "kelurahanId",
                   }}
                   paginationProps={{
-                    currentPage: currentPage,
+                    currentPage: page,
+                    itemsPerPage: perPage,
                     totalPages: totalPages,
                     onPageChange: setPage,
                   }}

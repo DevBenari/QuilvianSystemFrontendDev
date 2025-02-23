@@ -20,7 +20,6 @@ const TableDataProvinsi = () => {
     loading,
     error,
     totalPages,
-    currentPage,
   } = useSelector((state) => state.Provinsi);
 
   const [page, setPage] = useState(1);
@@ -39,7 +38,10 @@ const TableDataProvinsi = () => {
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Master Data - List Daftar Provinsi</h2>
+          <h2 className="mb-3">
+            Master Data <br></br>{" "}
+            <span className="letter-spacing fw-bold">List Daftar Provinsi</span>
+          </h2>{" "}
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -60,9 +62,9 @@ const TableDataProvinsi = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-Negara">
-                  <h4 className="card-Negara font-widest">
-                    Tabel List Daftar Negara
+                <div className="iq-header-Provinsi">
+                  <h4 className="card-Provinsi font-widest">
+                    Tabel List Daftar Provinsi
                   </h4>
                 </div>
                 <ButtonNav
@@ -84,6 +86,7 @@ const TableDataProvinsi = () => {
                 <CustomTableComponent
                   data={filteredData}
                   columns={[
+                    { key: "no", label: "No" },
                     { key: "createDateTime", label: "Tanggal Dibuat" },
                     { key: "createByName", label: "Dibuat Oleh" },
                     { key: "kodeProvinsi", label: "Kode Provinsi" },
@@ -95,7 +98,8 @@ const TableDataProvinsi = () => {
                     idField: "provinsiId",
                   }}
                   paginationProps={{
-                    currentPage: currentPage,
+                    currentPage: page,
+                    itemsPerPage: perPage,
                     totalPages: totalPages,
                     onPageChange: setPage,
                   }}

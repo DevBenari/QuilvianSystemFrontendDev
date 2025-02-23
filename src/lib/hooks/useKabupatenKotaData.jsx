@@ -1,7 +1,7 @@
 // hooks/useKabupatenKotaData.js
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchKabupatenKota } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKota";
+import { fetchKabupatenKota } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
 
 const useKabupatenKotaData = () => {
   const dispatch = useDispatch();

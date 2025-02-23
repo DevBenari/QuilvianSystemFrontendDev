@@ -10,7 +10,7 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 import {
   fetchKecamatan,
   fetchKecamatanWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/Kecamatan";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
 
 const TableDataKecamatan = () => {
   const methods = useForm();
@@ -40,7 +40,12 @@ const TableDataKecamatan = () => {
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Master Data - List Daftar Kecamatan</h2>
+          <h2 className="mb-3">
+            Master Data <br></br>{" "}
+            <span className="letter-spacing fw-bold">
+              List Daftar Kecamatan
+            </span>
+          </h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -61,14 +66,14 @@ const TableDataKecamatan = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-Negara">
-                  <h4 className="card-Negara font-widest">
-                    Tabel List Daftar Negara
+                <div className="iq-header-Kecamatan">
+                  <h4 className="card-Kecamatan font-widest">
+                    Tabel List Daftar Kecamatan
                   </h4>
                 </div>
                 <ButtonNav
                   path="/MasterData/master-wilayah/kecamatan/add-kecamatan"
-                  label="Add Kabupaten / Kota"
+                  label="Add Kecamatan"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -85,6 +90,7 @@ const TableDataKecamatan = () => {
                 <CustomTableComponent
                   data={filteredData}
                   columns={[
+                    { key: "no", label: "No" },
                     { key: "createDateTime", label: "Tanggal Dibuat" },
                     { key: "createByName", label: "Dibuat Oleh" },
                     {
@@ -95,6 +101,14 @@ const TableDataKecamatan = () => {
                       key: "namaKecamatan",
                       label: "Nama Kecamatan",
                     },
+                    {
+                      key: "namaKabupatenKota",
+                      label: "Nama Kabupaten / Kota",
+                    },
+                    {
+                      key: "namaProvinsi",
+                      label: "Nama Provinsi",
+                    },
                   ]}
                   basePath="/MasterData/master-wilayah/kecamatan/edit-kecamatan"
                   slugConfig={{
@@ -102,7 +116,8 @@ const TableDataKecamatan = () => {
                     idField: "kecamatanId",
                   }}
                   paginationProps={{
-                    currentPage: currentPage,
+                    currentPage: page,
+                    itemsPerPage: perPage,
                     totalPages: totalPages,
                     onPageChange: setPage,
                   }}

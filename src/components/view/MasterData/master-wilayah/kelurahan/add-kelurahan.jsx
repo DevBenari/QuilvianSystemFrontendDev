@@ -4,27 +4,41 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { showAlert } from "@/components/features/alert/custom-alert";
-import useKelurahanData from "@/lib/hooks/useKelurahanData";
+
+import useKabupatenKotaData from "@/lib/hooks/useKabupatenKotaData";
+import useProvinsiData from "@/lib/hooks/useProvinsiData";
+import useKecamatanData from "@/lib/hooks/useKecamatanData";
+import { createKelurahan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
 
 const KelurahanAddForm = () => {
   const router = useRouter();
 
-  const {
-    data: KelurahanOptions,
-    loading: KelurahanLoading,
-    handleLoadMore,
-  } = useKelurahanData();
-
   const dispatch = useDispatch();
+
+  const {
+    KecamatanOptions,
+    loading: KecamatanLoading,
+    handleLoadMore: handleLoadMoreKecamatan,
+  } = useKecamatanData();
+
+  const {
+    KabupatenKotaOptions,
+    loading: KabupatenKotaLoading,
+    handleLoadMore: handleLoadMoreKabupatenKota,
+  } = useKabupatenKotaData();
+
+  const {
+    ProvinsiOptions,
+    loading: provinsiLoading,
+    handleLoadMore: handleLoadMoreProvinsi,
+  } = useProvinsiData();
 
   const handleSubmit = async (data) => {
     try {
       // Tambahkan negaraId secara default saat submit
       await dispatch(createKelurahan(data)).unwrap();
       showAlert.success("Data berhasil disimpan", () => {
-        router.push(
-          "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
-        );
+        router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
       });
     } catch (error) {
       console.error("Gagal menambahkan Kabupaten Kota:", error);
@@ -36,24 +50,24 @@ const KelurahanAddForm = () => {
     {
       fields: [
         {
-          type: "text",
-          label: "Nama Kabupaten / Kota",
-          name: "namaKelurahan",
-          placeholder: "Masukkan Nama Kabupaten  / Kota...",
+          type: "select",
+          id: "kecamatanId",
+          label: "Kecamatan",
+          name: "kecamatanId",
+          placeholder: "Pilih Kecamatan",
+          options: KecamatanOptions,
+          rules: { required: "Kecamatan is required" },
           colSize: 6,
-          rules: { required: "Nama Kabupaten Kota harus diisi" },
+          onMenuScrollToBottom: handleLoadMoreKecamatan,
+          isLoading: KecamatanLoading,
         },
         {
-          type: "select",
-          id: "kelurahanId",
-          label: "Kelurahan",
-          name: "kelurahanId",
-          placeholder: "Pilih Kelurahan ",
-          options: KelurahanOptions,
-          rules: { required: "Kelurahan is required" },
+          type: "text",
+          label: "Nama Kelurahan",
+          name: "namaKelurahan",
+          placeholder: "Masukkan Nama Kelurahan",
           colSize: 6,
-          onMenuScrollToBottom: handleLoadMore,
-          isLoading: KelurahanLoading,
+          rules: { required: "Nama Kelurahan Kota harus diisi" },
         },
       ],
     },
@@ -65,7 +79,7 @@ const KelurahanAddForm = () => {
         title="Tambah Data Kabupaten Kota"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath="/MasterData/master-informasi/Kelurahan/table-Kelurahan"
+        backPath="/MasterData/master-wilayah/kelurahan/table-kelurahan"
         isAddMode={true}
       />
     </Fragment>
