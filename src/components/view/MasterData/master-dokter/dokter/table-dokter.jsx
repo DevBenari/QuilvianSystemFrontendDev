@@ -7,29 +7,31 @@ import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
+
+import { set } from "date-fns";
 import {
   fetchDokter,
+  fetchDokterById,
   fetchDokterWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
-import { set } from "date-fns";
 
 const TableDataDokter = () => {
   const methods = useForm();
   const dispatch = useDispatch();
 
   const {
-    data: dokterData,
+    data: DokterData,
     loading,
     error,
     totalPages,
-  } = useSelector((state) => state.dokter);
+  } = useSelector((state) => state.Dokter);
 
   // 🔹 State untuk Pagination
   const [page, setPage] = useState(1);
   const perPage = 5; // Bisa diubah sesuai kebutuha
 
   // 🔹 Menggunakan useMemo untuk memastikan hanya dire-render saat data berubah
-  const dokter = useMemo(() => dokterData || [], [dokterData]);
+  const Dokter = useMemo(() => DokterData || [], [DokterData]);
 
   const [filteredDokter, setFilteredDokter] = useState([]);
 
@@ -38,10 +40,10 @@ const TableDataDokter = () => {
   }, [dispatch, page]);
 
   useEffect(() => {
-    setFilteredDokter(dokter); // Perbarui data setelah fetch
-  }, [dokter]);
+    setFilteredDokter(Dokter); // Perbarui data setelah fetch
+  }, [Dokter]);
 
-  console.log("dokter Data:", dokter);
+  console.log("Dokter Data:", Dokter);
 
   return (
     <FormProvider {...methods}>
@@ -104,11 +106,11 @@ const TableDataDokter = () => {
                     columns={[
                       { key: "no", label: "No" }, // Nomor urut
                       {
-                        key: "createDateTime",
+                        key: "createdDate",
                         label: "Tanggal Dibuat",
                       },
                       {
-                        key: "createdByName",
+                        key: "createByName",
                         label: "Dibuat Oleh",
                       },
                       { key: "kdDokter", label: "Kode Dokter" },

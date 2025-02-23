@@ -37,6 +37,8 @@ const KecamatanEditForm = ({ params }) => {
     }
   }, [selectedKecamatan]);
 
+  console.log("selected kecamatan :", selectedKecamatan);
+
   const {
     KabupatenKotaOptions,
     loadingKabupatenKota,

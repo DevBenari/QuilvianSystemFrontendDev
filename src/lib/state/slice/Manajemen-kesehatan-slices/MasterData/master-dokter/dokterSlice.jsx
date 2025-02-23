@@ -2,19 +2,33 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-// 🔹 Fetch semua dokter
+// 🔹 Fetch Dokter dengan pagination untuk CustomTableComponent
+// ✅ Fetch semua data Dokter dengan pagination
 export const fetchDokter = createAsyncThunk(
-  "dokter/fetchData",
-  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
+  "Dokter/fetchData",
+  async (
+    { page = 1, perPage = 10, isInfiniteScroll = false },
+    { rejectWithValue, getState }
+  ) => {
     try {
+      const currentState = getState().Dokter;
+      if (currentState.loadedPages.includes(page)) {
+        console.log("Data already loaded for page:", page);
+        return null;
+      }
       const response = await InstanceAxios.get(`/Dokter`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
 
-      console.log("Response API:", response.data);
-      return response.data; // Pastikan API mengembalikan struktur data yang benar
+      return {
+        data: response.data.data,
+        pagination: response.data.pagination,
+        page,
+        meta: { arg: { page, isInfiniteScroll } },
+      };
     } catch (error) {
+      console.error("Error fetching data:", error);
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
       );
@@ -22,6 +36,7 @@ export const fetchDokter = createAsyncThunk(
   }
 );
 
+// 🔹 Fetch Dokter dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
 export const fetchDokterWithFilters = createAsyncThunk(
   "Dokter/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
@@ -47,98 +62,120 @@ export const fetchDokterWithFilters = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch dokter berdasarkan ID
+// 🔹 Fetch data Dokter berdasarkan ID
 export const fetchDokterById = createAsyncThunk(
-  "dokter/fetchById",
+  "Dokter/fetchById",
   async (id, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.get(`/Dokter/${id}`, {
         headers: getHeaders(),
       });
-      return response.data.data; // Mengambil hanya bagian data
+
+      console.log("Response API (Fetch By ID):", response.data);
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Gagal mengambil data dokter berdasarkan ID"
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
       );
     }
   }
 );
 
-// 🔹 Tambah dokter
+// 🔹 Tambah Dokter Darah
 export const createDokter = createAsyncThunk(
-  "dokter/create",
+  "Dokter/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post("/Dokter", data, {
+      const response = await InstanceAxios.post(`/Dokter`, data, {
         headers: getHeaders(),
       });
-      return response.data; // Mengambil hanya bagian data
+
+      console.log("Response API (Fetch By ID):", response.data);
+      return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal menambahkan data dokter"
+        error.response?.data || "Gagal menambahkan Dokter darah"
       );
     }
   }
 );
 
-// 🔹 Update dokter
+// 🔹 Update Dokter Darah berdasarkan ID
 export const updateDokter = createAsyncThunk(
-  "dokter/update",
+  "Dokter/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.put(`/Dokter/${id}`, data, {
         headers: getHeaders(),
       });
-      return response.data; // Mengambil hanya bagian data
+      return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Gagal memperbarui data dokter"
+        error.response?.data || "Gagal memperbarui Dokter darah"
       );
     }
   }
 );
 
-// 🔹 Hapus dokter
 export const deleteDokter = createAsyncThunk(
-  "dokter/delete",
+  "Dokter/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await InstanceAxios.delete(`/Dokter/${id}`, { headers: getHeaders() });
-      return id;
+      const response = await InstanceAxios.delete(`/Dokter/${id}`, {
+        headers: getHeaders(),
+      });
+      return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Gagal menghapus data dokter"
-      );
+      return rejectWithValue(error.response?.data || "Gagal menghapus Dokter");
     }
   }
 );
 
-// 🔹 Slice Dokter
-const dokterSlice = createSlice({
-  name: "dokter",
+// 🔹 Redux Slice
+const DokterSlice = createSlice({
+  name: "Dokter",
   initialState: {
     data: [],
-    selectedDokter: null,
-    loading: false,
-    error: null,
+    loadedPages: [],
     totalItems: 0,
     totalPages: 1,
     currentPage: 1,
+    loading: false,
+    error: null,
   },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      // ✅ Fetch Dokter hanya dengan pagination (CustomTableComponent)
       .addCase(fetchDokter.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchDokter.fulfilled, (state, action) => {
-        console.log("API Response Data:", action.payload);
+        if (!action.payload) return; // Skip if we already had the data
+
         state.loading = false;
-        state.data = action.payload.data || []; // Menyimpan daftar golongan darah
+
+        // Add new data without duplicates
+        const newData = action.payload.data.filter(
+          (newItem) =>
+            !state.data.some(
+              (existingItem) => existingItem.dokterId === newItem.dokterId
+            )
+        );
+
+        if (action.meta.arg.isInfiniteScroll) {
+          // Infinite scroll - append data
+          state.data = [...state.data, ...newData];
+          state.loadedPages.push(action.payload.page);
+        } else {
+          // Regular pagination - replace data
+          state.data = action.payload.data;
+        }
+
         state.totalItems = action.payload.pagination?.totalRows || 0;
         state.totalPages = action.payload.pagination?.totalPages || 1;
-        state.currentPage = action.payload.pagination?.currentPage || 1;
+        state.currentPage = action.meta.arg.page;
       })
       .addCase(fetchDokter.rejected, (state, action) => {
         state.loading = false;
@@ -164,30 +201,42 @@ const dokterSlice = createSlice({
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
-      // 🔹 Fetch by ID
+      // Fetch By ID
       .addCase(fetchDokterById.pending, (state) => {
+        state.loading = true;
         state.selectedDokter = null;
       })
       .addCase(fetchDokterById.fulfilled, (state, action) => {
+        state.loading = false;
         state.selectedDokter = action.payload;
       })
+      .addCase(fetchDokterById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Tambah Dokter Darah
       .addCase(createDokter.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
+
+      // Update Dokter Darah
       .addCase(updateDokter.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (dokter) => dokter.dokterId === action.payload.dokterId
+          (Dokter) => Dokter.dokterId === action.payload.dokterId
         );
         if (index !== -1) {
-          state.data[index] = { ...state.data[index], ...action.payload };
+          state.data[index] = action.payload;
         }
       })
+
+      // Hapus Dokter Darah
       .addCase(deleteDokter.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (dokter) => dokter.dokterId !== action.payload
+          (Dokter) => Dokter.dokterId !== action.payload
         );
       });
   },
 });
 
-export default dokterSlice.reducer;
+export default DokterSlice.reducer;
