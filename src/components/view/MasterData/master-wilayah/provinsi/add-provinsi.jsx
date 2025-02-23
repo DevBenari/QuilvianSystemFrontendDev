@@ -10,24 +10,6 @@ const ProvinsiAddForm = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleSubmit = async (data) => {
-    try {
-      // Tambahkan negaraId secara default saat submit
-      const formData = {
-        ...data,
-        negaraId: "a7b29b3f-a944-4982-bdd0-9f0fac0beed5", // Kirim ID Indonesia ke backend
-      };
-
-      await dispatch(createProvinsi(formData)).unwrap();
-      showAlert.success("Data berhasil disimpan", () => {
-        router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
-      });
-    } catch (error) {
-      console.error("Gagal menambahkan Provinsi:", error);
-      showAlert.error("Gagal menambahkan data Provinsi");
-    }
-  };
-
   const formFields = [
     {
       fields: [
@@ -47,6 +29,24 @@ const ProvinsiAddForm = () => {
       ],
     },
   ];
+
+  const handleSubmit = async (data) => {
+    try {
+      // Tambahkan negaraId secara default saat submit
+      const formData = {
+        ...data,
+        negaraId: "a7b29b3f-a944-4982-bdd0-9f0fac0beed5", // Kirim ID Indonesia ke backend
+      };
+
+      await dispatch(createProvinsi(formData)).unwrap();
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan Provinsi:", error);
+      showAlert.error("Gagal menambahkan data Provinsi");
+    }
+  };
 
   return (
     <Fragment>

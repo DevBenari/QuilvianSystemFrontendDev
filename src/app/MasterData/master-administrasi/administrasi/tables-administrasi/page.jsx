@@ -6,6 +6,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { administrasiRawatJalan } from "@/utils/masterData";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import CustomSearchFilterNonApi from "@/components/features/custom-search/CustomSearchComponen/custom-search-non-api";
 
 const TableListDaftarAdministrasi = () => {
   const methods = useForm();
@@ -36,7 +37,7 @@ const TableListDaftarAdministrasi = () => {
           </button>
         </div>
         <Col lg="12" className="mt-2">
-          <CustomSearchFilter
+          <CustomSearchFilterNonApi
             data={administrasiRawatJalan}
             setFilteredPatients={setFilteredPatients}
             onFilteredPatients={filteredPatients}

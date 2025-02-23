@@ -6,39 +6,16 @@ import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicF
 import { showAlert } from "@/components/features/alert/custom-alert";
 
 import { createKecamatan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
-
-import useProvinsiData from "@/lib/hooks/useProvinsiData";
-import useKabupatenKotaData from "@/lib/hooks/useKabupatenKotaData";
+import useWilayahData from "@/lib/hooks/useWilayahData";
 
 const KecamatanAddForm = () => {
   const router = useRouter();
-
+  const dispatch = useDispatch();
   const {
     KabupatenKotaOptions,
-    loading: KabupatenKotaLoading,
-    handleLoadMore,
-  } = useKabupatenKotaData();
-
-  const {
-    ProvinsiOptions,
-    loading: provinsiLoading,
-    handleLoadMore: handleLoadMoreProvinsi,
-  } = useProvinsiData();
-
-  const dispatch = useDispatch();
-
-  const handleSubmit = async (data) => {
-    try {
-      // Tambahkan negaraId secara default saat submit
-      await dispatch(createKecamatan(data)).unwrap();
-      showAlert.success("Data berhasil disimpan", () => {
-        router.push("/MasterData/master-wilayah/kecamatan/table-kecamatan");
-      });
-    } catch (error) {
-      console.error("Gagal menambahkan Kabupaten Kota:", error);
-      showAlert.error("Gagal menambahkan data Kabupaten Kota");
-    }
-  };
+    loadingKabupatenKota,
+    handleLoadMoreKabupatenKota,
+  } = useWilayahData();
 
   const formFields = [
     {
@@ -52,8 +29,8 @@ const KecamatanAddForm = () => {
           options: KabupatenKotaOptions,
           rules: { required: "Kabupaten Kota is required" },
           colSize: 6,
-          onMenuScrollToBottom: handleLoadMore,
-          isLoading: KabupatenKotaLoading,
+          onMenuScrollToBottom: handleLoadMoreKabupatenKota,
+          isLoading: loadingKabupatenKota,
         },
         {
           type: "text",
@@ -67,10 +44,23 @@ const KecamatanAddForm = () => {
     },
   ];
 
+  const handleSubmit = async (data) => {
+    try {
+      // Tambahkan negaraId secara default saat submit
+      await dispatch(createKecamatan(data)).unwrap();
+      showAlert.success("Data berhasil disimpan", () => {
+        router.push("/MasterData/master-wilayah/kecamatan/table-kecamatan");
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan Kecamatan:", error);
+      showAlert.error("Gagal menambahkan data Kecamatan");
+    }
+  };
+
   return (
     <Fragment>
       <DynamicForm
-        title="Tambah Data Kabupaten Kota"
+        title="Tambah Data Kecamatan"
         formConfig={formFields}
         onSubmit={handleSubmit}
         backPath="/MasterData/master-wilayah/kecamatan/table-kecamatan"

@@ -6,13 +6,12 @@ import { extractIdFromSlug } from "@/utils/slug";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { showAlert } from "@/components/features/alert/custom-alert";
 
-import useProvinsiData from "@/lib/hooks/useProvinsiData";
 import {
   deleteKecamatan,
   fetchKecamatanById,
   updateKecamatan,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
-import useKabupatenKotaData from "@/lib/hooks/useKabupatenKotaData";
+import useWilayahData from "@/lib/hooks/useWilayahData";
 
 const KecamatanEditForm = ({ params }) => {
   const router = useRouter();
@@ -24,18 +23,6 @@ const KecamatanEditForm = ({ params }) => {
   const [dataKecamatan, setDataKecamatan] = useState(null);
 
   // Start option data kabupaten kota dan provinsi
-
-  const {
-    KabupatenKotaOptions,
-    loading: KabupatenKotaLoading,
-    handleLoadMore,
-  } = useKabupatenKotaData();
-
-  const {
-    ProvinsiOptions,
-    loading: provinsiLoading,
-    handleLoadMore: handleLoadMoreProvinsi,
-  } = useProvinsiData();
 
   // End  option data kabupaten kota dan provinsi
 
@@ -49,6 +36,52 @@ const KecamatanEditForm = ({ params }) => {
       setDataKecamatan(selectedKecamatan);
     }
   }, [selectedKecamatan]);
+
+  console.log("selected kecamatan :", selectedKecamatan);
+
+  const {
+    KabupatenKotaOptions,
+    loadingKabupatenKota,
+    handleLoadMoreKabupatenKota,
+  } = useWilayahData();
+
+  const formFields = [
+    {
+      fields: [
+        {
+          type: "select",
+          id: "kabupatenKotaId",
+          label: "Kabupaten Kota",
+          name: "kabupatenKotaId",
+          placeholder: "Pilih Kabupaten Kota",
+          options: KabupatenKotaOptions,
+          rules: { required: "Kabupaten Kota is required" },
+          colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreKabupatenKota,
+          isLoading: loadingKabupatenKota,
+        },
+        {
+          type: "text",
+          label: "Nama Kecamatan",
+          name: "namaKecamatan",
+          placeholder: "Masukkan Nama Kecamatan...",
+          colSize: 6,
+          rules: { required: "Nama Kabupaten Kota harus diisi" },
+        },
+      ],
+    },
+  ];
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Terjadi kesalahan: {error}</div>;
+
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataKecamatan?.[field.name] ?? "",
+    })),
+  }));
 
   const handleSubmit = async (data) => {
     try {
@@ -85,45 +118,6 @@ const KecamatanEditForm = ({ params }) => {
       }
     );
   };
-
-  const formFields = [
-    {
-      fields: [
-        {
-          type: "select",
-          id: "kabupatenKotaId",
-          label: "Kabupaten /  Kota",
-          name: "kabupatenKotaId",
-          placeholder: "Pilih Kabupaten / Kota",
-          options: KabupatenKotaOptions,
-          rules: { required: "Kabupaten Kota is required" },
-          colSize: 6,
-          onMenuScrollToBottom: handleLoadMore,
-          isLoading: KabupatenKotaLoading,
-          rules: { required: "Kabupaten Kota is required" },
-        },
-        {
-          type: "text",
-          label: "Nama Kecamatan",
-          name: "namaKecamatan",
-          placeholder: "Masukkan Nama Kecamatan",
-          colSize: 6,
-          rules: { required: "Nama Kabupaten Kota harus diisi" },
-        },
-      ],
-    },
-  ];
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Terjadi kesalahan: {error}</div>;
-
-  const formFieldsWithData = formFields.map((section) => ({
-    ...section,
-    fields: section.fields.map((field) => ({
-      ...field,
-      value: dataKecamatan?.[field.name] ?? "",
-    })),
-  }));
 
   return (
     <Fragment>

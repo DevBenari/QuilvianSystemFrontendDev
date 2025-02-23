@@ -6,6 +6,7 @@ import { dataRawatInap } from "@/utils/dataPerjanjian";
 import { Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import CustomSearchFilterNonApi from "@/components/features/custom-search/CustomSearchComponen/custom-search-non-api";
 const DashboardPerjanjianRawatInap = () => {
   const methods = useForm();
   const [filteredPatients, setFilteredPatients] = useState(dataRawatInap);
@@ -20,7 +21,7 @@ const DashboardPerjanjianRawatInap = () => {
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Searching Perjanjian Rawat INAP</h2>
+          <h2 className="mb-3"> Perjanjian Rawat Inap</h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -29,7 +30,7 @@ const DashboardPerjanjianRawatInap = () => {
           </button>
         </div>
         <Col lg="12" className="mt-2">
-          <CustomSearchFilter
+          <CustomSearchFilterNonApi
             data={dataRawatInap}
             setFilteredPatients={setFilteredPatients}
             onFilteredPatients={filteredPatients}

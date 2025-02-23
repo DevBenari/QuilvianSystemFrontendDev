@@ -1,22 +1,21 @@
-// hooks/useProvinsiData.js
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProvinsi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
+import { fetchDokter } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 
-const useProvinsiData = () => {
+const useDokterData = () => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
 
   const {
-    data: ProvinsiData,
+    data: DokterData,
     loading,
     totalPages,
     loadedPages,
-  } = useSelector((state) => state.Provinsi);
+  } = useSelector((state) => state.Dokter);
 
   useEffect(() => {
     if (!loadedPages.includes(1)) {
-      dispatch(fetchProvinsi({ page: 1, perPage: 10, isInfiniteScroll: true }));
+      dispatch(fetchDokter({ page: 1, perPage: 10, isInfiniteScroll: true }));
     }
   }, [dispatch, loadedPages]);
 
@@ -27,21 +26,25 @@ const useProvinsiData = () => {
 
       console.log(`🔄 Fetching page ${nextPage}...`);
       dispatch(
-        fetchProvinsi({ page: nextPage, perPage: 10, isInfiniteScroll: true })
+        fetchDokter({
+          page: nextPage,
+          perPage: 10,
+          isInfiniteScroll: true,
+        })
       );
     }
   };
 
-  const ProvinsiOptions = ProvinsiData.map((item) => ({
-    label: item.namaProvinsi,
-    value: item.provinsiId,
+  const DokterOptions = DokterData.map((item) => ({
+    label: item.nmDokter,
+    value: item.dokterId,
   }));
 
   return {
-    ProvinsiOptions,
+    DokterOptions,
     loading,
     handleLoadMore,
   };
 };
 
-export default useProvinsiData;
+export default useDokterData;

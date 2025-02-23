@@ -1,6 +1,7 @@
 import Cookies from "js-cookie"; // Add this import
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getHeaders } from "@/lib/headers/headers";
 
 export const LoginUser = createAsyncThunk(
   "login",
@@ -12,9 +13,7 @@ export const LoginUser = createAsyncThunk(
       formData.append("Password", data.Password); // Sesuai dengan API (huruf besar)
 
       const request = await InstanceAxios.post(`/Auth/login`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Sesuai dengan Swagger API
-        },
+        headers: getHeaders(),
       });
 
       const token = request.data.token;

@@ -9,8 +9,6 @@ import NegaraSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData
 import indetitasSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 import jabatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
 import agamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
-import dokterPraktekData from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-import dokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 import anggotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
 import ProvinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 import KabupatenKotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
@@ -20,6 +18,8 @@ import AsuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterDa
 import DepartementSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-departemen/DepartemenSlice";
 import KategoriPeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/KategoriPeralatanSlice";
 import PeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/PeralatanSlice";
+import DokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
+import DokterPraktekSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
 
 const store = configureStore({
   reducer: {
@@ -31,8 +31,8 @@ const store = configureStore({
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
     negara: NegaraSlice,
-    dokterPraktek: dokterPraktekData,
-    dokter: dokterSlice,
+    Dokter: DokterSlice,
+    DokterPraktek: DokterPraktekSlice,
     identitas: indetitasSlice,
     jabatan: jabatanSlice,
     anggota: anggotaSlice,

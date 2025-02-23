@@ -11,6 +11,7 @@ import {
   fetchKecamatan,
   fetchKecamatanWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
 
 const TableDataKecamatan = () => {
   const methods = useForm();
@@ -81,7 +82,10 @@ const TableDataKecamatan = () => {
                 />
               </div>
               {loading ? (
-                <Spinner animation="border" variant="primary" />
+                <LoadingScreen
+                  text="Mengambil data, harap tunggu..."
+                  variant="primary"
+                />
               ) : error ? (
                 <Alert variant="warning">{error}</Alert>
               ) : filteredData.length === 0 ? (

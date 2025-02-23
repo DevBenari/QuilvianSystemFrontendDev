@@ -11,6 +11,7 @@ import {
   fetchKelurahan,
   fetchKelurahanWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
 
 const TableDataKelurahan = () => {
   const methods = useForm();
@@ -81,7 +82,10 @@ const TableDataKelurahan = () => {
                 />
               </div>
               {loading ? (
-                <Spinner animation="border" variant="primary" />
+                <LoadingScreen
+                  variant="primary"
+                  text="Mengambil data, harap tunggu..."
+                />
               ) : error ? (
                 <Alert variant="warning">{error}</Alert>
               ) : filteredData.length === 0 ? (

@@ -11,6 +11,7 @@ import {
   fetchKabupatenKota,
   fetchKabupatenKotaWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
 
 const TableDataKabupatenKota = () => {
   const methods = useForm();
@@ -80,7 +81,10 @@ const TableDataKabupatenKota = () => {
                 />
               </div>
               {loading ? (
-                <Spinner animation="border" variant="primary" />
+                <LoadingScreen
+                  text="Mengambil data, harap tunggu..."
+                  variant="primary"
+                />
               ) : error ? (
                 <Alert variant="warning">{error}</Alert>
               ) : filteredData.length === 0 ? (

@@ -17,7 +17,7 @@ export const fetchKabupatenKota = createAsyncThunk(
         return null;
       }
       const response = await InstanceAxios.get(`/Wilayah/KabupatenKota`, {
-        params: { page, perPage, provinsiId},
+        params: { page, perPage, provinsiId },
         headers: getHeaders(),
       });
 
