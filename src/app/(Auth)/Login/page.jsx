@@ -41,7 +41,6 @@ const LoginPage = () => {
 
         if (!responseMessage) {
           setErrorMessage("Terjadi kesalahan. Silakan coba lagi.");
-          showAlert.error("Terjadi kesalahan. Silakan coba lagi.");
           return;
         }
 
