@@ -2,7 +2,6 @@
 import React, {useEffect} from 'react'
 import { Col, Row, Dropdown } from 'react-bootstrap'
 import Chart from "react-apexcharts";
-
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 // eslint-disable-next-line camelcase

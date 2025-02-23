@@ -1,4 +1,4 @@
-import TableRuanganOperasi from "@/components/view/MasterData/master-operasi/ruangan-operasi/page";
+import TableRuanganOperasi from "@/components/view/MasterData/master-operasi/ruangan-operasi/ruangan-operasi";
 import React from "react";
 
 const PagesRuanganOperasi = () => {

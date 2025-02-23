@@ -47,7 +47,7 @@ export const daftarPasien = [
     id: 1,
     noRekamMedis: "123456789",
     date: "2022-01-01",
-    nama: "Dwi",
+    namaPasien: "Dwi",
     jenisKelamin: "Laki-laki",
     tglLahir: "2022-01-01",
     umur: 20,
@@ -57,7 +57,7 @@ export const daftarPasien = [
     id: 2,
     noRekamMedis: "123456789",
     date: "2022-01-10",
-    nama: "Alisa",
+    namaPasien: "Alisa",
     jenisKelamin: "Perempuan",
     tglLahir: "2001-02-05",
     umur: 23,
@@ -67,7 +67,7 @@ export const daftarPasien = [
     id: 3,
     noRekamMedis: "123456789",
     date: "2022-02-15",
-    nama: "Iwan",
+    namaPasien: "Iwan",
     jenisKelamin: "Laki-laki",
     tglLahir: "2022-05-03",
     umur: 20,
@@ -138,18 +138,18 @@ export const menus = {
         { title: "Pasien Perjanjian Radiologi", href: "/perjanjian/radiologi" },
         { title: "Pasien Perjanjian MCU", href: "/perjanjian/MCU" },
         { title: "Pasien Perjanjian Operasi", href: "/perjanjian/Operasi" },
-        {
-          title: "Pasien Perjanjian Laboratorium",
-          href: "/perjanjian/laboratorium",
-        },
       ],
     },
     {
       title: "Antrian",
       subItems: [
+        { title: "Display Antrian", href: "/Antrian" },
         { title: "Pengaturan Antrian", href: "/Antrian/pengaturan-antrian" },
-        { title: "Display Antrian", href: "/Antrian/display-antrian" },
       ],
+    },
+    {
+      title: "Pemesanan Bed",
+      subItems: [{ title: "Pemesanan Bed", href: "/pemesanan-bed" }],
     },
   ],
   dokter: [
@@ -183,7 +183,10 @@ export const menus = {
     {
       title: "Keanggotaan",
       subItems: [
-        { title: "Tipe Keanggotaan", href: "/master-data/tipe-keanggotaan" },
+        {
+          title: "Tipe Keanggotaan",
+          href: "/MasterData/master-anggota/table-anggota",
+        },
       ],
     },
     {
@@ -223,12 +226,12 @@ export const menus = {
       title: "Peralatan kesehatan",
       subItems: [
         {
-          title: "Data Peralatan Medis",
-          href: "/MasterData/master-peralatan-medis/list-peralatan-medis",
+          title: "Data kategori Peralatan ",
+          href: "/MasterData/master-kategori-peralatan/kategori-peralatan/table-kategori-peralatan",
         },
         {
-          title: "Kategori Peralatan Medis",
-          href: "/MasterData/master-peralatan-medis/kategori-peralatan-medis",
+          title: "Data  Peralatan ",
+          href: "/MasterData/master-kategori-peralatan/peralatan/table-peralatan",
         },
       ],
     },
@@ -241,7 +244,7 @@ export const menus = {
         },
         {
           title: "Daftar Tindakan Operasi",
-          href: "/MasterData//master-operasi/daftar-tindakan-operasi",
+          href: "/MasterData/master-operasi/daftar-tindakan-operasi/table-tindakan-operasi",
         },
         {
           title: "Daftar Ruangan Operasi",
@@ -255,55 +258,170 @@ export const menus = {
       subItems: [
         {
           title: "Tarif Admisi",
-          href: "/MasterData/master-administrasi/tables-administrasi",
+          href: "/MasterData/master-administrasi/administrasi/tables-administrasi",
         },
-        { title: "Tarif Rawat Jalan", href: "/MasterData/tarif-rawat-jalan" },
-        { title: "Tarif Rawat Inap", href: "/MasterData/tarif-rawat-inap" },
+        {
+          title: "Tarif Rawat Jalan",
+          href: "/MasterData/master-administrasi/administrasi-rawat-jalan",
+        },
+        {
+          title: "Tarif Rawat Inap",
+          href: "/MasterData/master-administrasi/administrasi-rawat-inap",
+        },
       ],
     },
     {
-      title: "Departemen",
+      title: "Departement",
       subItems: [
         {
-          title: "Manajemen Departemen",
-          href: "/MasterData/master-departemen/manajemen-departemen/tables-departemen",
+          title: "Manajemen departement",
+          href: "/MasterData/master-departement/table-departement",
         },
       ],
     },
     {
       title: "Poliklinik",
       subItems: [
-        { title: "Daftar Poliklinik", href: "/MasterData/daftar-poliklinik" },
+        {
+          title: "Data Tindakan Poliklinik",
+          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik/table-tindakan-poliklinik",
+        },
         {
           title: "Daftar Tarif Poliklinik",
           href: "/MasterData/daftar-tarif-poliklinik",
         },
       ],
     },
+    {
+      title: "Master Informasi",
+      subItems: [
+        {
+          title: "Data Title",
+          href: "/MasterData/master-informasi/title/table-title",
+        },
+        {
+          title: "Data Pendidikan",
+          href: "/MasterData/master-informasi/master-pendidikan/table-pendidikan",
+        },
+        {
+          title: "Data Agama",
+          href: "/MasterData/master-informasi/agama/table-agama",
+        },
+        {
+          title: "Data Golongan",
+          href: "/MasterData/master-informasi/golongan-darah/table-golongan",
+        },
+        {
+          title: "Data Pekerjaan",
+          href: "/MasterData/master-informasi/master-pekerjaan/table-pekerjaan",
+        },
+        {
+          title: "Data Negara",
+          href: "/MasterData/master-informasi/negara/table-negara",
+        },
+        {
+          title: "Data Identitas",
+          href: "/MasterData/master-informasi/identitas/table-identitas",
+        },
+        {
+          title: "Data jabatan",
+          href: "/MasterData/master-informasi/jabatan/table-jabatan",
+        },
+      ],
+    },
+    {
+      title: "Dokter",
+      subItems: [
+        {
+          title: "Data Dokter",
+          href: "/MasterData/master-dokter/dokter/table-dokter",
+        },
+        {
+          title: "Dokter Praktek",
+          href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
+        },
+      ],
+    },
+    {
+      title: "Master Provinsi",
+      subItems: [
+        {
+          title: "Data Provinsi",
+          href: "/MasterData/master-wilayah/provinsi/table-provinsi",
+        },
+        {
+          title: "Data Kabupaten/Kota",
+          href: "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota",
+        },
+        {
+          title: "Data kecamatan",
+          href: "/MasterData/master-wilayah/kecamatan/table-kecamatan",
+        },
+        {
+          title: "Data Kelurahan",
+          href: "/MasterData/master-wilayah/kelurahan/table-kelurahan",
+        },
+      ],
+    },
+  ],
+  instalasiRawatJalan: [
+    {
+      title: "Daftar Poli",
+      subItems: [
+        {
+          title: "Daftar Poli",
+          href: "/instalasi-rawat-jalan/antrean-data-poli/table-poli",
+        },
+      ],
+    },
+  ],
+  instalasiRawatInap: [
+    {
+      title: "Daftar Rawat Inap",
+      subItems: [
+        {
+          title: "Daftar Rawat Inap",
+          href: "/instalasi-rawat-inap/antrean-data-poli/table-poli",
+        },
+      ],
+    },
+  ],
+  instalasiOperasi: [
+    {
+      title: "Daftar Operasi",
+      subItems: [
+        {
+          title: "Daftar Operasi",
+          href: "/instalasi-rawat-inap/antrean-data-poli/table-poli",
+        },
+      ],
+    },
   ],
 };
 
-export   const menuItems = [
+export const menuItems = [
   {
-    
-    label: 'Pelayanan Kesehatan',
-    key: 'ManajemenKesehatan',
-    pathname: '/',
+    label: "Pelayanan Kesehatan",
+    key: "ManajemenKesehatan",
+    pathname: "/",
     subMenu: [
-      { pathname: '/MasterData', label: 'Master Data', },
-      { pathname: '/pendaftaran', label: 'Admisi', },
-      { pathname: '/dokter', label: 'Pelayanan Dokter', },
-      { pathname: '/IGD', label: 'IGD', },
-    ]
+      { pathname: "/MasterData", label: "Master Data" },
+      { pathname: "/pendaftaran", label: "Admisi" },
+      { pathname: "/dokter", label: "Pelayanan Dokter" },
+      { pathname: "/IGD", label: "IGD" },
+      { pathname: "/instalasi-poli", label: "Poli" },
+    ],
   },
   {
-    
-    label: 'Pelayanan Medis',
-    key: 'pelayananMedis',
-    pathname: '/pelayanan-medik',
+    label: "Pelayanan Medis",
+    key: "pelayananMedis",
+    pathname: "/pelayanan-medik",
     subMenu: [
-      { pathname: '/pelayanan-medik/instalasi-medik', label: 'Instalasi Rawat Intensif', },
-      { pathname: '/app/List Pasien', label: 'List Pasien', }
-    ]
-  }
+      {
+        pathname: "/pelayanan-medik/instalasi-medik",
+        label: "Instalasi Rawat Intensif",
+      },
+      { pathname: "/app/List Pasien", label: "List Pasien" },
+    ],
+  },
 ];

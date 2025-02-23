@@ -4,9 +4,10 @@ import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { dataSemuaPerjanjian } from "@/utils/dataPerjanjian";
 import { Col, Row } from "react-bootstrap";
-import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
+
 import ButtonNav from "@/components/ui/button-navigation";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 
 const DashboardPerjanjian = memo(() => {
   const methods = useForm();

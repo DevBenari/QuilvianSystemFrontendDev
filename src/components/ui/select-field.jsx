@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useRef, useMemo, useCallback } from "react";
 import { useController, useFormContext } from "react-hook-form";
 import { Form } from "react-bootstrap";
 import Select from "react-select";
@@ -12,43 +12,66 @@ const SelectField = forwardRef(
       rules,
       placeholder,
       className,
-      onChangeCallback,
+      onChange: externalOnChange,
+      onMenuScrollToBottom,
       ...props
     },
     ref
   ) => {
     const { control } = useFormContext();
+
     const {
       field,
       fieldState: { error },
     } = useController({ name, control, rules });
 
-    // Custom styles for react-select
-    const customStyles = {
-      control: (provided) => ({
-        ...provided,
-        border: "1px solid #ced4da",
-        borderRadius: "0.25rem",
-        boxShadow: "none",
-        height: "calc(1.5em + 0.75rem + 2px)",
-      }),
-      menu: (provided) => ({
-        ...provided,
-        zIndex: 9999,
-      }),
-      placeholder: (provided) => ({
-        ...provided,
-        color: "#6c757d",
-      }),
-    };
+    const scrollTimeout = useRef(null);
+    const isFetching = useRef(false);
 
-    // Handle change to store only `value`
-    const handleChange = (selected) => {
-      field.onChange(selected ? selected.value : null); // Simpan hanya `value` ke state form
-      if (onChangeCallback) {
-        onChangeCallback(selected ? selected.value : null); // Panggil callback dengan value
-      }
-    };
+    // Handle both internal form control and external onChange
+    const handleChange = useCallback(
+      (selected) => {
+        const value = selected ? selected.value : null;
+        field.onChange(value);
+        if (externalOnChange) {
+          externalOnChange(selected);
+        }
+      },
+      [field, externalOnChange]
+    );
+
+    // Memoize the scroll handler
+    const handleScrollToBottom = useCallback(() => {
+      if (scrollTimeout.current || isFetching.current) return;
+
+      isFetching.current = true;
+      scrollTimeout.current = setTimeout(() => {
+        if (onMenuScrollToBottom) {
+          onMenuScrollToBottom();
+        }
+        isFetching.current = false;
+        scrollTimeout.current = null;
+      }, 300);
+    }, [onMenuScrollToBottom]);
+
+    // Memoize options with deep comparison
+    const memoizedOptions = useMemo(
+      () =>
+        Array.isArray(options)
+          ? options.map((opt) => ({
+              label: opt.label,
+              value: opt.value,
+            }))
+          : [],
+      [options]
+    );
+
+    // Memoize the selected value
+    const selectedValue = useMemo(
+      () =>
+        memoizedOptions.find((option) => option.value === field.value) || null,
+      [memoizedOptions, field.value]
+    );
 
     return (
       <Form.Group className={className}>
@@ -56,16 +79,16 @@ const SelectField = forwardRef(
         <Select
           {...field}
           {...props}
-          ref={ref}
-          options={options}
-          placeholder={placeholder || "Select an option"}
-          styles={customStyles}
-          value={options.find((option) => option.value === field.value) || null} // Sesuaikan untuk hanya `value`
+          options={memoizedOptions}
+          placeholder={placeholder || "Pilih opsi"}
+          value={selectedValue}
           onChange={handleChange}
+          onMenuScrollToBottom={handleScrollToBottom}
           isClearable
+          isLoading={props.isLoading}
         />
         {error && (
-          <Form.Control.Feedback type="invalid">
+          <Form.Control.Feedback type="invalid" style={{ display: "block" }}>
             {error.message}
           </Form.Control.Feedback>
         )}
@@ -76,4 +99,4 @@ const SelectField = forwardRef(
 
 SelectField.displayName = "SelectField";
 
-export default SelectField;
+export default React.memo(SelectField);

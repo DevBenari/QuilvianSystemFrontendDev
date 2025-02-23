@@ -1,4 +1,4 @@
-"use client";
+
 import React, { memo } from "react";
 import styles from "@/app/page.module.css";
 import DashboardPendaftaranBayi from "@/components/view/pendaftaran-pasien/pendaftaran-pasien-bayi/tables-pasien-bayi";

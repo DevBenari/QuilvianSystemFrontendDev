@@ -88,12 +88,12 @@ const VitalSign = memo(() => {
                     <Col xs="12" className="iq-card-header">
                         <div>
                             <h4 className="mb-3">Vital Sign *</h4>
-                            <Col md="7">
+                            <Col md="12">
                                 <Row>
                                     <Col xs="5" className="mb-3">
                                         <TextField 
                                             name="tekananDarah"
-                                            label="TD :  *   "
+                                            label="Tekanan Darah :  *   "
                                             placeholder={'Enter TD'}
                                             rules={{ required: 'Tekanan Darah harus diisi' }} // Aturan validasi
                                         />
@@ -112,47 +112,47 @@ const VitalSign = memo(() => {
                                     <Col xs="auto" className="d-flex align-items-center">
                                         <span>mmHg</span>
                                     </Col>
+                                    <Col xs="6">
+                                        <TextField 
+                                            name="Hr"
+                                            label="HR :  *"
+                                            placeholder={'Enter HR'}
+                                            rules={{ required: 'HR harus diisi' }} 
+                                        />
+                                    </Col>
+                                    <Col xs="6">
+                                        <TextField 
+                                            name="tinggiBadan"
+                                            label="Tinggi Badan (TB) :  *"
+                                            placeholder={'Enter TB'}
+                                            rules={{ required: 'TB harus diisi' }} 
+                                        />
+                                    </Col>
+                                    <Col xs="6">
+                                        <TextField 
+                                            name="BeratBadan"
+                                            label="Berat Badan (BB) :  *"
+                                            placeholder={'Enter BB'}
+                                            rules={{ required: 'BB harus diisi' }} 
+                                        />
+                                    </Col>
+                                    <Col xs="6">
+                                        <TextField 
+                                            name="rr"
+                                            label="RR :  *"
+                                            placeholder={'Enter RR'}
+                                            rules={{ required: 'RR harus diisi' }} 
+                                        />
+                                    </Col>
+                                    <Col xs="6">
+                                        <TextField 
+                                            name="suhu"
+                                            label="suhu *C :  *"
+                                            placeholder={'Enter suhu C'}
+                                            rules={{ required: 'suhu *C harus diisi' }} 
+                                        />
+                                    </Col>
                                </Row>
-                            </Col>
-                            <Col xs="6">
-                                <TextField 
-                                    name="Hr"
-                                    label="HR :  *"
-                                    placeholder={'Enter HR'}
-                                    rules={{ required: 'HR harus diisi' }} 
-                                />
-                            </Col>
-                            <Col xs="6">
-                                <TextField 
-                                    name="tinggiBadan"
-                                    label="TB :  *"
-                                    placeholder={'Enter TB'}
-                                    rules={{ required: 'TB harus diisi' }} 
-                                />
-                            </Col>
-                            <Col xs="6">
-                                <TextField 
-                                    name="BeratBadan"
-                                    label="BB :  *"
-                                    placeholder={'Enter BB'}
-                                    rules={{ required: 'BB harus diisi' }} 
-                                />
-                            </Col>
-                            <Col xs="6">
-                                <TextField 
-                                    name="rr"
-                                    label="RR :  *"
-                                    placeholder={'Enter RR'}
-                                    rules={{ required: 'RR harus diisi' }} 
-                                />
-                            </Col>
-                            <Col xs="6">
-                                <TextField 
-                                    name="suhu"
-                                    label="suhu *C :  *"
-                                    placeholder={'Enter suhu C'}
-                                    rules={{ required: 'suhu *C harus diisi' }} 
-                                />
                             </Col>
                         </div>
                     </Col>

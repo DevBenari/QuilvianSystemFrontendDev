@@ -1,439 +1,374 @@
-'use client';
-import React, { useState, useEffect, Fragment } from 'react';
-import { useRouter } from 'next/navigation';
-import DynamicForm from '@/components/features/dynamic-form/dynamicForm/dynamicForm';
-import { extractIdFromSlug } from '@/utils/slug';
-import { dataPasienRadiologi } from '@/utils/dataPerjanjian';
+"use client";
+import React, { useEffect, useState, Fragment, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import { extractIdFromSlug } from "@/utils/slug";
 
-const AsuransiEditPage = ({params}) => {
+import { showAlert } from "@/components/features/alert/custom-alert";
+import {
+  deleteAsuransi,
+  fetchAsuransiById,
+  updateAsuransi,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
+
+const AsuransiEditForm = ({ params }) => {
   const router = useRouter();
-  const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState(dataPasienRadiologi);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log('Fetching data for slug:', params.slug);
-        const id = extractIdFromSlug(params.slug);
-        console.log('Extracted ID:', id);
-    
-        const user = dataPasienRadiologi.find((u) => u.id === parseInt(id, 10));
-        console.log('Found User:', user);
-    
-        if (!user) {
-          throw new Error('User not found');
-        }
-    
-        setUserData(user);
-      } catch (error) {
-          console.error('Error fetching user:', error);
-          router.push('/404');
-      } finally {
-          setIsLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [params.slug, router]);
-    
-  const handleSubmit = async (data) => {
-    console.log("data", data);
-  };
-  
+  const dispatch = useDispatch();
 
+  // Local state untuk data Asuransi
+  const [dataAsuransi, setDataAsuransi] = useState([]);
+
+  // Mengambil data dari Redux store
+  const { selectedAsuransi, loading, error } = useSelector(
+    (state) => state.Asuransi
+  );
+
+  useEffect(() => {
+    const id = extractIdFromSlug(params.slug);
+    dispatch(fetchAsuransiById(id));
+  }, [dispatch, params.slug]);
+
+  // Sinkronisasi data Redux dengan State
+  useEffect(() => {
+    if (selectedAsuransi) {
+      setDataAsuransi(selectedAsuransi);
+    }
+  }, [selectedAsuransi]);
+
+  console.log("data Asuransi : ", dataAsuransi);
+
+  const handleSubmit = async (formData) => {
+    try {
+      await dispatch(
+        updateAsuransi({ id: selectedAsuransi.asuransiId, data: formData })
+      ).unwrap();
+      showAlert.success("Data berhasil diperbarui", () => {
+        router.push("/MasterData/master-asuransi/daftar-asuransi");
+      });
+    } catch (error) {
+      showAlert.error("Gagal memperbarui data asuransi.");
+    }
+  };
+
+  const handleDelete = async () => {
+    showAlert.confirmDelete("Yakin ingin menghapus?", async () => {
+      try {
+        await dispatch(deleteAsuransi(selectedAsuransi.asuransiId)).unwrap();
+        showAlert.success("Data berhasil dihapus!", () => {
+          router.push("/MasterData/master-asuransi/daftar-asuransi");
+        });
+      } catch (error) {
+        showAlert.error("Gagal menghapus data asuransi.");
+      }
+    });
+  };
+  // Konfigurasi Form Fields
   const formFields = [
     {
-      fields:
-      [
+      fields: [
         {
           type: "text",
-          id: "kodePerusahaan",
-          label: "Kode Perusahaan",
-          name: "kodePerusahaan",
-          placeholder: "Kode Perusahaan",
-          rules: { required: "Kode Perusahaan is required" },
+          label: "Kode Asuransi",
+          name: "kodeAsuransi",
+          placeholder: "Masukkan Kode Asuransi...",
+          colSize: 6,
+          rules: { required: "Kode Asuransi harus diisi" },
+        },
+        {
+          type: "date",
+          label: "Tanggal Dibuat",
+          name: "createdate",
+          colSize: 6,
+          rules: { required: "Tanggal Dibuat harus diisi" },
+        },
+        {
+          type: "text",
+          label: "Nama Asuransi",
+          name: "namaAsuransi",
+          placeholder: "Masukkan Nama Asuransi...",
+          colSize: 6,
+          rules: { required: "Nama Asuransi harus diisi" },
+        },
+        {
+          type: "text",
+          label: "Jenis Asuransi",
+          name: "jenisAsuransi",
+          placeholder: "Masukkan Jenis Asuransi...",
+          colSize: 6,
+          rules: { required: "Jenis Asuransi harus diisi" },
+        },
+        {
+          type: "text",
+          label: "Kategori Asuransi",
+          name: "kategoriAsuransi",
+          placeholder: "Masukkan Kategori Asuransi...",
+          colSize: 6,
+          rules: { required: "Kategori Asuransi harus diisi" },
+        },
+        {
+          type: "text",
+          label: "Status Asuransi",
+          name: "statusAsuransi",
+          placeholder: "Masukkan Status Asuransi...",
+          colSize: 6,
+          rules: { required: "Status Asuransi harus diisi" },
+        },
+        {
+          type: "date",
+          label: "Tanggal Mulai Kerjasama",
+          name: "tanggalMulaiKerjasama",
+          placeholder: "Masukkan RS Rekanan...",
+
+          colSize: 6,
+          rules: { required: "Tanggal Mulai Kerjasama harus diisi" },
+        },
+        {
+          type: "date",
+          label: "Tanggal Akhir Kerjasama",
+          name: "tanggalAkhirKerjasama",
+          placeholder: "Masukkan RS Rekanan...",
+
+          colSize: 6,
+          rules: { required: "Tanggal Akhir Kerjasama harus diisi" },
+        },
+        {
+          type: "text",
+          label: "RS Rekanan",
+          name: "rsRekanan",
+          colSize: 6,
+          placeholder: "Masukkan RS Rekanan...",
+          rules: { required: "Rekanan harus diisi" },
+        },
+        {
+          type: "text",
+          label: "Metode Klaim",
+          name: "metodeKlaim",
+          colSize: 6,
+          placeholder: "Masukkan Metode Klaim...",
+          rules: { required: "Metode Klaim harus diisi" },
+        },
+        {
+          type: "date",
+          label: "Waktu Klaim",
+          name: "waktuKlaim",
+          colSize: 6,
+          placeholder: "Masukkan Metode Klaim...",
+          rules: { required: "Waktu Klaim harus diisi" },
+        },
+        {
+          type: "text",
+          label: "Dokumen Klaim",
+          name: "dokumenKlaim",
+          placeholder: "Masukkan Dokumen Klaim...",
+          colSize: 6,
+          rules: { required: "Batas maksimal klaim per tahun harus diisi" },
+          placeholder: "Masukkan Batas maksimal klaim per tahun harus diisi...",
+        },
+        {
+          type: "number",
+          label: "Batas Maksimal Klaim Per Tahun",
+          name: "batasMaxKlaimPerTahun",
+          colSize: 6,
+          rules: { required: "Batas maksimal klaim per tahun harus diisi" },
+          placeholder: "Masukkan Batas Maksimal Klaim Per Tahun...",
+        },
+        {
+          type: "number",
+          label: "Batas Maksimal Klaim Per Kunjungan",
+          name: "batasMaxKlaimPerKunjungan",
+          colSize: 6,
+          rules: { required: "Batas maksimal klaim per tahun harus diisi" },
+          placeholder: "Masukkan Batas Maksimal Klaim Per Kunjungan...",
+        },
+
+        {
+          type: "text",
+          label: "Layanan",
+          name: "layanan",
+          placeholder: "Masukkan Layanan...",
+          colSize: 6,
+          rules: { required: "Layanan harus diisi" },
+        },
+        {
+          type: "number",
+          label: "Persentase Biaya Pertanggungan",
+          name: "persentasiBiayaPertanggungan",
+          placeholder: "Masukkan Persentase Biaya Pertanggungan...",
           colSize: 6,
         },
         {
           type: "text",
-          id: "namaPerusahaan",
-          label: "Nama Perusahaan",
-          name: "namaPerusahaan",
-          placeholder: "Nama Perusahaan",
-          rules: { required: "Nama Perusahaan is required" },
+          label: "Obat Ditanggung",
+          name: "obatDitanggung",
+          placeholder: "Masukkan Obat Ditanggung...",
           colSize: 6,
         },
         {
-          type:"text",
-          id: "tarifGolongan",
-          label: "Tarif Golongan Perusahaan",
-          name: "tarifGolongan",
-          placeholder: "Tarif Golongan Perusahaan",
-          rules: { required: "Tarif Golongan Perusahaan is required" },
+          type: "number",
+          label: "Tambahan Tanggungan",
+          name: "tambahanTanggungan",
+          placeholder: "Masukkan Tambahan Tanggungan...",
           colSize: 6,
         },
         {
-          type:"select",
-          id: "bankAccount",
-          label:"Nama Bank",
-          name: "bankAccount",
-          placeholder: "Nama Bank",
-          options:[
-            {label:"BCA",value:"bca"},
-            {label:"BNI",value:"bni"},
-            {label:"BRI",value:"bri"},
-            {label:"Mandiri",value:"mandiri"},
-            {label:"Permata",value:"permata"},
-          ],
-          rules: { required: "Nama Bank is required" },
+          type: "number",
+          label: "Biaya Tidak Ditanggung",
+          name: "biayaTidakDitanggung",
+          placeholder: "Masukkan Biaya Tidak Ditanggung...",
           colSize: 6,
-      },
-                {
-                    type:"number",
-                    id : "discount",
-                    label: "Discount",
-                    name: "discount",
-                    placeholder: "Discount",
-                    rules: { required: "Discount is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type:"select",
-                    id: "statusPenjamin",
-                    label: "Termasuk Penjamin",
-                    name: "statusPenjamin",
-                    placeholder: "Status Penjamin",
-                    options:[
-                        {label:"Ya",value:"Ya"},
-                        {label:"Tidak ",value:"tidak "},
-                    ],
-                    rules: { required: "Status Penjamin is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type:"select",
-                    id: "penjaminKaryawanRs",
-                    label: "Termasuk Penjamin Karyawan RS",
-                    name: "penjaminKaryawanRs",
-                    placeholder: "Penjamin",
-                    options:[
-                        {label:"Ya",value:"Ya"},
-                        {label:"Tidak ",value:"tidak "},
-                    ],
-                    rules: { required: "Status Asuransi is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type:"text",
-                    id: "perusahaanPenjamin",
-                    label: "Perusahaan Penjamin",
-                    name: "perusahaanPenjamin",
-                    placeholder: "Perusahaan Penjamin",
-                    rules: { required: "Perusahaan Penjamin is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type:"textarea",
-                    id: "alamatPerusahaan",
-                    label: "Alamat Perusahaan Penjamin",
-                    name: "alamatPerusahaan",
-                    placeholder: "Alamat Perusahaan Penjamin",
-                    rules: { required: "Alamat Perusahaan Penjamin is required" },
-                    colSize: 12,
-                 },
-                 {
-                    type:"text",
-                    id: "kota",
-                    label: "Kota",
-                    name: "kota",
-                    placeholder: "Kota",
-                    rules: { required: "Kota is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type:"text",
-                    id: "kodePos",
-                    label: "Kode Pos",
-                    name: "kodePos",
-                    placeholder: "Kode Pos",
-                    rules: { required: "Kode Pos is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type:"text",
-                    id: "noTelp",
-                    label: "No Telepon",
-                    name: "noTelp",
-                    placeholder: "No Telepon",
-                    rules: { required: "No Telepon is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type:"text",
-                    id: "noFax",
-                    label: "No Fax",
-                    name: "noFax",
-                    placeholder: "No Fax",
-                    rules: { required: "No Fax is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type: "text",
-                    id: "penanggungJawab",
-                    label: "Penanggung Jawab Bank Account",
-                    name: "penanggungJawab",
-                    placeholder: "Penanggung Jawab Bank Account",
-                    rules: { required: "Penanggung Jawab Bank Account is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type: "text",
-                    id: "cabangBank",
-                    label: "Cabang Bank",
-                    name: "cabangBank",
-                    placeholder: "Cabang Bank",
-                    rules: { required: "Cabang Bank is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type: "date",
-                    id: "awalKerjasama",
-                    label: "Tanggal Awal Kerjasama",
-                    name: "awalKerjasama",
-                    rules: { required: "Tanggal Awal Kerjasama is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type: "date",
-                    id: "akhirKerjasama",
-                    label: "Tanggal Akhir Kerjasama",
-                    name: "akhirKerjasama",
-                    rules: { required: "Tanggal Akhir Kerjasama is required" },
-                    colSize: 6,
-                 }
-            ]
         },
         {
-            section:"Keterangan Perusahaan Penjamin",
-            fields: 
-            [
-                {
-                    type: "select",
-                    id: "jenisPerusahaan",
-                    label: "Jenis Perusahaan",
-                    name: "jenisPerusahaan",
-                    placeholder: "Jenis Perusahaan",
-                    options:[
-                        {label:"Asuransi",value:"asuransi"},
-                        {label:"Perusahaan",value:"perusahaan"},
-                        {label:"Kedutaan",value:"kedutaan"},
-                        {label:"Perusahaan Kartu Kredit",value:"perusahaan kartu kredit"},
-                        {label:"Rekanan",value:"rekanan"},
-                        {label:"TPA",value:"tpa"},
-                    ],
-                    rules: { required: "Jenis Perusahaan is required" },
-                    colSize: 6,
-                },
-                {
-                    type:"email",
-                    id: "emailPerusahaan",
-                    label: "Email Perusahaan",
-                    name: "emailPerusahaan",
-                    placeholder: "Email Perusahaan",
-                    rules: {
-                        required: "Email Kontak is required",
-                        pattern: {
-                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: "Masukkan email yang valid",
-                        },
-                    },
-                    colSize: 6,
-                },
-                {
-                    type: "text",
-                    id: "direktur",
-                    label: "Direktur",
-                    name: "direktur",
-                    placeholder: "Direktur",
-                    rules: { required: "Direktur is required" },
-                    colSize: 6,
-                },
-                {
-                    type: "text",
-                    id: "namaKontak",
-                    label: "Nama Kontak",
-                    name: "namaKontak",
-                    placeholder: "Nama Kontak",
-                    rules: { required: "Nama Kontak is required" },
-                    colSize: 6,
-                },
-                {
-                    type: "text",
-                    id: "jabatan",
-                    label: "Jabatan",
-                    name: "jabatan",
-                    placeholder: "Jabatan",
-                    rules: { required: "Jabatan is required" },
-                    colSize: 6,
-                },
-                {
-                    type: "text",
-                    id:"noFax",
-                    label: "No Fax",
-                    name: "noFax",
-                    placeholder: "No Fax",
-                    rules: { required: "No Fax is required" },
-                    colSize: 6,
-                },
-                {
-                    type: "text",
-                    id: "noTelp",
-                    label: "No Telepon",
-                    name: "noTelp",
-                    placeholder: "No Telepon",
-                    rules: { required: "No Telepon is required" },
-                    colSize: 6,
-                },
-                {
-                    type: "email",
-                    id: "emailKontak",
-                    label: "Email Kontak",
-                    name: "emailKontak",
-                    placeholder: "Email Kontak",
-                    rules: {
-                        required: "Email Kontak is required",
-                        pattern: {
-                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: "Masukkan email yang valid",
-                        },
-                    },
-                    colSize: 6,
-                },
-                {
-                    type : "select",
-                    id: "status",
-                    label: "Status",
-                    name: "status",
-                    placeholder: "Status",
-                    options: [
-                        { label: "Aktif", value: "aktif" },
-                        { label: "Tidak Aktif", value: "tidak aktif" },
-                    ],
-                    rules: { required: "Status is required" },
-                    colSize: 6,
-                },
-                {
-                    type: "select",
-                    id: "jenisKerjasama",
-                    label: "Jenis Kerjasama",
-                    name: "jenisKerjasama",
-                    placeholder: "Jenis Kerjasama",
-                    options: [
-                        { label: "Rawat Jalan", value: "rawat jalan" },
-                        { label: "Rawat Inap", value: "rawat inap" },
-                        { label: "MCU", value: "mcu" },
-                    ],
-                    rules: { required: "Jenis Kerjasama is required" },
-                    colSize: 6,
-                },
-                {
-                    type : "select",
-                    id: "jenisKontrak",
-                    label: "Jenis Kontrak",
-                    name: "jenisKontrak",
-                    placeholder: "Jenis Kontrak",
-                    options: [
-                        { label: "Kontrak", value: "kontrak" },
-                        { label: "Non-Kontrak", value: "non-kontrak" },
-                    ],
-                    rules: { required: "Jenis Kontrak is required" },
-                    colSize: 6,
-                },
-                {
-                    type:"number",
-                    id: "jatuhTempo",
-                    label: "Jatuh Tempo",
-                    name: "jatuhTempo",
-                    placeholder: "Jatuh Tempo",
-                    rules: { required: "Jatuh Tempo is required" },
-                    colSize: 6,
-                },
-                {
-                    type:"text",
-                    id: "kriteriaPembiayaan",
-                    label: "Kriteria Pembiayaan",
-                    name: "kriteriaPembiayaan",
-                    placeholder: "Kriteria Pembiayaan",
-                    rules: { required: "Kriteria Pembiayaan is required" },
-                    colSize: 6,
-                },
-                {
-                    type:"select",
-                    id: "menjaminPasienOTC",
-                    label: "Menjamin Pasien OTC",
-                    name: "menjaminPasienOTC",
-                    placeholder: "Penjamin",
-                    options:[
-                        {label:"Ya",value:"Ya"},
-                        {label:"Tidak ",value:"tidak "},
-                    ],
-                    rules: { required: "Penjaminan Pasien is required" },
-                    colSize: 6,
-                 },
-                 {
-                    type: "text",
-                    id: "pinalty",
-                    label: "Pinalty",
-                    name: "pinalty",
-                    placeholder: "Pinalty",
-                    rules: { required: "Pinalty is required" },
-                    colSize: 6,
-                 }
-            ]
-        }
-  ]
-      if (isLoading) {
-        return (
-            <div className="iq-card">
-                <div className="card-body text-center">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+          type: "number",
+          label: "Masa Tunggu",
+          name: "masaTunggu",
+          placeholder: "Masukkan Masa Tunggu...",
+          colSize: 6,
+        },
+        {
+          type: "number",
+          label: "Maksimal Usia Pasien",
+          name: "maxUsiaPasien",
+          placeholder: "Masukkan Maksimal Usia Pasien...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "No Rekening Rumah Sakit",
+          name: "noRekRumahSakit",
+          placeholder: "Masukkan No Rekening Rumah Sakit...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Nama Bank",
+          name: "namaBank",
+          placeholder: "Masukkan Nama Bank...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Nama Bank Cabang",
+          name: "namaBankCabang",
+          placeholder: "Masukkan Nama Bank Cabang...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Term Of Payment",
+          name: "termOfPayment",
+          placeholder: "Masukkan Term Of Payment...",
+          colSize: 6,
+        },
+        {
+          type: "date",
+          label: "Batas Waktu Pembayaran",
+          name: "batasWaktuPembayaran",
+          colSize: 6,
+        },
+        {
+          type: "number",
+          label: "Penalti Terlambat Bayar",
+          name: "penaltiTerlambatBayar",
+          placeholder: "Masukkan Penalti Terlambat Bayar...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Nama Perusahaan Asuransi",
+          name: "namaPerusahaanAsuransi",
+          placeholder: "Masukkan Nama Perusahaan Asuransi...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Alamat Pusat",
+          name: "alamatPusat",
+          placeholder: "Masukkan Alamat Pusat...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Alamat Cabang",
+          name: "alamatCabang",
+          placeholder: "Masukkan Alamat Cabang...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "No Telepon",
+          name: "noTelepon",
+          placeholder: "Masukkan No Telepon...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Email Pusat",
+          name: "emailPusat",
+          placeholder: "Masukkan Email Pusat...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "No Hotline Darurat",
+          name: "noHotlineDarurat",
+          placeholder: "Masukkan No Hotline Darurat...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Nama Perwakilan",
+          name: "namaPerwakilan",
+          placeholder: "Masukkan Nama Perwakilan...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "No Telepon Perwakilan",
+          name: "noTeleponPerwakilan",
+          placeholder: "Masukkan No Telepon Perwakilan...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Email Perwakilan",
+          name: "emailPerwakilan",
+          placeholder: "Masukkan Email Perwakilan...",
+          colSize: 6,
+        },
+        {
+          type: "text",
+          label: "Jabatan Perwakilan",
+          name: "jabatanPerwakilan",
+          placeholder: "Masukkan Jabatan Perwakilan...",
+          colSize: 6,
+        },
+      ],
+    },
+  ];
 
-    if (!userData) {
-        return (
-            <div className="iq-card">
-                <div className="card-body">
-                    <div className="alert alert-danger">
-                        User not found or error loading data
-                    </div>
-                </div>
-            </div>
-        );
-    }
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataAsuransi?.[field.name] ?? "",
+    })),
+  }));
 
-    return (
-      <Fragment>
-        <DynamicForm
-            title="Edit Data Asuransi"
-            formConfig={formFields.map((section) => ({
-                ...section,
-                fields: section.fields.map((field) => ({
-                ...field,
-                value: userData[field.name] || "", // Data dari userData sesuai dengan key di name
-                })),
-            }))} 
-            onSubmit={handleSubmit}
-            backPath={`/MasterData/master-asuransi/daftar-asuransi`}
-            isAddMode={false}
-        />
-      </Fragment>
-    )
-}
+  return (
+    <Fragment>
+      <DynamicForm
+        title="Edit Data Asuransi"
+        formConfig={formFieldsWithData}
+        onSubmit={handleSubmit}
+        handleDelete={handleDelete}
+        userData={dataAsuransi}
+        backPath="/MasterData/master-asuransi/daftar-asuransi"
+        isAddMode={false}
+      />
+    </Fragment>
+  );
+};
 
-export default AsuransiEditPage
+export default AsuransiEditForm;

@@ -15,12 +15,31 @@ const PendaftaranPasienRadiologi = () => {
   const { setValue } = useForm();
   // fungsi untuk melakukan select provinsi
   const {
-    pasienSelectedProvinsi,
-    pasienFilteredKabupaten,
-    pasienFilteredKecamatan,
-    pasienFilteredKelurahan,
-    handleChange,
-  } = UseSelectWilayah(setValue, dataWilayah);
+    selectedNegara,
+    setSelectedNegara,
+    selectedProvinsi,
+    setSelectedProvinsi,
+    selectedKabupaten,
+    setSelectedKabupaten,
+    selectedKecamatan,
+    setSelectedKecamatan,
+    selectedKelurahan,
+    setSelectedKelurahan,
+    negaraOptions,
+    provinsiOptions,
+    kabupatenOptions,
+    kecamatanOptions,
+    kelurahanOptions,
+    negaraLoading,
+    provinsiLoading,
+    kabupatenLoading,
+    kecamatanLoading,
+    handleLoadMoreNegara,
+    handleLoadMoreProvinsi,
+    handleLoadMoreKabupaten,
+    handleLoadMoreKecamatan,
+    handleLoadMoreKelurahan
+  } = UseSelectWilayah();
 
   const formFields = [
     {
@@ -101,59 +120,102 @@ const PendaftaranPasienRadiologi = () => {
 
         {
           type: "select",
-          id: "pasien_provinsi",
-          label: "Provinsi Pasien",
-          name: "pasien_provinsi",
-          placeholder: "Pilih Provinsi",
-          options: dataWilayah.map((item) => ({
-            label: item.provinsi,
-            value: item.provinsi,
-          })),
-          rules: { required: "Provinsi is required" },
-          colSize: 6,
-          onChangeCallback: (value) => handleChange("provinsi", value),
+          id: "negaraId",
+          label: "Negara",
+          name: "negaraId",
+          placeholder: "Pilih Negara",
+          options: negaraOptions,
+          isLoading: negaraLoading,
+          onChange: (selected) => {
+            setSelectedNegara(selected?.value);
+            // Reset nilai provinsi dan kabupaten
+            setValue('provinsiId', null);
+            setValue('kabupatenKotaId', null);
+          },
+          onMenuScrollToBottom: handleLoadMoreNegara,
+          rules: { required: "Negara harus dipilih" },
+          colSize: 6
         },
         {
-          type: "select",
-          id: "pasien_kabupaten",
-          label: "Kabupaten Pasien",
-          name: "pasien_kabupaten",
-          placeholder: "Pilih Kabupaten",
-          options: pasienFilteredKabupaten.map((item) => ({
-            label: item.nama,
-            value: item.nama,
-          })),
-          rules: { required: "Kabupaten is required" },
-          colSize: 6,
-          onChangeCallback: (value) => handleChange("kabupaten", value),
+            type: "select",
+            id: "provinsiId",
+            label: "Provinsi",
+            name: "provinsiId",
+            placeholder: "Pilih Provinsi",
+            options: provinsiOptions,
+            isLoading: provinsiLoading,
+            onChange: (selected) => {
+                setSelectedProvinsi(selected?.value);
+                // Reset nilai kabupaten ketika provinsi berubah
+                setValue('kabupatenKotaId', null);
+            },
+            onMenuScrollToBottom: handleLoadMoreProvinsi,
+            disabled: !selectedNegara || (
+                negaraOptions.find(opt => opt.value === selectedNegara)?.label !== 'Indonesia'
+            ),
+            rules: { 
+                required: {
+                value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                message: "Provinsi harus dipilih untuk warga Indonesia"
+                }
+            },
+            colSize: 6
         },
         {
-          type: "select",
-          id: "pasien_kecamatan",
-          label: "Kecamatan Pasien",
-          name: "pasien_kecamatan",
-          placeholder: "Pilih Kecamatan",
-          options: pasienFilteredKecamatan.map((item) => ({
-            label: item.nama,
-            value: item.nama,
-          })),
-          rules: { required: "Kecamatan is required" },
-          colSize: 6,
-          onChangeCallback: (value) => handleChange("kecamatan", value),
+            type: "select",
+            id: "kabupatenKotaId",
+            label: "Kabupaten/Kota",
+            name: "kabupatenKotaId",
+            placeholder: "Pilih Kabupaten/Kota",
+            options: kabupatenOptions,
+            // isLoading: kabupatenLoading,
+            onChange: (selected) => setSelectedKabupaten(selected?.value),
+            onMenuScrollToBottom: handleLoadMoreKabupaten,
+            disabled: !selectedProvinsi,
+            rules: { 
+                required: {
+                value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                message: "Kabupaten/Kota harus dipilih untuk warga Indonesia"
+                }
+            },
+            colSize: 6
         },
         {
-          type: "select",
-          id: "pasien_kelurahan",
-          label: "Kelurahan Pasien",
-          name: "pasien_kelurahan",
-          placeholder: "Pilih Kelurahan",
-          options: pasienFilteredKelurahan.map((item) => ({
-            label: item,
-            value: item,
-          })),
-          rules: { required: "Kelurahan is required" },
-          colSize: 6,
-          onChangeCallback: (value) => handleChange("kelurahan", value),
+            type: "select",
+            id: "kecamatanId",
+            label: "Kecamatan",
+            name: "kecamatanId",
+            placeholder: "Pilih Kecamatan",
+            options: kecamatanOptions,
+            // isLoading: kecamatanLoading,
+            onChange: (selected) => setSelectedKecamatan(selected?.value),
+            onMenuScrollToBottom: handleLoadMoreKecamatan,
+            disabled: !selectedKabupaten,
+            rules: { 
+                required: {
+                    value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                    message: "Provinsi harus dipilih untuk warga Indonesia"
+                }
+            },
+            colSize: 6
+        },
+        {
+            type: "select",
+            id: "kelurahanId",
+            label: "Kelurahan",
+            name: "kelurahanId",
+            placeholder: "Pilih Kelurahan",
+            options: kelurahanOptions,
+            onChange: (selected) => setSelectedKelurahan(selected?.value),
+            onMenuScrollToBottom: handleLoadMoreKelurahan,
+            disabled: !selectedKecamatan,
+            rules: { 
+                required: {
+                    value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                    message: "Provinsi harus dipilih untuk warga Indonesia"
+                }
+            },
+            colSize: 6
         },
         {
           type: "textarea",

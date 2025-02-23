@@ -1,101 +1,125 @@
 "use client";
-import CustomSearchFilter from "@/components/features/CustomSearchComponen/Form-search-dashboard";
-import DataTable from "@/components/features/viewDataTables/dataTable";
+
 import React, { Fragment, memo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useBayi } from "@/lib/hooks/pasienBayi";
-import { deleteBayi } from "@/lib/hooks/pasienBayi/delete";
-import { Col } from "react-bootstrap";
+import { deleteBayi, useBayi } from "@/lib/hooks/admisi/pasienBayi";
+
+import { Col, Row, Spinner } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
+import ButtonNav from "@/components/ui/button-navigation";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+
 const DashboardPendaftaranBayi = memo(() => {
   const router = useRouter();
-  const { bayi, loading, error } = useBayi(); // Fetch promo data
-  const [filteredPatientsBayi, setfilteredPatientsBayi] = useState(bayi); // State to hold bayi data
-  // const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const { bayi, loading, error } = useBayi();
+  const [filteredPatientsBayi, setFilteredPatientsBayi] = useState(bayi);
 
-  // Sync filteredPatientsBayi with bayi after fetching
   useEffect(() => {
     if (bayi) {
-      setfilteredPatientsBayi(bayi);
+      setFilteredPatientsBayi(bayi);
     }
   }, [bayi]);
-
-  console.log("data bayi", bayi);
 
   const handleAdd = () => {
     router.push("/pendaftaran/pendaftaran-pasien-baru");
   };
+
   const handleEdit = (id) => {
     router.push(
       `/pendaftaran/pendaftaran-pasien-bayi/edit-pasien-bayi?id=${id}`
-    ); // Include the id in the query parameter
+    );
   };
 
   const handleDelete = async (id) => {
     try {
-      const response = await deleteBayi(id);
-      alert("Promo deleted successfully!");
+      await deleteBayi(id);
+      alert("Data berhasil dihapus!");
       window.location.reload();
     } catch (error) {
       console.error(error);
-      alert("Failed to update promo.");
+      alert("Gagal menghapus data.");
     }
   };
-
-  const headers = ["NO", "Nama Pasien Melahirkan", "Dokter", "Kelas", "Ruang"];
-
-  // Map bayi to match the DataTable structure
-  const members = filteredPatientsBayi.map((item, index) => ({
-    no: index + 1,
-    id: item.id, // Tambahkan id di sini
-    namaPasienMelahirkan: item.namaPasienMelahirkan,
-    dokter: item.dokter,
-    kelas: item.kelas,
-    ruang: item.ruang,
-  }));
 
   const methods = useForm();
 
   return (
     <FormProvider {...methods}>
-      <Fragment>
-        <Col lg="12" className=" iq-card p-4">
-          <div className="d-flex justify-content-between iq-card-header">
-            <h2 className="mb-3">Searching Pasien Bayi </h2>
-            <button
-              className="btn btn-dark my-3 mx-3"
-              onClick={() => window.location.reload()}
-            >
-              <i className="ri-refresh-line"></i>
-            </button>
-          </div>
-          <Col lg="12" className="mt-2">
-            <CustomSearchFilter
-              data={bayi}
-              setFilteredPatients={setfilteredPatientsBayi}
-              onFilteredPatients={filteredPatientsBayi}
-            />
-          </Col>
-        </Col>
-
-        {loading && <div>Loading...</div>}
-        {error && <div className="text-danger">{error}</div>}
-        {!loading && !error && (
-          <DataTable
-            headers={headers}
-            data={members}
-            onAdd={handleAdd}
-            id="id"
-            // onSave={handleSearch}
-            rowsPerPage={8}
-            actions={{
-              edit: (row) => handleEdit(row.id),
-              delete: (row) => handleDelete(row.id),
-            }}
-            editLabel="Registrasi"
+      <Col lg="12" className="iq-card p-4">
+        <div className="d-flex justify-content-between iq-card-header">
+          <h2 className="mb-3">Searching Pasien Bayi</h2>
+          <button
+            className="btn btn-dark my-3 mx-3"
+            onClick={() => window.location.reload()}
+          >
+            <i className="ri-refresh-line"></i>
+          </button>
+        </div>
+        <Col lg="12" className="mt-2">
+          <CustomSearchFilter
+            data={bayi}
+            setFilteredPatients={setFilteredPatientsBayi}
+            onFilteredPatients={filteredPatientsBayi}
           />
-        )}
-      </Fragment>
+        </Col>
+      </Col>
+
+      <div className="mt-3">
+        <Row>
+          <Col sm="12" className="p-3">
+            <div className="iq-card p-3">
+              <div className="iq-card-header d-flex justify-content-between">
+                <h4 className="card-title font-widest">Tabel Pasien Bayi</h4>
+                <ButtonNav
+                  path="/pendaftaran/pendaftaran-pasien-baru"
+                  label="Add Pasien Bayi"
+                  icon="ri-add-fill"
+                  size="sm"
+                  variant=""
+                  className="btn btn-sm iq-bg-success"
+                />
+              </div>
+              {loading && (
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ height: "200px" }}
+                >
+                  <Spinner animation="border" variant="primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                </div>
+              )}
+              {error && <div className="text-danger">{error}</div>}
+              {!loading && !error && (
+                <div className="iq-card-body">
+                  <CustomTableComponent
+                    data={filteredPatientsBayi}
+                    columns={[
+                      { key: "no", label: "No" },
+                      {
+                        key: "namaPasienMelahirkan",
+                        label: "Nama Pasien Melahirkan",
+                      },
+                      { key: "dokter", label: "Dokter" },
+                      { key: "kelas", label: "Kelas" },
+                      { key: "ruang", label: "Ruang" },
+                    ]}
+                    slugConfig={{
+                      textField: "namaPasienMelahirkan",
+                      idField: "id",
+                    }}
+                    basePath="/pendaftaran/pendaftaran-pasien-bayi/edit-pasien-bayi"
+                    itemsPerPage={8}
+                    onRemove={handleDelete}
+                    onEdit={handleEdit}
+                  />
+                </div>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </div>
     </FormProvider>
   );
 });
