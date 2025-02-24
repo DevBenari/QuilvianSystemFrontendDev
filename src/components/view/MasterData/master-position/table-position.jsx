@@ -13,7 +13,7 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 import {
   fetchPosition,
   fetchPositionWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position/positionSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position/PositionSlice";
 import LoadingScreen from "@/components/features/loading/loadingScreen";
 
 const TableDataPosition = () => {
