@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  QuilvianSystemFrontendDev:
+  quilvian-system-frontend-dev:
     build: .
     ports:
       - "3710:3710"
