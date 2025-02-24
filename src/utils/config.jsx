@@ -211,14 +211,15 @@ export const menus = {
           title: "Daftar Asuransi",
           href: "/MasterData/master-asuransi/daftar-asuransi",
         },
-        // {
-        //   title: "Asuransi Rawat Jalan",
-        //   href: "/master-data/asuransi-rawat-jalan",
-        // },
-        // {
-        //   title: "Asuransi Rawat Inap",
-        //   href: "/master-data/asuransi-rawat-inap",
-        // },
+      ],
+    },
+    {
+      title: "Master Position",
+      subItems: [
+        {
+          title: "Daftar Position",
+          href: "/MasterData/master-position/table-position",
+        },
       ],
     },
     {

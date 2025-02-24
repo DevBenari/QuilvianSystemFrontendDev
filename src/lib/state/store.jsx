@@ -20,6 +20,7 @@ import KategoriPeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices
 import PeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/PeralatanSlice";
 import DokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 import DokterPraktekSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
+import PositionSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position/positionSlice";
 
 const store = configureStore({
   reducer: {
@@ -44,6 +45,7 @@ const store = configureStore({
     Departement: DepartementSlice,
     KategoriPeralatan: KategoriPeralatanSlice,
     Peralatan: PeralatanSlice,
+    Position: PositionSlice,
   },
 });
 
