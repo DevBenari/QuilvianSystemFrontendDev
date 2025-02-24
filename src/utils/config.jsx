@@ -293,7 +293,7 @@ export const menus = {
         },
         {
           title: "Daftar Tarif Poliklinik",
-          href: "/MasterData/daftar-tarif-poliklinik",
+          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik/tarif-tindakan-poliklinik",
         },
       ],
     },

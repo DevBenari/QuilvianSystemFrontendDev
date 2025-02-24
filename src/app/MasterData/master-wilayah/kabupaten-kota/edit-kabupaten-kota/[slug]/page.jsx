@@ -127,7 +127,7 @@ const KabupatenKotaEditForm = ({ params }) => {
         formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         handleDelete={handleDelete}
-        backPath="/MasterData/master-wilayah/KabupatenKota/table-KabupatenKota"
+        backPath="/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
         isAddMode={false}
         userData={dataKabupatenKota}
       />
