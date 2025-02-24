@@ -2,21 +2,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-// 🔹 Fetch Position dengan pagination untuk CustomTableComponent
-// ✅ Fetch semua data Position dengan pagination
-export const fetchPosition = createAsyncThunk(
-  "Position/fetchData",
+// 🔹 Fetch UserActive dengan pagination untuk CustomTableComponent
+// ✅ Fetch semua data UserActive dengan pagination
+export const fetchUserActive = createAsyncThunk(
+  "UserActive/fetchData",
   async (
     { page = 1, perPage = 10, isInfiniteScroll = false },
     { rejectWithValue, getState }
   ) => {
     try {
-      const currentState = getState().Position;
+      const currentState = getState().UserActive;
       if (currentState.loadedPages.includes(page)) {
         console.log("Data already loaded for page:", page);
         return null;
       }
-      const response = await InstanceAxios.get(`/Position`, {
+      const response = await InstanceAxios.get(`/UserActive`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
@@ -36,12 +36,12 @@ export const fetchPosition = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch Position dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
-export const fetchPositionWithFilters = createAsyncThunk(
-  "Position/fetchWithFilters",
+// 🔹 Fetch UserActive dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
+export const fetchUserActiveWithFilters = createAsyncThunk(
+  "UserActive/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Position/paged`, {
+      const response = await InstanceAxios.get(`/UserActive/paged`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -62,12 +62,12 @@ export const fetchPositionWithFilters = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch data Position berdasarkan ID
-export const fetchPositionById = createAsyncThunk(
-  "Position/fetchById",
+// 🔹 Fetch data UserActive berdasarkan ID
+export const fetchUserActiveById = createAsyncThunk(
+  "UserActive/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Position/${id}`, {
+      const response = await InstanceAxios.get(`/UserActive/${id}`, {
         headers: getHeaders(),
       });
 
@@ -81,12 +81,12 @@ export const fetchPositionById = createAsyncThunk(
   }
 );
 
-// 🔹 Tambah Position
-export const createPosition = createAsyncThunk(
-  "Position/create",
+// 🔹 Tambah UserActive
+export const createUserActive = createAsyncThunk(
+  "UserActive/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Position`, data, {
+      const response = await InstanceAxios.post(`/UserActive`, data, {
         headers: getHeaders(),
       });
 
@@ -94,40 +94,40 @@ export const createPosition = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan Position "
+        error.response?.data || "Gagal menambahkan User Active "
       );
     }
   }
 );
 
-// 🔹 Update Position  berdasarkan ID
-export const updatePosition = createAsyncThunk(
-  "Position/update",
+// 🔹 Update UserActive  berdasarkan ID
+export const updateUserActive = createAsyncThunk(
+  "UserActive/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.put(`/Position/${id}`, data, {
+      const response = await InstanceAxios.put(`/UserActive/${id}`, data, {
         headers: getHeaders(),
       });
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui Position "
+        error.response?.data || "Gagal memperbarui User Active "
       );
     }
   }
 );
 
-export const deletePosition = createAsyncThunk(
-  "Position/delete",
+export const deleteUserActive = createAsyncThunk(
+  "UserActive/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.delete(`/Position/${id}`, {
+      const response = await InstanceAxios.delete(`/UserActive/${id}`, {
         headers: getHeaders(),
       });
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menghapus Position"
+        error.response?.data || "Gagal menghapus User Active"
       );
     }
   }
@@ -135,8 +135,8 @@ export const deletePosition = createAsyncThunk(
 
 // 🔹 Redux Slice
 // 🔹 Redux Slice
-const PositionSlice = createSlice({
-  name: "Position",
+const UserActiveSlice = createSlice({
+  name: "UserActive",
   initialState: {
     data: [],
     loadedPages: [],
@@ -149,12 +149,12 @@ const PositionSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch Position hanya dengan pagination (CustomTableComponent)
-      .addCase(fetchPosition.pending, (state) => {
+      // ✅ Fetch UserActive hanya dengan pagination (CustomTableComponent)
+      .addCase(fetchUserActive.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchPosition.fulfilled, (state, action) => {
+      .addCase(fetchUserActive.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
 
         state.loading = false;
@@ -163,7 +163,8 @@ const PositionSlice = createSlice({
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
-              (existingItem) => existingItem.positionId === newItem.positionId
+              (existingItem) =>
+                existingItem.userActiveId === newItem.userActiveId
             )
         );
 
@@ -180,66 +181,67 @@ const PositionSlice = createSlice({
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
       })
-      .addCase(fetchPosition.rejected, (state, action) => {
+      .addCase(fetchUserActive.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
-      // ✅ Fetch Position dengan search & filter (CustomSearchFilter)
-      .addCase(fetchPositionWithFilters.pending, (state) => {
+      // ✅ Fetch UserActive dengan search & filter (CustomSearchFilter)
+      .addCase(fetchUserActiveWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchPositionWithFilters.fulfilled, (state, action) => {
+      .addCase(fetchUserActiveWithFilters.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data?.rows || [];
         state.totalItems = action.payload.data?.totalRows || 0;
         state.totalPages = action.payload.data?.totalPages || 1;
         state.currentPage = action.payload.data?.currentPage || 1;
       })
-      .addCase(fetchPositionWithFilters.rejected, (state, action) => {
+      .addCase(fetchUserActiveWithFilters.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // Fetch By ID
-      .addCase(fetchPositionById.pending, (state) => {
+      .addCase(fetchUserActiveById.pending, (state) => {
         state.loading = true;
-        state.selectedPosition = null;
+        state.selectedUserActive = null;
       })
-      .addCase(fetchPositionById.fulfilled, (state, action) => {
+      .addCase(fetchUserActiveById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedPosition = action.payload;
+        state.selectedUserActive = action.payload;
       })
-      .addCase(fetchPositionById.rejected, (state, action) => {
+      .addCase(fetchUserActiveById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Tambah Position
-      .addCase(createPosition.fulfilled, (state, action) => {
+      // Tambah UserActive
+      .addCase(createUserActive.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
-      // Update Position
-      .addCase(updatePosition.fulfilled, (state, action) => {
+      // Update UserActive
+      .addCase(updateUserActive.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (Position) => Position.positionId === action.payload.positionId
+          (UserActive) =>
+            UserActive.userActiveId === action.payload.userActiveId
         );
         if (index !== -1) {
           state.data[index] = action.payload;
         }
       })
 
-      // Hapus Position
-      .addCase(deletePosition.fulfilled, (state, action) => {
+      // Hapus UserActive
+      .addCase(deleteUserActive.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (Position) => Position.positionId !== action.payload
+          (UserActive) => UserActive.userActiveId !== action.payload
         );
       });
   },
 });
 
-export default PositionSlice.reducer;
+export default UserActiveSlice.reducer;

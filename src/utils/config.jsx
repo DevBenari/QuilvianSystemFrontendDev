@@ -180,6 +180,15 @@ export const menus = {
   ],
   masterData: [
     {
+      title: "User Aktif",
+      subItems: [
+        {
+          title: "User Aktif",
+          href: "/MasterData/master-userActive/table-userActive",
+        },
+      ],
+    },
+    {
       title: "Keanggotaan",
       subItems: [
         {
@@ -339,7 +348,7 @@ export const menus = {
       ],
     },
     {
-      title: "Master Provinsi",
+      title: "Master Wilayah",
       subItems: [
         {
           title: "Data Provinsi",

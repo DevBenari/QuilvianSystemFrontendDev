@@ -35,6 +35,8 @@ const KabupatenKotaEditForm = ({ params }) => {
     }
   }, [selectedKabupatenKota]);
 
+  console.log("dataKabupatenKota", dataKabupatenKota);
+
   const { ProvinsiOptions, loadingProvinsi, handleLoadMoreProvinsi } =
     useWilayahData();
 
