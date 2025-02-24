@@ -1,45 +1,27 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  Container,
   Row,
   Col,
-  Card,
-  Table,
   Badge,
   Form,
   Button,
 } from "react-bootstrap";
 import {
-  FaUserMd,
-  FaUsers,
-  FaCalendarCheck,
-  FaChartBar,
-  FaSearch,
-  FaHospital,
-  FaClock,
+
   FaUserClock,
 } from "react-icons/fa";
 
-import Chart from "react-apexcharts";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import { aktivitasPasien, PasienRawatInap } from "@/utils/dataPasien";
+import dynamic from "next/dynamic";
 
-// Data grafik kunjungan rawat inap
-const visitDataInap = [
-  { name: "Jan", kunjungan: 540 },
-  { name: "Feb", kunjungan: 620 },
-  { name: "Mar", kunjungan: 580 },
-  { name: "Apr", kunjungan: 700 },
-  { name: "May", kunjungan: 650 },
-  { name: "Jun", kunjungan: 600 },
-];
 
 const DashboardRawatInap = () => {
   // State untuk teks pencarian dan data pasien rawat inap
-  const [searchText, setSearchText] = useState("");
-  const [filteredPatients, setFilteredPatients] = useState(PasienRawatInap);
+  // const [searchText, setSearchText] = useState("");
+  // const [filteredPatients, setFilteredPatients] = useState(PasienRawatInap);
 
   // Fungsi untuk menangani perubahan input pencarian
   const handleSearchChange = (e) => {
@@ -52,6 +34,8 @@ const DashboardRawatInap = () => {
     );
     setFilteredPatients(filtered);
   };
+
+  const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
   const chartOptions = {
     options: {
@@ -164,7 +148,7 @@ const DashboardRawatInap = () => {
               <div className="iq-card-body iq-bg-danger rounded-4">
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="rounded-circle iq-card-icon bg-danger">
-                    <i class="ri-door-open-fill"></i>
+                    <i className="ri-door-open-fill"></i>
                   </div>
                   <div className="text-end mx-2">
                     <h2 className="mb-0">
@@ -270,8 +254,8 @@ const DashboardRawatInap = () => {
                 <div>
                   <Row>
                     {aktivitasPasien.map((aktivitasPasien, index) => (
-                      <>
-                        <Col lg="6" key={index} className="p-3">
+                      <div key={index} >
+                        <Col lg="6" className="p-3">
                           <div>
                             <div>
                               <div className="mr-3">{aktivitasPasien.icon}</div>
@@ -295,7 +279,7 @@ const DashboardRawatInap = () => {
                             </div>
                           </div>
                         </Col>
-                      </>
+                      </div>
                     ))}
                   </Row>
                 </div>
@@ -310,7 +294,7 @@ const DashboardRawatInap = () => {
         </Row>
 
         {/* Daftar Pasien */}
-        <Row className="mb-4">
+        {/* <Row className="mb-4">
           <Col lg="12">
             <div className="iq-card ">
               <div className="iq-card-header d-flex justify-content-between">
@@ -347,7 +331,7 @@ const DashboardRawatInap = () => {
               </div>
             </div>
           </Col>
-        </Row>
+        </Row> */}
       </Col>
     </>
   );

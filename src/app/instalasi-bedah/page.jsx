@@ -9,7 +9,7 @@ import {
   FaClipboardList,
   FaClock,
 } from "react-icons/fa";
-import Chart from "react-apexcharts";
+import dynamic from "next/dynamic";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import { pasienBedah } from "@/utils/dataPasien";
 
@@ -53,6 +53,9 @@ const chartOptions = {
 const DashboardBedah = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredPatients, setFilteredPatients] = useState(pasienBedah);
+
+  const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+  
 
   // Fungsi untuk pencarian pasien
   const handleSearchChange = (e) => {
@@ -219,7 +222,7 @@ const DashboardBedah = () => {
         </Row>
 
         {/* Daftar Pasien Terjadwal */}
-        <Row className="mb-4">
+        {/* <Row className="mb-4">
           <Col lg="12">
             <div className="iq-card">
               <div className="iq-card-header d-flex justify-content-between">
@@ -247,7 +250,7 @@ const DashboardBedah = () => {
               </div>
             </div>
           </Col>
-        </Row>
+        </Row> */}
       </Col>
     </>
   );

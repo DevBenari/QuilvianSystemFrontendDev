@@ -68,7 +68,7 @@ const DynamicForm = memo(
         });
         methods.reset(values);
       }
-    }, [userData]);
+    }, [userData, methods, formConfig]);
 
     const renderField = (field) => {
       const {
