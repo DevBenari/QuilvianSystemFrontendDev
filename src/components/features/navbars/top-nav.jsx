@@ -15,7 +15,7 @@ const TopNav = ({ module }) => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
         setListWidth(window.innerWidth - 40); // Untuk layar kecil, buat lebih fleksibel
-      } else if (window.innerWidth <= 1280) {
+      } else if (window.innerWidth <= 1300) {
         setListWidth(160);
       } else if (window.innerWidth <= 1440) {
         setListWidth(175);
@@ -90,7 +90,7 @@ const TopNav = ({ module }) => {
                     href={subItem.href}
                     style={{
                       textDecoration: "none",
-                      fontSize: "12px",
+                      fontSize: "14px",
                       color: "#007bff",
                     }}
                   >
@@ -106,9 +106,8 @@ const TopNav = ({ module }) => {
   };
 
   return (
-    <div className={`topnav-container ${isFixed ? "fixed-topnav" : ""}`}>
-      <h4 className="topnav-title">Top Menu</h4>
-      <div className="topnav-scroll">
+    <>
+      <div>
         <List
           width={listWidth} // Menggunakan state dinamis
           height={window.innerHeight - 180} // Dikurangi agar footer tetap terlihat
@@ -116,9 +115,19 @@ const TopNav = ({ module }) => {
           rowHeight={cache.rowHeight}
           deferredMeasurementCache={cache}
           rowRenderer={rowRenderer}
+          style={{
+            position: "relative",
+            backgroundColor: "white", // Warna background
+            borderRadius: "5px", // Membuat sudut membulat
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Efek bayangan
+            padding: "8px", // Padding dalam List
+            border: "1px solid #e0e0e0", // Border tipis
+            // height: " calc(100vh - 140px)",
+            marginBottom: "10px",
+          }}
         />
       </div>
-    </div>
+    </>
   );
 };
 

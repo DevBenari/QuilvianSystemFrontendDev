@@ -10,14 +10,14 @@ import "react-virtualized/styles.css";
 
 const Sidemenu = ({ module }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [listWidth, setListWidth] = useState(300); // Default width
-  const [listHeight, setListHeight] = useState(300); // Default height
+  const [listWidth, setListWidth] = useState(200); // Default width
+  const [listHeight, setListHeight] = useState(400); // Default height
   const menu = menus[module] || [];
   const listRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 1024) {
         setListWidth(window.innerWidth - 40); // Untuk layar kecil, buat lebih fleksibel
       } else if (window.innerWidth <= 1280) {
         setListWidth(160);
@@ -104,9 +104,9 @@ const Sidemenu = ({ module }) => {
   };
 
   return (
-    <div className="sidemenu-container relative">
+    <div className="sidemenu">
       {/* Navbar */}
-      <div className="bg-white shadow-sm p-2 flex items-center">
+      <div>
         <button
           className="border-0 hamburger-menu text-center"
           onClick={toggleMenu}
@@ -121,12 +121,12 @@ const Sidemenu = ({ module }) => {
       ) : (
         <Transition
           show={isOpen}
-          // enter="transition-opacity duration-300"
-          // enterFrom="opacity-0"
-          // enterTo="opacity-100"
-          // leave="transition-opacity duration-200"
-          // leaveFrom="opacity-100"
-          // leaveTo="opacity-0"
+          enter="transition-opacity duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
           <div
             ref={listRef}
@@ -142,10 +142,12 @@ const Sidemenu = ({ module }) => {
               style={{
                 position: "absolute",
                 backgroundColor: "white", // Warna background
-                borderRadius: "8px", // Membuat sudut membulat
+                borderRadius: "5px", // Membuat sudut membulat
                 boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Efek bayangan
-                padding: "10px", // Padding dalam List
+                padding: "8px", // Padding dalam List
                 border: "1px solid #e0e0e0", // Border tipis
+                // height: " calc(100vh - 140px)",
+                marginBottom: "10px",
               }}
             />
           </div>
