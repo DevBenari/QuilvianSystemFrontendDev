@@ -234,15 +234,10 @@ const KioskPendaftaranPasien = memo(() => {
                     id: "foto",
                     name: "foto",
                     label: "Upload Foto Pasien",
-                    customRender: ({ field }) => (
-                        <UploadPhotoField
-                            label="Upload Foto"
-                            name="foto"
-                            rules={{ required: "Foto pasien wajib diunggah" }}
-                        />
-                    ),
+                    rules: { required: "Foto pasien wajib diisi" },
+                    customRender: (props) => <UploadPhotoField {...props} />,
                     colSize: 6,
-                },
+                  },
             ]
         },
         {
@@ -628,27 +623,44 @@ const KioskPendaftaranPasien = memo(() => {
 
 
     const handleSubmit = (data) => {
+        // Create a new FormData object
         const formData = new FormData();
+        
+        // Add all text fields to FormData
+        Object.keys(data).forEach((key) => {
+            // Skip the file field, we'll handle it separately
+            if (key !== 'foto' && data[key] !== null && data[key] !== undefined) {
+                formData.append(key, data[key]);
+            }
+        });
     
-    // Menambahkan data form ke FormData
-    Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-    });
-
-    // Menambahkan foto jika ada
-    if (selectImage) {
-        formData.append("fotoPasien", selectImage);
-    }
-
-    console.log("Data yang dikirim ke backend:", formData);
+        // Add the file if it exists
+        if (data.foto instanceof File) {
+            formData.append("fotoPasien", data.foto);
+        }
+    
         console.log("Data yang dikirim ke backend:", data);
+        
+        // Dispatch the action with FormData
         dispatch(AddPasienSlice(formData))
             .then((result) => {
                 if (AddPasienSlice.fulfilled.match(result)) {
                     console.log("Data pasien berhasil dikirim:", result.payload);
                     alert("Data pasien berhasil dikirim!");
+                    
+                    const enhancedData = {
+                        ...data,
+                        provinsiId: data.provinsiId || null, 
+                        noRekamMedis: `RM-${new Date().getTime()}`,
+                        queueNumber: `A-${Math.floor(Math.random() * 100)}`,
+                        registrationDate: new Date().toLocaleDateString('id-ID'),
+                        noIdentitas: `${data.noIdentitas}`,
+                    };
+    
+                    setSubmittedData(enhancedData);
+                    setIsSubmitted(true);
                 } else {
-                    console.error("Gagal mengirim data:", result.error.message);
+                    console.error("Gagal mengirim data:", result.error?.message);
                     alert("Gagal mengirim data pasien!");
                 }
             })
@@ -656,18 +668,6 @@ const KioskPendaftaranPasien = memo(() => {
                 console.error("Error saat dispatch:", error);
                 alert("Terjadi kesalahan saat mengirim data pasien!");
             });
-
-        const enhancedData = {
-            ...data,
-            provinsiId: data.provinsiId || null, 
-            noRekamMedis: `RM-${new Date().getTime()}`,
-            queueNumber: `A-${Math.floor(Math.random() * 100)}`,
-            registrationDate: new Date().toLocaleDateString('id-ID'),
-            noIdentitas: `${data.noIdentitas}`,
-        };
-
-        setSubmittedData(enhancedData);
-        setIsSubmitted(true);
     };
 
       const handlePrint = (type) => {

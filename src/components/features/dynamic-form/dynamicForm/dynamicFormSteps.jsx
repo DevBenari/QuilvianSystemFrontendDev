@@ -132,12 +132,12 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     };
 
     if (type === "custom" && typeof customRender === "function") {
-    return (
-      <div key={id} className={className}>
-        {customRender({ field, commonProps, methods })}
-      </div>
-    );
-  }
+      return (
+        <Col md={colSize || 12} key={id || name} className={className}>
+          {customRender({ field, commonProps, methods })}
+        </Col>
+      );
+    }
 
     const Component = fieldComponents[field.type];
     if (!Component) {

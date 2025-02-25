@@ -38,13 +38,20 @@ export const fetchPasienWithFilters = createAsyncThunk("pasien/fetchWithFilters"
 } )
 
 // Tambah pasien baru
+// Tambah pasien baru
 export const AddPasienSlice = createAsyncThunk(
   "pasien/addPasien",
-  async (data, { rejectWithValue }) => {
-    
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post("/PendaftaranPasienBaru", data, {
-        headers: getHeaders()
+      // Ensure we're using the right headers for multipart/form-data
+      const headers = {
+        ...getHeaders(),
+        // Remove Content-Type so the browser can set it with the proper boundary for FormData
+        'Content-Type': undefined 
+      };
+      
+      const response = await InstanceAxios.post("/PendaftaranPasienBaru", formData, {
+        headers: headers
       });
 
       return response.data;
