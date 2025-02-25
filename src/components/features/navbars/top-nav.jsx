@@ -7,7 +7,7 @@ import "react-virtualized/styles.css";
 
 const TopNav = ({ module }) => {
   const [isFixed, setIsFixed] = useState(false);
-  const [listWidth, setListWidth] = useState(230); // Default width
+  const [listWidth, setListWidth] = useState(240); // Default width
 
   const menu = menus[module] || [];
 
@@ -15,14 +15,14 @@ const TopNav = ({ module }) => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
         setListWidth(window.innerWidth - 40); // Untuk layar kecil, buat lebih fleksibel
-      } else if (window.innerWidth <= 1024) {
-        setListWidth(180);
-      } else if (window.innerWidth <= 1500) {
+      } else if (window.innerWidth <= 1280) {
+        setListWidth(160);
+      } else if (window.innerWidth <= 1440) {
         setListWidth(175);
       } else if (window.innerWidth <= 1700) {
         setListWidth(190);
       } else {
-        setListWidth(230);
+        setListWidth(240);
       }
     };
 

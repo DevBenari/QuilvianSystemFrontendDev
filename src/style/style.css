@@ -1013,6 +1013,70 @@ a:hover {
 }
 
 /*---------------------------------------------------------------------
+                         SideMenu Styling
+  -----------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------
+                         SideMenu Styling
+  -----------------------------------------------------------------------*/
+
+/* ------------------ Side Menu Styling ------------------ */
+.sidemenu-container {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Tombol Hamburger */
+.hamburger-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Menu Sidebar (Mobile) */
+
+/* Virtualized List */
+.virtualized-list {
+  padding: 10px;
+}
+
+/* Item Menu */
+.menu-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  background-color: white;
+}
+
+.menu-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Submenu */
+.submenu {
+  list-style: none;
+  padding-left: 15px;
+  margin-top: 5px;
+}
+
+.submenu li {
+  padding: 5px 0;
+}
+
+.submenu li a {
+  text-decoration: none;
+  font-size: 12px;
+  color: #007bff;
+}
+
+/*---------------------------------------------------------------------
                               Top Nav
   -----------------------------------------------------------------------*/
 /* Styling untuk TopNav agar selalu terlihat */
@@ -1025,10 +1089,7 @@ a:hover {
   border-radius: 8px;
   overflow: hidden;
   padding: 8px;
-  position: absolute; /* Mengganti dari fixed ke absolute */
-  top: 120px; /* Menyesuaikan dengan navbar */
-  left: 280px; /* Posisi tetap di layar besar */
-  z-index: 1000;
+  position: relative; /* Mengganti dari fixed ke absolute */
 }
 
 /* Judul menu */
@@ -1063,28 +1124,24 @@ a:hover {
 @media screen and (max-width: 1700px) {
   .topnav-container {
     width: 200px;
-    left: 280px;
   }
 }
 
 @media screen and (max-width: 1440px) {
   .topnav-container {
     width: 180px;
-    left: 280px;
   }
 }
 
-@media screen and (max-width: 1280px) {
+@media screen and (max-width: 1300px) {
   .topnav-container {
-    width: 200px;
-    left: 180px;
+    width: 170px;
   }
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1000px) {
   .topnav-container {
-    width: 180px;
-    left: 160px;
+    width: 120px;
   }
 }
 

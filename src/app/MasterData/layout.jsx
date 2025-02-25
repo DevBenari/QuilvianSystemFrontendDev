@@ -5,7 +5,7 @@ import UseIsMobile from "@/lib/hooks/useIsMobile";
 import { Col, Row } from "react-bootstrap";
 
 const LayoutMasterData = ({ children }) => {
-  const isMobile = UseIsMobile(1366);
+  const isMobile = UseIsMobile(1024);
   return (
     <div>
       <Row>

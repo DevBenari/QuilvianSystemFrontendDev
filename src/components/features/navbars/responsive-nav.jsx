@@ -8,7 +8,7 @@ const ResponsiveNav = ({ module }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 1366); // Tentukan apakah ukuran layar < 1500px
+      setIsMobile(window.innerWidth < 768); // Tentukan apakah ukuran layar < 1500px
     };
 
     // Initial check and event listener
