@@ -9,6 +9,7 @@ NOTE: This file contains the styling for responsive Template.
 [  Table of contents  ]
 ================================================
 
+
 :: General
 :: Badge
 :: Media Support
@@ -817,7 +818,9 @@ a:hover {
 
 /* Kiosk Page Styles */
 .kiosk-page {
-  margin-top: 70px;
+  border: white 1px solid;
+  padding-bottom: 100px;
+  margin-top: 120px;
   margin-left: 1px;
   height: 100%;
   z-index: 10;
@@ -866,6 +869,13 @@ a:hover {
 .service-card .card-text {
   color: rgba(255, 255, 255, 0.8);
 }
+.btn-kembali {
+  position: absolute;
+  margin-top: 30px;
+  right: 30px;
+  z-index: 100;
+}
+
 
 .service-icon {
   margin-right: 1rem;

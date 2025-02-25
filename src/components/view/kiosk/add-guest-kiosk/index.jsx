@@ -18,6 +18,8 @@ import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/Mas
 import { useRouter } from 'next/navigation';
 import useAgamaData from '@/lib/hooks/useAgamaData';
 import useSelectWilayah from '@/lib/hooks/useSelectWilayah';
+import ImageUploader from '@/components/ui/uploadPhoto-field';
+import UploadPhotoField from '@/components/ui/uploadPhoto-field';
 // import UseSelectWilayah from '@/lib/hooks/useSelectWilayah';
 
 const KioskPendaftaranPasien = memo(() => {
@@ -26,6 +28,7 @@ const KioskPendaftaranPasien = memo(() => {
     const [submittedData, setSubmittedData] = useState(null);
     const [selectedPrintType, setSelectedPrintType] = useState(null);
     const router = useRouter();
+    const [selectImage,setSelectImage] = useState(null)
     // fungsi untuk melakukan select provinsi
     const {
         selectedNegara,
@@ -225,7 +228,21 @@ const KioskPendaftaranPasien = memo(() => {
                     placeholder: "Pendidikan Terakhir",
                     options: pendidikanData.map(item => ({ label: item.namaPendidikan, value: item.pendidikanId })) || [],
                     colSize: 6
-                }
+                },
+                {
+                    type: "custom",
+                    id: "foto",
+                    name: "foto",
+                    label: "Upload Foto Pasien",
+                    customRender: ({ field }) => (
+                        <UploadPhotoField
+                            label="Upload Foto"
+                            name="foto"
+                            rules={{ required: "Foto pasien wajib diunggah" }}
+                        />
+                    ),
+                    colSize: 6,
+                },
             ]
         },
         {
@@ -611,8 +628,21 @@ const KioskPendaftaranPasien = memo(() => {
 
 
     const handleSubmit = (data) => {
+        const formData = new FormData();
+    
+    // Menambahkan data form ke FormData
+    Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+    });
+
+    // Menambahkan foto jika ada
+    if (selectImage) {
+        formData.append("fotoPasien", selectImage);
+    }
+
+    console.log("Data yang dikirim ke backend:", formData);
         console.log("Data yang dikirim ke backend:", data);
-        dispatch(AddPasienSlice(data))
+        dispatch(AddPasienSlice(formData))
             .then((result) => {
                 if (AddPasienSlice.fulfilled.match(result)) {
                     console.log("Data pasien berhasil dikirim:", result.payload);

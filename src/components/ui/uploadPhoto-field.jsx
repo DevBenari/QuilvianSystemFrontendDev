@@ -3,92 +3,75 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { Form, Image } from 'react-bootstrap';
-import { useFormContext, Controller, set } from 'react-hook-form';
+import { useFormContext, Controller } from 'react-hook-form';
 
-
-const UploadPhotoField = ({ label, name, rules, ...props }) => {
-  const {control, formState: {errors}, setValue} = useFormContext();
-  const [isWebcamActive, setIsWebcamActive] = useState(false);
-  const [image, setImage] = useState(null);
-
-  const webcamRef = useRef(null);
-  const capturePhoto = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setImage(imageSrc);
-    setValue(name, imageSrc);
-  }
+const UploadPhotoField = ({ label, name, rules }) => {
+  const { control, formState: { errors }, setValue } = useFormContext();
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-        setValue(name, reader.result); // Update react-hook-form value with the file
-      };
-      reader.readAsDataURL(file);
+
+    if (!file) return;
+
+    // ✅ Validasi tipe dan ukuran file
+    if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+      alert('Hanya file JPG, JPEG, dan PNG yang diperbolehkan');
+      return;
     }
+    if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      alert('Ukuran file maksimal 2MB');
+      return;
+    }
+
+    console.log("File dipilih:", file); // ✅ Debugging: Pastikan file dipilih
+
+    // ✅ Simpan File ke react-hook-form
+    setValue(name, file);
+
+    // ✅ Tampilkan preview gambar
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
+
   return (
     <Form.Group className="mb-3">
-      {/* Label Input */}
       {label && <Form.Label className='m-2'>{label}</Form.Label>}
 
-      {/* Controller for Uploading Photo */}
       <Controller
         name={name}
         control={control}
         rules={rules}
         render={({ field }) => (
           <>
-            {/* Toggle between Webcam and File Upload */}
-            {!isWebcamActive ? (
-              <>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  {...field} // Bind form field to input
-                />
-                <button className='btn btn-success' type="button" onClick={() => setIsWebcamActive(true)}>
-                  Capture from Webcam
-                </button>
-              </>
-            ) : (
-              <>
-                <Webcam
-                  audio={false}
-                  ref={webcamRef}
-                  screenshotFormat="image/jpeg"
-                  width="100%"
-                />
-                <button className="btn btn-secondary" type="button" onClick={capturePhoto}>
-                  Take Photo
-                </button>
-                <button className="btn btn-primary" type="button" onClick={() => setIsWebcamActive(false)}>
-                  Upload via File
-                </button>
-              </>
-            )}
-
-            {/* Display the image preview */}
-            {image && (
-              <div className="image-preview">
-                <Image src={image} alt="Preview" width="100%" />
+            <input
+              type="file"
+              accept="image/jpeg, image/jpg, image/png"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+            />
+            {/* Preview Gambar */}
+            {imagePreview && (
+              <div className="mt-2">
+                <Image src={imagePreview} alt="Preview" width="100px" height="100px" />
               </div>
             )}
           </>
         )}
       />
 
-      {/* Display Error Message */}
+      {/* Tampilkan Error */}
       {errors[name] && (
         <Form.Control.Feedback type="invalid">
           {errors[name]?.message}
         </Form.Control.Feedback>
       )}
     </Form.Group>
-  )
-}
+  );
+};
 
-export default UploadPhotoField
+export default UploadPhotoField;

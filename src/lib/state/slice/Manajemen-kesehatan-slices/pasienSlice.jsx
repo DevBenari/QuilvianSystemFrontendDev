@@ -1,6 +1,7 @@
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 // Get daftar pasien
 export const fetchPasienSlice = createAsyncThunk("pasien/fetchPasien", async ({page = 1, perPage = 10}, { rejectWithValue }) => {
@@ -40,9 +41,10 @@ export const fetchPasienWithFilters = createAsyncThunk("pasien/fetchWithFilters"
 export const AddPasienSlice = createAsyncThunk(
   "pasien/addPasien",
   async (data, { rejectWithValue }) => {
+    
     try {
       const response = await InstanceAxios.post("/PendaftaranPasienBaru", data, {
-        headers: getHeaders(),
+        headers: getHeaders()
       });
 
       return response.data;

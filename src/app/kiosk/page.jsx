@@ -8,7 +8,7 @@ const ServiceDashboard = () => {
 
   const services = [
     {
-      id: 'new-patient',
+      id: 'pasien-baru',
       title: 'Pendaftaran Pasien Baru',
       description: 'Daftar sebagai pasien baru di rumah sakit kami',
       icon: '👤',
@@ -16,37 +16,14 @@ const ServiceDashboard = () => {
       variant: 'primary'
     },
     {
-      id: 'poli',
-      title: 'Layanan Poli',
-      description: 'Pendaftaran layanan poli spesialis',
+      id: 'pasien-lama',
+      title: 'Pendaftaran Pasien Lama',
+      description: 'pilih layanan sebagai pasien rumah sakit kami',
       icon: '🏥',
-      path: '/kiosk/guest-layanan-poli',
+      path: '/kiosk/regist-pasien-lama',
       variant: 'success'
     },
-    {
-      id: 'lab',
-      title: 'Laboratorium',
-      description: 'Pemeriksaan laboratorium dan cek darah',
-      icon: '🧪',
-      path: '/kiosk/kiosk-laboratorium',
-      variant: 'info'
-    },
-    {
-      id: 'radiology',
-      title: 'Radiologi',
-      description: 'Layanan X-ray, CT Scan, MRI, dan USG',
-      icon: '📡',
-      path: '/kiosk/kiosk-radiologi',
-      variant: 'warning'
-    },
-    {
-      id: 'surgery',
-      title: 'Operasi',
-      description: 'Jadwal dan informasi layanan operasi',
-      icon: '⚕️',
-      path: '/operasi',
-      variant: 'danger'
-    }
+   
   ];
 
   const handleServiceClick = (path) => {
@@ -64,7 +41,7 @@ const ServiceDashboard = () => {
           </div>
           <h1 className="dashboard-title">Selamat Datang di Layanan Rumah Sakit</h1>
           
-          <Row className="g-4">
+          <Row className="g-4 d-flex justify-content-center align-items-center mt-5">
             {services.map((service) => (
               <Col key={service.id} xs={12} md={6} lg={4}>
                 <Card
@@ -84,7 +61,7 @@ const ServiceDashboard = () => {
                       </Card.Text>
                     </div>
                   </Card.Body>
-                  <div className={`card-footer bg-${service.variant} bg-opacity-10`}>
+                  <div className={`card-footer bg-${service.variant} bg-opacity-10`} >
                     <small>Klik untuk melanjutkan</small>
                   </div>
                 </Card>

@@ -14,8 +14,7 @@ const DashboardOperasi = () => {
   const [filteredOperations, setFilteredOperations] = useState(jadwalOperasi);
 
   const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-    const [page,setPage] = useState(1);
-    const perPage = 10;
+   
   
 
 

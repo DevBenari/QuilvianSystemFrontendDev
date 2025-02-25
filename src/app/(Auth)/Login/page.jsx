@@ -74,7 +74,7 @@ const LoginPage = () => {
   return (
     <FormProvider {...methods}>
       <section className="sign-in-page">
-        <Container className="sign-in-page-bg mb-md-5 mb-3 p-0">
+        <Container className=" sign-in-page-bg mb-md-5 mb-3 p-0">
           <Row className="row no-gutters">
             <Col md="6" className="text-center">
               <div className="sign-in-detail text-white">
