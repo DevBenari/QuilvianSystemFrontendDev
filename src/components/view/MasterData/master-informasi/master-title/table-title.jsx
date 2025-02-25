@@ -11,6 +11,7 @@ import {
   fetchTitle,
   fetchTitleWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
 
 const TableDataTitle = () => {
   const methods = useForm();

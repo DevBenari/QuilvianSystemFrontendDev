@@ -1,7 +1,7 @@
-'use client'
+"use client";
 import { useState, useEffect } from "react";
 
-const UseIsMobile = (breakpoint = 1500) => {
+const UseIsMobile = (breakpoint = 1366) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {

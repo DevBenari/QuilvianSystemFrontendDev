@@ -39,7 +39,7 @@ const LoginPage = () => {
     if (result.meta.requestStatus === "fulfilled") {
       showAlert.success("Anda Berhasil Login", () => {
         setTimeout(() => {
-          router.push("/dashboard"); // Redirect ke halaman dashboard setelah login
+          router.push("/"); // Redirect ke halaman dashboard setelah login
         }, 500);
       });
     } else {

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useEffect, useState } from "react";
 import TopNav from "@/components/features/navbars/top-nav";
 import Sidemenu from "@/components/features/navbars/side-menu";
@@ -8,7 +8,7 @@ const ResponsiveNav = ({ module }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 1500); // Tentukan apakah ukuran layar < 1500px
+      setIsMobile(window.innerWidth < 1366); // Tentukan apakah ukuran layar < 1500px
     };
 
     // Initial check and event listener
