@@ -4,11 +4,10 @@ import { useRouter } from 'next/navigation';
 import CarouselImage from "./carousel-image";
 import KioskPasienLamaPage from "../pasien-lama";
 
-
 const DashboardKiosk = () => {
     const router = useRouter();
     const [activeContent, setActiveContent] = useState('carousel');
-    const [activeCard, setActiveCard] = useState(null); // Add state to track which card is active
+    const [activeCard, setActiveCard] = useState(null);
 
     const services = [
         {
@@ -27,64 +26,61 @@ const DashboardKiosk = () => {
             action: () => setActiveContent('pasien-lama'),
             variant: 'success'
         },
-    
     ];
 
     const handleServiceClick = (service) => {
-        setActiveCard(service.id); // Set the active card when clicked
+        setActiveCard(service.id);
         if (service.action) {
             service.action();
         }
     };
 
-    // Function to go back to the carousel view
     const handleBackToMainContent = () => {
         setActiveContent('carousel');
-        setActiveCard(null); // Reset active card when returning to main content
+        setActiveCard(null);
     };
 
     return (
         <div className="mx-2">
             <div className="iq-card container-kiosk">
-                <div className=" top-kiosk mx-2" >
+                <div className="top-kiosk mx-2">
                     <div className="m-2">
                         <div className="kiosk-logo">
-                            <Image src="/Images/logo_mmc.png" className="img-fluid " alt="logo" />
+                            <Image src="/Images/logo_mmc.png" className="img-fluid" alt="logo" />
                         </div>
                         <h1 className="dashboard-title mt-2">SELAMAT DATANG DI LAYANAN KIOSK RUMAH SAKIT</h1>
                     </div>
                 </div>
-                <div className=" kiosk-middle px-2 mx-4 pb-5">
-                    <div className="d-flex justify-content-between p-3 ml-4" >
-                        <div className="mt-5 ">
-                        {services.map((service) => (
-                            <Col key={service.id} xs={12} md={6} lg={12} className="mb-5 mx-4">
-                                <Card
-                                    className="service-card bg-white"
-                                    onClick={() => handleServiceClick(service)}
-                                    style={{ 
-                                        backgroundColor: activeCard === service.id ? '#e9e9e9' : 'rgba(255, 255, 255, 0.1)' 
-                                    }}
-                                >
-                                <Card.Body className="d-flex align-items-center ">
-                                    <div
-                                        className={`service-icon bg-${service.variant}`}
+                <div className="kiosk-middle px-2 mx-4 pb-5">
+                    {/* Modified to keep row layout but with proper sizing */}
+                    <div className="d-flex p-3">
+                        <div className="mt-5">
+                            {services.map((service) => (
+                                <div key={service.id} className="mb-4">
+                                    <Card
+                                        className="service-card bg-white"
+                                        onClick={() => handleServiceClick(service)}
+                                        style={{ 
+                                            backgroundColor: activeCard === service.id ? '#e9e9e9' : 'rgba(255, 255, 255, 0.1)' 
+                                        }}
                                     >
-                                        {service.icon}
-                                    </div>
-                                    <div>
-                                        <Card.Title>{service.title}</Card.Title>
-                                        <Card.Text>
-                                            {service.description}
-                                        </Card.Text>
-                                    </div>
-                                </Card.Body>
-                                <div className={`card-footer bg-${service.variant} bg-opacity-10`} >
-                                    <small>Klik untuk melanjutkan</small>
+                                        <Card.Body className="d-flex align-items-center">
+                                            <div className={`service-icon bg-${service.variant}`}>
+                                                {service.icon}
+                                            </div>
+                                            <div>
+                                                <Card.Title>{service.title}</Card.Title>
+                                                <Card.Text>
+                                                    {service.description}
+                                                </Card.Text>
+                                            </div>
+                                        </Card.Body>
+                                        <div className={`card-footer bg-${service.variant} bg-opacity-10`}>
+                                            <small>Klik untuk melanjutkan</small>
+                                        </div>
+                                    </Card>
                                 </div>
-                                </Card>
-                            </Col>
-                        ))}
+                            ))}
                         </div>
                         <div id="kiosk-content" className="kiosk-content">
                             {activeContent === 'carousel' ? (
@@ -92,11 +88,11 @@ const DashboardKiosk = () => {
                                     <CarouselImage />
                                 </div>
                             ) : activeContent === 'pasien-lama' ? (
-                                <div className="pendaftaran-container ">
+                                <div className="pendaftaran-container">
                                     <Button 
                                         variant="secondary" 
                                         onClick={handleBackToMainContent}
-                                        className="mr-3  "
+                                        className="mr-3 mb-3"
                                     >
                                         ← Kembali ke Halaman Utama
                                     </Button>
@@ -104,11 +100,11 @@ const DashboardKiosk = () => {
                                 </div>
                             ) : null}
                         </div>
-                        
                     </div>
                 </div>
             </div>
         </div>
     )
 }
+
 export default DashboardKiosk
