@@ -110,20 +110,19 @@ const TopNav = ({ module }) => {
       <div>
         <List
           width={listWidth} // Menggunakan state dinamis
-          height={window.innerHeight - 180} // Dikurangi agar footer tetap terlihat
+          height={window.innerHeight - 220} // Dikurangi agar footer tetap terlihat
           rowCount={menu.length}
           rowHeight={cache.rowHeight}
           deferredMeasurementCache={cache}
           rowRenderer={rowRenderer}
           style={{
-            position: "relative",
+            position: "fixed",
             backgroundColor: "white", // Warna background
             borderRadius: "5px", // Membuat sudut membulat
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Efek bayangan
             padding: "8px", // Padding dalam List
             border: "1px solid #e0e0e0", // Border tipis
             // height: " calc(100vh - 140px)",
-            marginBottom: "10px",
           }}
         />
       </div>

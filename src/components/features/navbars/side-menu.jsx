@@ -4,38 +4,31 @@ import React, { useEffect, useRef, useState } from "react";
 import { List, CellMeasurer, CellMeasurerCache } from "react-virtualized";
 import { menus } from "@/utils/config";
 import Link from "next/link";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { Transition } from "@headlessui/react";
 import "react-virtualized/styles.css";
+import UseIsMobile from "@/lib/hooks/useIsMobile";
 
 const Sidemenu = ({ module }) => {
+  const isMobile = UseIsMobile(1000); // Hanya aktif di layar kecil
   const [isOpen, setIsOpen] = useState(false);
-  const [listWidth, setListWidth] = useState(200); // Default width
-  const [listHeight, setListHeight] = useState(400); // Default height
+
   const menu = menus[module] || [];
   const listRef = useRef(null);
+  console.log("Module yang dikirim:", module);
+  console.log("Data menu yang diterima:", menu);
+
+  const [listHeight, setListHeight] = useState(
+    Math.max(window.innerHeight * 0.6, 300) // Gunakan 60% tinggi layar, minimal 300px
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1024) {
-        setListWidth(window.innerWidth - 40); // Untuk layar kecil, buat lebih fleksibel
-      } else if (window.innerWidth <= 1280) {
-        setListWidth(160);
-      } else if (window.innerWidth <= 1440) {
-        setListWidth(175);
-      } else if (window.innerWidth <= 1700) {
-        setListWidth(190);
-      } else {
-        setListWidth(240);
-      }
+      setListHeight(Math.max(window.innerHeight * 0.6, 200));
     };
 
-    handleResize(); // Panggil saat komponen pertama kali dimount
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Fungsi untuk toggle menu
@@ -63,7 +56,7 @@ const Sidemenu = ({ module }) => {
   // Cache untuk mengatur ketinggian otomatis
   const cache = new CellMeasurerCache({
     fixedWidth: true,
-    defaultHeight: 20,
+    defaultHeight: 40,
   });
 
   // Fungsi untuk merender setiap kategori menu dengan sub-items
@@ -82,7 +75,7 @@ const Sidemenu = ({ module }) => {
           <div
             style={{
               ...style,
-              padding: "8px",
+              padding: "10px",
               borderBottom: "1px solid #e0e0e0",
               backgroundColor: "#ffffff",
               wordWrap: "break-word",
@@ -104,56 +97,62 @@ const Sidemenu = ({ module }) => {
   };
 
   return (
-    <div className="sidemenu">
-      {/* Navbar */}
-      <div>
-        <button
-          className="border-0 hamburger-menu text-center"
-          onClick={toggleMenu}
-        >
-          <FaBars size={24} />
-        </button>
-      </div>
+    isMobile && (
+      <div className="side-menu">
+        <>
+          {/* Tombol Hamburger (Pusat di Navbar) */}
+          <button className="hamburger-menu" onClick={toggleMenu}>
+            {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
 
-      {/* Loading State (Hindari Early Return) */}
-      {!listWidth || !listHeight ? (
-        <div className="text-center p-4">Loading...</div>
-      ) : (
-        <Transition
-          show={isOpen}
-          enter="transition-opacity duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div
-            ref={listRef}
-            // className="absolute bg-white rounded-lg shadow-lg p-3 border border-gray-300"
-          >
-            <List
-              width={listWidth}
-              height={listHeight}
-              rowCount={menu.length}
-              rowHeight={cache.rowHeight}
-              deferredMeasurementCache={cache}
-              rowRenderer={rowRenderer}
-              style={{
-                position: "absolute",
-                backgroundColor: "white", // Warna background
-                borderRadius: "5px", // Membuat sudut membulat
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Efek bayangan
-                padding: "8px", // Padding dalam List
-                border: "1px solid #e0e0e0", // Border tipis
-                // height: " calc(100vh - 140px)",
-                marginBottom: "10px",
-              }}
-            />
+          {/* SideMenu dari Atas ke Bawah */}
+          <div>
+            <Transition
+              show={isOpen}
+              enter="transition-transform duration-300"
+              enterFrom="-translate-y-full"
+              enterTo="translate-y-0"
+              leave="transition-transform duration-200"
+              leaveFrom="translate-y-0"
+              leaveTo="-translate-y-full"
+            >
+              <div ref={listRef}>
+                <List
+                  width={Math.min(window.innerWidth * 0.9, 400)} // Fleksibel, maksimal 400px
+                  height={listHeight} // Sesuai tinggi layar yang tersedia
+                  rowCount={menu.length}
+                  rowHeight={cache.rowHeight}
+                  deferredMeasurementCache={cache}
+                  rowRenderer={rowRenderer}
+                  className="side-menu-list"
+                  style={{
+                    position: "fixed",
+
+                    left: "50%", // Tetap di tengah
+                    transform: "translateX(-50%)", // Agar posisi tetap tengah
+                    width: "90vw", // Fleksibel untuk layar kecil
+                    maxWidth: "400px", // Maksimal 400px agar tidak terlalu lebar
+                    height: "calc(100vh - 400px)", // Agar tetap dalam batas layar
+                    backgroundColor: "white",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Tambahkan bayangan
+                    borderRadius: "8px", // Buat sudut membulat agar lebih bagus
+                    border: "1px solid #e0e0e0", // Tambahkan border halus
+                    padding: "10px",
+                    overflowY: "auto", // Agar bisa scroll jika banyak menu
+                    transition: "transform 0.3s ease-in-out", // Animasi turun dari atas
+                    transform: isOpen
+                      ? "translateX(-50%) translateY(0)"
+                      : "translateX(-50%) translateY(-150%)", // Efek muncul dari atas
+                    opacity: isOpen ? 1 : 0, // Hilangkan jika tertutup
+                    zIndex: 9999,
+                  }}
+                />
+              </div>
+            </Transition>
           </div>
-        </Transition>
-      )}
-    </div>
+        </>
+      </div>
+    )
   );
 };
 
