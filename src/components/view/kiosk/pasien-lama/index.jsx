@@ -48,14 +48,9 @@ const KioskPasienLamaPage = () => {
     return (
         <div className='d-flex justify-content-center'> 
         {/* Content */}
-        <div fluid className=" kiosk-page position-relative pt-4">
+        <div className=" kiosk-page position-relative pt-4">
           <Container>
-            <div className="kiosk-logo">
-              <Image src="/Images/logo_mmc.png" className="img-fluid" alt="logo" />
-            </div>
-            <h1 className="dashboard-title">Selamat Datang di Layanan Rumah Sakit</h1>
-            
-            <Row className="g-4 mt-4 border border-white p-2">
+            <Row className="g-4">
               {services.map((service) => (
                 <Col key={service.id} xs={12} md={6} lg={4}>
                   <Card
@@ -82,9 +77,6 @@ const KioskPasienLamaPage = () => {
                 </Col>
               ))}
             </Row>
-            <Button variant="primary" onClick={() => router.back("/kiosk")} className="btn-kembali px-5 py-2">
-                Kembali
-            </Button>
           </Container>
         </div>
       </div>

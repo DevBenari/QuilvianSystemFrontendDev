@@ -129,10 +129,10 @@ const DashboardLayananPoli = memo(() => {
 
     return (
         <FormProvider {...methods}>
-            <Container className='mb-5'>
+            <Container className='my -5'>
                 <Row className="justify-content-center">
                     <Col xs="12" className="text-center mb-3">
-                        <h1 className="text-white">Scanner KTP dengan Kamera</h1>
+                        <h1 className="text-white">Scanner Kartu Pasien</h1>
                     </Col>
                     <Col xs="12" className="text-center mb-3">
                         <video ref={videoRef} autoPlay className="w-100" style={{ maxHeight: '400px' }} />
