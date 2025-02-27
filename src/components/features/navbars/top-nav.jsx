@@ -14,7 +14,9 @@ const TopNav = ({ module }) => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
-        setListWidth(window.innerWidth - 40); // Untuk layar kecil, buat lebih fleksibel
+        setListWidth(window.innerWidth - 40);
+      } else if (window.innerWidth <= 1100) {
+        setListWidth(150);
       } else if (window.innerWidth <= 1300) {
         setListWidth(160);
       } else if (window.innerWidth <= 1440) {

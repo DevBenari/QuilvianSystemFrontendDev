@@ -1173,23 +1173,18 @@ a:hover {
 }
 
 .side-menu-list {
-  position: fixed;
-  top: 35px;
-  right: 10px; /* Default dari kanan */
-  width: 90vw;
+  margin-top: 10px;
+  width: 100vw;
   max-width: 400px;
-  /* height: 60vh; */
-  z-index: 10000;
-  transition: transform 0.3s ease-in-out;
+  height: 60vh;
 }
 
 /* Ukuran max 765px (Gambar 1) */
 @media (max-width: 765px) {
   .side-menu-list {
-    width: 80vw;
-    max-width: 350px;
+    width: 70vw;
+    max-width: 300px;
     right: 10px;
-    top: 35px;
   }
   .position-hamburger {
     margin: 10px 4rem;
@@ -1204,10 +1199,10 @@ a:hover {
     top: 15px;
   }
   .side-menu-list {
-    width: 50vw; /* Setengah dari yang ditandai */
+    width: 50vw;
     max-width: 250px;
     right: 10px;
-    top: 38px;
+    margin-top: 14px;
   }
 }
 
@@ -1220,11 +1215,10 @@ a:hover {
     margin-bottom: 10px;
   }
   .side-menu-list {
-    width: 50vw; /* Setengah layar */
+    width: 30vw;
     max-width: 200px;
-    left: 25px; /* Pindah ke kiri */
-    right: auto;
-    top: 60px;
+    margin-top: 12px;
+    left: 0;
   }
 }
 /*---------------------------------------------------------------------
@@ -3759,7 +3753,9 @@ Footer
 -----------------------------------------------------------------------*/
 .iq-footer {
   padding: 15px;
-  margin: 0 15px 20px;
+  margin-left: 18%;
+  margin-right: 2%;
+  margin-bottom: 2%;
   border-radius: 25px;
   -webkit-box-shadow: 0px 0px 12px 0px rgba(55, 73, 72, 0.06);
   -moz-box-shadow: 0px 0px 12px 0px rgba(55, 73, 72, 0.06);

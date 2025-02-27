@@ -9,8 +9,8 @@ const LayoutMasterData = ({ children }) => {
   const isMobile = UseIsMobile(1000);
   return (
     <div>
+      <Navbars module={"masterData"} />
       <Row>
-        <Navbars module={"masterData"} />
         <Col md="2" className="fixed">
           <ResponsiveNav module={"masterData"} />
         </Col>

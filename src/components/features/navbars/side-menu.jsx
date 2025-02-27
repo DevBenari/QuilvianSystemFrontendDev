@@ -90,7 +90,7 @@ const Sidemenu = ({ module }) => {
           leaveFrom="translate-y-0"
           leaveTo="-translate-y-full"
         >
-          <div ref={listRef} className="side-menu-list">
+          <div ref={listRef}>
             <List
               width={Math.min(window.innerWidth * 0.9, 400)}
               height={Math.max(window.innerHeight * 0.6, 200)}
@@ -100,8 +100,11 @@ const Sidemenu = ({ module }) => {
               rowRenderer={rowRenderer}
               className="side-menu-list"
               style={{
-                borderRadius: "2px",
+                borderRadius: "10px",
                 boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                position: "fixed", // Diperbaiki dengan tanda kutip
+                zIndex: 10000, // JSX menggunakan camelCase, jadi `z-index` menjadi `zIndex`
+                transition: "transform 0.3s ease-in-out",
               }}
             />
           </div>
