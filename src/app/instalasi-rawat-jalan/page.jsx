@@ -1,48 +1,36 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Table, Badge, Form } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Row, Col, Card, Badge } from "react-bootstrap";
 import {
-  FaUserMd,
-  FaUsers,
   FaCalendarCheck,
-  FaChartBar,
-  FaSearch,
-  FaHospital,
-  FaClock,
   FaUserClock,
 } from "react-icons/fa";
 
-import Chart from "react-apexcharts";
+// import Chart from "react-apexcharts";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import { poliAnak } from "@/utils/instalasi-poli";
-
-// Sample data untuk grafik kunjungan
-const visitData = [
-  { name: "Jan", kunjungan: 750 },
-  { name: "Feb", kunjungan: 820 },
-  { name: "Mar", kunjungan: 680 },
-  { name: "Apr", kunjungan: 850 },
-  { name: "May", kunjungan: 720 },
-  { name: "Jun", kunjungan: 780 },
-];
+import dynamic from "next/dynamic";
 
 const DashboardRawatJalan = () => {
+   const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
   // State untuk teks pencarian dan data pasien
-  const [searchText, setSearchText] = useState("");
-  const [filteredPatients, setFilteredPatients] = useState(poliAnak);
+  // const [searchText, setSearchText] = useState("");
+  // const [filteredPatients, setFilteredPatients] = useState(poliAnak);
 
   // Fungsi untuk menangani perubahan input pencarian
-  const handleSearchChange = (e) => {
-    const text = e.target.value.toLowerCase();
-    setSearchText(text);
+  // const handleSearchChange = (e) => {
+  //   const text = e.target.value.toLowerCase();
+  //   setSearchText(text);
 
-    // Filter data berdasarkan teks pencarian
-    const filtered = poliAnak.filter((patient) =>
-      patient.nama.toLowerCase().includes(text)
-    );
-    setFilteredPatients(filtered);
-  };
+  //   // Filter data berdasarkan teks pencarian
+  //   const filtered = poliAnak.filter((patient) =>
+  //     patient.nama.toLowerCase().includes(text)
+  //   );
+  //   setFilteredPatients(filtered);
+  // };
+
+
 
   const chart1 = {
     options: {
@@ -234,7 +222,7 @@ const DashboardRawatJalan = () => {
               <div className="iq-card-body iq-bg-info rounded-4">
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="rounded-circle iq-card-icon bg-info">
-                    <i class="ri-time-line"></i>
+                    <i className="ri-time-line"></i>
                   </div>
                   <div className="text-end mx-2">
                     <h2 className="mb-0">
@@ -354,7 +342,7 @@ const DashboardRawatJalan = () => {
             </Row>
           </Col>
         </Row>
-        <Row className="mb-4">
+        {/* <Row className="mb-4">
           <Col lg="12">
             <Card>
               <Card.Header>
@@ -393,7 +381,7 @@ const DashboardRawatJalan = () => {
               </Card.Body>
             </Card>
           </Col>
-        </Row>
+        </Row> */}
       </Col>
     </>
   );

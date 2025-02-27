@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProvinsi } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice';
-import { fetchKabupatenKota } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKota';
+import { fetchKabupatenKota } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice';
 import { fetchNegara } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
-import { fetchKecamatan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/Kecamatan';
-import { fetchKelurahan } from '../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahan';
+import { fetchKecamatan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice';
+import { fetchKelurahan } from '../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice';
 
 const useSelectWilayah = () => {
   const dispatch = useDispatch();

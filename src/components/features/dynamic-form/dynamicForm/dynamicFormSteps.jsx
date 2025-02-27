@@ -77,7 +77,7 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     let newJenisKelamin = "";
     if (["Tn", "Mr"].includes(titleLabel)) {
       newJenisKelamin = "Laki-Laki";
-    } else if (["Mrs", "Ny"].includes(titleLabel)) {
+    } else if (["Mrs", "Ny", "Nn"].includes(titleLabel)) {
       newJenisKelamin = "Perempuan";
     }
   
@@ -132,12 +132,12 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     };
 
     if (type === "custom" && typeof customRender === "function") {
-    return (
-      <div key={id} className={className}>
-        {customRender({ field, commonProps, methods })}
-      </div>
-    );
-  }
+      return (
+        <Col md={colSize || 12} key={id || name} className={className}>
+          {customRender({ field, commonProps, methods })}
+        </Col>
+      );
+    }
 
     const Component = fieldComponents[field.type];
     if (!Component) {
@@ -197,7 +197,7 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
 
   return (
     <FormProvider {...methods}>
-      <Row className=" iq-card p-2 mx-3 my-3 rounded " style={{boxShadow: "0px 0px 30px rgba(154, 247, 203, 0.93)",}}>
+      <Row className=" iq-card p-2 mx-3 my-5 rounded " >
         <div className="iq-card p-2 mt-5">
         <div className="iq-card-header gap-1 d-flex justify-content-between">
             <div className="iq-header-title">

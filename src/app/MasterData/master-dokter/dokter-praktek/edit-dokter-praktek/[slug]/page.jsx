@@ -22,6 +22,12 @@ const EditDokterPraktekForm = ({ params }) => {
     (state) => state.DokterPraktek
   );
 
+  const {
+    DokterOptions,
+    loading: DokterLoading,
+    handleLoadMore: handleLoadMoreDokter,
+  } = useDokterData();
+
   const [dataDokterPraktek, setDataDokterPraktek] = useState([]);
 
   // Fetch data DokterPraktek berdasarkan ID
@@ -41,11 +47,6 @@ const EditDokterPraktekForm = ({ params }) => {
     return <p className="text-center">Memuat data...</p>;
   }
 
-  const {
-    DokterOptions,
-    loading: DokterLoading,
-    handleLoadMore: handleLoadMoreDokter,
-  } = useDokterData();
 
   // Konfigurasi Form Fields
   const formFields = [

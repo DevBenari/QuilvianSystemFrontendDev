@@ -9,6 +9,7 @@ NOTE: This file contains the styling for responsive Template.
 [  Table of contents  ]
 ================================================
 
+
 :: General
 :: Badge
 :: Media Support
@@ -780,10 +781,15 @@ a:hover {
   position: relative;
   overflow: hidden;
   z-index: 0;
-  /* padding-top: 200px; */
   padding-left: 20px;
   padding-right: 20px;
-  background: linear-gradient(to bottom right, #1e293b, #1e3a8a);
+  background-color: #ceebee;
+}
+
+.container-kiosk {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 /* Particles Styles */
@@ -793,9 +799,9 @@ a:hover {
 }
 
 .particle {
-  margin-top: 20px;
+  margin-top: 15px;
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: #ffffff;
   border-radius: 50%;
   animation: particle linear infinite;
 }
@@ -817,9 +823,9 @@ a:hover {
 /* Glow Effects */
 .glow-effect {
   position: fixed;
-  width: 200px; /* Adjust size as needed */
+  width: 200px;
   height: 200px;
-  opacity: 0.2; /* Makes it subtle in the background */
+  opacity: 0.2;
   pointer-events: none;
   border-radius: 50%;
   z-index: 1;
@@ -836,45 +842,110 @@ a:hover {
   right: 25%;
   background-color: rgba(147, 51, 234, 0.2);
 }
+.glow-effect-3 {
+  bottom: 15%;
+  left: 15%;
+  background-color: rgba(147, 51, 234, 0.2);
+}
 
 /* Kiosk Page Styles */
 .kiosk-page {
-  margin-top: 70px;
+  padding-bottom: 100px;
   margin-left: 1px;
   height: 100%;
   z-index: 10;
 }
 
 .kiosk-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin-bottom: 1px;
 }
 
 .kiosk-logo img {
-  max-width: 250px;
+  max-width: 350px;
   height: auto;
   object-fit: contain;
+}
+
+.kiosk-carousel {
+  margin-top: 20px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px 1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.kiosk-carousel img {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+.top-kiosk {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px;
+  margin-top: 50px;
+  margin-right: 30px;
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.kiosk-middle {
+  border-radius: 20px;
+  background-color: transparent;
+}
+
+/* Key fix - main layout container */
+.kiosk-middle .d-flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/* Left sidebar with cards */
+.kiosk-middle .d-flex .mt-5 {
+  flex: 0 0 auto;
+  width: 350px;
+}
+
+/* Content area */
+.kiosk-content {
+  flex: 1 1 auto;
+  border: none;
+  min-width: 0; /* Important for flex items to prevent overflow */
 }
 
 /* Dashboard Title */
 .dashboard-title {
   text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  letter-spacing: 2px;
   margin-bottom: 1.5rem;
-  color: white;
+  color: gray;
 }
 
 /* Service Cards */
 .service-card {
-  height: 100%;
+  height: 200px;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #ffffff;
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  box-shadow: 0 4px 6px 1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s ease-in-out;
+  border-radius: 15px;
+  width: 100%;
+}
+
+.service-card .active-card {
+  background-color: lightgrey;
+}
+
+.card-footer {
+  border-radius: 15px;
 }
 
 .service-card:hover {
@@ -883,11 +954,13 @@ a:hover {
 
 .service-card .card-title {
   margin-bottom: 0.5rem;
-  color: white;
 }
 
-.service-card .card-text {
-  color: rgba(255, 255, 255, 0.8);
+.btn-kembali {
+  position: absolute;
+  margin-top: 60px;
+  right: 50px;
+  z-index: 100;
 }
 
 .service-icon {
@@ -912,6 +985,39 @@ a:hover {
 }
 
 /* Responsive Adjustments */
+@media (max-width: 1400px) {
+  .kiosk-middle .d-flex {
+    /* Keep as row but resize elements */
+    flex-direction: row;
+  }
+
+  /* Make sidebar smaller */
+  .kiosk-middle .d-flex .mt-5 {
+    width: 280px;
+  }
+
+  /* Ensure content area adapts */
+  .kiosk-content {
+    width: calc(100% - 300px);
+  }
+}
+
+@media (max-width: 1100px) {
+  /* Switch to column layout when it gets too narrow */
+  .kiosk-middle .d-flex {
+    flex-direction: column;
+  }
+
+  .kiosk-middle .d-flex .mt-5 {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .kiosk-content {
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .kiosk-logo img {
     max-width: 250px;
@@ -937,21 +1043,6 @@ a:hover {
   padding: 12px;
   text-align: left;
   border: 1px solid #dee2e6;
-}
-
-/*---------------------------------------------------------------------
-                               Dash Hover
------------------------------------------------------------------------*/
-.dash-hover-blank {
-  background-color: #eee;
-  border: dashed 2px #444;
-  height: 90%;
-  justify-content: center;
-}
-
-.dash-hover-blank:hover {
-  cursor: pointer;
-  background-color: #ddd;
 }
 
 /*---------------------------------------------------------------------
