@@ -8,19 +8,20 @@ import "react-virtualized/styles.css";
 const TopNav = ({ module }) => {
   const [isFixed, setIsFixed] = useState(false);
   const [listWidth, setListWidth] = useState(240); // Default width
+  const [listHeight, setListHeight] = useState(window.innerHeight - 220); // Default height
 
   const menu = menus[module] || [];
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        setListWidth(window.innerWidth - 40);
+      if (window.innerWidth <= 1000) {
+        setListWidth(90);
       } else if (window.innerWidth <= 1100) {
-        setListWidth(150);
-      } else if (window.innerWidth <= 1300) {
-        setListWidth(160);
+        setListWidth(120);
+      } else if (window.innerWidth <= 1360) {
+        setListWidth(140);
       } else if (window.innerWidth <= 1440) {
-        setListWidth(175);
+        setListWidth(160);
       } else if (window.innerWidth <= 1700) {
         setListWidth(190);
       } else {
@@ -112,7 +113,7 @@ const TopNav = ({ module }) => {
       <div>
         <List
           width={listWidth} // Menggunakan state dinamis
-          height={window.innerHeight - 220} // Dikurangi agar footer tetap terlihat
+          height={listHeight} // Dikurangi agar footer tetap terlihat
           rowCount={menu.length}
           rowHeight={cache.rowHeight}
           deferredMeasurementCache={cache}
