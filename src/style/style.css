@@ -26,6 +26,8 @@ NOTE: This file contains the styling for responsive Template.
 :: Dash Hover
 :: Waves Effect
 :: DatePicker
+:: Sidemenu
+:: TopNav
 :: Sidebar
 :: Sidebar Menu
 :: Top Menu
@@ -1176,7 +1178,7 @@ a:hover {
   margin-top: 10px;
   width: 100vw;
   max-width: 400px;
-  height: 60vh;
+  max-height: 60vh;
 }
 
 /* Ukuran max 765px (Gambar 1) */
@@ -1219,6 +1221,7 @@ a:hover {
     max-width: 200px;
     margin-top: 12px;
     left: 0;
+    max-height: 40vh;
   }
 }
 /*---------------------------------------------------------------------
