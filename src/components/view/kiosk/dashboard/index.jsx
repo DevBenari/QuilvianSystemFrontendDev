@@ -44,7 +44,7 @@ const DashboardKiosk = () => {
         <div className="mx-2">
             <div className="iq-card container-kiosk">
                 <div className="top-kiosk mx-2">
-                    <div className="m-2">
+                    <div className="m-2 text-center">
                         <div className="kiosk-logo">
                             <Image src="/Images/logo_mmc.png" className="img-fluid" alt="logo" />
                         </div>
@@ -92,7 +92,7 @@ const DashboardKiosk = () => {
                                     <Button 
                                         variant="secondary" 
                                         onClick={handleBackToMainContent}
-                                        className="mr-3 mb-3"
+                                        className="mx-3 mb-3"
                                     >
                                         ← Kembali ke Halaman Utama
                                     </Button>

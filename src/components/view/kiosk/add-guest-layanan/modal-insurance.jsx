@@ -9,7 +9,7 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig}) => {
     const [isInsuranceData, setInsuranceData] = useState({ provider: "", policyNumber: "" });
      const methods = useForm({
         defaultValues: formConfig.reduce((defaults, section) => {
-          section.fields.forEach((field) => {
+          section.fields?.forEach((field) => {
             defaults[field.name] = field.value || "";
           });
           return defaults;
@@ -17,10 +17,14 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig}) => {
         mode: "onSubmit", 
       });
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setInsuranceData((prevData) => ({ ...prevData, [name]: value }));
+      const handleChange = (event = {}) => {
+        const { target } = event;
+        if (!target) return; // Hindari error jika target undefined
+        
+        const { name, value } = target;
+        console.log(name, value);
     };
+    
 
     const {setValue, watch, handleSubmit: formSubmit} = methods;
 
@@ -39,25 +43,7 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig}) => {
                         options={[
                             { value: 'allianz', label: 'Allianz' },
                             { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
-                            { value: 'prudential', label: 'Prudential' },
+                            { value: 'axaManulife', label: 'AXA Manulife' },
                         ]}
                         placeholder="Masukkan nama penyedia asuransi"
                         // value={isInsuranceData.provider}

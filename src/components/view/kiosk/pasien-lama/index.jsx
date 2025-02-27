@@ -12,7 +12,7 @@ const KioskPasienLamaPage = () => {
         title: 'Layanan Poli',
         description: 'Pendaftaran layanan poli spesialis',
         icon: '🏥',
-        path: '/kiosk/guest-layanan-poli',
+        path: '/kiosk/regist-pasien-lama/regist-pasien-poli',
         variant: 'success'
       },
       {
@@ -48,7 +48,7 @@ const KioskPasienLamaPage = () => {
     return (
         <div className='d-flex justify-content-center'> 
         {/* Content */}
-        <div className=" kiosk-page position-relative pt-4">
+        <div className=" kiosk-page position-relative pt-1">
           <Container>
             <Row className="g-4">
               {services.map((service) => (
