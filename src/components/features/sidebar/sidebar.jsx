@@ -5,6 +5,7 @@ import SideBarItems from "./siderbar-items";
 import { usePathname } from "next/navigation";
 import React, { Fragment, memo, useRef, useEffect, useState } from "react";
 import UseIsMobile from "@/lib/hooks/useIsMobile";
+import SideBarLogo from "./sidebar-logo";
 
 // Main Sidebar Component
 const Sidebar = memo(() => {
@@ -61,7 +62,7 @@ const Sidebar = memo(() => {
           </div>
         </div>
         <div id="sidebar-scrollbar">
-          <SideBarItems />
+          <SideBarLogo />
         </div>
       </div>
     </Fragment>
