@@ -1025,28 +1025,25 @@ a:hover {
 /*---------------------------------------------------------------------
                          SideMenu Styling
   -----------------------------------------------------------------------*/
-.side-menu-list {
-  top: 70px;
-  width: 90vw;
-}
+
 /* 🔥 Ketika menu terbuka */
 
-/* Tombol Hamburger (Selalu di Tengah) */
-.hamburger-menu {
-  position: fixed;
-  top: 16px; /* Geser ke bawah */
-  left: 50%;
-  transform: translateX(-50%);
-
-  background-color: #007bff;
-  color: white;
-  border-radius: 8px;
-  padding: 8px; /* Kurangi padding agar tidak terlalu besar */
-  cursor: pointer;
-  transition: background 0.3s;
+.position-hamburger {
+  position: fixed !important;
+  left: 50% !important;
 }
-.hamburger-menu:hover {
-  background-color: #0056b3;
+/* Tombol Hamburger (Selalu di Tengah) */
+.iq-menu-btn {
+  background: none;
+  border: none;
+  font-size: 24px; /* Sama dengan ikon navbar lain */
+  color: #089bab; /* Warna netral */
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.iq-menu-btn:hover {
+  color: #007bff; /* Warna hover */
 }
 
 /* Virtualized List */
@@ -1080,35 +1077,63 @@ a:hover {
 
 .submenu li a {
   text-decoration: none;
-  font-size: 12px;
+  font-size: 14px;
   color: #007bff;
 }
 
+.side-menu-list {
+  position: fixed;
+  top: 35px;
+  right: 10px; /* Default dari kanan */
+  width: 90vw;
+  max-width: 400px;
+  /* height: 60vh; */
+  z-index: 10000;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Ukuran max 765px (Gambar 1) */
 @media (max-width: 765px) {
-  .hamburger-menu {
-    margin: 0 4rem;
-    top: 20px; /* Tambah ruang dari atas */
-  }
   .side-menu-list {
-    top: 75px;
-    width: 85vw;
+    width: 80vw;
+    max-width: 350px;
+    right: 10px;
+    top: 35px;
+  }
+  .position-hamburger {
+    margin: 10px 4rem;
+    top: 5px; /* Tambah ruang dari atas */
   }
 }
 
+/* Ukuran max 600px (Gambar 2) */
 @media (max-width: 650px) {
-  .hamburger-menu {
+  .position-hamburger {
     margin: 0 2rem;
+    top: 15px;
+  }
+  .side-menu-list {
+    width: 50vw; /* Setengah dari yang ditandai */
+    max-width: 250px;
+    right: 10px;
+    top: 38px;
   }
 }
 
+/* Ukuran max 480px (Gambar 3) */
 @media (max-width: 480px) {
-  .hamburger-menu {
-    top: 65px;
-    left: 2%;
+  .position-hamburger {
+    top: 57px !important;
+    left: -25px !important;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
   .side-menu-list {
-    top: 125px;
-    width: 92vw;
+    width: 50vw; /* Setengah layar */
+    max-width: 200px;
+    left: 25px; /* Pindah ke kiri */
+    right: auto;
+    top: 60px;
   }
 }
 /*---------------------------------------------------------------------

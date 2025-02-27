@@ -75,13 +75,13 @@ const Navbars = memo(({ module }) => {
                   <i className="ri-more-fill"></i>
                 </div>
                 <div className="hover-circle">
-                  <i className="ri-more-2-fill" onClick={minisidebar}></i>
-                </div>
-                <div className="align-self-center">
-                  {/* SideMenu hanya muncul di mobile */}
-                  {isMobile && <Sidemenu module={module} />}
+                  <i className="ri-more-fill" onClick={minisidebar}></i>
                 </div>
               </div>
+            </div>
+            <div className="position-hamburger">
+              {/* SideMenu hanya muncul di mobile */}
+              {isMobile && <Sidemenu module={module} />}
             </div>
 
             <div
