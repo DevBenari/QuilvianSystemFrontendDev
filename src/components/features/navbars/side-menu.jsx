@@ -51,7 +51,7 @@ const Sidemenu = ({ module }) => {
           <div
             style={{
               ...style,
-              padding: "10px",
+              padding: "5px",
               borderBottom: "1px solid #e0e0e0",
               backgroundColor: "#ffffff",
               wordWrap: "break-word",

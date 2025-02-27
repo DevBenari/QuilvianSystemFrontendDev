@@ -1140,13 +1140,13 @@ a:hover {
 }
 
 /* Virtualized List */
-.virtualized-list {
+/* .virtualized-list {
   padding: 10px;
-}
+} */
 
 /* Item Menu */
 .menu-item {
-  padding: 10px;
+  padding: 5px;
   border-bottom: 1px solid #ddd;
   background-color: white;
 }
