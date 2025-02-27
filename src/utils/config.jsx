@@ -142,13 +142,21 @@ export const menus = {
     {
       title: "Antrian",
       subItems: [
-        { title: "Display Antrian", href: "/Antrian" },
-        { title: "Pengaturan Antrian", href: "/Antrian/pengaturan-antrian" },
+        {
+          title: "Display Antrian",
+          href: "/pendaftaran/Antrian/display-antrian",
+        },
+        {
+          title: "Pengaturan Antrian",
+          href: "/pendaftaran/Antrian/pengaturan-antrian",
+        },
       ],
     },
     {
       title: "Pemesanan Bed",
-      subItems: [{ title: "Pemesanan Bed", href: "/pemesanan-bed" }],
+      subItems: [
+        { title: "Pemesanan Bed", href: "/pendaftaran/pemesanan-bed" },
+      ],
     },
   ],
   dokter: [

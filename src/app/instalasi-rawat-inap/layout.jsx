@@ -10,13 +10,8 @@ const RawatInapLayout = ({ children }) => {
   return (
     <div>
       <Row>
-        {/* Sidebar hanya muncul jika ukuran layar ≥ 1500 */}
-        <Col md="2" className="fixed">
-          <ResponsiveNav module={"instalasiRawatInap"} />
-        </Col>
-
         {/* Content mengisi seluruh lebar jika ukuran layar < 1500 */}
-        <Col md={isMobile ? "12" : "10"} className={isMobile ? "mt-5" : ""}>
+        <Col md="12" className={isMobile ? "mt-5" : ""}>
           {children}
         </Col>
       </Row>

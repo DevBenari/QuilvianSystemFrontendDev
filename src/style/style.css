@@ -3755,10 +3755,13 @@ Animation Card
 Footer
 -----------------------------------------------------------------------*/
 .iq-footer {
+  position: relative;
+  bottom: 0;
+  margin-bottom: 20px;
+  /* left: 15%; */
+  width: 100%;
+  /* width: calc(100% - 17%); */
   padding: 15px;
-  margin-left: 18%;
-  margin-right: 2%;
-  margin-bottom: 2%;
   border-radius: 25px;
   -webkit-box-shadow: 0px 0px 12px 0px rgba(55, 73, 72, 0.06);
   -moz-box-shadow: 0px 0px 12px 0px rgba(55, 73, 72, 0.06);
@@ -3768,6 +3771,7 @@ Footer
   -ms-transition: all 0.3s ease-out 0s;
   -o-transition: all 0.3s ease-out 0s;
   transition: all 0.3s ease-out 0s;
+  background: white; /* Pastikan footer memiliki latar belakang */
 }
 
 .iq-footer ul li a {
@@ -3780,7 +3784,7 @@ Footer
 }
 @media (max-width: 992px) {
   .iq-footer {
-    margin: 0 20px auto;
+    margin-bottom: 10px;
   }
 }
 /* .bg-banner-image.style-three {

@@ -1,23 +1,28 @@
-'use client'
-import React from "react"
-import { Col, Row } from 'react-bootstrap'
-import TopNav from '@/components/features/navbars/top-nav'
+"use client";
+import React from "react";
+import { Col, Row } from "react-bootstrap";
+import TopNav from "@/components/features/navbars/top-nav";
 import UseIsMobile from "@/lib/hooks/useIsMobile";
 import ResponsiveNav from "@/components/features/navbars/responsive-nav";
-const LayoutDokter = ({children}) => {
-    const isMobile = UseIsMobile(1500);
-    return (
-        <div>
-            <Row >
-                <Col md="2" >
-                    <ResponsiveNav module={"dokter"} />
-                </Col>
-                <Col md={isMobile ? "12" : "10"} className={isMobile ? "mt-5" : ""}  >
-                    {children}
-                </Col>
-            </Row>
-        </div>
-    )
-}
+import Navbars from "@/components/features/navbars/navbars";
 
-export default LayoutDokter
+const LayoutDokter = ({ children }) => {
+  const isMobile = UseIsMobile(1500);
+  return (
+    <div>
+      <Navbars module={"dokter"} />
+      <Row>
+        {!isMobile && (
+          <Col md="2" className="fixed">
+            <ResponsiveNav module={"dokter"} />
+          </Col>
+        )}
+        <Col md={isMobile ? "12" : "10"} className={isMobile ? "mt-5" : ""}>
+          {children}
+        </Col>
+      </Row>
+    </div>
+  );
+};
+
+export default LayoutDokter;
