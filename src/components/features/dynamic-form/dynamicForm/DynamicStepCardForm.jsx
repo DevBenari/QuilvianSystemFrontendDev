@@ -33,6 +33,7 @@ const DynamicStepCardForm = ({
   const [completedSteps, setCompletedSteps] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
 
   const steps = [...formConfig];
 
@@ -91,19 +92,18 @@ const DynamicStepCardForm = ({
   const { titles = [] } = externalOptions;
   const currentJenisKelamin = useWatch({ control: methods.control, name: "jenisKelamin" });
   const titlesId = useWatch({ control: methods.control, name: "titlesId" });
-  const poli = useWatch({ control: methods.control, name: "poli" });
-//   console.log(poli);
+  
+  // Watch for poli changes to filter doctors
+  const selectedPoli = useWatch({ control: methods.control, name: "selectedPoli" });
 
-const [filteredDoctors, setFilteredDoctors] = useState([]);
-
-  // Gunakan useEffect untuk memperbarui daftar dokter setiap kali poli berubah
+  // Update filtered doctors when poli changes
   useEffect(() => {
-    if (poli && doctorsData[poli]) {
-      setFilteredDoctors(doctorsData[poli]);
+    if (selectedPoli && doctorsData && doctorsData[selectedPoli]) {
+      setFilteredDoctors(doctorsData[selectedPoli]);
     } else {
       setFilteredDoctors([]);
     }
-  }, [poli, doctorsData]);
+  }, [selectedPoli, doctorsData]);
 
   // Effect for title and gender
   useEffect(() => {
@@ -119,7 +119,6 @@ const [filteredDoctors, setFilteredDoctors] = useState([]);
       setValue("jenisKelamin", newJenisKelamin, { shouldValidate: true });
     }
   }, [titlesId, currentJenisKelamin, setValue, titles]);
-
 
   // Show alert message
   const showAlertMessage = (message) => {
@@ -301,7 +300,25 @@ const [filteredDoctors, setFilteredDoctors] = useState([]);
       options,
       colSize = 4,
       required = false,
+      customRender
     } = cardGroup;
+
+    // If the card group has a custom render function, use it
+    if (typeof customRender === "function") {
+      return customRender({ field: cardGroup, methods });
+    }
+
+    // For doctor selection, populate options with filtered doctors
+    let cardOptions = options;
+    if (name === "selectedDoctor" && filteredDoctors.length > 0) {
+      cardOptions = filteredDoctors.map(doctor => ({
+        value: doctor.id,
+        label: doctor.name,
+        icon: "👨‍⚕️",
+        subtitle: "Jadwal Praktik:",
+        description: doctor.schedule
+      }));
+    }
 
     const selectedValue = watch(name);
 
@@ -309,30 +326,44 @@ const [filteredDoctors, setFilteredDoctors] = useState([]);
       <>
         {title && <h5 className="mb-3">{title}</h5>}
         {description && <p className="mb-3">{description}</p>}
-        <Row>
-          {options.map((option) => (
-            <Col 
-              xs={12} 
-              md={6} 
-              lg={colSize} 
-              key={`${name}-${option.value}`}
-            >
-              <Card 
-                className={`selection-card  mb-3 cursor-pointer ${selectedValue === option.value ? 'selected shadow-lg border-primary' : ''}`}
-                onClick={() => handleCardSelect(name, option.value, option.additionalData)}
-                style={{ cursor: 'pointer' }}
+        
+        {/* Special case for doctor selection */}
+        {name === "selectedDoctor" && !selectedPoli && (
+          <div className="alert alert-warning">Silakan pilih poli terlebih dahulu.</div>
+        )}
+        
+        {name === "selectedDoctor" && selectedPoli && filteredDoctors.length === 0 && (
+          <div className="alert alert-danger">Tidak ada dokter yang tersedia untuk poli ini.</div>
+        )}
+        
+        {/* If it's not doctor selection or if doctors are available, show cards */}
+        {(name !== "selectedDoctor" || (selectedPoli && filteredDoctors.length > 0)) && (
+          <Row>
+            {cardOptions.map((option) => (
+              <Col 
+                xs={12} 
+                md={6} 
+                lg={colSize} 
+                key={`${name}-${option.value}`}
               >
-                <Card.Body className="text-center p-4">
-                  {option.icon && <div className="card-icon mb-3">{option.icon}</div>}
-                  <Card.Title>{option.label}</Card.Title>
-                  {option.subtitle && <Card.Subtitle className="mb-2 text-muted">{option.subtitle}</Card.Subtitle>}
-                  {option.description && <Card.Text>{option.description}</Card.Text>}
-                  {option.content && option.content}
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+                <Card 
+                  className={`selection-card mb-3 cursor-pointer ${selectedValue === option.value ? 'selected shadow-lg border-primary' : ''}`}
+                  onClick={() => handleCardSelect(name, option.value, option.additionalData)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <Card.Body className="text-center p-4">
+                    {option.icon && <div className="card-icon mb-3">{option.icon}</div>}
+                    <Card.Title>{option.label}</Card.Title>
+                    {option.subtitle && <Card.Subtitle className="mb-2 text-muted">{option.subtitle}</Card.Subtitle>}
+                    {option.description && <Card.Text>{option.description}</Card.Text>}
+                    {option.content && option.content}
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
+        
         {required && !selectedValue && errors[name] && (
           <div className="text-danger mb-3">Please select {title || name}</div>
         )}
@@ -362,61 +393,6 @@ const [filteredDoctors, setFilteredDoctors] = useState([]);
       </Row>
     );
   };
-
-     // Custom Render untuk Pemilihan Dokter Berdasarkan Poli
-  const renderDoctorSelection = ({ field, methods }) => {
-    const selectedDoctor = methods.watch("selectedDoctor");
-
-    return (
-      <>
-        <h5 className="mb-3">{field.title}</h5>
-        <p className="mb-3">{field.description}</p>
-        {!poli ? (
-          <div className="alert alert-warning">Silakan pilih poli terlebih dahulu.</div>
-        ) : filteredDoctors.length === 0 ? (
-          <div className="alert alert-danger">Tidak ada dokter yang tersedia untuk poli ini.</div>
-        ) : (
-          <Row>
-            {filteredDoctors.map((doctor) => (
-              <Col xs={12} md={6} key={doctor.id} className="mb-3">
-                <Card
-                  className={`selection-card ${
-                    selectedDoctor === doctor.id ? "selected shadow-lg border-primary" : ""
-                  }`}
-                  onClick={() => methods.setValue("selectedDoctor", doctor.id, { shouldValidate: true })}
-                  style={{ cursor: "pointer" }}
-                >
-                  <Card.Body className="text-center p-4">
-                    <div className="card-icon mb-3">👨‍⚕️</div>
-                    <Card.Title>{doctor.name}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">Jadwal Praktik:</Card.Subtitle>
-                    <Card.Text>{doctor.schedule}</Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        )}
-        {field.required && !selectedDoctor && methods.formState.errors.selectedDoctor && (
-          <div className="text-danger mt-2">Silakan pilih dokter</div>
-        )}
-      </>
-    );
-  };
-
-  // Menyesuaikan formConfig untuk menggunakan customRender pada Pemilihan Dokter
-  const updatedFormConfig = formConfig.map((section) => {
-    if (section.section === "Pilih Dokter") {
-      return {
-        ...section,
-        cards: section.cards.map((card) => ({
-          ...card,
-          customRender: renderDoctorSelection
-        }))
-      };
-    }
-    return section;
-  });  
 
   return (
     <FormProvider {...methods}>
@@ -516,4 +492,4 @@ const [filteredDoctors, setFilteredDoctors] = useState([]);
   );
 };
 
-export default DynamicStepCardForm
+export default DynamicStepCardForm;
