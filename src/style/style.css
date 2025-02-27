@@ -3778,7 +3778,11 @@ Footer
   color: #089bab;
   text-decoration: none;
 }
-
+@media (max-width: 992px) {
+  .iq-footer {
+    margin: 0 20px auto;
+  }
+}
 /* .bg-banner-image.style-three {
   height: 150px;
   background: url('../images/bg-03.jpg');
