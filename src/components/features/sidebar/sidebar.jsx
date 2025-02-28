@@ -70,7 +70,7 @@ const Sidebar = memo(() => {
           </div>
         </div>
         <div id="sidebar-scrollbar">
-          {showIcons ? <SideBarLogo /> : <SideBarItems />}
+          <SideBarItems isMini={isMini} />
         </div>
       </div>
     </Fragment>

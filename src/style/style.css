@@ -2316,6 +2316,14 @@ body.sidebar-main .iq-sidebar-logo {
   width: 80px;
 }
 
+body.sidebar-main .iq-sidebar .iq-menu-item .ps-2 {
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar .iq-menu-item .ms-auto {
+  display: none;
+}
+
 body.sidebar-main .iq-sidebar .iq-sidebar-menu .iq-menu li a span,
 body.sidebar-main .iq-sidebar-logo a span,
 body.sidebar-main .iq-sidebar-menu .iq-menu li a .badge {

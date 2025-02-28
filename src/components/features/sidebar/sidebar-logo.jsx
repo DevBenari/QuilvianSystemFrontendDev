@@ -7,6 +7,7 @@ import {
   RiTestTubeLine,
   RiSurgicalMaskLine,
   RiMedicineBottleLine,
+  RiHospitalLine,
 } from "react-icons/ri";
 import { PiWheelchairFill } from "react-icons/pi";
 import { GiMicroscope } from "react-icons/gi";
@@ -83,6 +84,7 @@ const SideBarLogo = memo(() => {
       key: "pelayananMedis",
       label: "Pelayanan Medis",
       pathname: "/pelayanan-medik",
+      icon: <RiHospitalLine className="fs-4" />,
       subMenu: [
         {
           pathname: "/pelayanan-medik/instalasi-medik",
@@ -98,7 +100,7 @@ const SideBarLogo = memo(() => {
       key: "kioskPendaftaran",
       label: "Kiosk",
       pathname: "/kiosk",
-      icon: <i className="ri-computer-line fs-4"></i>,
+      icon: <RiHospitalLine className="fs-4" />,
     },
   ];
 
