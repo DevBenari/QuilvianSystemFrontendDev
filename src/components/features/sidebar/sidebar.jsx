@@ -10,13 +10,17 @@ import SideBarLogo from "./sidebar-logo";
 // Main Sidebar Component
 const Sidebar = memo(() => {
   const [isClicked, setIsClicked] = useState(false);
+  const [showIcons, setShowIcons] = useState(false);
   const pathname = usePathname();
   const showSidebar = pathname !== "/Login";
   const sidebarRef = useRef(null);
   const isMobile = UseIsMobile(1300); // Hanya aktif di layar < 1300px
+  const [isMini, setIsMini] = useState(false);
 
   const minisidebar = () => {
     setIsClicked(!isClicked);
+    setShowIcons(!showIcons);
+    setIsMini(!isMini);
     document.body.classList.toggle("sidebar-main");
   };
 
@@ -27,6 +31,8 @@ const Sidebar = memo(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setIsClicked(false);
+        setShowIcons(false);
+        setIsMini(false);
         document.body.classList.remove("sidebar-main");
       }
     };
@@ -40,10 +46,12 @@ const Sidebar = memo(() => {
   return showSidebar ? (
     <Fragment>
       <div className="iq-sidebar">
-        <div className="iq-sidebar-logo d-flex justify-content-between">
+        <div className="iq-sidebar-logo d-flex justify-content-between ">
           <Link href="/#">
             <Image
-              src="/Images/icon-dashboard.png"
+              src={
+                isMini ? "/Images/logo_mmc.jpeg" : "/Images/icon-dashboard.png"
+              }
               className="img-fluid"
               alt="logo"
             />
@@ -62,7 +70,7 @@ const Sidebar = memo(() => {
           </div>
         </div>
         <div id="sidebar-scrollbar">
-          <SideBarLogo />
+          {showIcons ? <SideBarLogo /> : <SideBarItems />}
         </div>
       </div>
     </Fragment>

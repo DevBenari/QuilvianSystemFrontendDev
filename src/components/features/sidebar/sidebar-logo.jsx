@@ -1,6 +1,15 @@
 import React, { useState, useEffect, memo } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
+import { FaStethoscope, FaFirstAid } from "react-icons/fa";
+import { MdScanner } from "react-icons/md";
+import {
+  RiTestTubeLine,
+  RiSurgicalMaskLine,
+  RiMedicineBottleLine,
+} from "react-icons/ri";
+import { PiWheelchairFill } from "react-icons/pi";
+import { GiMicroscope } from "react-icons/gi";
 
 const SideBarLogo = memo(() => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -8,76 +17,88 @@ const SideBarLogo = memo(() => {
   const menuLogo = [
     {
       key: "ManajemenKesehatan",
+      label: "Pelayanan Kesehatan",
       pathname: "/pendaftaran",
       subMenu: [
         {
           pathname: "/MasterData",
-          icon: <i className="ri-database-2-line"></i>,
+          icon: <i className="ri-database-2-line fs-4"></i>,
         },
         {
           pathname: "/pendaftaran",
-          icon: <i className="ri-clipboard-line"></i>,
+          icon: <i className="ri-clipboard-line fs-4"></i>,
         },
-        { pathname: "/dokter", icon: <i className="ri-stethoscope-line"></i> },
-        { pathname: "/IGD", icon: <i className="ri-hospital-line"></i> },
-        { pathname: "/UGD", icon: <i className="ri-first-aid-kit-line"></i> },
-        { pathname: "/radiologi", icon: <i className="ri-scanner-line"></i> },
+        {
+          pathname: "/dokter",
+          icon: <FaStethoscope className="fs-4" />,
+        },
+        { pathname: "/IGD", icon: <i className="ri-hospital-line fs-4"></i> },
+        {
+          pathname: "/UGD",
+          icon: <FaFirstAid className="fs-4" />,
+        },
+        {
+          pathname: "/radiologi",
+          icon: <MdScanner className="fs-4" />,
+        },
         {
           pathname: "/laboratorium",
-          icon: <i className="ri-test-tube-line"></i>,
+          icon: <RiTestTubeLine className="fs-4" />,
         },
         {
           pathname: "/rehabilitasi",
-          icon: <i className="ri-wheelchair-line"></i>,
+          icon: <PiWheelchairFill className="fs-4" />,
         },
         {
           pathname: "/medical-check-up",
-          icon: <i className="ri-health-book-line"></i>,
+          icon: <i className="ri-health-book-line fs-4"></i>,
         },
         {
           pathname: "/pelayanan-gizi",
-          icon: <i className="ri-restaurant-line"></i>,
+          icon: <i className="ri-restaurant-line fs-4"></i>,
         },
         {
           pathname: "/instalasi-rawat-jalan",
-          icon: <i className="ri-walk-line"></i>,
+          icon: <i className="ri-walk-line fs-4"></i>,
         },
         {
           pathname: "/instalasi-rawat-inap",
-          icon: <i className="ri-hotel-line"></i>,
+          icon: <i className="ri-hotel-line fs-4"></i>,
         },
         {
           pathname: "/instalasi-bedah",
-          icon: <i className="ri-surgical-mask-line"></i>,
+          icon: <RiSurgicalMaskLine className="fs-4" />,
         },
         {
           pathname: "/instalasi-Operasi",
-          icon: <i className="ri-microscope-line"></i>,
+          icon: <GiMicroscope className="fs-4" />,
         },
         {
           pathname: "/farmasi",
-          icon: <i className="ri-medicine-bottle-line"></i>,
+          icon: <RiMedicineBottleLine className="fs-4" />,
         },
       ],
     },
     {
       key: "pelayananMedis",
+      label: "Pelayanan Medis",
       pathname: "/pelayanan-medik",
       subMenu: [
         {
           pathname: "/pelayanan-medik/instalasi-medik",
-          icon: <i className="ri-hospital-fill"></i>,
+          icon: <i className="ri-hospital-fill fs-4"></i>,
         },
         {
           pathname: "/app/List Pasien",
-          icon: <i className="ri-user-line"></i>,
+          icon: <i className="ri-user-line fs-4"></i>,
         },
       ],
     },
     {
       key: "kioskPendaftaran",
+      label: "Kiosk",
       pathname: "/kiosk",
-      icon: <i className="ri-computer-line"></i>,
+      icon: <i className="ri-computer-line fs-4"></i>,
     },
   ];
 
@@ -88,77 +109,68 @@ const SideBarLogo = memo(() => {
     }
   }, []);
 
-  const toggleMenu = (key) => {
-    const newMenu = activeMenu === key ? null : key;
-    setActiveMenu(newMenu);
-    localStorage.setItem("activeMenu", newMenu);
+  const toggleMenu = (key, hasSubMenu, pathname) => {
+    if (hasSubMenu) {
+      setActiveMenu(key);
+      localStorage.setItem("activeMenu", key);
+    } else {
+      window.location.href = pathname;
+    }
   };
 
   return (
     <>
-      <div
-        className={`position-absolute top-0 start-0 w-100 h-100 transition-transform duration-300 ${
-          activeMenu ? "translate-x-n100" : "translate-x-0"
-        }`}
-      >
-        {menuLogo.map((item) => (
-          <Row
-            key={item.key}
-            onClick={item.subMenu ? () => toggleMenu(item.key) : undefined}
-            className="align-Logo-center p-3 iq-menu-item cursor-pointer mt-3 iq-side"
-          >
-            <Link
-              href={item.pathname}
-              className="d-flex align-Logo-center text-white text-decoration-none"
+      {!activeMenu ? (
+        <div className="sidebar-menu">
+          {menuLogo.map((item) => (
+            <Row
+              key={item.key}
+              onClick={() =>
+                toggleMenu(item.key, !!item.subMenu, item.pathname)
+              }
+              className="align-items-center p-3 iq-menu-item cursor-pointer mt-3 iq-side text-center"
             >
-              <Col xs="auto" className="pe-0">
-                {item.icon}
-              </Col>
-            </Link>
-          </Row>
-        ))}
-      </div>
-      {activeMenu && (
-        <div
-          className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300"
-          style={{
-            transform: activeMenu ? "translateX(0)" : "translateX(100%)",
-          }}
-        >
-          <div className="p-3 mt-4 bg-dark">
-            <Row className="align-Logo-center">
-              <Col xs="auto">
-                <Button
-                  variant="link"
-                  onClick={() => {
-                    setActiveMenu(null);
-                    localStorage.removeItem("activeMenu");
-                  }}
-                  className="me-3"
-                >
-                  <i className="ri-arrow-left-line text-white"></i>
-                </Button>
-              </Col>
+              <Link
+                href={item.subMenu ? "#" : item.pathname}
+                className="d-flex justify-content-center text-white text-decoration-none"
+              >
+                <Col>{item.label}</Col>
+              </Link>
             </Row>
+          ))}
+        </div>
+      ) : (
+        <div className="sidebar-submenu bg-primary">
+          <div className="p-3 mt-4 bg-dark text-center">
+            <Button
+              variant="link"
+              onClick={() => {
+                setActiveMenu(null);
+                localStorage.removeItem("activeMenu");
+              }}
+              className="text-white"
+            >
+              <i className="ri-arrow-left-line fs-4"></i>
+            </Button>
           </div>
           <div className="p-3">
             {menuLogo
               .find((item) => item.key === activeMenu)
-              ?.subMenu.map((subItem, index) => (
+              ?.subMenu?.map((subItem, index) => (
                 <Row
                   key={index}
-                  className="align-Logo-center p-3 iq-submenu-item"
+                  className="align-items-center p-3 iq-submenu-item text-center"
                 >
                   <Link
                     href={subItem.pathname}
-                    className="d-flex align-Logo-center text-white text-decoration-none"
+                    className="d-flex justify-content-center text-white text-decoration-none"
                   >
-                    <Col xs="auto" className="pe-0">
-                      {subItem.icon}
-                    </Col>
+                    <Col xs="auto">{subItem.icon}</Col>
                   </Link>
                 </Row>
-              ))}
+              )) || (
+              <div className="text-center text-white">Tidak ada submenu</div>
+            )}
           </div>
         </div>
       )}

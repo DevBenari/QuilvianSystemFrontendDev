@@ -1314,7 +1314,7 @@ a:hover {
 
 /* Form */
 #sidebar-scrollbar {
-  height: 100vh;
+  height: 90vh;
   scrollbar-width: none;
 }
 
