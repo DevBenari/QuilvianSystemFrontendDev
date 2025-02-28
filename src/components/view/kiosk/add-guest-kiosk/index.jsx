@@ -582,6 +582,9 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Nama Orang Tua / Wali",
                     name: "namaOrangtua",
                     placeholder: "Nama Orang Tua",
+                    rules: {
+                        required: "Nama Orang Tua is required",
+                    },
                     colSize: 6
                 },
                 {

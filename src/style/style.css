@@ -836,12 +836,15 @@ a:hover {
 
 .kiosk-logo {
   margin-bottom: 1px;
+  display: flex;
+  justify-content: center;
 }
 
 .kiosk-logo img {
   max-width: 350px; 
   height: auto;
   object-fit: contain;
+  text-align: center;
 }
 
 .kiosk-carousel {

@@ -221,9 +221,12 @@ const DynamicStepCardForm = ({
     return isValid;
   };
 
-  const handleNext = async () => {
+  const handleNext = async (e) => {
+    // Tambahkan ini untuk memastikan form tidak di-submit
+    if (e) e.preventDefault();
+    
     const isValid = await validateCurrentStep();
-
+  
     if (isValid) {
       // Mark the current step as completed
       if (!completedSteps.includes(currentStep)) {
@@ -476,7 +479,11 @@ const DynamicStepCardForm = ({
                           </Button>
                         )
                       ) : (
-                        <Button variant="primary" onClick={handleNext}>
+                        <Button 
+                          type="button" 
+                          variant="primary" 
+                          onClick={(e) => handleNext(e)}
+                        >
                           Next <i className="ri-arrow-right-line ms-1"></i>
                         </Button>
                       )}

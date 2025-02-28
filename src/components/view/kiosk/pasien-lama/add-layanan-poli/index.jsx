@@ -106,13 +106,6 @@ const PatientRegistrationPage = () => {
           type: "text",
           placeholder: "Contoh: 08123456789",
           colSize: 6,
-        //   rules: { 
-        //     required: "No. telepon wajib diisi",
-        //     pattern: {
-        //       value: /^08\d{8,11}$/,
-        //       message: "Format nomor telepon tidak valid"
-        //     }
-        //   }
         },
         {
           name: "email",
@@ -120,12 +113,6 @@ const PatientRegistrationPage = () => {
           type: "email",
           placeholder: "Contoh: email@domain.com",
           colSize: 6,
-        //   rules: {
-        //     pattern: {
-        //       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        //       message: "Format email tidak valid"
-        //     }
-        //   }
         },
         {
           name: "address",
@@ -133,7 +120,6 @@ const PatientRegistrationPage = () => {
           type: "textarea",
           placeholder: "Masukkan alamat lengkap",
           colSize: 12,
-        //   rules: { required: "Alamat wajib diisi" }
         }
       ]
     },
@@ -269,59 +255,6 @@ const PatientRegistrationPage = () => {
           required: true,
           rules: { required: "Silakan pilih dokter" },
           options: [], // Will be dynamically populated
-        //   customRender: ({ field, methods }) => {
-        //     const selectedPoli = methods.watch("selectedPoli");
-        //     const options = selectedPoli ? 
-        //       doctors[selectedPoli]?.map(doc => ({
-        //         value: doc.id,
-        //         label: doc.name,
-        //         icon: "👨‍⚕️",
-        //         subtitle: "Jadwal Praktik:",
-        //         description: doc.schedule
-        //       })) : [];
-          
-        //     console.log("Dokter yang tersedia untuk poli", selectedPoli, options);
-        //     console.log("Selected Poli Value:", selectedPoli);
-        //     console.log("Doctors object:", doctors);
-            
-        //     return (
-        //       <>
-        //         <h5 className="mb-3">{field.title}</h5>
-        //         <p className="mb-3">{field.description}</p>
-        //         {!selectedPoli ? (
-        //           <div className="alert alert-warning">
-        //             Silakan pilih poli terlebih dahulu pada langkah sebelumnya.
-        //           </div>
-        //         ) : options.length === 0 ? (
-        //           <div className="alert alert-danger">
-        //             Tidak ada dokter yang tersedia untuk poli ini.
-        //           </div>
-        //         ) : (
-        //           <Row>
-        //             {options.map((option) => (
-        //               <Col xs={12} md={6} key={`doctor-${option.value}`} className="mb-3">
-        //                 <Card 
-        //                   className={`selection-card ${methods.watch("selectedDoctor") === option.value ? 'selected shadow-lg border-primary' : ''}`}
-        //                   onClick={() => methods.setValue("selectedDoctor", option.value, { shouldValidate: true })}
-        //                   style={{ cursor: 'pointer' }}
-        //                 >
-        //                   <Card.Body className="text-center p-4">
-        //                     <div className="card-icon mb-3">{option.icon}</div>
-        //                     <Card.Title>{option.label}</Card.Title>
-        //                     <Card.Subtitle className="mb-2 text-muted">{option.subtitle}</Card.Subtitle>
-        //                     <Card.Text>{option.description}</Card.Text>
-        //                   </Card.Body>
-        //                 </Card>
-        //               </Col>
-        //             ))}
-        //           </Row>
-        //         )}
-        //         {field.required && !methods.watch("selectedDoctor") && methods.formState.errors.selectedDoctor && (
-        //           <div className="text-danger mt-2">Silakan pilih dokter</div>
-        //         )}
-        //       </>
-        //     );
-        //   }
         }
       ]
     },
