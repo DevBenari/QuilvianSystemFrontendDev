@@ -953,19 +953,9 @@ a:hover {
   background-color: lightgrey;
 }
 
-<<<<<<< HEAD
-.selection-card{
-  background-color: rgba(214, 214, 214, 0.2);
-  border-radius: 20px;
-  
-}
-
-.card-footer{
-=======
-.card-footer {
->>>>>>> origin/MHamzah
+/* .card-footer {
   border-radius: 15px;
-}
+} */
 
 .service-card:hover {
   transform: translateY(-4px);
