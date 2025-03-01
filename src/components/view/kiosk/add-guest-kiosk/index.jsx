@@ -67,7 +67,6 @@ const KioskPendaftaranPasien = memo(() => {
           }
         }
       }, [selectedNegara, setValue, negaraOptions]);
-    console.log(selectedKecamatan)
     
     
     // const {provinsiOptions, loading: provinsiLoading, handleLoadMore } = UseProvinsiData();
@@ -637,12 +636,15 @@ const KioskPendaftaranPasien = memo(() => {
             }
         });
     
+        // Add the "vm" field which seems to be required according to the error
+        formData.append("vm", "true");  // Adjust the value as needed for your API
+        
         // Add the file if it exists
         if (data.foto instanceof File) {
             formData.append("fotoPasien", data.foto);
         }
     
-        console.log("Data yang dikirim ke backend:", data);
+        console.log("Data yang dikirim ke backend:", Object.fromEntries(formData));
         
         // Dispatch the action with FormData
         dispatch(AddPasienSlice(formData))
@@ -658,6 +660,8 @@ const KioskPendaftaranPasien = memo(() => {
                         queueNumber: `A-${Math.floor(Math.random() * 100)}`,
                         registrationDate: new Date().toLocaleDateString('id-ID'),
                         noIdentitas: `${data.noIdentitas}`,
+                        qrCodeUrl: result.payload.qrCodeUrl || null,
+                        fotoPasienUrl: result.payload.uploadFotoUrl || null
                     };
     
                     setSubmittedData(enhancedData);
@@ -672,14 +676,6 @@ const KioskPendaftaranPasien = memo(() => {
                 alert("Terjadi kesalahan saat mengirim data pasien!");
             });
     };
-
-      const handlePrint = (type) => {
-        setSelectedPrintType(type);
-        setTimeout(() => {
-          window.print();
-          setSelectedPrintType(null);
-        }, 100);
-      };
 
       if (isSubmitted && submittedData) {
         return (

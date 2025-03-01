@@ -6,7 +6,11 @@ import SelectField from '@/components/ui/select-field';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => {
-    const [insuranceData, setInsuranceData] = useState({ provider: "", policyNumber: "" });
+    const [insuranceData, setInsuranceData] = useState({ 
+        provider: "", 
+        policyNumber: "",
+        isPKS: true  // Add this field to track PKS status
+    });
     
     // Create defaultValues safely by checking if formConfig exists
     const defaultValues = React.useMemo(() => {
@@ -66,6 +70,8 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
         { label: "Lainnya", value: "Lainnya" }
     ];
 
+    const [showCustomInput, setShowCustomInput] = useState(false);
+
     return (
         <Modal show={onOpen} onHide={onClose} centered>
             <Modal.Header closeButton>
@@ -74,19 +80,74 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
             <Modal.Body>
                 <FormProvider {...methods}>
                     <div className="mb-3">
-                        <SelectField
-                            name="provider"
-                            label="Penyedia Asuransi"
-                            options={insuranceOptions}
-                            placeholder="Pilih penyedia asuransi"
-                            onChange={(selected) => {
-                                if (selected && selected.value) {
-                                    setInsuranceData(prev => ({ ...prev, provider: selected.value }));
-                                } else {
-                                    setInsuranceData(prev => ({ ...prev, provider: "" }));
-                                }
-                            }}
-                        />
+                        {!showCustomInput ? (
+                            <SelectField
+                                name="provider"
+                                label="Penyedia Asuransi"
+                                options={insuranceOptions}
+                                placeholder="Pilih penyedia asuransi"
+                                onChange={(selected) => {
+                                    if (selected && selected.value) {
+                                        if (selected.value === "Lainnya") {
+                                            setShowCustomInput(true);
+                                            setInsuranceData(prev => ({ 
+                                                ...prev, 
+                                                provider: "", 
+                                                isPKS: false  // Set to non-PKS for custom insurance
+                                            }));
+                                        } else {
+                                            setInsuranceData(prev => ({ 
+                                                ...prev, 
+                                                provider: selected.value,
+                                                isPKS: true   // Pre-defined insurances are PKS
+                                            }));
+                                        }
+                                    } else {
+                                        setInsuranceData(prev => ({ ...prev, provider: "" }));
+                                    }
+                                }}
+                            />
+                        ) : (
+                            <>
+                                <TextField
+                                    name="customProvider"
+                                    label="Penyedia Asuransi Lainnya"
+                                    placeholder="Masukkan nama asuransi"
+                                    onChange={(e) => 
+                                        setInsuranceData(prev => ({ 
+                                            ...prev, 
+                                            provider: e.target.value,
+                                            isPKS: false // Custom insurance is non-PKS
+                                        }))
+                                    }
+                                />
+                                {insuranceData.provider && (
+                                    <div className="alert alert-warning mt-2">
+                                        <small>
+                                            Asuransi ini tidak bekerja sama dengan rumah sakit (Non-PKS). 
+                                            Pembayaran akan diatur sebagai Tunai, tetapi Anda dapat mengajukan reimbursement ke pihak asuransi.
+                                        </small>
+                                    </div>
+                                )}
+                                <div className="mt-2">
+                                    <Button 
+                                        variant="link" 
+                                        size="sm" 
+                                        className="p-0"
+                                        onClick={() => {
+                                            setShowCustomInput(false);
+                                            setInsuranceData(prev => ({ 
+                                                ...prev, 
+                                                provider: "",
+                                                isPKS: true
+                                            }));
+                                        }}
+                                    >
+                                        Kembali ke daftar asuransi
+                                    </Button>
+                                </div>
+                            </>
+                        )}
                     </div>
                     <div className="mb-3">
                         <TextField
@@ -104,7 +165,11 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                 <Button variant="secondary" onClick={onClose}>
                     Batal
                 </Button>
-                <Button variant="primary" onClick={handleFormSubmit}>
+                <Button 
+                    variant="primary" 
+                    onClick={handleFormSubmit}
+                    disabled={!insuranceData.provider || !insuranceData.policyNumber}
+                >
                     Simpan
                 </Button>
             </Modal.Footer>
