@@ -1,6 +1,6 @@
 "use client";
-import React, { Fragment, memo, useEffect, useState } from "react";
-import { Navbar, Dropdown, Form, Image } from "react-bootstrap";
+import React, { Fragment, memo, useEffect, useRef, useState } from "react";
+import { Navbar, Dropdown, Form, Image, Nav } from "react-bootstrap";
 import CustomToggle from "@/components/ui/dropdown";
 import FullScreen from "@/components/ui/fullscreen";
 import Link from "next/link";
@@ -14,32 +14,32 @@ import Sidemenu from "./side-menu";
 // import user5 from "@/assets/images/user/05.jpg";
 
 const Navbars = memo(({ module }) => {
-  // const [isFixed, setIsFixed] = useState(false);
-
-  // useEffect(() => {
-  //     const handleScroll = () => {
-  //       if (window.scrollY >= 75) {
-  //         setIsFixed(true);
-  //       } else {
-  //         setIsFixed(false);
-  //       }
-  //     };
-
-  //     window.addEventListener("scroll", handleScroll);
-
-  //     return () => {
-  //       window.removeEventListener("scroll", handleScroll);
-  //     };
-  //   }, []);
   const isMobile = UseIsMobile(1000);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  console.log("isMobile:", isMobile);
-
   const [isClicked, setIsClicked] = useState(false);
+  const mobileOutside = UseIsMobile(1300);
+  const sidebarRef = useRef(null);
   const minisidebar = () => {
     setIsClicked(isClicked);
     document.body.classList.toggle("sidebar-main");
   };
+
+  // Event untuk menutup sidebar ketika klik di luar sidebar
+  useEffect(() => {
+    if (!mobileOutside) return; // Hanya aktif jika layar di bawah 1300px
+
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsClicked(false);
+        document.body.classList.remove("sidebar-main");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [!mobileOutside]);
+
   return (
     <Fragment>
       <div className={`iq-top-navbar fixed-header `}>
@@ -79,6 +79,8 @@ const Navbars = memo(({ module }) => {
                 </div>
               </div>
             </div>
+            {/* Navbar layar 1300 px ke atas */}
+
             <div className="position-hamburger">
               {/* SideMenu hanya muncul di mobile */}
               {isMobile && <Sidemenu module={module} />}
@@ -89,7 +91,17 @@ const Navbars = memo(({ module }) => {
               id="navbarSupportedContent"
             >
               <ul className="navbar-nav ml-auto navbar-list">
-                {/* <li className="nav-item iq-full-screen"> */}
+                <Nav.Item as="li" className="nav-icon dropdown full-screen">
+                  <button
+                    className="nav-item nav-icon dropdown border-0 bg-transparent sidebar-click"
+                    onClick={minisidebar}
+                  >
+                    <i
+                      className={isClicked ? "ri-apps-fill" : "ri-apps-line"}
+                    ></i>
+                  </button>
+                </Nav.Item>
+
                 <div className="iq-waves-effect" id="btnFullscreen">
                   <FullScreen />
                 </div>

@@ -21,7 +21,7 @@ import {
 import { PiWheelchairFill } from "react-icons/pi";
 import { GiMicroscope } from "react-icons/gi";
 
-const SideBarItems = memo(({ isMini }) => {
+const SideBarItems = memo(() => {
   const [activeMenu, setActiveMenu] = useState(null);
 
   // Menu items configuration
@@ -167,16 +167,11 @@ const SideBarItems = memo(({ isMini }) => {
               href={item.pathname}
               className="d-flex align-items-center text-white text-decoration-none w-100"
             >
-              <Col
-                xs="auto"
-                className={`d-flex align-items-center ${
-                  isMini ? "justify-content-center w-100" : "pe-2"
-                }`}
-              >
+              <Col xs="auto" className="pe-2  icon-sidebar">
                 {item.icon || <RiUserLine className="fs-4" />}
               </Col>
-              {!isMini && <Col className="ps-2 text-white">{item.label}</Col>}
-              {item.subMenu && !isMini && (
+              <Col className="ps-2 text-white label-sidebar">{item.label}</Col>
+              {item.subMenu && (
                 <Col xs="auto" className="ms-auto">
                   <RiArrowRightSLine className="fs-4" />
                 </Col>
@@ -203,20 +198,13 @@ const SideBarItems = memo(({ isMini }) => {
                   <RiArrowLeftLine className="text-white fs-4" />
                 </Button>
               </Col>
-              <Col
-                xs="auto"
-                className={`d-flex align-items-center ${
-                  isMini ? "justify-content-center w-100" : "pe-2"
-                }`}
-              >
+              <Col xs="auto" className="pe-2 icon-sidebar">
                 {menuItems.icon}
               </Col>
               <Col>
-                {!isMini && (
-                  <h2 className="h5 mb-0 text-white">
-                    {menuItems.find((item) => item.key === activeMenu)?.label}
-                  </h2>
-                )}
+                <h2 className="h5 mb-0 text-white label-sidebar">
+                  {menuItems.find((item) => item.key === activeMenu)?.label}
+                </h2>
               </Col>
             </Row>
           </div>
@@ -232,17 +220,12 @@ const SideBarItems = memo(({ isMini }) => {
                     href={subItem.pathname}
                     className="d-flex align-items-center text-white text-decoration-none w-100"
                   >
-                    <Col
-                      xs="auto"
-                      className={`d-flex align-items-center ${
-                        isMini ? "justify-content-center w-100" : "pe-2"
-                      }`}
-                    >
+                    <Col xs="auto" className="pe-2 icon-sidebar">
                       {subItem.icon}
                     </Col>
-                    {!isMini && (
-                      <Col className="ps-2 text-white">{subItem.label}</Col>
-                    )}
+                    <Col className="ps-2 text-white label-sidebar">
+                      {subItem.label}
+                    </Col>
                   </Link>
                 </Row>
               ))}

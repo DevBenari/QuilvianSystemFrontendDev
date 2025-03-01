@@ -28,6 +28,7 @@ NOTE: This file contains the styling for responsive Template.
 :: DatePicker
 :: Sidemenu
 :: TopNav
+:: sidebar-click
 :: Sidebar
 :: Sidebar Menu
 :: Top Menu
@@ -58,6 +59,7 @@ NOTE: This file contains the styling for responsive Template.
 :: Privacy Policy
 :: User List
 :: Add User
+:: datepicker
 
 ======================================
 [ End table content ]
@@ -1078,13 +1080,19 @@ a:hover {
 }
 
 /*---------------------------------------------------------------------
-                                Date Picker
+                                Sidebar-click
 -----------------------------------------------------------------------*/
 
-/* .date-picker-wrapper {
-  position: relative;
-  width: 100%;
-} */
+.sidebar-click i {
+  font-size: 25px;
+  color: #089bab;
+}
+
+@media screen and (max-width: 1000px) and (max-width: 1300px) {
+  .sidebar-click {
+    display: none;
+  }
+}
 
 /*---------------------------------------------------------------------
                                 Sidebar
@@ -2312,9 +2320,26 @@ body.sidebar-main .content-page {
   margin-left: 80px;
 }
 
+/* edit terbaru */
+
 body.sidebar-main .iq-sidebar-logo {
   width: 80px;
 }
+
+@media screen and (min-width: 991px) {
+  body.sidebar-main .sidebar-logo {
+    content: url("/Images/logo_mmc.jpeg");
+  }
+
+  body.sidebar-main .iq-sidebar:hover .sidebar-logo {
+    content: url("/Images/icon-dashboard.png");
+  }
+  body.sidebar-main .label-sidebar {
+    display: none;
+  }
+}
+
+/* edit sampe sini */
 
 body.sidebar-main .iq-sidebar .iq-menu-item .ps-2 {
   display: none;
@@ -2374,7 +2399,8 @@ body.sidebar-main
 body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li a span,
 body.sidebar-main .iq-sidebar:hover .iq-sidebar-logo a span,
 body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li a .badge,
-body.sidebar-main .iq-sidebar:hover .iq-menu-bt {
+body.sidebar-main .iq-sidebar:hover .iq-menu-bt,
+body.sidebar-main .iq-sidebar:hover .label-sidebar {
   opacity: 1;
   display: inline-block;
   transition: all 0.45s ease 0s;
