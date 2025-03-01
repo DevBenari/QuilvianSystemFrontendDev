@@ -142,13 +142,21 @@ export const menus = {
     {
       title: "Antrian",
       subItems: [
-        { title: "Display Antrian", href: "/Antrian" },
-        { title: "Pengaturan Antrian", href: "/Antrian/pengaturan-antrian" },
+        {
+          title: "Display Antrian",
+          href: "/pendaftaran/Antrian/display-antrian",
+        },
+        {
+          title: "Pengaturan Antrian",
+          href: "/pendaftaran/Antrian/pengaturan-antrian",
+        },
       ],
     },
     {
       title: "Pemesanan Bed",
-      subItems: [{ title: "Pemesanan Bed", href: "/pemesanan-bed" }],
+      subItems: [
+        { title: "Pemesanan Bed", href: "/pendaftaran/pemesanan-bed" },
+      ],
     },
   ],
   dokter: [
@@ -179,6 +187,15 @@ export const menus = {
     },
   ],
   masterData: [
+    {
+      title: "User Aktif",
+      subItems: [
+        {
+          title: "User Aktif",
+          href: "/MasterData/master-userActive/table-userActive",
+        },
+      ],
+    },
     {
       title: "Keanggotaan",
       subItems: [
@@ -211,14 +228,15 @@ export const menus = {
           title: "Daftar Asuransi",
           href: "/MasterData/master-asuransi/daftar-asuransi",
         },
-        // {
-        //   title: "Asuransi Rawat Jalan",
-        //   href: "/master-data/asuransi-rawat-jalan",
-        // },
-        // {
-        //   title: "Asuransi Rawat Inap",
-        //   href: "/master-data/asuransi-rawat-inap",
-        // },
+      ],
+    },
+    {
+      title: "Master Position",
+      subItems: [
+        {
+          title: "Daftar Position",
+          href: "/MasterData/master-position/table-position",
+        },
       ],
     },
     {
@@ -283,7 +301,7 @@ export const menus = {
         },
         {
           title: "Daftar Tarif Poliklinik",
-          href: "/MasterData/daftar-tarif-poliklinik",
+          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik/tarif-tindakan-poliklinik",
         },
       ],
     },
@@ -338,7 +356,7 @@ export const menus = {
       ],
     },
     {
-      title: "Master Provinsi",
+      title: "Master Wilayah",
       subItems: [
         {
           title: "Data Provinsi",

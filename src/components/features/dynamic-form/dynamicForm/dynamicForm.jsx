@@ -16,7 +16,6 @@ import TimeField from "@/components/ui/time-input";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
-import { showAlert } from "../../alert/custom-alert";
 
 const DynamicForm = memo(
   ({
@@ -101,7 +100,7 @@ const DynamicForm = memo(
         placeholder,
         rules,
         className,
-        readOnly : !isEditing || false,
+        readOnly: !isEditing || false,
         disabled: !isEditing || disabled,
         control: methods.control,
         ...(onChange ? { onChange } : {}),

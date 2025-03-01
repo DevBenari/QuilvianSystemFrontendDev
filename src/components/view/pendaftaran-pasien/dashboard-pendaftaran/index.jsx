@@ -206,157 +206,159 @@ const DashboardPendaftaran = () => {
   };
   return (
     <>
-      <Col md="12">
-        {/* Header Statistik */}
-        <Row>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-primary rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-primary">
-                    <i className="ri-group-fill"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">120</span>
-                    </h2>
-                    <h5 className="">Total Pendaftaran</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-success rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-success">
-                    <i className="ri-hospital-line"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">45</span>
-                    </h2>
-                    <h5 className="">Pasien Selesai</h5>
+      <Row>
+        <Col md="12">
+          {/* Header Statistik */}
+          <Row>
+            <Col md="6" lg="3">
+              <div className="iq-card">
+                <div className="iq-card-body iq-bg-primary rounded-4">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <div className="rounded-circle iq-card-icon bg-primary">
+                      <i className="ri-group-fill"></i>
+                    </div>
+                    <div className="text-end mx-2">
+                      <h2 className="mb-0">
+                        <span className="counter">120</span>
+                      </h2>
+                      <h5 className="">Total Pendaftaran</h5>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-warning rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-warning">
-                    <i className="ri-time-line"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">35</span>
-                    </h2>
-                    <h5 className="">Dalam Pemeriksaan</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-danger rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-danger">
-                    <FaDoorOpen />
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">20</span>
-                    </h2>
-                    <h5 className="">Pasien Menunggu</h5>
+            </Col>
+            <Col md="6" lg="3">
+              <div className="iq-card">
+                <div className="iq-card-body iq-bg-success rounded-4">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <div className="rounded-circle iq-card-icon bg-success">
+                      <i className="ri-hospital-line"></i>
+                    </div>
+                    <div className="text-end mx-2">
+                      <h2 className="mb-0">
+                        <span className="counter">45</span>
+                      </h2>
+                      <h5 className="">Pasien Selesai</h5>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Col>
-        </Row>
+            </Col>
+            <Col md="6" lg="3">
+              <div className="iq-card">
+                <div className="iq-card-body iq-bg-warning rounded-4">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <div className="rounded-circle iq-card-icon bg-warning">
+                      <i className="ri-time-line"></i>
+                    </div>
+                    <div className="text-end mx-2">
+                      <h2 className="mb-0">
+                        <span className="counter">35</span>
+                      </h2>
+                      <h5 className="">Dalam Pemeriksaan</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Col>
+            <Col md="6" lg="3">
+              <div className="iq-card">
+                <div className="iq-card-body iq-bg-danger rounded-4">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <div className="rounded-circle iq-card-icon bg-danger">
+                      <FaDoorOpen />
+                    </div>
+                    <div className="text-end mx-2">
+                      <h2 className="mb-0">
+                        <span className="counter">20</span>
+                      </h2>
+                      <h5 className="">Pasien Menunggu</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Col>
 
-        {/* Grafik Kunjungan */}
-        <Row className="mb-4">
-          <Col lg="6">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="card-title">Grafik Kunjungan Admisi</h4>
-              </div>
-              <div className="iq-card-body">
-                <Chart
-                  options={chartOptionsAdmisi.options}
-                  series={chartOptionsAdmisi.series}
-                  type="bar"
-                  height={350}
-                />
-              </div>
-            </div>
-          </Col>
-          {/* Daftar Poli Terpopuler */}
-          <Col lg="6">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-title">
-                  <h4 className="card-title">Patient overview</h4>
+            {/* Grafik Kunjungan */}
+            <Row className="mb-4">
+              <Col lg="6">
+                <div className="iq-card">
+                  <div className="iq-card-header d-flex justify-content-between">
+                    <h4 className="card-title">Grafik Kunjungan Admisi</h4>
+                  </div>
+                  <div className="iq-card-body">
+                    <Chart
+                      options={chartOptionsAdmisi.options}
+                      series={chartOptionsAdmisi.series}
+                      type="bar"
+                      height={350}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="iq-card-body">
-                <div
-                  id="home-chart-03"
-                  style={{ height: "350px" }}
-                  className="iq-card-body"
-                ></div>
-              </div>
-            </div>
-          </Col>
-        </Row>
+              </Col>
+              {/* Daftar Poli Terpopuler */}
+              <Col lg="6">
+                <div className="iq-card">
+                  <div className="iq-card-header d-flex justify-content-between">
+                    <div className="iq-header-title">
+                      <h4 className="card-title">Patient overview</h4>
+                    </div>
+                  </div>
+                  <div className="iq-card-body">
+                    <div
+                      id="home-chart-03"
+                      style={{ height: "350px" }}
+                      className="iq-card-body"
+                    ></div>
+                  </div>
+                </div>
+              </Col>
+            </Row>
 
-        {/* Statistik Pendaftaran Tambahan */}
+            {/* Statistik Pendaftaran Tambahan */}
 
-        {/* Daftar Pasien */}
-        <Row className="mb-4">
-          <Col lg="12">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <FaUsers className="text-primary me-2" size={20} />
-                  <h5 className="mb-0">Daftar Pendaftaran Pasien</h5>
+            {/* Daftar Pasien */}
+            <Row className="mb-4">
+              <Col lg="12">
+                <div className="iq-card">
+                  <div className="iq-card-header d-flex justify-content-between">
+                    <div className="d-flex align-items-center">
+                      <FaUsers className="text-primary me-2" size={20} />
+                      <h5 className="mb-0">Daftar Pendaftaran Pasien</h5>
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <FaSearch className="text-muted me-2" />
+                      <Form.Control
+                        type="search"
+                        placeholder="Cari pasien..."
+                        className="w-auto"
+                        value={searchText}
+                        onChange={handleSearchChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="iq-card-body">
+                    <CustomTableComponent
+                      data={filteredPasien}
+                      columns={[
+                        { key: "id", label: "ID Pendaftaran" },
+                        { key: "nama", label: "Nama Pasien" },
+                        { key: "poli", label: "Poli Tujuan" },
+                        { key: "dokter", label: "Dokter" },
+                        { key: "status", label: "Status" },
+                        { key: "waktuDaftar", label: "Waktu Daftar" },
+                      ]}
+                      itemsPerPage={5}
+                      slugConfig={{ textField: "nama", idField: "id" }}
+                      basePath="/pendaftaran/data-pasien/detail-pasien"
+                    />
+                  </div>
                 </div>
-                <div className="d-flex align-items-center">
-                  <FaSearch className="text-muted me-2" />
-                  <Form.Control
-                    type="search"
-                    placeholder="Cari pasien..."
-                    className="w-auto"
-                    value={searchText}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <CustomTableComponent
-                  data={filteredPasien}
-                  columns={[
-                    { key: "id", label: "ID Pendaftaran" },
-                    { key: "nama", label: "Nama Pasien" },
-                    { key: "poli", label: "Poli Tujuan" },
-                    { key: "dokter", label: "Dokter" },
-                    { key: "status", label: "Status" },
-                    { key: "waktuDaftar", label: "Waktu Daftar" },
-                  ]}
-                  itemsPerPage={5}
-                  slugConfig={{ textField: "nama", idField: "id" }}
-                  basePath="/pendaftaran/data-pasien/detail-pasien"
-                />
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </Col>
+              </Col>
+            </Row>
+          </Row>
+        </Col>
+      </Row>
     </>
   );
 };

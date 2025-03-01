@@ -1,58 +1,95 @@
-import Cookies from "js-cookie"; // Add this import
-import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
+import Cookies from "js-cookie";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
+// Fungsi untuk menyimpan token ke cookie
+const setToken = (token) => {
+  Cookies.set("token", token, { expires: 1, path: "/" });
+};
+
+// Fungsi untuk menghapus token dari cookie
+const removeToken = () => {
+  Cookies.remove("token");
+};
+
+// Async thunk untuk login
 export const LoginUser = createAsyncThunk(
-  "login",
+  "auth/login",
   async (data, { rejectWithValue }) => {
     try {
-      // Gunakan FormData untuk multipart/form-data
-      const formData = new FormData();
-      formData.append("Email", data.Email); // Sesuai dengan API (huruf besar)
-      formData.append("Password", data.Password); // Sesuai dengan API (huruf besar)
-
-      const request = await InstanceAxios.post(`/Auth/login`, formData, {
-        headers: getHeaders(),
+      const response = await InstanceAxios.post(`/Auth/login`, data, {
+        headers: { "Content-Type": "application/json" },
       });
 
-      const token = request.data.token;
-      Cookies.set("token", token, { expires: 1 });
-      return { token };
+      console.log("Response API login:", response.data);
+
+      if (!response.data.token) {
+        return rejectWithValue("Token tidak diterima dari server.");
+      }
+
+      const token = response.data.token;
+      const expiration = response.data.expiration; // Bisa digunakan untuk refresh token
+
+      // Simpan token ke cookies
+      setToken(token);
+
+      return { token, expiration };
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Login failed");
+      console.error("Error saat login:", error.response?.data || error);
+      return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   }
 );
 
-const userSlice = createSlice({
-  name: "loginUser",
+// Async thunk untuk logout
+export const LogoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      // Hapus token dari cookies
+      removeToken();
+      return true;
+    } catch (error) {
+      return rejectWithValue("Logout failed");
+    }
+  }
+);
+
+// Redux slice
+const authSlice = createSlice({
+  name: "auth",
   initialState: {
-    user: null,
-    token: null,
+    token: Cookies.get("token") || null,
     loading: false,
     error: null,
+  },
+  reducers: {
+    clearAuth: (state) => {
+      state.token = null;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(LoginUser.pending, (state) => {
         state.loading = true;
-        state.user = null;
-        state.token = null;
-        state.error = false;
+        state.error = null;
       })
       .addCase(LoginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = false;
-        state.token = action.payload.token; // Set token in the state
+        state.token = action.payload.token;
+        state.error = null;
       })
       .addCase(LoginUser.rejected, (state, action) => {
         state.loading = false;
-        state.user = null;
         state.token = null;
-        state.error = action.error.message;
+        state.error = action.payload;
+      })
+      .addCase(LogoutUser.fulfilled, (state) => {
+        state.token = null;
       });
   },
 });
 
-export default userSlice.reducer;
+export const { clearAuth } = authSlice.actions;
+export default authSlice.reducer;
