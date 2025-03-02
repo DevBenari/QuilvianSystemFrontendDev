@@ -17,7 +17,9 @@ const Navbars = memo(({ module }) => {
   const isMobile = UseIsMobile(1000);
   const [isClicked, setIsClicked] = useState(false);
   const mobileOutside = UseIsMobile(1300);
+
   const sidebarRef = useRef(null);
+
   const minisidebar = () => {
     setIsClicked(isClicked);
     document.body.classList.toggle("sidebar-main");
@@ -70,17 +72,19 @@ const Navbars = memo(({ module }) => {
               <i className="ri-menu-3-line"></i>
             </button>
             <div className="iq-menu-bt align-self-center">
-              <div className="wrapper-menu">
-                <div className="main-circle">
-                  <i className="ri-more-fill"></i>
+              {isMobile && (
+                <div className="wrapper-menu">
+                  <div className="main-circle">
+                    <i className="ri-more-fill"></i>
+                  </div>
+                  <div className="hover-circle">
+                    <i className="ri-more-fill" onClick={minisidebar}></i>
+                  </div>
                 </div>
-                <div className="hover-circle">
-                  <i className="ri-more-fill" onClick={minisidebar}></i>
-                </div>
-              </div>
+              )}
             </div>
-            {/* Navbar layar 1300 px ke atas */}
 
+            {/* Navbar layar 1300 px ke atas */}
             <div className="position-hamburger">
               {/* SideMenu hanya muncul di mobile */}
               {isMobile && <Sidemenu module={module} />}
