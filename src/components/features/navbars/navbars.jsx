@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import UseIsMobile from "@/lib/hooks/useIsMobile";
 import Sidemenu from "./side-menu";
+import { usePathname } from "next/navigation";
 // import user1 from "@/assets/images/user/1.jpg";
 // import user2 from "@/assets/images/user/02.jpg";
 // import user3 from "@/assets/images/user/03.jpg";
@@ -17,8 +18,8 @@ const Navbars = memo(({ module }) => {
   const isMobile = UseIsMobile(1000);
   const [isClicked, setIsClicked] = useState(false);
   const mobileOutside = UseIsMobile(1300);
-
   const sidebarRef = useRef(null);
+  const pathname = usePathname();
 
   const minisidebar = () => {
     setIsClicked((prev) => !prev); // Toggle state dengan cara yang benar
@@ -86,8 +87,10 @@ const Navbars = memo(({ module }) => {
 
             {/* Navbar layar 1300 px ke atas */}
             <div className="position-hamburger">
-              {/* SideMenu hanya muncul di mobile */}
-              {isMobile && <Sidemenu module={module} />}
+              {/* SideMenu hanya muncul di mobile dan tidak tampil di halaman login dan dahsboard*/}
+              {isMobile && !(pathname === "/" || pathname === "/Login") && (
+                <Sidemenu module={module} />
+              )}
             </div>
 
             <div
