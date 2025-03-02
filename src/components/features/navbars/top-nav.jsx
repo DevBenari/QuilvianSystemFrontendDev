@@ -18,7 +18,7 @@ const TopNav = ({ module }) => {
         setListWidth(90);
       } else if (window.innerWidth <= 1100) {
         setListWidth(160);
-      } else if (window.innerWidth <= 1300) {
+      } else if (window.innerWidth <= 1299) {
         setListWidth(170);
       } else if (window.innerWidth <= 1360) {
         setListWidth(140);

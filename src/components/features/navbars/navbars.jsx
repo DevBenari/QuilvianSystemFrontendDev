@@ -21,7 +21,7 @@ const Navbars = memo(({ module }) => {
   const sidebarRef = useRef(null);
 
   const minisidebar = () => {
-    setIsClicked(isClicked);
+    setIsClicked((prev) => !prev); // Toggle state dengan cara yang benar
     document.body.classList.toggle("sidebar-main");
   };
 
