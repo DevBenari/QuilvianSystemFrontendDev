@@ -3,7 +3,7 @@
 import { showAlert } from "@/components/features/alert/custom-alert";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import useDepartementData from "@/lib/hooks/useDepartemen";
-import { createPosition } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position/PositionSlice";
+import { createPosition } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-Slice/PositionSlice";
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
 

@@ -15,7 +15,7 @@ import LoadingScreen from "@/components/features/loading/loadingScreen";
 import {
   fetchPoliKlinik,
   fetchPoliKlinikWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-Poliklinik/PoliKlinikSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-Slice/PoliKlinikSlice";
 
 const TableDataPoliKlinik = () => {
   const methods = useForm();
