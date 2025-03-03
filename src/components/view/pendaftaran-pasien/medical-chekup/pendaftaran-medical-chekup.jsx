@@ -4,7 +4,6 @@ import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
 import { Row, Col, Container, Button } from "react-bootstrap";
 
 import SearchableSelectField from "@/components/ui/select-field-search";
-import { dataDokter, paketMcu } from "@/utils/SearchSelect";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 const PendaftaranPasienLuarMedicalCheckUp = () => {

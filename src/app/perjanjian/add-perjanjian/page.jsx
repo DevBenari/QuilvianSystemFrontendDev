@@ -22,12 +22,7 @@ import {
 } from "@/utils/PasienPerjanjian";
 
 import { dataKelasTersedia } from "@/utils/PasienPerjanjian";
-import {
-  dataDokter,
-  paketMcu,
-  ruangOperasi,
-  tipeAnestesiOptions,
-} from "@/utils/SearchSelect";
+
 import TextArea from "@/components/ui/textArea-field";
 import { motion } from "framer-motion";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";

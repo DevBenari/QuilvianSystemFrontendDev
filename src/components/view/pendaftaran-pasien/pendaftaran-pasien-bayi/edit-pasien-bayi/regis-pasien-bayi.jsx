@@ -4,11 +4,8 @@ import React, { Fragment, useState, useEffect } from "react";
 
 import { useSearchParams, useRouter } from "next/navigation";
 
-import { dataDokter } from "@/utils/SearchSelect";
-
 import { useForm } from "react-hook-form";
 import useSelectKelas from "@/lib/hooks/useSelectKelas";
-import { datakelas } from "@/utils/dataKelas";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { BayiEdit, getBayiById } from "@/lib/hooks/admisi/pasienBayi";
 

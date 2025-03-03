@@ -4,7 +4,6 @@ import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicF
 import React, { Fragment, useState, useEffect, useCallback } from "react";
 import { Col, Row } from "react-bootstrap";
 import SearchableSelectField from "@/components/ui/select-field-search";
-import { dataAmbulance, dataDepartemen } from "@/utils/SearchSelect";
 
 export default function PendaftaranPasienAmbulance() {
   const formFields = [

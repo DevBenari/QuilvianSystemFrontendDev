@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { dataKelas } from "@/utils/dataKelas";
 
 const useSelectKelas = () => {
   const [selectedKelas, setSelectedKelas] = useState("");
