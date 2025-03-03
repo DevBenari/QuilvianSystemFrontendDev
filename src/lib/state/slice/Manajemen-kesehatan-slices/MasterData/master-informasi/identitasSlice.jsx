@@ -30,7 +30,7 @@ export const fetchIdentitasWithFilters = createAsyncThunk(
         params: filters,
         headers: getHeaders(),
       });
-      
+
       return response.data;
     } catch (error) {
       if (error.response?.status === 404) {
@@ -136,7 +136,8 @@ const identitasSlice = createSlice({
       })
       .addCase(fetchIdentitas.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Gagal mengambil data identitas";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // ✅ Fetch Identitas dengan search & filter (CustomSearchFilter)
