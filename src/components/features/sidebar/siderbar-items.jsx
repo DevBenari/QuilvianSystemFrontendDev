@@ -42,6 +42,11 @@ const SideBarItems = memo(() => {
         { pathname: "/app/List Pasien", label: "List Pasien" },
       ],
     },
+    {
+      label: "Kiosk",
+      key: "kioskPendaftaran",
+      pathname: "/kiosk",
+    }
   ];
 
   // Load active menu from localStorage

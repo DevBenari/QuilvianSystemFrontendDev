@@ -7,7 +7,7 @@ import { deleteBayi, useBayi } from "@/lib/hooks/admisi/pasienBayi";
 import { Col, Row, Spinner } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import ButtonNav from "@/components/ui/button-navigation";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 
 const DashboardPendaftaranBayi = memo(() => {

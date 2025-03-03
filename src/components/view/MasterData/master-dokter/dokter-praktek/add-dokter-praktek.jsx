@@ -6,44 +6,18 @@ import { Fragment, useEffect } from "react";
 
 import { showAlert } from "@/components/features/alert/custom-alert";
 import { createDokterPraktek } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDokter } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
+import useDokterData from "@/lib/hooks/useDokter";
 
 const AddFormDokterPraktek = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { data: dokterData } = useSelector((state) => state.dokter);
-
-  useEffect(() => {
-    dispatch(fetchDokter());
-  }, [dispatch]);
-
-  // Fungsi untuk menangani submit form
-  const handleSubmit = async (data) => {
-    console.log(data);
-    try {
-      // Validasi data sebelum submit
-      const errors = validateFormData(data, formFields);
-      if (errors.length > 0) {
-        showAlert.error(errors.join("\n"));
-        return;
-      }
-
-      // Kirim data ke Redux API
-      await dispatch(createDokterPraktek(data)).unwrap();
-
-      showAlert.success("Data Dokter Praktek berhasil ditambahkan!", () => {
-        router.push(
-          "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek"
-        );
-      });
-    } catch (error) {
-      console.error("Gagal menambahkan Dokter Praktek:", error);
-      showAlert.error("Gagal menambahkan data Dokter Praktek.");
-    }
-  };
+  const {
+    DokterOptions,
+    loading: DokterLoading,
+    handleLoadMore: handleLoadMoreDokter,
+  } = useDokterData();
 
   // Konfigurasi Form Fields
   const formFields = [
@@ -100,20 +74,43 @@ const AddFormDokterPraktek = () => {
         },
         {
           type: "select",
+          id: "dokterId",
           label: "Dokter",
           name: "dokterId",
-          placeholder: "Pilih Dokter...",
+          options: DokterOptions,
+          rules: { required: "Kategori Peralatan harus diisi" },
           colSize: 6,
-          options: dokterData.data.map((item) => ({
-            label: item.nmDokter,
-            value: item.dokterId,
-          })),
-
-          rules: { required: "Dokter harus dipilih" },
+          onMenuScrollToBottom: handleLoadMoreDokter,
+          isLoading: DokterLoading,
         },
       ],
     },
   ];
+
+  // Fungsi untuk menangani submit form
+  const handleSubmit = async (data) => {
+    console.log(data);
+    try {
+      // Validasi data sebelum submit
+      const errors = validateFormData(data, formFields);
+      if (errors.length > 0) {
+        showAlert.error(errors.join("\n"));
+        return;
+      }
+
+      // Kirim data ke Redux API
+      await dispatch(createDokterPraktek(data)).unwrap();
+
+      showAlert.success("Data Dokter Praktek berhasil ditambahkan!", () => {
+        router.push(
+          "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek"
+        );
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan Dokter Praktek:", error);
+      showAlert.error("Gagal menambahkan data Dokter Praktek.");
+    }
+  };
 
   // Fungsi untuk validasi form
   const validateFormData = (data, fields) => {

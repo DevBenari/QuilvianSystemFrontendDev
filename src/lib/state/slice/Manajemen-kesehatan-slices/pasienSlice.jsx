@@ -1,120 +1,137 @@
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
-import { createAsyncThunk, createSlice, rejectedWithValue } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-export const GetPasienSlice = createAsyncThunk("pasien/getPasien", async(_,{rejectedWithValue}) => {
-    try{
-        const request = await InstanceAxios.get("/PendaftaranPasienBaru", {
-            headers: getHeaders()
-        })
-        const response = await request.data;
-        return response.data;
-    }catch(error){
-        return rejectedWithValue(error.response.data)
-    }
+// Get daftar pasien
+export const fetchPasienSlice = createAsyncThunk("pasien/fetchPasien", async ({page = 1, perPage = 10}, { rejectWithValue }) => {
+  try{
+    const response = await InstanceAxios.get("/PendaftaranPasienBaru",{
+      params: {page, perPage},
+      headers: getHeaders(),
+    })
+
+    return response.data;
+  }catch(error){
+    const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat mengambil data";
+    return rejectWithValue(errorMessage);
+  }
 })
 
-export const AddPasienSlice = createAsyncThunk(
-    "pasien/addPasien",
-    async (newPasien, { rejectWithValue }) => {
-        try {
-            // Buat FormData
-            const formData = new FormData();
-
-            // Masukkan data pasien ke FormData
-            for (const key in newPasien) {
-                formData.append(key, newPasien[key]);
-            }
-
-            // Kirim request dengan FormData
-            const response = await InstanceAxios.post("/PendaftaranPasienBaru", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiI0ZGNiMzEwNC1mMzg4LTQyYTItYmM2My01NzdlNDNlMDlkZWUiLCJleHAiOjE3MzkzNTMxNzksImlzcyI6Ik15QXBpSXNzdWVyIiwiYXVkIjoiTXlBcGlBdWRpZW5jZSJ9.ven2LfIV2AzQ8L8oALkdnQM09MuxTKQkPCvFxcOICds",
-                },
-            });
-
-            return response.data;
-        } catch (error) {
-            console.error("Error response dari server:", error.response?.data);
-            return rejectWithValue(error.response?.data || "Gagal mengirim data pasien");
-        }
+export const fetchPasienWithFilters = createAsyncThunk("pasien/fetchWithFilters", async (filters, {rejectWithValue}) => {
+  try{
+    const response  = await InstanceAxios.get(`/PendaftaranPasienBaru/paged`, {
+      params: filters,
+      headers: getHeaders(),
+    });
+    return response.data;
+  }catch(error){
+    if (error.response?.status === 404) {
+      return rejectWithValue({
+        message: "Tidak ada data yang tersedia",
+        data: [],
+      });
     }
+    return rejectWithValue(
+      error.response?.data || "Terjadi kesalahan saat mengambil data")
+  }
+} )
+
+// Tambah pasien baru
+export const AddPasienSlice = createAsyncThunk(
+  "pasien/addPasien",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.post("/PendaftaranPasienBaru", data, {
+        headers: getHeaders(),
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error response dari server:", error.response?.data);
+      if (error.response?.status === 400) {
+        return rejectWithValue("Permintaan tidak valid! Silakan periksa kembali data Anda.");
+      }
+      return rejectWithValue(error.response?.data?.message || "Gagal mengirim data pasien.");
+    }
+  }
 );
 
-
-export const GetPasienSliceId = createAsyncThunk("pasien/getPasienById", async( {isRejectedWithValue}) => {
-    try{
-        const request = await InstanceAxios.get(`/PendaftaranPasienBaru/${id}`)
-        const response = await request.data
-
-        return response.data
-    }catch(error){
-        return isRejectedWithValue(error.response.data)
-    }
-})
-
-export const UpdatePasienSlice = createAsyncThunk("pasien/updatePasienById", async(updatedPasien, {isRejectedWithValue}) => {
-    try{
-        const request = await InstanceAxios.put(`/PendaftaranPasienBaru/${updatedPasien.id}`, updatedPasien)
-        const response = await request.data
-
-        return response.data
-    }catch(error){
-        return isRejectedWithValue(error.response.data)
-    }
-})
-
-
- const pasienSlice = createSlice({
-    name: "pasien",
-    initialState: {
-        data: [],
-        loading: false,
-        error: null
-    },
-    reducers: {},
-    extraReducers: (builder) => {
-        builder
-        .addCase(GetPasienSlice.pending, (state) => {
-            state.loading = true
-        })
-        .addCase(GetPasienSlice.fulfilled, (state, action) => {
-            state.loading = false,
-            state.data = action.payload
-        })
-        .addCase(GetPasienSlice.rejected, (state,action) => {
-            state.loading = false,
-            state.error = action.error.message
-        })
-        .addCase(AddPasienSlice.pending, (state) => {
-            state.loading = true
-        })
-        .addCase(AddPasienSlice.fulfilled, (state, action) => {
-            state.loading = false,
-            state.data = action.payload
-        })
-        .addCase(AddPasienSlice.rejected, (state,action) => {
-            state.loading = false,
-            state.error = action.error.message
-        })
-        .addCase(GetPasienSliceId.pending, (state) => {
-            state.loading = true,
-            state.data = [],
-            state.error = false
-        })
-        .addCase(GetPasienSliceId.fulfilled, (state, action) => {
-            state.loading = false,
-            state.data = action.payload,
-            state.error = false
-        })
-        .addCase(GetPasienSliceId.rejected, (state) => {
-            state.loading = false,
-            state.error = action.error.message
-        })
+const pasienSlice = createSlice({
+  name: "pasien",
+  initialState: {
+    data: [],
+    loadedPages: [],
+    loading: false,
+    error: null,
+    totalItems: 0,
+    totalPages: 1,
+    currentPage:1,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchPasienSlice.pending, (state) => {
+        state.loading = true;
+        state.error = null; // Reset error saat memuat ulang data
+      })
+      .addCase(fetchPasienSlice.fulfilled, (state, action) => {
+        if (!action.payload) return; // Skip if we already had the data
         
+        state.loading = false;
+        
+        // Add new data without duplicates
+        const newData = action.payload.data.filter(
+          newItem => !state.data.some(
+            existingItem => existingItem.agamaId === newItem.agamaId
+          )
+        );
+        
+        if (action.meta.arg.isInfiniteScroll) {
+          // Infinite scroll - append data
+          state.data = [...state.data, ...newData];
+          state.loadedPages.push(action.payload.page);
+        } else {
+          // Regular pagination - replace data
+          state.data = action.payload.data;
+        }
+        
+        state.totalItems = action.payload.pagination?.totalRows || 0;
+        state.totalPages = action.payload.pagination?.totalPages || 1;
+        state.currentPage = action.meta.arg.page;
+      })
+      .addCase(fetchPasienSlice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Terjadi kesalahan"; // Simpan error message dari backend
+      })
+      .addCase(fetchPasienWithFilters.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPasienWithFilters.fulfilled, (state,action) => {
+        state.loading = false;
+        state.data = action.payload.data?.rows || [];
+        state.totalItems = action.payload.data?.totalRows || 0;
+        state.totalPages = action.payload.data?.totalPages || 1;
+        state.currentPage = action.payload.data?.currentPage || 1;
+      })
+      .addCase(fetchPasienWithFilters.rejected, (state, action) => {
+        state.loading = false;
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
+      })
+      .addCase(AddPasienSlice.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(AddPasienSlice.fulfilled, (state, action) => {
+        if (Array.isArray(state.data)) {
+          state.data.push(action.payload);
+        }
+      })
+      .addCase(AddPasienSlice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload; // Simpan error message dari backend
+      });
+  },
+});
 
-    }
- })
-
- export default pasienSlice.reducer;
+export default pasienSlice.reducer;

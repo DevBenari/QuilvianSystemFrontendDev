@@ -5,35 +5,36 @@ import ButtonNav from "@/components/ui/button-navigation";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
+import {
+  fetchAsuransi,
+  fetchAsuransiWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
 const TableDataAsuransi = () => {
   const methods = useForm();
   const dispatch = useDispatch();
+
+  const [filteredData, setFilteredData] = useState([]);
   const {
-    data: asuransiData,
+    data: AsuransiData,
     loading,
     error,
-  } = useSelector((state) => state.asuransi);
+    totalPages,
+  } = useSelector((state) => state.Asuransi);
 
-  // Pastikan data berupa array
-
-  // Menggunakan useMemo untuk memproses asuransiList
-  const asuransiList = useMemo(() => {
-    return Array.isArray(asuransiData) ? asuransiData : [];
-  }, [asuransiData]);
-
-  const [filteredAsuransi, setFilteredAsuransi] = useState(asuransiList);
+  const [page, setPage] = useState(1);
+  const perPage = 10;
 
   useEffect(() => {
-    dispatch(fetchAsuransi());
-  }, [dispatch]);
+    dispatch(fetchAsuransi({ page, perPage }));
+  }, [dispatch, page]);
 
   useEffect(() => {
-    setFilteredAsuransi(asuransiList); // Update filteredAsuransi setelah asuransiList berubah
-  }, [asuransiList]);
+    setFilteredData(AsuransiData);
+  }, [AsuransiData]);
+
   return (
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
@@ -51,9 +52,8 @@ const TableDataAsuransi = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={asuransiData}
-            setFilteredPatients={setFilteredAsuransi}
-            onFilteredPatients={filteredAsuransi}
+            fetchFunction={fetchAsuransiWithFilters}
+            setFilteredData={setFilteredData}
           />
         </Col>
       </Col>
@@ -95,30 +95,37 @@ const TableDataAsuransi = () => {
               )}
 
               {/* Error or No Data */}
-              {!loading && (error || asuransiList.length === 0) && (
+              {!loading && (error || AsuransiData.length === 0) && (
                 <Alert variant="warning" className="text-center mt-3">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
               )}
 
-              {!loading && !error && asuransiList.length > 0 && (
+              {!loading && !error && AsuransiData.length > 0 && (
                 <div className="iq-card-body">
                   <CustomTableComponent
-                    data={filteredAsuransi}
+                    data={filteredData}
                     columns={[
                       { key: "no", label: "No" },
-                      { key: "kodeAsuransi", label: "Kode Asuransi" },
-                      { key: "namaAsuransi", label: "Nama Asuransi" },
-                      { key: "tipePerusahaan", label: "Tipe Perusahaan" },
-                      { key: "status", label: "Status" },
                       {
                         key: "createDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
-                        key: "createBy",
+                        key: "createByName",
                         label: "Dibuat Oleh",
+                      },
+                      { key: "kodeAsuransi", label: "Kode Asuransi" },
+                      { key: "namaAsuransi", label: "Nama Asuransi" },
+                      { key: "statusAsuransi", label: "Status Asuransi" },
+                      {
+                        key: "tanggalMulaiKerjasama",
+                        label: "Tanggal Mulai Kerjasama",
+                      },
+                      {
+                        key: "tanggalAkhirKerjasama",
+                        label: "Tanggal Akhir Kerjasama",
                       },
                     ]}
                     itemsPerPage={10}
@@ -127,6 +134,12 @@ const TableDataAsuransi = () => {
                       idField: "asuransiId",
                     }}
                     basePath="/MasterData/master-asuransi/edit-asuransi"
+                    paginationProps={{
+                      currentPage: page,
+                      totalPages: totalPages,
+                      itemsPerPage: perPage,
+                      onPageChange: setPage,
+                    }}
                   />
                 </div>
               )}

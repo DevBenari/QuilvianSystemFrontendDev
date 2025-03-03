@@ -9,68 +9,98 @@ import PrintPatientCard from './patientCard';
 import PrintableQueueNumber from './patientAntrian';
 import { useDispatch, useSelector } from 'react-redux';
 import { AddPasienSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice';
-import { fetchAgama } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice';
 import { fetchPendidikan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice';
-import { fetchTitles } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice';
+import { fetchTitle } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice';
 import { fetchPekerjaan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice';
-import { GetNegaraSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
+import { fetchNegara} from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice';
 import { fetchGolongan } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice';
-import { GetProvinsiSlice } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/provinsiSlice';
 import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice';
-
+import { useRouter } from 'next/navigation';
+import useAgamaData from '@/lib/hooks/useAgamaData';
+import useSelectWilayah from '@/lib/hooks/useSelectWilayah';
+// import UseSelectWilayah from '@/lib/hooks/useSelectWilayah';
 
 const KioskPendaftaranPasien = memo(() => {
     const { setValue } = useForm();
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
     const [selectedPrintType, setSelectedPrintType] = useState(null);
+    const router = useRouter();
     // fungsi untuk melakukan select provinsi
-    // const {
-    //     provinsi,
-    //     kabupaten,
-    //     kecamatan,
-    //     kelurahan,
-    //     // loadingProvinsi,
-    //     // loadingKabupaten,
-    //     // loadingKecamatan,
-    //     handleChange,
-    // } = UseSelectWilayah(setValue);
+    const {
+        selectedNegara,
+        setSelectedNegara,
+        selectedProvinsi,
+        setSelectedProvinsi,
+        selectedKabupaten,
+        setSelectedKabupaten,
+        selectedKecamatan,
+        setSelectedKecamatan,
+        selectedKelurahan,
+        setSelectedKelurahan,
+        negaraOptions,
+        provinsiOptions,
+        kabupatenOptions,
+        kecamatanOptions,
+        kelurahanOptions,
+        negaraLoading,
+        provinsiLoading,
+        kabupatenLoading,
+        kecamatanLoading,
+        handleLoadMoreNegara,
+        handleLoadMoreProvinsi,
+        handleLoadMoreKabupaten,
+        handleLoadMoreKecamatan,
+        handleLoadMoreKelurahan
+      } = useSelectWilayah();
 
-
+      useEffect(() => {
+        if (selectedNegara) {
+          const isIndonesia = negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia';
+          if (!isIndonesia) {
+            // Reset nilai provinsi dan kabupaten jika bukan Indonesia
+            setValue('provinsiId', null);
+            setValue('kabupatenKotaId', null);
+          }
+        }
+      }, [selectedNegara, setValue, negaraOptions]);
+    console.log(selectedKecamatan)
+    
+    
+    // const {provinsiOptions, loading: provinsiLoading, handleLoadMore } = UseProvinsiData();
+    const { agamaOptions, loading: agamaLoading, handleLoadMore: handleLoadMoreAgama } = useAgamaData();
     const dispatch = useDispatch();
 
-    const {data: agamaData, loading, error} = useSelector((state) => state.agama)
-    const {data: pendidikanData} = useSelector((state) => state.pendidikan)
-    const {data: titles} = useSelector((state) => state.titles)
+    const {data: pendidikanData, error, loading, totalPage} = useSelector((state) => state.pendidikan)
+    const {data: titles, } = useSelector((state) => state.titles)
     const {data: pekerjaanData} = useSelector((state) => state.pekerjaan)
-    const {data: negara} = useSelector((state) => state.negara)
     const {data: GolonganDarah} = useSelector((state) => state.golongan)
-    const {data: provinsi} = useSelector((state) => state.provinsi)
     const {data: identitas} = useSelector((state) => state.identitas)
+    const [page, setPage] = useState(1);
 
     useEffect(() => {
-        dispatch(fetchAgama())
-        dispatch(fetchPendidikan())
-        dispatch(fetchTitles())
-        dispatch(fetchPekerjaan())
-        dispatch(GetNegaraSlice())
-        dispatch(fetchGolongan())
-        dispatch(GetProvinsiSlice())
-        dispatch(fetchIdentitas())
-    }, [dispatch]);
+        dispatch(fetchPendidikan({page, totalPage}))
+        dispatch(fetchTitle({page, totalPage}))
+        dispatch(fetchPekerjaan({page, totalPage}))
+        dispatch(fetchGolongan({page, totalPage}))
+        dispatch(AddPasienSlice())
+        dispatch(fetchIdentitas({page, totalPage}))
+    }, [dispatch, page, totalPage]);
+
+    const titlesOptions = titles.map(item => ({
+        label: item.namaTitle, // Label seperti "Tn", "Ny", "Mr"
+        value: item.titleId    // ID untuk value
+      })) || [];
+
+    // useEffect(() => {
+    //     if (error) {
+    //         router.push("/error-page");
+    //     }
+    // }, [error, router]);
+    
     if (loading) {
         return <div>Loading data pasien...</div>;
     }
-
-    // Tampilkan pesan error jika ada kesalahan
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
-    const titlesOptions = titles?.data.map(item => ({
-        label: item.kodeTitle, // Label seperti "Tn", "Ny", "Mr"
-        value: item.titleId    // ID untuk value
-      })) || [];
 
     const formFields = 
     [
@@ -78,6 +108,19 @@ const KioskPendaftaranPasien = memo(() => {
             section: "Informasi Pasien",
             fields: 
             [
+                {
+                    type: "select",
+                    id: "tipePasien",
+                    label: "Tipe Pasien ",
+                    name: "tipePasien",
+                    placeholder: "Tipe Pasien",
+                    options: [
+                        {label:"Umum", value:"Umum"},
+                        {label: "Rujukan", value: "rujukan"},
+                    ],
+                    rules: { required: "Tipe Pasien harus dipilih" },
+                    colSize: 6,
+                },
                 {
                     type: "select",
                     id: "titlesId",
@@ -103,7 +146,7 @@ const KioskPendaftaranPasien = memo(() => {
                      label: "Identitas",
                      name:"identitasId",
                      placeholder: "Identitas",
-                     options: identitas?.data.map(item => ({ label: item.jenisIdentitas, value: item.identitasId })),
+                     options: identitas.map(item => ({ label: item.jenisIdentitas, value: item.identitasId })),
                      rules: { required: "Identitas is required" },
                      colSize: 6
                 },
@@ -162,22 +205,25 @@ const KioskPendaftaranPasien = memo(() => {
                     colSize: 6
                 },
                 {
-                    type:"select",
+                    type: "select",
                     id: "agamaId",
                     label: "Agama",
-                    name:"agamaId",
-                    placeholder: "Agama",
-                    options: agamaData?.data.map(item => ({ label: item.namaAgama, value: item.agamaId })) || [],
+                    name: "agamaId",
+                    placeholder: "Pilih Agama",
+                    options: agamaOptions,
                     rules: { required: "Agama is required" },
-                    colSize: 6
+                    colSize: 6,
+                    onMenuScrollToBottom: handleLoadMoreAgama,
+                    isLoading: agamaLoading
                 },
+                
                 {
                     type: "select",
                     id: "pendidikanTerakhirId",
                     label: "Pendidikan Terakhir",
                     name: "pendidikanTerakhirId",
                     placeholder: "Pendidikan Terakhir",
-                    options: pendidikanData?.data.map(item => ({ label: item.namaPendidikan, value: item.pendidikanId })) || [],
+                    options: pendidikanData.map(item => ({ label: item.namaPendidikan, value: item.pendidikanId })) || [],
                     colSize: 6
                 }
             ]
@@ -216,58 +262,100 @@ const KioskPendaftaranPasien = memo(() => {
                     id: "negaraId",
                     label: "Negara",
                     name: "negaraId",
-                    placeholder: "Negara",
-                    options: negara?.data.map(item => ({label: item.namaNegara, value: item.negaraId})) || [],
+                    placeholder: "Pilih Negara",
+                    options: negaraOptions,
+                    isLoading: negaraLoading,
+                    onChange: (selected) => {
+                      setSelectedNegara(selected?.value);
+                      // Reset nilai provinsi dan kabupaten
+                      setValue('provinsiId', null);
+                      setValue('kabupatenKotaId', null);
+                    },
+                    onMenuScrollToBottom: handleLoadMoreNegara,
+                    rules: { required: "Negara harus dipilih" },
                     colSize: 6
                 },
                 {
                     type: "select",
                     id: "provinsiId",
-                    label: "Provinsi Pasien",
+                    label: "Provinsi",
                     name: "provinsiId",
                     placeholder: "Pilih Provinsi",
-                    options: provinsi?.data.map((item) => ({
-                      label: item.namaProvinsi,
-                      value: item.provinsiId,
-                    })),
-                    rules: { required: "Provinsi is required" },
-                    colSize: 6,
-                    // onChangeCallback: (value) => handleChange("pasien","provinsi", value),
+                    options: provinsiOptions,
+                    isLoading: provinsiLoading,
+                    onChange: (selected) => {
+                        setSelectedProvinsi(selected?.value);
+                        // Reset nilai kabupaten ketika provinsi berubah
+                        setValue('kabupatenKotaId', null);
+                    },
+                    onMenuScrollToBottom: handleLoadMoreProvinsi,
+                    disabled: !selectedNegara || (
+                        negaraOptions.find(opt => opt.value === selectedNegara)?.label !== 'Indonesia'
+                    ),
+                    rules: { 
+                        required: {
+                        value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                        message: "Provinsi harus dipilih untuk warga Indonesia"
+                        }
+                    },
+                    colSize: 6
                 },
-                // {
-                //     type: "select",
-                //     id: "kabupatenId",
-                //     label: "Kabupaten/Kota",
-                //     name: "kabupatenId",
-                //     placeholder: "Pilih Kabupaten/Kota",
-                //     options: kabupaten.map(item => ({ label: item.kabupatenKotaName, value: item.kabupatenKotaId })),
-                //     rules: { required: "Kabupaten is required" },
-                //     colSize: 6,
-                //     onChangeCallback: (value) => handleChange("pasien", "kabupaten", value),
-                // },
-                // {
-                //     type: "select",
-                //     id: "kecamatanId",
-                //     label: "Kecamatan",
-                //     name: "kecamatanId",
-                //     placeholder: "Pilih Kecamatan",
-                //     options: kecamatan.map(item => ({ label: item.kecamatanName, value: item.kecamatanId })),
-                //     rules: { required: "Kecamatan is required" },
-                //     colSize: 6,
-                // },
-                // {
-                //     type: "select",
-                //     id: "kelurahanId",
-                //     label: "Kelurahan",
-                //     name: "kelurahanId",
-                //     placeholder: "Pilih Kelurahan",
-                //     options: kelurahan ? kelurahan.map((item) => ({
-                //         label: item.kelurahanName,
-                //         value: item.kelurahanId,
-                //     })) : [], // Cegah error jika kelurahan masih undefined
-                //     rules: { required: "Kelurahan is required" },
-                //     colSize: 6,
-                // },
+                {
+                    type: "select",
+                    id: "kabupatenKotaId",
+                    label: "Kabupaten/Kota",
+                    name: "kabupatenKotaId",
+                    placeholder: "Pilih Kabupaten/Kota",
+                    options: kabupatenOptions,
+                    // isLoading: kabupatenLoading,
+                    onChange: (selected) => setSelectedKabupaten(selected?.value),
+                    onMenuScrollToBottom: handleLoadMoreKabupaten,
+                    disabled: !selectedProvinsi,
+                    rules: { 
+                        required: {
+                        value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                        message: "Kabupaten/Kota harus dipilih untuk warga Indonesia"
+                        }
+                    },
+                    colSize: 6
+                },
+                {
+                    type: "select",
+                    id: "kecamatanId",
+                    label: "Kecamatan",
+                    name: "kecamatanId",
+                    placeholder: "Pilih Kecamatan",
+                    options: kecamatanOptions,
+                    // isLoading: kecamatanLoading,
+                    onChange: (selected) => setSelectedKecamatan(selected?.value),
+                    onMenuScrollToBottom: handleLoadMoreKecamatan,
+                    disabled: !selectedKabupaten,
+                    rules: { 
+                        required: {
+                            value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                            message: "Provinsi harus dipilih untuk warga Indonesia"
+                        }
+                    },
+                    colSize: 6
+                },
+                {
+                    type: "select",
+                    id: "kelurahanId",
+                    label: "Kelurahan",
+                    name: "kelurahanId",
+                    placeholder: "Pilih Kelurahan",
+                    options: kelurahanOptions,
+                    onChange: (selected) => setSelectedKelurahan(selected?.value),
+                    onMenuScrollToBottom: handleLoadMoreKelurahan,
+                    disabled: !selectedKecamatan,
+                    rules: { 
+                        required: {
+                            value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
+                            message: "Provinsi harus dipilih untuk warga Indonesia"
+                        }
+                    },
+                    colSize: 6
+                },
                 {
                     type:"text",
                     id: "kodePos",
@@ -302,29 +390,26 @@ const KioskPendaftaranPasien = memo(() => {
                         { label: "WNI", value: "WNI" },
                         { label: "WNA", value: "WNA" },
                     ],
-                    rules: { required: "Status Kewarganegaraan is required" },
                     colSize: 6,
 
                 },
                 {
                     type:"select",
-                    id:"kewarganegaraanId",
-                    label:"kewarganegaraan",
-                    name:"kewarganegaraanId",
-                    placeholder:"kewarganegaraan",
+                    id:"kewarganegaraan",
+                    label:"Kewarganegaraan",
+                    name:"kewarganegaraan", // Pastikan ini sesuai dengan API
+                    placeholder:"Pilih Kewarganegaraan",
                     options:[
-                        { label: "Amerika", value: "Amerika" },
+                        { label: "Indonesia", value: "Indonesia" },
                         { label: "Malaysia", value: "Malaysia" },
                         { label: "Singapura", value: "Singapura" },
-                        { label: "Jepang", value: "Jepang" },
-                        { label: "Spanyol", value: "Spanyol" },
-                        { label: "Italia", value: "Italia" },
                     ],
-                    rules:{required:"kewarganegaraan is required"},
-                    colSize:6,
+                    colSize:6,  
                     hide: (watchValues) => watchValues.statusKewarganegaraan !== "WNA"
                 },
+                 
                 {
+                    
                     type: "text",
                     id: "suku",
                     label: "Suku",
@@ -344,7 +429,7 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Pekerjaan",
                     name: "pekerjaan",
                     placeholder: "Pilih Pekerjaan",
-                    options: pekerjaanData?.data?.map(item => ({label:item.namaPekerjaan, value:item.pekerjaanId})),
+                    options: pekerjaanData.map(item => ({label:item.namaPekerjaan, value:item.pekerjaanId})),
                     colSize: 6,
                 },
                 {
@@ -392,7 +477,7 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Golongan Darah",
                     name: "golonganDarahId",
                     placeholder: "Pilih Golongan Darah",
-                    options: GolonganDarah?.data.map(item => ({label:item.namaGolonganDarah, value:item.golonganDarahId})),
+                    options: GolonganDarah.map(item => ({label:item.namaGolonganDarah, value:item.golonganDarahId})),
                     colSize: 6
                 },
                 {
@@ -526,6 +611,7 @@ const KioskPendaftaranPasien = memo(() => {
 
 
     const handleSubmit = (data) => {
+        console.log("Data yang dikirim ke backend:", data);
         dispatch(AddPasienSlice(data))
             .then((result) => {
                 if (AddPasienSlice.fulfilled.match(result)) {
@@ -543,6 +629,7 @@ const KioskPendaftaranPasien = memo(() => {
 
         const enhancedData = {
             ...data,
+            provinsiId: data.provinsiId || null, 
             noRekamMedis: `RM-${new Date().getTime()}`,
             queueNumber: `A-${Math.floor(Math.random() * 100)}`,
             registrationDate: new Date().toLocaleDateString('id-ID'),

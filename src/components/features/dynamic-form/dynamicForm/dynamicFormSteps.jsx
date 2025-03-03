@@ -77,7 +77,7 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     let newJenisKelamin = "";
     if (["Tn", "Mr"].includes(titleLabel)) {
       newJenisKelamin = "Laki-Laki";
-    } else if (["Mrs", "Ny"].includes(titleLabel)) {
+    } else if (["Mrs", "Ny", "Nn"].includes(titleLabel)) {
       newJenisKelamin = "Perempuan";
     }
   

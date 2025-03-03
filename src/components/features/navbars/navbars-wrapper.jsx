@@ -7,7 +7,7 @@ const NavbarsWrapper = () => {
     const pathname = usePathname();
 
     // Cek apakah navbar perlu ditampilkan
-    const showNavbars = !(pathname === "/Login" || pathname.startsWith("/kiosk"));
+    const showNavbars = !(pathname === "/Login" || pathname.startsWith("/kiosk") || pathname === "/error-page");
 
     return showNavbars ? <Navbars /> : null;
 }

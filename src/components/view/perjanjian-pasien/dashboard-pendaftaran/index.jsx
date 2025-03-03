@@ -7,7 +7,8 @@ import { Col, Row } from "react-bootstrap";
 
 import ButtonNav from "@/components/ui/button-navigation";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import CustomSearchFilterNonApi from "@/components/features/custom-search/CustomSearchComponen/custom-search-non-api";
 
 const DashboardPerjanjian = memo(() => {
   const methods = useForm();
@@ -22,7 +23,7 @@ const DashboardPerjanjian = memo(() => {
     <FormProvider {...methods}>
       <Col lg="12" className="iq-card p-4">
         <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Searching Perjanjian</h2>
+          <h2 className="mb-3"> Perjanjian Pasien</h2>
           <button
             className="btn btn-dark my-3 mx-3"
             onClick={() => window.location.reload()}
@@ -31,7 +32,7 @@ const DashboardPerjanjian = memo(() => {
           </button>
         </div>
         <Col lg="12" className="mt-2">
-          <CustomSearchFilter
+          <CustomSearchFilterNonApi
             data={dataSemuaPerjanjian}
             setFilteredPatients={setFilteredData}
             onFilteredPatients={filteredData}

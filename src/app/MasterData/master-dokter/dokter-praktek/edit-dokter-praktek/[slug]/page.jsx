@@ -7,31 +7,26 @@ import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicF
 import { extractIdFromSlug } from "@/utils/slug";
 
 import { showAlert } from "@/components/features/alert/custom-alert";
+
+import useDokterData from "@/lib/hooks/useDokter";
 import {
   deleteDokterPraktek,
   fetchDokterPraktekById,
   updateDokterPraktek,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-import { fetchDokter } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
-
-
 
 const EditDokterPraktekForm = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { selectedDokterPraktek } = useSelector((state) => state.dokterPraktek);
-  const [dataDokterPraktek, setDataDokterPraktek] = useState(null);
-  console.log("selectedDokterPraktek:", selectedDokterPraktek);
+  const { selectedDokterPraktek, loading } = useSelector(
+    (state) => state.DokterPraktek
+  );
 
-   const { data: dokterData } = useSelector((state) => state.dokter);
-  
-   
+  const [dataDokterPraktek, setDataDokterPraktek] = useState([]);
 
-  // Fetch data saat pertama kali dimuat
+  // Fetch data DokterPraktek berdasarkan ID
   useEffect(() => {
-    const id = extractIdFromSlug(params.slug);
-    dispatch(fetchDokterPraktekById(id));
-    dispatch(fetchDokter());
+    dispatch(fetchDokterPraktekById(extractIdFromSlug(params.slug)));
   }, [dispatch, params.slug]);
 
   // Sinkronisasi data Redux dengan State
@@ -46,8 +41,90 @@ const EditDokterPraktekForm = ({ params }) => {
     return <p className="text-center">Memuat data...</p>;
   }
 
-  // Submit form untuk update data
-  const handleSubmit = async (formData) => {
+  const {
+    DokterOptions,
+    loading: DokterLoading,
+    handleLoadMore: handleLoadMoreDokter,
+  } = useDokterData();
+
+  // Konfigurasi Form Fields
+  const formFields = [
+    {
+      section: "Informasi Dokter Praktek",
+      fields: [
+        {
+          type: "text",
+          label: "Nama Dokter",
+          name: "dokter",
+          placeholder: "Masukkan Nama Dokter...",
+          colSize: 6,
+          rules: { required: "Nama Dokter harus diisi" },
+        },
+        {
+          type: "text",
+          label: "Layanan",
+          name: "layanan",
+          placeholder: "Masukkan Layanan...",
+          colSize: 6,
+          rules: { required: "Layanan harus diisi" },
+        },
+        {
+          type: "time",
+          label: "Jam Praktek",
+          name: "jamPraktek",
+          placeholder: "Masukkan Jam Praktek...",
+          colSize: 6,
+          rules: { required: "Jam Praktek harus diisi" },
+        },
+        {
+          type: "text",
+          label: "Hari",
+          name: "hari",
+          placeholder: "Masukkan Hari Praktek...",
+          colSize: 6,
+          rules: { required: "Hari harus diisi" },
+        },
+        {
+          type: "date",
+          label: "Jam Masuk",
+          name: "jamMasuk",
+          placeholder: "Pilih Jam Masuk...",
+          colSize: 6,
+          rules: { required: "Jam Masuk harus diisi" },
+        },
+        {
+          type: "date",
+          label: "Jam Keluar",
+          name: "jamKeluar",
+          placeholder: "Pilih Jam Keluar...",
+          colSize: 6,
+          rules: { required: "Jam Keluar harus diisi" },
+        },
+        {
+          type: "select",
+          id: "dokterId",
+          label: "Dokter",
+          name: "dokterId",
+          options: DokterOptions,
+          rules: { required: "Kategori DokterPraktek harus diisi" },
+          colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreDokter,
+          isLoading: DokterLoading,
+        },
+      ],
+    },
+  ];
+
+  // Menyesuaikan field form dengan data yang sudah ada di Redux
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataDokterPraktek?.[field.name] ?? "",
+    })),
+  }));
+
+  const handleSubmit = async (data) => {
     try {
       if (!dataDokterPraktek.dokterPraktekId) {
         showAlert.error(
@@ -56,12 +133,12 @@ const EditDokterPraktekForm = ({ params }) => {
         return;
       }
 
-      console.log("Data yang dikirim ke backend:", formData);
+      console.log("Data yang dikirim ke backend:", data);
 
       await dispatch(
         updateDokterPraktek({
           id: dataDokterPraktek.dokterPraktekId,
-          data: formData,
+          data: data,
         })
       ).unwrap();
 
@@ -101,79 +178,6 @@ const EditDokterPraktekForm = ({ params }) => {
       }
     );
   };
-
-  // Konfigurasi Form Fields
-  const formFields = [
-    {
-      section: "Informasi Dokter Praktek",
-      fields: [
-        {
-          type: "text",
-          label: "Nama Dokter",
-          name: "dokter",
-          placeholder: "Masukkan Nama Dokter...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Layanan",
-          name: "layanan",
-          placeholder: "Masukkan Layanan...",
-          colSize: 6,
-        },
-        {
-          type: "time",
-          label: "Jam Praktek",
-          name: "jamPraktek",
-          placeholder: "Masukkan Jam Praktek...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Hari",
-          name: "hari",
-          placeholder: "Masukkan Hari Praktek...",
-          colSize: 6,
-        },
-        {
-          type: "date",
-          label: "Jam Masuk",
-          name: "jamMasuk",
-          placeholder: "Pilih Jam Masuk...",
-          colSize: 6,
-        },
-        {
-          type: "date",
-          label: "Jam Keluar",
-          name: "jamKeluar",
-          placeholder: "Pilih Jam Keluar...",
-          colSize: 6,
-        },
-        {
-          type: "select",
-          label: "Dokter",
-          name: "dokterId",
-          placeholder: "Pilih Dokter...",
-          colSize: 6,
-          options: dokterData.data.map((item) => ({
-            label: item.nmDokter,
-            value: item.dokterId,
-          })),
-
-          rules: { required: "Dokter harus dipilih" },
-        },
-      ],
-    },
-  ];
-
-  // Menyesuaikan field form dengan data yang sudah ada di Redux
-  const formFieldsWithData = formFields.map((section) => ({
-    ...section,
-    fields: section.fields.map((field) => ({
-      ...field,
-      value: dataDokterPraktek?.[field.name] ?? "",
-    })),
-  }));
 
   return (
     <Fragment>

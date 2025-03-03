@@ -16,7 +16,7 @@ import { showAlert } from "@/components/features/alert/custom-alert";
 const EditDokter = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { selectedDokter, loading } = useSelector((state) => state.dokter);
+  const { selectedDokter, loading } = useSelector((state) => state.Dokter);
   const [dataDokter, setDataDokter] = useState(null);
 
   // Fetch data saat halaman dimuat
@@ -32,33 +32,6 @@ const EditDokter = ({ params }) => {
   }, [selectedDokter]);
 
   // Submit form untuk update data
-  const handleSubmit = async (formData) => {
-    try {
-      await dispatch(
-        updateDokter({ id: dataDokter.dokterId, data: formData })
-      ).unwrap();
-      showAlert.success("Data dokter berhasil diperbarui!", () => {
-        router.push("/MasterData/master-dokter/dokter/table-dokter");
-      });
-    } catch (error) {
-      console.error("Gagal memperbarui data dokter:", error);
-      showAlert.error("Gagal memperbarui data dokter.");
-    }
-  };
-
-  // Fungsi Hapus Data
-  const handleDelete = async () => {
-    showAlert.confirmDelete("Data dokter akan dihapus permanen", async () => {
-      try {
-        await dispatch(deleteDokter(dataDokter.dokterId)).unwrap();
-        showAlert.success("Data dokter berhasil dihapus!", () => {
-          router.push("/MasterData/master-dokter/dokter/table-dokter");
-        });
-      } catch (error) {
-        showAlert.error("Gagal menghapus data dokter.");
-      }
-    });
-  };
 
   // Konfigurasi Form Fields
   const formFields = [
@@ -123,6 +96,34 @@ const EditDokter = ({ params }) => {
       ],
     },
   ];
+
+  const handleSubmit = async (formData) => {
+    try {
+      await dispatch(
+        updateDokter({ id: dataDokter.dokterId, data: formData })
+      ).unwrap();
+      showAlert.success("Data dokter berhasil diperbarui!", () => {
+        router.push("/MasterData/master-dokter/dokter/table-dokter");
+      });
+    } catch (error) {
+      console.error("Gagal memperbarui data dokter:", error);
+      showAlert.error("Gagal memperbarui data dokter.");
+    }
+  };
+
+  // Fungsi Hapus Data
+  const handleDelete = async () => {
+    showAlert.confirmDelete("Data dokter akan dihapus permanen", async () => {
+      try {
+        await dispatch(deleteDokter(dataDokter.dokterId)).unwrap();
+        showAlert.success("Data dokter berhasil dihapus!", () => {
+          router.push("/MasterData/master-dokter/dokter/table-dokter");
+        });
+      } catch (error) {
+        showAlert.error("Gagal menghapus data dokter.");
+      }
+    });
+  };
 
   const formFieldsWithData = formFields.map((section) => ({
     ...section,

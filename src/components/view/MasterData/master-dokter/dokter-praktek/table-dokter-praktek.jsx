@@ -1,51 +1,42 @@
 "use client";
-
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Row, Col, Spinner, Alert } from "react-bootstrap";
+
+import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+
+import { FormProvider, useForm } from "react-hook-form";
 
 import ButtonNav from "@/components/ui/button-navigation";
-import { Row, Col, Spinner, Alert } from "react-bootstrap";
-import { FormProvider, useForm } from "react-hook-form";
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/Form-search-dashboard";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import {
+  fetchDokterPraktek,
+  fetchDokterPraktekWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
 
-import { fetchDokterPraktek } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-
-const TableDokterPraktek = () => {
+const TableDataDokterPraktek = () => {
   const methods = useForm();
   const dispatch = useDispatch();
 
-  // Ambil data dari Redux Store
+  const [filteredData, setFilteredData] = useState([]);
   const {
-    data: dokterPraktekData,
+    data: DokterPraktekData,
     loading,
     error,
-  } = useSelector((state) => state.dokterPraktek);
+    totalPages,
+  } = useSelector((state) => state.DokterPraktek);
 
-  // Transformasi data untuk memasukkan nama dokter langsung dari objek "dokters"
-  const dokterPraktekList = useMemo(() => {
-    if (!Array.isArray(dokterPraktekData)) return [];
+  const [page, setPage] = useState(1);
+  const perPage = 10;
 
-    return dokterPraktekData.map((praktek) => ({
-      ...praktek,
-      namaDokter: praktek.dokters?.nmDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
-      kodeDokter: praktek.dokters?.kdDokter || "Tidak Diketahui", // Ambil nmDokter dari dokters
-    }));
-  }, [dokterPraktekData]);
-
-  // State untuk hasil filter pencarian
-  const [filteredDokterPraktek, setFilteredDokterPraktek] =
-    useState(dokterPraktekList);
-
-  // Fetch data saat pertama kali render
   useEffect(() => {
-    dispatch(fetchDokterPraktek());
-  }, [dispatch]);
+    dispatch(fetchDokterPraktek({ page, perPage }));
+  }, [dispatch, page]);
 
-  // Update filteredDokterPraktek ketika dokterPraktekList berubah
   useEffect(() => {
-    setFilteredDokterPraktek(dokterPraktekList);
-  }, [dokterPraktekList]);
+    setFilteredData(DokterPraktekData);
+  }, [DokterPraktekData]);
 
   return (
     <FormProvider {...methods}>
@@ -57,12 +48,17 @@ const TableDokterPraktek = () => {
               List Daftar Dokter Praktek
             </span>
           </h2>
+          <button
+            className="btn btn-dark my-3 mx-3"
+            onClick={() => window.location.reload()}
+          >
+            <i className="ri-refresh-line"></i>
+          </button>
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            data={dokterPraktekData}
-            setFilteredPatients={setFilteredDokterPraktek}
-            onFilteredPatients={filteredDokterPraktek}
+            fetchFunction={fetchDokterPraktekWithFilters}
+            setFilteredData={setFilteredData}
           />
         </Col>
       </Col>
@@ -71,66 +67,55 @@ const TableDokterPraktek = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-dokterPraktek">
-                  <h4 className="card-dokterPraktek font-widest">
+                <div className="iq-header-DokterPraktek">
+                  <h4 className="card-DokterPraktek font-widest">
                     Tabel List Daftar Dokter Praktek
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-dokter/dokter-praktek/add-dokter-praktek"
-                  label="Tambah Dokter Praktek"
+                  path="//MasterData/master-dokter/dokter-praktek/add-dokter-praktek"
+                  label="Tambah  DokterPraktek"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
                   className="btn btn-sm iq-bg-success"
                 />
               </div>
-
-              {/* Tampilkan loading spinner jika sedang mengambil data */}
-              {loading && (
-                <div className="text-center p-4">
-                  <Spinner animation="border" variant="primary" />
-                  <p className="mt-2">Mengambil data, harap tunggu...</p>
-                </div>
-              )}
-
-              {/* Tampilkan pesan jika terjadi error */}
-              {!loading && error && (
-                <Alert variant="danger" className="text-center mt-3">
+              {loading ? (
+                <LoadingScreen text="Please wait, loading..." />
+              ) : error ? (
+                <Alert variant="warning" className="text-center">
                   {error}
                 </Alert>
-              )}
-
-              {/* Tampilkan pesan jika data kosong */}
-              {!loading && !error && dokterPraktekList.length === 0 && (
-                <Alert variant="warning" className="text-center mt-3">
+              ) : filteredData.length === 0 ? (
+                <Alert variant="warning" className="text-center">
                   <i className="ri-information-line me-2"></i>
                   Tidak ada data yang tersedia.
                 </Alert>
-              )}
-
-              {/* Tampilkan tabel jika ada data */}
-              {!loading && !error && dokterPraktekList.length > 0 && (
-                <div className="iq-card-body">
-                  <CustomTableComponent
-                    data={filteredDokterPraktek}
-                    columns={[
-                      { key: "kodeDokter", label: "Kode Dokter" }, // Nama dokter dari objek "dokters"
-                      { key: "namaDokter", label: "Nama Dokter" }, // Nama dokter dari objek "dokters"
-                      { key: "layanan", label: "Layanan" },
-                      { key: "jamPraktek", label: "Jam Praktek" },
-                      { key: "hari", label: "Hari" },
-                      { key: "jamMasuk", label: "Tanggal Masuk" },
-                      { key: "jamKeluar", label: "Tanggal Keluar" },
-                    ]}
-                    itemsPerPage={10}
-                    slugConfig={{
-                      textField: "dokter",
-                      idField: "dokterPraktekId",
-                    }}
-                    basePath="/MasterData/master-dokter/dokter-praktek/edit-dokter-praktek"
-                  />
-                </div>
+              ) : (
+                <CustomTableComponent
+                  data={filteredData}
+                  columns={[
+                    { key: "no", label: "No" },
+                    { key: "dokter", label: "Nama Dokter" }, // Nama dokter dari objek "dokters"
+                    { key: "layanan", label: "Layanan" },
+                    { key: "jamPraktek", label: "Jam Praktek" },
+                    { key: "hari", label: "Hari" },
+                    { key: "jamMasuk", label: "Tanggal Masuk" },
+                    { key: "jamKeluar", label: "Tanggal Keluar" },
+                  ]}
+                  slugConfig={{
+                    textField: "layanan",
+                    idField: "dokterPraktekId",
+                  }}
+                  basePath="/MasterData/master-dokter/dokter-praktek/edit-dokter-praktek"
+                  paginationProps={{
+                    currentPage: page,
+                    totalPages: totalPages,
+                    itemsPerPage: perPage,
+                    onPageChange: setPage, // Fungsi untuk mengubah halaman
+                  }}
+                />
               )}
             </div>
           </Col>
@@ -140,4 +125,4 @@ const TableDokterPraktek = () => {
   );
 };
 
-export default TableDokterPraktek;
+export default TableDataDokterPraktek;

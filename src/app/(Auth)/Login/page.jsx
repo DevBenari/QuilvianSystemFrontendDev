@@ -41,7 +41,6 @@ const LoginPage = () => {
 
         if (!responseMessage) {
           setErrorMessage("Terjadi kesalahan. Silakan coba lagi.");
-          showAlert.error("Terjadi kesalahan. Silakan coba lagi.");
           return;
         }
 
@@ -54,7 +53,7 @@ const LoginPage = () => {
           console.error("Login failed:", result.payload.message);
         } else if (responseMessage.includes("password salah")) {
           // Jika password salah
-          setErrorMessage("Password salah. Silakan coba lagi.");
+
           showAlert.error("Password salah. Silakan coba lagi.");
           console.error("Login failed:", result.payload.message);
         } else if (result.payload) {
@@ -68,7 +67,6 @@ const LoginPage = () => {
         }
       })
       .catch((error) => {
-        setErrorMessage("Terjadi kesalahan. Silakan coba lagi nanti.");
         console.error("Error:", error);
       });
   };

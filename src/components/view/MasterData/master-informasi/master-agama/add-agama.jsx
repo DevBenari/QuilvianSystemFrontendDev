@@ -1,11 +1,13 @@
 "use client";
-import React, { Fragment, useState } from "react";
-import { useDispatch } from "react-redux";
 
-import { useRouter } from "next/navigation";
+import { showAlert } from "@/components/features/alert/custom-alert";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { createAgama } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
-import { showAlert } from "@/components/features/alert/custom-alert";
+
+import { useRouter } from "next/navigation";
+import { Fragment } from "react";
+
+import { useDispatch } from "react-redux";
 
 const FormAddAgama = () => {
   const dispatch = useDispatch();
@@ -18,10 +20,9 @@ const FormAddAgama = () => {
         router.push("/MasterData/master-informasi/agama/table-agama");
       });
     } catch (error) {
-      console.error("Gagal menambahkan Agama:", error);
-      showAlert.error("Gagal menambahkan data Agama");
+      console.error("Gagal menambahkan Agama darah:", error);
+      showAlert.error("Gagal menambahkan data Agama darah");
     }
-    console.log("Submitted data:", data);
   };
 
   const formFields = [
@@ -45,7 +46,7 @@ const FormAddAgama = () => {
         title="Tambah Data Agama"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath="/MasterData/master-informasi/agama/table-agama"
+        backPath={"/MasterData/master-informasi/agama/table-agama"}
         isAddMode={true}
       />
     </Fragment>

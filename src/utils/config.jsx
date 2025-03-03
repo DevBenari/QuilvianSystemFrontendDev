@@ -126,7 +126,6 @@ export const menus = {
           title: "Pasien Perjanjian Reguler",
           href: "/perjanjian/perjanjian-reguler",
         },
-        { title: "Pasien Perjanjian ODC", href: "/perjanjian/odc" },
         {
           title: "Pasien Perjanjian Rawat Jalan",
           href: "/perjanjian/rawat-jalan",
@@ -189,22 +188,22 @@ export const menus = {
         },
       ],
     },
-    {
-      title: "Data Pegawai",
-      subItems: [
-        {
-          title: "Daftar Pegawai",
-          href: "/MasterData/master-pegawai/daftar-pegawai",
-        },
-        {
-          title: "Tambah Data Pegawai",
-          href: "/MasterData/master-pegawai/add-pegawai",
-        },
-        { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
-        { title: "User Akses", href: "/master-data/akses-pegawai" },
-        { title: "Akses User Login", href: "/master-data/log-aktivitas" },
-      ],
-    },
+    // {
+    //   title: "Data Pegawai",
+    //   subItems: [
+    //     {
+    //       title: "Daftar Pegawai",
+    //       href: "/MasterData/master-pegawai/daftar-pegawai",
+    //     },
+    //     {
+    //       title: "Tambah Data Pegawai",
+    //       href: "/MasterData/master-pegawai/add-pegawai",
+    //     },
+    //     { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
+    //     { title: "User Akses", href: "/master-data/akses-pegawai" },
+    //     { title: "Akses User Login", href: "/master-data/log-aktivitas" },
+    //   ],
+    // },
     {
       title: "Asuransi",
       subItems: [
@@ -212,26 +211,26 @@ export const menus = {
           title: "Daftar Asuransi",
           href: "/MasterData/master-asuransi/daftar-asuransi",
         },
-        {
-          title: "Asuransi Rawat Jalan",
-          href: "/master-data/asuransi-rawat-jalan",
-        },
-        {
-          title: "Asuransi Rawat Inap",
-          href: "/master-data/asuransi-rawat-inap",
-        },
+        // {
+        //   title: "Asuransi Rawat Jalan",
+        //   href: "/master-data/asuransi-rawat-jalan",
+        // },
+        // {
+        //   title: "Asuransi Rawat Inap",
+        //   href: "/master-data/asuransi-rawat-inap",
+        // },
       ],
     },
     {
       title: "Peralatan kesehatan",
       subItems: [
         {
-          title: "Data Peralatan Medis",
-          href: "/MasterData/master-peralatan-medis/list-peralatan-medis",
+          title: "Data kategori Peralatan ",
+          href: "/MasterData/master-kategori-peralatan/kategori-peralatan/table-kategori-peralatan",
         },
         {
-          title: "Kategori Peralatan Medis",
-          href: "/MasterData/master-peralatan-medis/kategori-peralatan-medis",
+          title: "Data  Peralatan ",
+          href: "/MasterData/master-kategori-peralatan/peralatan/table-peralatan",
         },
       ],
     },
@@ -244,7 +243,7 @@ export const menus = {
         },
         {
           title: "Daftar Tindakan Operasi",
-          href: "/MasterData//master-operasi/daftar-tindakan-operasi",
+          href: "/MasterData/master-operasi/daftar-tindakan-operasi/table-tindakan-operasi",
         },
         {
           title: "Daftar Ruangan Operasi",
@@ -257,12 +256,8 @@ export const menus = {
       title: "Admisi",
       subItems: [
         {
-          title: "Tarif Admisi",
-          href: "/MasterData/master-administrasi/administrasi/tables-administrasi",
-        },
-        {
           title: "Tarif Rawat Jalan",
-          href: "/MasterData/master-administrasi/administrasi-rawat-jalan",
+          href: "/MasterData/master-administrasi/administrasi/tables-administrasi",
         },
         {
           title: "Tarif Rawat Inap",
@@ -271,11 +266,11 @@ export const menus = {
       ],
     },
     {
-      title: "Departemen",
+      title: "Departement",
       subItems: [
         {
-          title: "Manajemen Departemen",
-          href: "/MasterData/master-departemen/manajemen-departemen/tables-departemen",
+          title: "Manajemen departement",
+          href: "/MasterData/master-departement/table-departement",
         },
       ],
     },
@@ -339,6 +334,27 @@ export const menus = {
         {
           title: "Dokter Praktek",
           href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
+        },
+      ],
+    },
+    {
+      title: "Master Provinsi",
+      subItems: [
+        {
+          title: "Data Provinsi",
+          href: "/MasterData/master-wilayah/provinsi/table-provinsi",
+        },
+        {
+          title: "Data Kabupaten/Kota",
+          href: "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota",
+        },
+        {
+          title: "Data kecamatan",
+          href: "/MasterData/master-wilayah/kecamatan/table-kecamatan",
+        },
+        {
+          title: "Data Kelurahan",
+          href: "/MasterData/master-wilayah/kelurahan/table-kelurahan",
         },
       ],
     },

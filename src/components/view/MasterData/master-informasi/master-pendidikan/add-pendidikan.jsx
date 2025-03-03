@@ -29,14 +29,6 @@ const AddFormPendidikan = () => {
       fields: [
         {
           type: "text",
-          label: "Kode Pendidikan",
-          name: "kodePendidikan",
-          placeholder: "Masukkan Kode Pendidikan...",
-          colSize: 6,
-          rules: { required: "Kode Pendidikan harus diisi" },
-        },
-        {
-          type: "text",
           label: "Nama Pendidikan",
           name: "namaPendidikan",
           placeholder: "Masukkan Nama Pendidikan...",
