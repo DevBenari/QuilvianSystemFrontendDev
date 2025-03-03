@@ -1,30 +1,28 @@
-# Tahap 1: Build Aplikasi
+# Build stage
 FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN npm install --omit=dev
+RUN npm ci
 
-# Copy semua file proyek
+# Setup untuk Next.js
 COPY . .
-
-# Build Next.js
 RUN npm run build
 
-# Tahap 2: Image Final dengan Nginx (Ringan)
-FROM nginx:alpine AS runner
+# Production stage dengan Nginx
+FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
-# Copy hasil build dari tahap builder
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/public ./public
+# Copy build output ke Nginx
+COPY --from=builder /app/.next/static ./_next/static
+COPY --from=builder /app/public ./
 
-# Copy konfigurasi default Nginx
-COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
+# Copy konfigurasi Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port untuk Nginx
+# Expose port
 EXPOSE 80
 
-# Jalankan Nginx
+# Command untuk run Nginx
 CMD ["nginx", "-g", "daemon off;"]
