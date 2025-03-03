@@ -14,12 +14,12 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Login ke Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      run: echo "dckr_pat_sqhqB8vkKMwTMbSBiLcHRiqKO2Y" | docker login -u "rizkigunawan" --password-stdin
 
     - name: Build dan Push Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/quilvian-system-frontend:latest .
-        docker push ${{ secrets.DOCKER_USERNAME }}/quilvian-system-frontend:latest
+        docker build -t rizkigunawan/quilvian-system-frontend:latest .
+        docker push rizkigunawan/quilvian-system-frontend:latest
 
     - name: Deploy ke Server
       uses: appleboy/ssh-action@v0.1.6
@@ -28,7 +28,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker pull  ${{ secrets.DOCKER_USERNAME }}/quilvian-system-frontend:latest
+          docker pull rizkigunawan/quilvian-system-frontend:latest
           docker stop quilvian-frontend || true
           docker rm quilvian-frontend || true
-          docker run -d --name quilvian-frontend -p 80:80  ${{ secrets.DOCKER_USERNAME }}/quilvian-system-frontend:latest
+          docker run -d --name quilvian-frontend -p 80:80  rizkigunawan/quilvian-system-frontend:latest
