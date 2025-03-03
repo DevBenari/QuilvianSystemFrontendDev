@@ -1,6 +1,7 @@
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 // Get daftar pasien
 export const fetchPasienSlice = createAsyncThunk("pasien/fetchPasien", async ({page = 1, perPage = 10}, { rejectWithValue }) => {
@@ -37,14 +38,40 @@ export const fetchPasienWithFilters = createAsyncThunk("pasien/fetchWithFilters"
 } )
 
 // Tambah pasien baru
+// Tambah pasien baru
 export const AddPasienSlice = createAsyncThunk(
   "pasien/addPasien",
-  async (data, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post("/PendaftaranPasienBaru", data, {
-        headers: getHeaders(),
-      });
+      // Check if formData is an actual FormData object or a plain JS object
+      let dataToSend;
+      let headers = getHeaders();
 
+      if (formData instanceof FormData) {
+        // If it's already FormData, use it directly
+        // Remove Content-Type header so browser can set the boundary
+        headers = {
+          ...headers,
+          'Content-Type': undefined
+        };
+        dataToSend = formData;
+      } else {
+        // If it's a regular object with a foto property that's a File
+        dataToSend = { ...formData };
+        
+        // Convert file to base64 if it exists
+        if (formData.foto instanceof File) {
+          const base64String = await fileToBase64(formData.foto);
+          dataToSend.foto = base64String;
+          dataToSend.fotoFileName = formData.foto.name;
+        }
+      }
+      
+      const response = await InstanceAxios.post("/PendaftaranPasienBaru", dataToSend, {
+        headers: headers
+      });
+      
+      console.log("Response API (Add):", response.data);
       return response.data;
     } catch (error) {
       console.error("Error response dari server:", error.response?.data);
@@ -55,6 +82,16 @@ export const AddPasienSlice = createAsyncThunk(
     }
   }
 );
+
+// Helper function to convert file to base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(',')[1]); // Get only the base64 part
+    reader.onerror = error => reject(error);
+  });
+}
 
 const pasienSlice = createSlice({
   name: "pasien",

@@ -18,6 +18,8 @@ import { fetchIdentitas } from '@/lib/state/slice/Manajemen-kesehatan-slices/Mas
 import { useRouter } from 'next/navigation';
 import useAgamaData from '@/lib/hooks/useAgamaData';
 import useSelectWilayah from '@/lib/hooks/useSelectWilayah';
+import ImageUploader from '@/components/ui/uploadPhoto-field';
+import UploadPhotoField from '@/components/ui/uploadPhoto-field';
 // import UseSelectWilayah from '@/lib/hooks/useSelectWilayah';
 
 const KioskPendaftaranPasien = memo(() => {
@@ -26,6 +28,7 @@ const KioskPendaftaranPasien = memo(() => {
     const [submittedData, setSubmittedData] = useState(null);
     const [selectedPrintType, setSelectedPrintType] = useState(null);
     const router = useRouter();
+    const [selectImage,setSelectImage] = useState(null)
     // fungsi untuk melakukan select provinsi
     const {
         selectedNegara,
@@ -64,7 +67,6 @@ const KioskPendaftaranPasien = memo(() => {
           }
         }
       }, [selectedNegara, setValue, negaraOptions]);
-    console.log(selectedKecamatan)
     
     
     // const {provinsiOptions, loading: provinsiLoading, handleLoadMore } = UseProvinsiData();
@@ -225,7 +227,16 @@ const KioskPendaftaranPasien = memo(() => {
                     placeholder: "Pendidikan Terakhir",
                     options: pendidikanData.map(item => ({ label: item.namaPendidikan, value: item.pendidikanId })) || [],
                     colSize: 6
-                }
+                },
+                {
+                    type: "custom",
+                    id: "foto",
+                    name: "foto",
+                    label: "Upload Foto Pasien",
+                    rules: { required: "Foto pasien wajib diisi" },
+                    customRender: (props) => <UploadPhotoField {...props} />,
+                    colSize: 6,
+                  },
             ]
         },
         {
@@ -570,6 +581,9 @@ const KioskPendaftaranPasien = memo(() => {
                     label: "Nama Orang Tua / Wali",
                     name: "namaOrangtua",
                     placeholder: "Nama Orang Tua",
+                    rules: {
+                        required: "Nama Orang Tua is required",
+                    },
                     colSize: 6
                 },
                 {
@@ -611,14 +625,49 @@ const KioskPendaftaranPasien = memo(() => {
 
 
     const handleSubmit = (data) => {
-        console.log("Data yang dikirim ke backend:", data);
-        dispatch(AddPasienSlice(data))
+        // Create a new FormData object
+        const formData = new FormData();
+        
+        // Add all text fields to FormData
+        Object.keys(data).forEach((key) => {
+            // Skip the file field, we'll handle it separately
+            if (key !== 'foto' && data[key] !== null && data[key] !== undefined) {
+                formData.append(key, data[key]);
+            }
+        });
+    
+        // Add the "vm" field which seems to be required according to the error
+        formData.append("vm", "true");  // Adjust the value as needed for your API
+        
+        // Add the file if it exists
+        if (data.foto instanceof File) {
+            formData.append("fotoPasien", data.foto);
+        }
+    
+        console.log("Data yang dikirim ke backend:", Object.fromEntries(formData));
+        
+        // Dispatch the action with FormData
+        dispatch(AddPasienSlice(formData))
             .then((result) => {
                 if (AddPasienSlice.fulfilled.match(result)) {
                     console.log("Data pasien berhasil dikirim:", result.payload);
                     alert("Data pasien berhasil dikirim!");
+                    
+                    const enhancedData = {
+                        ...data,
+                        provinsiId: data.provinsiId || null, 
+                        noRekamMedis: `RM-${new Date().getTime()}`,
+                        queueNumber: `A-${Math.floor(Math.random() * 100)}`,
+                        registrationDate: new Date().toLocaleDateString('id-ID'),
+                        noIdentitas: `${data.noIdentitas}`,
+                        qrCodeUrl: result.payload.qrCodeUrl || null,
+                        fotoPasienUrl: result.payload.uploadFotoUrl || null
+                    };
+    
+                    setSubmittedData(enhancedData);
+                    setIsSubmitted(true);
                 } else {
-                    console.error("Gagal mengirim data:", result.error.message);
+                    console.error("Gagal mengirim data:", result.error?.message);
                     alert("Gagal mengirim data pasien!");
                 }
             })
@@ -626,27 +675,7 @@ const KioskPendaftaranPasien = memo(() => {
                 console.error("Error saat dispatch:", error);
                 alert("Terjadi kesalahan saat mengirim data pasien!");
             });
-
-        const enhancedData = {
-            ...data,
-            provinsiId: data.provinsiId || null, 
-            noRekamMedis: `RM-${new Date().getTime()}`,
-            queueNumber: `A-${Math.floor(Math.random() * 100)}`,
-            registrationDate: new Date().toLocaleDateString('id-ID'),
-            noIdentitas: `${data.noIdentitas}`,
-        };
-
-        setSubmittedData(enhancedData);
-        setIsSubmitted(true);
     };
-
-      const handlePrint = (type) => {
-        setSelectedPrintType(type);
-        setTimeout(() => {
-          window.print();
-          setSelectedPrintType(null);
-        }, 100);
-      };
 
       if (isSubmitted && submittedData) {
         return (

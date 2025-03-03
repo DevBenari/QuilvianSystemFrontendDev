@@ -1,5 +1,6 @@
 import React, { memo } from "react";
-import Flatpickr from "react-flatpickr";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useController } from "react-hook-form";
 import { Form } from "react-bootstrap";
 
@@ -21,17 +22,16 @@ const DateInput = memo(
     } = useController({ name, control, rules });
 
     // Fungsi untuk memformat tanggal menjadi "YYYY-MM-DD"
-    const formatDate = (dateString) => {
-      if (!dateString) return "-";
+    const formatDate = (date) => {
+      if (!date) return "-";
 
       // Tanggal default yang harus diganti dengan "Belum diupdate"
       const defaultDate = "0001-01-01T00:00:00+00:00";
 
-      if (dateString === defaultDate) {
+      if (date.toISOString() === defaultDate) {
         return "Belum diupdate";
       }
 
-      const date = new Date(dateString);
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
@@ -40,28 +40,22 @@ const DateInput = memo(
     };
 
     return (
-      <Form.Group className={className}>
-        {label && <Form.Label>{label}</Form.Label>}
-        <Flatpickr
-          {...field}
-          {...props}
-          options={{
-            dateFormat: "Y-m-d",
-            allowInput: false,
-            ...options,
-          }}
-          className={`form-control ${error ? "is-invalid" : ""}`}
-          onChange={([date]) => {
-            // Format tanggal sebelum dikirim ke form state
+      <Form.Group className={"mb-3" || className}>
+        {label && <Form.Label className="">{label}</Form.Label>}
+        <DatePicker
+          selected={field.value ? new Date(field.value) : null}
+          onChange={(date) => {
             const formattedDate = formatDate(date);
-
-            // Update nilai di hook form dengan format yang benar
             field.onChange(formattedDate);
-
-            // Panggil onChange dari props jika ada
             if (onChange) onChange(formattedDate);
           }}
-          placeholder={placeholder}
+          dateFormat="yyyy-MM-dd"
+          className={`form-control ${error ? "is-invalid" : ""}`}
+          placeholderText={placeholder}
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select" // Mode dropdown untuk memilih tahun
+          {...props}
         />
         {error && (
           <Form.Control.Feedback type="invalid">

@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  quilvian-system-frontend-dev:
+    build: .
+    ports:
+      - "3710:3710"
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - ./logs:/app/logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

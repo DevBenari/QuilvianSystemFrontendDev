@@ -1,6 +1,6 @@
-import React from 'react';
-import { useController, useFormContext } from 'react-hook-form';
-import { Form } from 'react-bootstrap';
+import React from "react";
+import { useController, useFormContext } from "react-hook-form";
+import { Form } from "react-bootstrap";
 
 const RadioInput = ({ name, label, options, rules, className, ...props }) => {
   const { control } = useFormContext();
@@ -28,7 +28,11 @@ const RadioInput = ({ name, label, options, rules, className, ...props }) => {
           />
         ))}
       </div>
-      {error && <Form.Control.Feedback type="invalid">{error.message}</Form.Control.Feedback>}
+      {error && (
+        <Form.Control.Feedback type="invalid">
+          {error.message}
+        </Form.Control.Feedback>
+      )}
     </Form.Group>
   );
 };

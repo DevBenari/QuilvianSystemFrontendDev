@@ -4,7 +4,7 @@ const ModulKiosk = ({ children }) => {
   return (
     <div >
       <div className="dashboard-container">
-        {/* Particles */} 
+       
         <div className="particles-container">
           {[...Array(50)].map((_, i) => (
             <div
@@ -22,9 +22,10 @@ const ModulKiosk = ({ children }) => {
           ))}
         </div>
 
-        {/* Glow effects */}
+     
         <div className="glow-effect glow-effect-1"></div>
         <div className="glow-effect glow-effect-2"></div>
+        <div className="glow-effect glow-effect-3"></div>
         {children}
       </div>
     </div>

@@ -1,26 +1,12 @@
-'use client';
+"use client";
 import React, { useEffect, useState } from "react";
 import TopNav from "@/components/features/navbars/top-nav";
-import Sidemenu from "@/components/features/navbars/side-menu";
+import UseIsMobile from "@/lib/hooks/useIsMobile";
 
 const ResponsiveNav = ({ module }) => {
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = UseIsMobile(1000); // Menggunakan custom hook yang sudah dibuat
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1500); // Tentukan apakah ukuran layar < 1500px
-    };
-
-    // Initial check and event listener
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return isMobile ? <Sidemenu module={module} /> : <TopNav module={module} />;
+  return !isMobile ? <TopNav module={module} /> : null;
 };
 
 export default ResponsiveNav;

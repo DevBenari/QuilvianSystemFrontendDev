@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authLogin from "@/lib/state/slice/auth/LoginSlice";
 import titleReducer from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 import pekerjaanReducer from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
 import golonganSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
@@ -20,10 +19,15 @@ import KategoriPeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices
 import PeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/PeralatanSlice";
 import DokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 import DokterPraktekSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
+import PositionSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position/PositionSlice";
+import UserActiveSlice from "@/lib/state/slice/auth/master-userActive/UserActive";
+import authSlice from "@/lib/state/slice/auth/LoginSlice";
+import PoliKlinikSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-PoliKlinik/PoliKlinikSlice";
 
 const store = configureStore({
   reducer: {
-    token: authLogin,
+    auth: authSlice,
+    UserActive: UserActiveSlice,
     titles: titleReducer,
     pasien: pasien,
     agama: agamaSlice,
@@ -44,6 +48,8 @@ const store = configureStore({
     Departement: DepartementSlice,
     KategoriPeralatan: KategoriPeralatanSlice,
     Peralatan: PeralatanSlice,
+    Position: PositionSlice,
+    PoliKlinik: PoliKlinikSlice,
   },
 });
 

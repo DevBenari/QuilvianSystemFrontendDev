@@ -1,10 +1,12 @@
-'use client'
+"use client";
 import { useState, useEffect } from "react";
 
-const UseIsMobile = (breakpoint = 1500) => {
+const UseIsMobile = (breakpoint = 1000) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handleResize = () => {
       setIsMobile(window.innerWidth < breakpoint);
     };

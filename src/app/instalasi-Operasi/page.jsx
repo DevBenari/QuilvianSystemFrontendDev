@@ -1,17 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import Chart from "react-apexcharts";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import { Row, Col } from "react-bootstrap";
 import { FaStethoscope } from "react-icons/fa";
 import { RiSurgicalMaskFill } from "react-icons/ri";
 import { FaHeartPulse } from "react-icons/fa6";
 import { AiOutlineTeam } from "react-icons/ai";
+import dynamic from "next/dynamic";
 
 const DashboardOperasi = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredOperations, setFilteredOperations] = useState(jadwalOperasi);
+
+  const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+   
+  
+
 
   // Data untuk grafik operasi
   const chartOptions = {
@@ -234,7 +239,7 @@ const DashboardOperasi = () => {
           </Col>
         </Row>
 
-        {/* Daftar Jadwal Operasi */}
+        {/* Daftar Jadwal Operasi
         <Row className="mb-4">
           <Col lg="12">
             <div className="iq-card">
@@ -265,12 +270,17 @@ const DashboardOperasi = () => {
                     { key: "jenis", label: "Jenis Operasi" },
                     { key: "status", label: "Status" },
                   ]}
-                  itemsPerPage={5}
+                  paginationProps={{
+                    currentPage: page,
+                    totalPages: totalPages,
+                    itemsPerPage: perPage,
+                    onPageChange: setPage,
+                  }}
                 />
               </div>
             </div>
           </Col>
-        </Row>
+        </Row> */}
       </Col>
     </>
   );

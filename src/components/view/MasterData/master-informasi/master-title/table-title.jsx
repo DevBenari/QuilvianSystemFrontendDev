@@ -11,6 +11,7 @@ import {
   fetchTitle,
   fetchTitleWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
 
 const TableDataTitle = () => {
   const methods = useForm();
@@ -83,10 +84,10 @@ const TableDataTitle = () => {
               </div>
               {/* Loading Animation */}
               {loading ? (
-                <LoadingScreen
-                  text="Mengambil data, harap tunggu..."
-                  variant="primary"
-                />
+                <div className="text-center p-4">
+                  <Spinner animation="border" variant="primary" />
+                  <p className="mt-2">Mengambil data, harap tunggu...</p>
+                </div>
               ) : error ? (
                 <Alert variant="warning" className="text-center">
                   {error}
