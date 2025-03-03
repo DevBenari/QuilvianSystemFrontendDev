@@ -1,4 +1,4 @@
-import TopNav from "@/components/features/navbars/top-nav";
+import TopNav from "@/components/features/navbars/hamburger-menu";
 import DashboardPendaftaran from "@/components/view/display-antrian/page";
 import React, { Fragment } from "react";
 

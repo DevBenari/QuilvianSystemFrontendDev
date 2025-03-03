@@ -1,41 +1,62 @@
 "use client";
-
-import React, { useEffect, useRef, useState } from "react";
-import { List, CellMeasurer, CellMeasurerCache } from "react-virtualized";
+import React, { useEffect, useState } from "react";
 import { menus } from "@/utils/config";
 import Link from "next/link";
-import { Transition } from "@headlessui/react";
+import { List, CellMeasurer, CellMeasurerCache } from "react-virtualized";
 import "react-virtualized/styles.css";
-import UseIsMobile from "@/lib/hooks/useIsMobile";
 
 const Sidemenu = ({ module }) => {
-  const isMobile = UseIsMobile(1000);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isFixed, setIsFixed] = useState(false);
+  const [listWidth, setListWidth] = useState(240); // Default width
+  const [listHeight, setListHeight] = useState(window.innerHeight - 220); // Default height
 
   const menu = menus[module] || [];
-  const listRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        isOpen &&
-        listRef.current &&
-        !listRef.current.contains(event.target) &&
-        !event.target.closest(".iq-menu-btn")
-      ) {
-        setIsOpen(false);
+    const handleResize = () => {
+      if (window.innerWidth <= 1000) {
+        setListWidth(90);
+      } else if (window.innerWidth <= 1100) {
+        setListWidth(160);
+      } else if (window.innerWidth <= 1299) {
+        setListWidth(170);
+      } else if (window.innerWidth <= 1360) {
+        setListWidth(140);
+      } else if (window.innerWidth <= 1440) {
+        setListWidth(160);
+      } else if (window.innerWidth <= 1700) {
+        setListWidth(190);
+      } else {
+        setListWidth(240);
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [isOpen]);
+    handleResize(); // Panggil saat komponen pertama kali dimount
+    window.addEventListener("resize", handleResize);
 
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsFixed(window.scrollY >= 75);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // Cache untuk mengatur ketinggian otomatis
   const cache = new CellMeasurerCache({
     fixedWidth: true,
-    defaultHeight: 40,
+    defaultHeight: 80, // Tinggi default per kategori
   });
 
+  // Fungsi untuk merender setiap kategori menu dengan sub-items
   const rowRenderer = ({ index, key, parent, style }) => {
     const item = menu[index];
 
@@ -51,18 +72,35 @@ const Sidemenu = ({ module }) => {
           <div
             style={{
               ...style,
-              padding: "5px",
+              padding: "8px",
               borderBottom: "1px solid #e0e0e0",
               backgroundColor: "#ffffff",
               wordWrap: "break-word",
             }}
             onLoad={measure}
           >
-            <h5 className="menu-title">{item.title}</h5>
-            <ul className="submenu">
+            <h5
+              style={{
+                marginBottom: "5px",
+                fontSize: "14px",
+                fontWeight: "bold",
+              }}
+            >
+              {item.title}
+            </h5>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
               {item.subItems.map((subItem, subIndex) => (
-                <li key={subIndex}>
-                  <Link href={subItem.href}>{subItem.title}</Link>
+                <li key={subIndex} style={{ padding: "3px 0" }}>
+                  <Link
+                    href={subItem.href}
+                    style={{
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      color: "#007bff",
+                    }}
+                  >
+                    {subItem.title}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -73,44 +111,27 @@ const Sidemenu = ({ module }) => {
   };
 
   return (
-    isMobile && (
-      <div className="side-menu">
-        {/* Tombol Hamburger Menu */}
-        <button className="iq-menu-btn" onClick={() => setIsOpen(!isOpen)}>
-          <i className={isOpen ? "ri-close-line" : "ri-menu-line"}></i>
-        </button>
-
-        {/* SideMenu Muncul dengan Animasi */}
-        <Transition
-          show={isOpen}
-          enter="transition-transform duration-300"
-          enterFrom="-translate-y-full"
-          enterTo="translate-y-0"
-          leave="transition-transform duration-200"
-          leaveFrom="translate-y-0"
-          leaveTo="-translate-y-full"
-        >
-          <div ref={listRef}>
-            <List
-              width={Math.min(window.innerWidth * 0.9, 400)}
-              height={Math.max(window.innerHeight * 0.6, 200)}
-              rowCount={menu.length}
-              rowHeight={cache.rowHeight}
-              deferredMeasurementCache={cache}
-              rowRenderer={rowRenderer}
-              className="side-menu-list"
-              style={{
-                borderRadius: "10px",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                position: "fixed", // Diperbaiki dengan tanda kutip
-                zIndex: 10000, // JSX menggunakan camelCase, jadi `z-index` menjadi `zIndex`
-                transition: "transform 0.3s ease-in-out",
-              }}
-            />
-          </div>
-        </Transition>
+    <>
+      <div>
+        <List
+          width={listWidth} // Menggunakan state dinamis
+          height={listHeight} // Dikurangi agar footer tetap terlihat
+          rowCount={menu.length}
+          rowHeight={cache.rowHeight}
+          deferredMeasurementCache={cache}
+          rowRenderer={rowRenderer}
+          style={{
+            position: "fixed",
+            backgroundColor: "white", // Warna background
+            borderRadius: "5px", // Membuat sudut membulat
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Efek bayangan
+            padding: "8px", // Padding dalam List
+            border: "1px solid #e0e0e0", // Border tipis
+            // height: " calc(100vh - 140px)",
+          }}
+        />
       </div>
-    )
+    </>
   );
 };
 
