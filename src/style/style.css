@@ -2328,7 +2328,7 @@ body.sidebar-main .iq-sidebar-logo {
 
 @media screen and (min-width: 1300px) {
   body.sidebar-main .sidebar-logo {
-    content: url("/Images/logo_mmc.jpeg");
+    content: url("/Images/logo-mmc-no-bg.png");
   }
 
   body.sidebar-main .iq-sidebar:hover .sidebar-logo {
