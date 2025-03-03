@@ -1,38 +1,30 @@
 # Tahap 1: Build Aplikasi
 FROM node:18-alpine AS builder
-
 WORKDIR /app
 
-# Copy file yang diperlukan untuk instalasi dependencies
+# Install dependencies
 COPY package.json package-lock.json ./
-
-# Install dependencies tanpa menyertakan devDependencies untuk produksi
 RUN npm install --omit=dev
 
-# Copy semua file proyek kecuali yang ada di .dockerignore
+# Copy semua file proyek
 COPY . .
 
-# Build Next.js (pastikan build tidak gagal meskipun env tidak ada)
-ENV NODE_ENV=production
+# Build Next.js
 RUN npm run build
 
-# Tahap 2: Jalankan Aplikasi di Production
-FROM node:18-alpine AS runner
+# Tahap 2: Image Final dengan Nginx (Ringan)
+FROM nginx:alpine AS runner
+WORKDIR /usr/share/nginx/html
 
-WORKDIR /app
+# Copy hasil build dari tahap builder
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/public ./public
 
-# Copy hanya file yang dibutuhkan untuk menjalankan aplikasi
-COPY --from=builder /app/.next .next
-COPY --from=builder /app/public public
-COPY --from=builder /app/package.json package.json
-COPY --from=builder /app/node_modules node_modules
+# Copy konfigurasi default Nginx
+COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
 
-# Set environment variable untuk production
-ENV NODE_ENV=production
-ENV PORT=3710
+# Expose port untuk Nginx
+EXPOSE 80
 
-# Expose port agar bisa diakses dari luar
-EXPOSE 3710
-
-# Jalankan aplikasi Next.js
-CMD ["npm", "run", "start"]
+# Jalankan Nginx
+CMD ["nginx", "-g", "daemon off;"]

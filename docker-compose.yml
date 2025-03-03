@@ -1,14 +1,15 @@
 version: "3.8"
+
 services:
   quilvian-system-frontend-dev:
     build: .
     ports:
-      - "3710:3710"
+      - "80:80"
     env_file:
       - .env
     restart: always
     volumes:
-      - ./logs:/app/logs
+      - ./logs:/var/log/nginx
     logging:
       driver: "json-file"
       options:
