@@ -43,7 +43,6 @@ const AgamaEditPage = ({ params }) => {
           type: "text",
           label: "Nama Agama",
           name: "namaAgama",
-          defaultValue: dataAgama?.jenisAgama || "",
           colSize: 6,
           rules: { required: "Nama Agama harus diisi" },
         },
