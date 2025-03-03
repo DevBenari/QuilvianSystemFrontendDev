@@ -281,11 +281,11 @@ export const menus = {
       subItems: [
         {
           title: "Data Tindakan Poliklinik",
-          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik/table-tindakan-poliklinik",
+          href: "/MasterData/master-Poliklinik/data-tindakan-poli-klinik/table-tindakan-poliklinik",
         },
         {
           title: "Daftar Tarif Poliklinik",
-          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik/tarif-tindakan-poliklinik",
+          href: "/MasterData/master-Poliklinik/data-tindakan-poli-klinik/tarif-tindakan-poliklinik",
         },
       ],
     },
