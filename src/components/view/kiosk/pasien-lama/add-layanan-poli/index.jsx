@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Card, Button, Alert } from "react-bootstrap";
 import DynamicStepCardForm from "@/components/features/dynamic-form/dynamicForm/DynamicStepCardForm";
-import ModalInsurance from "../../add-guest-layanan/modal-insurance";
+import ModalInsurance from "./modal-insurance";
 
 const PatientRegistrationPage = () => {
   // Dokter data berdasarkan poli dengan penambahan daftar asuransi yang diterima
@@ -204,7 +204,7 @@ const PatientRegistrationPage = () => {
               colSize: 6,
               className: "mt-2",
               hide: (watchValues) => watchValues.pembayaran !== "asuransi"
-            },
+          },
             {
               id: "nonPKSNotification",
               name: "nonPKSNotification",
@@ -558,12 +558,12 @@ const PatientRegistrationPage = () => {
                   </Col>
                   {pembayaran === 'asuransi' && (
                     <>
-                      <Col xs={12} md={6} className="mb-3">
+                  <Col xs={12} md={6} className="mb-3">
                         <strong>Asuransi:</strong> {asuransiPasien || '-'}
-                      </Col>
-                      <Col xs={12} className="mb-3">
+                  </Col>
+                    <Col xs={12} className="mb-3">
                         <strong>Nomor Kartu:</strong> {formData.nomorAsuransi || '-'}
-                      </Col>
+                    </Col>
                     </>
                   )}
                 </Row>

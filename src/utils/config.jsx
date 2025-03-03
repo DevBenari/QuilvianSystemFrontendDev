@@ -205,22 +205,6 @@ export const menus = {
         },
       ],
     },
-    // {
-    //   title: "Data Pegawai",
-    //   subItems: [
-    //     {
-    //       title: "Daftar Pegawai",
-    //       href: "/MasterData/master-pegawai/daftar-pegawai",
-    //     },
-    //     {
-    //       title: "Tambah Data Pegawai",
-    //       href: "/MasterData/master-pegawai/add-pegawai",
-    //     },
-    //     { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
-    //     { title: "User Akses", href: "/master-data/akses-pegawai" },
-    //     { title: "Akses User Login", href: "/master-data/log-aktivitas" },
-    //   ],
-    // },
     {
       title: "Asuransi",
       subItems: [

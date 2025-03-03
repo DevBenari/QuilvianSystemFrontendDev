@@ -1,5 +1,6 @@
 # Abaikan node_modules agar tidak ikut ter-copy
 node_modules
+.next/cache
 
 # Abaikan file environment agar tidak bocor ke image Docker
 .env
