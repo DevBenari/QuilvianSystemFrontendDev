@@ -5,8 +5,8 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Copy package.json dan install dependencies
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY package.json ./
+RUN yarn install
 
 # Copy seluruh kode proyek
 COPY . .
