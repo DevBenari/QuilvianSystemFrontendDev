@@ -43,17 +43,35 @@ export const AddPasienSlice = createAsyncThunk(
   "pasien/addPasien",
   async (formData, { rejectWithValue }) => {
     try {
-      // Ensure we're using the right headers for multipart/form-data
-      const headers = {
-        ...getHeaders(),
-        // Remove Content-Type so the browser can set it with the proper boundary for FormData
-        'Content-Type': undefined 
-      };
+      // Check if formData is an actual FormData object or a plain JS object
+      let dataToSend;
+      let headers = getHeaders();
+
+      if (formData instanceof FormData) {
+        // If it's already FormData, use it directly
+        // Remove Content-Type header so browser can set the boundary
+        headers = {
+          ...headers,
+          'Content-Type': undefined
+        };
+        dataToSend = formData;
+      } else {
+        // If it's a regular object with a foto property that's a File
+        dataToSend = { ...formData };
+        
+        // Convert file to base64 if it exists
+        if (formData.foto instanceof File) {
+          const base64String = await fileToBase64(formData.foto);
+          dataToSend.foto = base64String;
+          dataToSend.fotoFileName = formData.foto.name;
+        }
+      }
       
-      const response = await InstanceAxios.post("/PendaftaranPasienBaru", formData, {
+      const response = await InstanceAxios.post("/PendaftaranPasienBaru", dataToSend, {
         headers: headers
       });
-
+      
+      console.log("Response API (Add):", response.data);
       return response.data;
     } catch (error) {
       console.error("Error response dari server:", error.response?.data);
@@ -64,6 +82,16 @@ export const AddPasienSlice = createAsyncThunk(
     }
   }
 );
+
+// Helper function to convert file to base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(',')[1]); // Get only the base64 part
+    reader.onerror = error => reject(error);
+  });
+}
 
 const pasienSlice = createSlice({
   name: "pasien",

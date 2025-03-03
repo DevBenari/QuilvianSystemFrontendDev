@@ -118,42 +118,6 @@ const formConfig = [
     {
         section: "Pendaftaran Layanan Poli",
         fields: [
-    //         {
-    //           id: "jenisPemeriksaan",
-    //           name: "jenisPemeriksaan",
-    //           label: "Jenis Pemeriksaan",
-    //           type: "select",
-    //           options: (watchValues) => {
-    //             if(watchValues.layanan === "layananPoliklinik") {
-    //               return [
-    //                 { label: "Poli Anak", value: "poli_anak" },
-    //                 { label: "Poli Bedah", value: "poli_bedah" },
-    //                 { label: "Poli Saraf", value: "poli_saraf" },
-    //                 { label: "Poli Gigi", value: "poli_gigi"}
-    //               ]
-    //             }else if(watchValues.layanan === "laboratorium") {
-    //               return [
-    //                 {label: "tes darah lengkap(CBC)" , value: "tesDarah"},
-    //                 {label: "tes darah hematologi", value: "tesDarahHematologi"},
-    //                 {label: "Tes Gula Dan Kolesterol", value: "tesGulaKolesterol"},
-    //                 {label: "Tes Urin", value: "tesUrin"},
-    //               ]
-    //             }else if(watchValues.layanan === "radiologi") {
-    //               return [
-    //                 {label: "Rontgen (X-Ray)" , value: "rontgen"},
-    //                 {label: "CT Scan", value: "CtScan"},
-    //                 {label: "MRI", value: "MRI"},
-    //                 {label: "USG", value: "usg"},
-    //                 {label: "Mamografi", value: "mamografi"},
-    //                 {label: "Lainnya...", value: "lainnya"},
-    //               ]
-    //             }
-    //             return [];
-    //           },
-    //           colSize: 6,
-    //           // hide: (watchValues) => watchValues.layanan !== "layananPoliklinik"
-    //         },
-
             {
                 id: "poli",
                 name: "poli",
@@ -169,18 +133,6 @@ const formConfig = [
                 colSize: 6,
                 
             },
-            // {
-            //   id: "laboratorium",
-            //   name: "laboratorium",
-            //   label: "Laboratorium", 
-            //   type: "select",
-            //   options: [
-            //     { label: "Patologi Anatomi", value: "patologiAnatomi" },
-            //     { label: "Patologi Klinik", value: "patologiKlinik"},
-            //   ],
-            //   colSize: 6,
-            //   hide: (watchValues) => watchValues.layanan !== "laboratorium"
-            // },
             {
               id: "dokter",
               name: "dokter",
@@ -191,20 +143,6 @@ const formConfig = [
               ), // Menggunakan DokterSelector sebagai komponen custom
               colSize: 6,
             },
-          // {
-          //   id: "appointment_date",
-          //   name: "appointment_date",
-          //   label: "Tanggal Janji",
-          //   type: "date",
-          //   colSize: 6,
-          // },
-        // {
-        //   id: "keluhanPasien",
-        //   name: "keluhan",
-        //   label: "Keluhan Utama Pasien",
-        //   type: "textarea",
-        //   colSize: 6,
-        // },
         ],
       },
       {

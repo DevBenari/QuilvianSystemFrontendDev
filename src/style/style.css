@@ -862,12 +862,15 @@ a:hover {
 
 .kiosk-logo {
   margin-bottom: 1px;
+  display: flex;
+  justify-content: center;
 }
 
 .kiosk-logo img {
   max-width: 350px;
   height: auto;
   object-fit: contain;
+  text-align: center;
 }
 
 .kiosk-carousel {
@@ -886,7 +889,7 @@ a:hover {
 
 .top-kiosk {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   padding: 30px;
   margin-top: 50px;
   margin-right: 30px;
@@ -903,9 +906,9 @@ a:hover {
 .kiosk-middle .d-flex {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
-  gap: 20px;
+  gap: 50px;
 }
 
 /* Left sidebar with cards */
@@ -916,9 +919,11 @@ a:hover {
 
 /* Content area */
 .kiosk-content {
-  flex: 1 1 auto;
+  /* flex: 1 1 auto; */
+  width: 1100px;
   border: none;
   min-width: 0; /* Important for flex items to prevent overflow */
+  
 }
 
 /* Dashboard Title */
@@ -948,9 +953,9 @@ a:hover {
   background-color: lightgrey;
 }
 
-.card-footer {
+/* .card-footer {
   border-radius: 15px;
-}
+} */
 
 .service-card:hover {
   transform: translateY(-4px);
