@@ -3,7 +3,6 @@
 import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useForm } from "react-hook-form";
-import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";

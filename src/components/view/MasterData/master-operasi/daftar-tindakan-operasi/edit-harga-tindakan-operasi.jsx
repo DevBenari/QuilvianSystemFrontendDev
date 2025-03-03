@@ -13,7 +13,6 @@ import {
   dataResultasi,
   dataruangOperasi,
 } from "@/utils/dataOperasi";
-import { kategoriOperasi } from "@/utils/masterData";
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { Button, Col } from "react-bootstrap";

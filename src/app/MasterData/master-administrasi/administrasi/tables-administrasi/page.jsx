@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import ButtonNav from "@/components/ui/button-navigation";
 import { Row, Col } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import { administrasiRawatJalan } from "@/utils/masterData";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilterNonApi from "@/components/features/custom-search/CustomSearchComponen/custom-search-non-api";

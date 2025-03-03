@@ -5,7 +5,6 @@ import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicF
 import { extractIdFromSlug } from "@/utils/slug";
 
 import { useForm } from "react-hook-form";
-import dataWilayah from "@/utils/dataWilayah";
 import {
   editPegawai,
   PegawaiById,

@@ -3,7 +3,6 @@
 import React, { Fragment, memo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useForm } from "react-hook-form";
-import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { addPegawai } from "@/lib/hooks/masterData/master-pegawai";

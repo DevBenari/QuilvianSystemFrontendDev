@@ -2,7 +2,6 @@
 
 import React, { Fragment, useState,useEffect } from "react";
 import { useForm } from "react-hook-form";
-import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import {  tindakanDataConfig } from "@/utils/dataTindakan";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";

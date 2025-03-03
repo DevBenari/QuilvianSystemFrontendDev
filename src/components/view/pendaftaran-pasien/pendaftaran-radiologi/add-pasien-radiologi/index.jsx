@@ -4,7 +4,6 @@ import React, { memo, useState } from "react";
 import { addPromo } from "@/lib/hooks/masterData/admisi/keanggotaan/add";
 import { useRouter } from "next/navigation"; // Import the useRouter hook
 import { useForm } from "react-hook-form";
-import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 import TableTindakan from "@/components/features/tindakanTable/tindakantTable";

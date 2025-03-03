@@ -7,7 +7,6 @@ import { daftarPasien } from '@/utils/config';
 import { pemeriksaRadiologi, tindakanDataConfig } from "@/utils/dataTindakan";
 import DynamicForm from '@/components/features/dynamic-form/dynamicForm/dynamicForm';
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import dataWilayah from "@/utils/dataWilayah";
 import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 
 const PendafttaranRadiologiEditPage = ({params}) => {

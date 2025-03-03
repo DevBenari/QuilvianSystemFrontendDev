@@ -7,7 +7,6 @@ import {
   getbyidTindakanOperasi,
 } from "@/lib/hooks/masterData/manajemen-operasi/tindakan-operasi";
 
-import { jenisOperasi, kategoriOperasi } from "@/utils/masterData";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
