@@ -1,0 +1,38 @@
+name: Deploy Next.js to Docker Hub
+
+on:
+  push:
+    branches:
+      - Production  # Sesuaikan dengan branch yang ingin di-deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build Next.js
+        run: yarn build
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: "ikbalyuliyanto7"  # Gunakan Docker Hub username dari GitHub Secrets
+          password: "dckr_pat_lXH2eBGsna_Q5z3SDXGN6Vix6Cc" 
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ikbalyuliyanto7/quilvian-frontend-api .
+          docker tag ikbalyuliyanto7/quilvian-frontend-api ikbalyuliyanto7/quilvian-frontend-api:latest
+          docker push ikbalyuliyanto7/quilvian-frontend-api
