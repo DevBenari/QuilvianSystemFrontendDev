@@ -17,7 +17,38 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # Tahap 2: Jalankan Aplikasi di Production
+FROM node:18-alpine AS runnerFROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy file yang diperlukan untuk install dependencies
+COPY package.json package-lock.json ./
+RUN npm install --frozen-lockfile
+
+# Copy semua file proyek
+COPY . .
+
+# Build aplikasi dengan output standalone
+RUN npm run build
+
+# Tahap 2: Production
 FROM node:18-alpine AS runner
+
+WORKDIR /app
+
+# Copy hasil build dari tahap sebelumnya
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/public ./public
+
+# Set environment
+ENV NODE_ENV=production
+ENV PORT=3710
+
+EXPOSE 3710
+
+# Jalankan aplikasi menggunakan server.js
+CMD ["node", "server.js"]
+
 
 WORKDIR /app
 
