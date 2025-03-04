@@ -1,7 +1,7 @@
 "use client";
 // components/ScrollLayout.js
 import { useEffect } from "react";
-import store from "@/lib/state/store";
+// import store from "@/lib/state/store";
 import { Provider } from "react-redux";
 
 export default function ScrollLayout({ children }) {
