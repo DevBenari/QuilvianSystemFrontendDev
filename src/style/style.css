@@ -1237,88 +1237,50 @@ a:hover {
     right: 10px;
   }
 }
+
 /*---------------------------------------------------------------------
-                              Top Nav
-  -----------------------------------------------------------------------*/
-/* Styling untuk TopNav agar selalu terlihat */
-/* Styling untuk TopNav agar tetap di tempat tetapi tidak mengikuti scroll */
-.topnav-container {
-  width: 250px;
-  height: calc(100vh - 140px); /* Memastikan tidak menutupi footer */
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  padding: 8px;
-  position: relative; /* Mengganti dari fixed ke absolute */
+                             Sidemenu
+-----------------------------------------------------------------------*/
+
+.menu-item-sidemenu {
+  transition: all 0.2s ease;
 }
 
-/* Judul menu */
-.topnav-title {
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: bold;
+.menu-item-sidemenu:hover {
+  background-color: #f5f8ff;
+  transform: translateX(2px);
 }
 
-/* Scroll area dalam TopNav */
-.topnav-scroll {
-  max-height: calc(100vh - 180px); /* Pastikan scroll tetap ada */
-
-  padding-bottom: 20px;
+.menu-item-sidemenu:hover a {
+  color: #0055b3 !important;
+  font-weight: 500;
 }
 
-/* Custom Scrollbar */
-.topnav-scroll::-webkit-scrollbar {
+.menu-item-sidemenu:hover svg {
+  color: #0055b3 !important;
+}
+
+.menu-item-sidemenu:active {
+  background-color: #e6f0ff;
+}
+
+/* Custom scrollbar styles */
+.ReactVirtualized__List::-webkit-scrollbar {
   width: 6px;
 }
 
-.topnav-scroll::-webkit-scrollbar-thumb {
-  background: #007bff;
-  border-radius: 6px;
-}
-
-.topnav-scroll::-webkit-scrollbar-track {
+.ReactVirtualized__List::-webkit-scrollbar-track {
   background: #f1f1f1;
+  border-radius: 3px;
 }
 
-/* **Media Queries untuk Laptop & Resolusi Layar Lebih Kecil** */
-@media screen and (max-width: 1700px) {
-  .topnav-container {
-    width: 200px;
-  }
+.ReactVirtualized__List::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 3px;
 }
 
-@media screen and (max-width: 1440px) {
-  .topnav-container {
-    width: 180px;
-  }
-}
-
-@media screen and (max-width: 1300px) {
-  .topnav-container {
-    width: 170px;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .topnav-container {
-    width: 120px;
-  }
-}
-
-/* **Mode Tablet atau Layar Kecil** */
-@media screen and (max-width: 768px) {
-  .topnav-container {
-    width: 100%;
-    left: 0;
-    top: 60px;
-    height: auto;
-    max-height: 80vh; /* Pastikan tidak terlalu panjang */
-  }
-
-  .topnav-scroll {
-    max-height: 60vh; /* Batasi tinggi agar footer tetap terlihat */
-  }
+.ReactVirtualized__List::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
 }
 
 /*---------------------------------------------------------------------
