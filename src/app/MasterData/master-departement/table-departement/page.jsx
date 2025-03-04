@@ -1,4 +1,4 @@
-import TableDataDepartement from "@/components/view/MasterData/master-departemen/table-departemen";
+import TableDataDepartement from "@/components/view/MasterData/master-departemen-view/table-departemen";
 import React from "react";
 
 const PageListDepartement = () => {

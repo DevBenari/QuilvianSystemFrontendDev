@@ -1,4 +1,4 @@
-import TableDataProvinsi from "@/components/view/MasterData/master-wilayah/provinsi/table-provinsi";
+import TableDataProvinsi from "@/components/view/MasterData/master-wilayah-view/provinsi/table-provinsi";
 import React from "react";
 
 const DataProvinsiPage = () => {

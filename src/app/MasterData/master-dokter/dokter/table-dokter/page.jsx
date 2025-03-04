@@ -1,4 +1,4 @@
-import TableDataDokter from "@/components/view/MasterData/master-dokter/dokter/table-dokter";
+import TableDataDokter from "@/components/view/MasterData/master-dokter-view/dokter/table-dokter";
 import React from "react";
 
 const PageListDokter = () => {

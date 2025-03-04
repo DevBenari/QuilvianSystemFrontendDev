@@ -29,6 +29,8 @@ const Navbars = memo(({ module, iconJudul: IconJudul }) => {
 
   // Event untuk menutup sidebar ketika klik di luar sidebar
   useEffect(() => {
+    if (!mobileOutside) return;
+
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setIsClicked(false);
@@ -40,7 +42,7 @@ const Navbars = memo(({ module, iconJudul: IconJudul }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
+  }, [mobileOutside]);
 
   return (
     <Fragment>

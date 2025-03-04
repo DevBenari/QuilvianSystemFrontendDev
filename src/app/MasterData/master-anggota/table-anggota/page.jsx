@@ -1,4 +1,4 @@
-import TableDataAnggota from "@/components/view/MasterData/master-anggota/table-anggota";
+import TableDataAnggota from "@/components/view/MasterData/anggota-view/table-anggota";
 import React from "react";
 
 const PageListAnggota = () => {

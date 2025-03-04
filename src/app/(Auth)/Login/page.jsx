@@ -37,11 +37,7 @@ const LoginPage = () => {
     const result = await dispatch(LoginUser(values));
 
     if (result.meta.requestStatus === "fulfilled") {
-      showAlert.success("Anda Berhasil Login", () => {
-        setTimeout(() => {
-          router.push("/"); // Redirect ke halaman dashboard setelah login
-        }, 500);
-      });
+      console.log("Login success:", result.payload);
     } else {
       setErrorMessage(
         result.payload || "Terjadi kesalahan. Silakan coba lagi."
