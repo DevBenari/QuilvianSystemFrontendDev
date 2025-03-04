@@ -1,4 +1,4 @@
-import AddFormAnggota from "@/components/view/MasterData/anggota-view/add-anggota(master)";
+import AddFormAnggota from "@/components/view/pendaftaran-pasien/anggota-view/add-anggota";
 import React from "react";
 
 const PageAddAnggota = () => {

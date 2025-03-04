@@ -95,10 +95,7 @@ export const menus = {
           title: "Pendaftaran Pasien Rehabilitasi",
           href: "/pendaftaran/pendaftaran-pasien-rehabilitasi",
         },
-        {
-          title: "Pendaftaran Pasien Medical Check Up",
-          href: "/pendaftaran/pendaftaran-pasien-medical-check-up",
-        },
+
         {
           title: "Pendaftaran Pasien Fasilitas",
           href: "/pendaftaran/pendaftaran-pasien-fasilitas",
@@ -115,7 +112,7 @@ export const menus = {
           title: "Pendaftaran Pasien IGD",
           href: "/pendaftaran/pendaftaran-pasien-igd",
         },
-        { title: "Keanggotaan", href: "/pendaftaran/keanggotaan" },
+        { title: "Keanggotaan", href: "/pendaftaran/anggota/table-anggota" },
       ],
     },
     {
@@ -196,15 +193,7 @@ export const menus = {
         },
       ],
     },
-    {
-      title: "Keanggotaan",
-      subItems: [
-        {
-          title: "Tipe Keanggotaan",
-          href: "/MasterData/master-anggota/table-anggota",
-        },
-      ],
-    },
+
     // {
     //   title: "Data Pegawai",
     //   subItems: [

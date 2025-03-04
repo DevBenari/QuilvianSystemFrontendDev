@@ -11,7 +11,7 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 import {
   fetchAnggota,
   fetchAnggotaWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/admisi/Anggota/anggotaSlice";
 
 const TableDataAnggota = () => {
   const methods = useForm();
@@ -76,7 +76,7 @@ const TableDataAnggota = () => {
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-anggota/add-anggota"
+                  path="/pendaftaran/anggota/add-anggota"
                   label="Tambah Anggota"
                   icon="ri-add-fill"
                   size="sm"
@@ -122,7 +122,7 @@ const TableDataAnggota = () => {
                       textField: "jenisKeanggotaan",
                       idField: "keanggotaanId",
                     }}
-                    basePath="/MasterData/master-anggota/edit-anggota"
+                    basePath="/pendaftaran/anggota/edit-anggota"
                     paginationProps={{
                       currentPage: page,
                       totalPages: totalPages,

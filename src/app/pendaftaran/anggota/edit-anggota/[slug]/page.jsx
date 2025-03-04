@@ -11,7 +11,7 @@ import {
   fetchAnggotaById,
   updateAnggota,
   deleteAnggota,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/admisi/Anggota/anggotaSlice";
 
 const EditAnggotaForm = ({ params }) => {
   const router = useRouter();
@@ -40,7 +40,7 @@ const EditAnggotaForm = ({ params }) => {
   // Submit form untuk update data
   const handleSubmit = async (formData) => {
     try {
-      if (!dataAnggota.keangotaanId) {
+      if (!dataAnggota.keanggotaanId) {
         showAlert.error("Gagal memperbarui data: Anggota ID tidak ditemukan.");
         return;
       }
@@ -48,11 +48,11 @@ const EditAnggotaForm = ({ params }) => {
       console.log("Data yang dikirim ke backend:", formData);
 
       await dispatch(
-        updateAnggota({ id: dataAnggota.keangotaanId, data: formData })
+        updateAnggota({ id: dataAnggota.keanggotaanId, data: formData })
       ).unwrap();
 
       showAlert.success("Data berhasil diperbarui!", () => {
-        router.push("/MasterData/master-anggota/table-anggota");
+        router.push("/pendaftaran/anggota/table-anggota");
       });
     } catch (error) {
       console.error("Gagal memperbarui data Anggota:", error);
@@ -62,16 +62,16 @@ const EditAnggotaForm = ({ params }) => {
 
   // Fungsi Hapus Data
   const handleDelete = async () => {
-    if (!dataAnggota?.keangotaanId) {
+    if (!dataAnggota?.keanggotaanId) {
       showAlert.error("Gagal menghapus: Anggota ID tidak ditemukan.");
       return;
     }
 
     showAlert.confirmDelete("Data Anggota akan dihapus permanen", async () => {
       try {
-        await dispatch(deleteAnggota(dataAnggota.keangotaanId)).unwrap();
+        await dispatch(deleteAnggota(dataAnggota.keanggotaanId)).unwrap();
         showAlert.success("Data Anggota berhasil dihapus!", () => {
-          router.push("/MasterData/master-anggota/table-anggota");
+          router.push("/pendaftaran/anggota/table-anggota");
         });
       } catch (error) {
         showAlert.error("Gagal menghapus data Anggota.");
@@ -119,7 +119,7 @@ const EditAnggotaForm = ({ params }) => {
         onSubmit={handleSubmit}
         handleDelete={handleDelete}
         userData={dataAnggota}
-        backPath="/MasterData/master-anggota/table-anggota"
+        backPath="/pendaftaran/anggota/table-anggota"
         isAddMode={false}
       />
     </Fragment>
