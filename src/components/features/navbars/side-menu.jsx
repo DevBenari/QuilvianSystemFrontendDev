@@ -28,11 +28,13 @@ const Sidemenu = ({ module }) => {
       } else if (window.innerWidth <= 1299) {
         setListWidth(170);
       } else if (window.innerWidth <= 1360) {
-        setListWidth(140);
-      } else if (window.innerWidth <= 1440) {
         setListWidth(160);
+      } else if (window.innerWidth <= 1500) {
+        setListWidth(170);
+      } else if (window.innerWidth <= 1600) {
+        setListWidth(180);
       } else if (window.innerWidth <= 1700) {
-        setListWidth(190);
+        setListWidth(210);
       } else {
         setListWidth(240);
       }
