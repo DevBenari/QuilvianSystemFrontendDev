@@ -3,7 +3,7 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
-COPY . .
+COPY . .               # <-- Di sini Docker otomatis mengabaikan file yang ada di .dockerignore
 RUN yarn build
 
 # Tahap 2: Jalankan Aplikasi
