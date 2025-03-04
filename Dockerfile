@@ -1,18 +1,35 @@
-# Tahap 1: Build Next.js
+# Stage 1: Build
 FROM node:18-alpine AS builder
+
 WORKDIR /app
+
+# Copy package.json dan yarn.lock
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
-COPY . .               # <-- Di sini Docker otomatis mengabaikan file yang ada di .dockerignore
+
+# Install dependencies dengan production flag
+RUN yarn install --frozen-lockfile --production=false
+
+# Copy kode aplikasi
+COPY . .
+
+# Build aplikasi
 RUN yarn build
 
-# Tahap 2: Jalankan Aplikasi
-FROM node:18-alpine
-WORKDIR /app
-COPY --from=builder /app/.next .next
-COPY --from=builder /app/public public
-COPY package.json yarn.lock ./
-RUN yarn install --production
+# Stage 2: Run
+FROM node:18-alpine AS runner
 
-EXPOSE 3000
+WORKDIR /app
+
+# Copy hanya file yang diperlukan dari build stage
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/yarn.lock ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+
+# Install hanya production dependencies
+ENV NODE_ENV=production
+RUN yarn install --frozen-lockfile --production=true && yarn cache clean
+
+# Jalankan aplikasi
 CMD ["yarn", "start"]
