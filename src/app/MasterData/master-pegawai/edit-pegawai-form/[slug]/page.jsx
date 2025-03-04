@@ -55,28 +55,6 @@ const PegawaiEditForm = ({ params }) => {
 
   const handleSubmit = async (data) => {
     console.log("data", data);
-    // try {
-    //     const id = extractIdFromSlug(params.slug);
-
-    //     const response = await fetch(`/api/users/${id}`, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(data)
-    //     });
-
-    //     if (!response.ok) throw new Error('Update failed');
-
-    //     setIsEditing(false);
-    //     toast.success('User updated successfully');
-    //     // Refresh user data
-    //     const updatedData = await response.json();
-    //     setUserData(updatedData);
-    // } catch (error) {
-    //     console.error('Error updating:', error);
-    //     toast.error('Failed to update user');
-    // }
   };
 
   const handleEdit = () => {
