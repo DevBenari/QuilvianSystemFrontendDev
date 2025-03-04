@@ -7,6 +7,9 @@ import Link from "next/link";
 import { Transition } from "@headlessui/react";
 import "react-virtualized/styles.css";
 import UseIsMobile from "@/lib/hooks/useIsMobile";
+// Import icons from react-icons
+import { FiChevronRight } from "react-icons/fi";
+import { RiMenuLine, RiCloseLine } from "react-icons/ri";
 
 const HamburgerMenu = ({ module, iconJudul: IconJudul }) => {
   const isMobile = UseIsMobile(1000);
@@ -31,6 +34,19 @@ const HamburgerMenu = ({ module, iconJudul: IconJudul }) => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [isOpen]);
 
+  // Add overflow hidden to body when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
+
   const cache = new CellMeasurerCache({
     fixedWidth: true,
     defaultHeight: 40,
@@ -51,23 +67,27 @@ const HamburgerMenu = ({ module, iconJudul: IconJudul }) => {
           <div
             style={{
               ...style,
-              padding: "5px",
-              borderBottom: "1px solid #e0e0e0",
+              padding: "10px 5px",
+              borderBottom: "1px solid #e8e8e8",
               backgroundColor: "#ffffff",
               wordWrap: "break-word",
             }}
             onLoad={measure}
+            className="menu-container"
           >
             <div className="judul">
               <h5 className="menu-title flex items-center gap-2">
-                <IconJudul className="fs-2 mx-1" />
+                {IconJudul && <IconJudul className="menu-icon" />}
                 {item.title}
               </h5>
             </div>
             <ul className="submenu">
               {item.subItems.map((subItem, subIndex) => (
-                <li key={subIndex}>
-                  <Link href={subItem.href}>{subItem.title}</Link>
+                <li key={subIndex} className="submenu-item">
+                  <Link href={subItem.href} className="submenu-link">
+                    <FiChevronRight className="submenu-icon" />
+                    <span>{subItem.title}</span>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -80,36 +100,46 @@ const HamburgerMenu = ({ module, iconJudul: IconJudul }) => {
   return (
     isMobile && (
       <div className="side-menu">
-        {/* Tombol Hamburger Menu */}
-        <button className="iq-menu-btn" onClick={() => setIsOpen(!isOpen)}>
-          <i className={isOpen ? "ri-close-line" : "ri-menu-line"}></i>
+        {/* Hamburger Menu Button */}
+        <button
+          className={`iq-menu-btn ${isOpen ? "active" : ""}`}
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
+        >
+          {isOpen ? (
+            <RiCloseLine className="icon" />
+          ) : (
+            <RiMenuLine className="icon" />
+          )}
         </button>
 
-        {/* SideMenu Muncul dengan Animasi */}
+        {/* Overlay when menu is open */}
+        {isOpen && <div onClick={() => setIsOpen(false)} />}
+
+        {/* SideMenu with Animation */}
         <Transition
           show={isOpen}
-          enter="transition-transform duration-300"
+          enter="transition-transform duration-300 ease-out"
           enterFrom="-translate-y-full"
           enterTo="translate-y-0"
-          leave="transition-transform duration-200"
+          leave="transition-transform duration-300 ease-in"
           leaveFrom="translate-y-0"
           leaveTo="-translate-y-full"
         >
-          <div ref={listRef}>
+          <div ref={listRef} className="menu-container">
             <List
               width={Math.min(window.innerWidth * 0.9, 400)}
-              height={Math.max(window.innerHeight * 0.6, 200)}
+              height={Math.max(window.innerHeight * 0.7, 300)}
               rowCount={menu.length}
               rowHeight={cache.rowHeight}
               deferredMeasurementCache={cache}
               rowRenderer={rowRenderer}
               className="hamburger-menu-list"
               style={{
-                borderRadius: "10px",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                position: "fixed", // Diperbaiki dengan tanda kutip
-                zIndex: 10000, // JSX menggunakan camelCase, jadi `z-index` menjadi `zIndex`
-                transition: "transform 0.3s ease-in-out",
+                position: "fixed",
+                zIndex: 10001,
+                top: "70px", // Adjust based on your header height
+                right: "10px",
               }}
             />
           </div>
