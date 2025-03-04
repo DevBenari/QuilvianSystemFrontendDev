@@ -104,6 +104,7 @@ const DynamicStepCardForm = ({
       setFilteredDoctors([]);
     }
   }, [selectedPoli, doctorsData]);
+  console.log(selectedPoli)
 
   // Effect for title and gender
   useEffect(() => {
