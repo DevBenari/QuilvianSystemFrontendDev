@@ -28,11 +28,11 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: "ikbalyuliyanto7" # Gunakan Docker Hub username dari GitHub Secrets
-          password: "dckr_pat_lXH2eBGsna_Q5z3SDXGN6Vix6Cc"
+          username: "rizkigunawan" # Gunakan Docker Hub username dari GitHub Secrets
+          password: "dckr_pat_ujKmiAFxPxvlJN-jJWvJdrU-XEk"
 
       - name: Build and push Docker image
         run: |
-          docker build -t ikbalyuliyanto7/quilvian-frontend-api .
-          docker tag ikbalyuliyanto7/quilvian-frontend-api ikbalyuliyanto7/quilvian-frontend-api:latest
-          docker push ikbalyuliyanto7/quilvian-frontend-api
+          docker build -t rizkigunawan/quilvian-system-frontend-apps .
+          docker tag rizkigunawan/quilvian-system-frontend-apps rizkigunawan/quilvian-system-frontend-apps:latest
+          docker push rizkigunawan/quilvian-system-frontend-apps
