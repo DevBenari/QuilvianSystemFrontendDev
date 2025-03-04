@@ -1,32 +1,28 @@
-# Gunakan base image resmi Node.js
+# Build stage
 FROM node:18-alpine AS builder
-
-# Set working directory
 WORKDIR /app
 
-# Copy package.json dan install dependencies
-COPY package.json ./
-RUN yarn install
+# Install dependencies
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copy seluruh kode proyek
+# Setup untuk Next.js
 COPY . .
+RUN npm run build
 
-# Build Next.js untuk production
-RUN yarn build
+# Production stage dengan Nginx
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
 
-# Gunakan base image yang lebih kecil untuk menjalankan aplikasi
-FROM node:18-alpine AS runner
+# Copy build output ke Nginx
+COPY --from=builder /app/.next/static ./_next/static
+COPY --from=builder /app/public ./
 
-WORKDIR /app
+# Copy konfigurasi Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy hasil build dari tahap sebelumnya
-COPY --from=builder /app ./
-
-# Copy konfigurasi default Nginx
-COPY --from=builder /app/nginx.conf /etc/nginx/nginx.conf
-
-# Expose port untuk Nginx
+# Expose port
 EXPOSE 80
 
-# Jalankan Nginx
+# Command untuk run Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,11 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'standalone', // 📌 Pastikan output menggunakan mode standalone (untuk Docker)
+    output: 'standalone',
+    compress: true,
+    poweredByHeader: false,
+    reactStrictMode: true,
+    swcMinify: true,
     images: {
-      unoptimized: true, // 📌 Matikan image optimization karena kita pakai Nginx
+      domains: [
+        // Tambahkan domain untuk optimasi gambar jika diperlukan
+      ],
+      formats: ['image/avif', 'image/webp'],
     },
-    trailingSlash: true, // 📌 Pastikan URL folder berfungsi dengan baik di Nginx
-  };
+    experimental: {
+      optimizeCss: true,
+      scrollRestoration: true,
+    },
+  }
   
-  export default nextConfig;
-  
+ export default nextConfig

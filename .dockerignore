@@ -1,26 +1,30 @@
-# Abaikan node_modules agar tidak ikut ter-copy
+# Node modules and dependencies
 node_modules
-.next/cache
-
-# Abaikan file environment agar tidak bocor ke image Docker
-.env
-
-# Abaikan build Next.js lama
-.next
-out
-
-# Abaikan file log dan cache
 npm-debug.log
-yarn-debug.log
-yarn-error.log
-logs
-cache
-.DS_Store
 
-# Abaikan file git
+# Git related
 .git
 .gitignore
 
-# Abaikan folder yang tidak perlu dalam build
-.vscode
-.idea
+# Development files
+README.md
+.editorconfig
+.prettierrc
+.eslintrc
+jest.config.js
+
+# Environment variables
+.env.local
+.env.development
+.env.test
+
+# Cache and build folders not needed in Docker
+.next/cache
+out
+dist
+coverage
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

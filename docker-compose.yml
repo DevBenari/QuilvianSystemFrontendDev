@@ -1,8 +1,30 @@
-version: '3'
+version: "3.8"
+
 services:
-  nextjs-app:
-    build: .
-    ports:
-      - "3000:3000"
+  nextjs:
+    image: ikbalyuliyanto7/quilvian-frontend-api:next
+    container_name: quilvian-nextjs
+    restart: always
     environment:
       - NODE_ENV=production
+    networks:
+      - app_network
+    volumes:
+      - ./logs:/app/logs
+
+  nginx:
+    image: ikbalyuliyanto7/quilvian-frontend-api:nginx
+    container_name: quilvian-nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - nextjs
+    networks:
+      - app_network
+    volumes:
+      - ./logs:/var/log/nginx
+
+networks:
+  app_network:
+    driver: bridge
