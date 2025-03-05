@@ -3,7 +3,7 @@
 import { showAlert } from "@/components/features/alert/custom-alert";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import useDepartementData from "@/lib/hooks/useDepartemen";
-import { createPoliKlinik } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik/PoliKlinikSlice";
+import { createPoliKlinik } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
 
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";

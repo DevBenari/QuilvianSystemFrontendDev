@@ -153,85 +153,100 @@ const PatientRegistrationPage = () => {
       ]
     },
     {
-        section: "Asuransi",
-        icon: "📋",
-        description: "Pilih asuransi kesehatan Anda",
-        fields: 
-        [
-            {
-                id:"pembayaran",
-                name:"pembayaran",
-                label: "Metode Pembayaran",
-                type: "select",
-                options: [
-                    {label: "Tunai", value: "tunai"},
-                    {label: "Asuransi", value:"asuransi"}
-                ],
-                colsize:6,
+      section: "Asuransi",
+      icon: "📋",
+      description: "Pilih metode pembayaran Anda",
+      fields: [],
+      cards: [
+        {
+          name: "pembayaran",
+          title: "Metode Pembayaran",
+          description: "Silakan pilih metode pembayaran yang akan Anda gunakan:",
+          colSize: 6,
+          required: true,
+          rules: { required: "Silakan pilih metode pembayaran" },
+          options: [
+            { 
+              value: "tunai", 
+              label: "Tunai", 
+              icon: "💵", 
+              subtitle: "Bayar langsung",
+              description: "Pembayaran dilakukan langsung di kasir rumah sakit setelah selesai pelayanan."
             },
-            {
-              id:"asuransiPasien",
-              name:"asuransiPasien",
-              label: "Asuransi yang digunakan pasien",
-              type: "select",
-              options: insuranceList.map((item) => ({ 
-                label: item.provider, 
-                value: item.provider,
-                isPKS: item.isPKS
-              })),
-              colSize:6,
-              hide: (watchValues) => watchValues.pembayaran !== "asuransi"
-            },
-            {
-                id:"nomorAsuransi",
-                name:"nomorAsuransi",
-                label: "Nomor Kartu Asuransi",
-                type: "number",
-                colsize:6,
-                placeholder:"masukkan nomor asuransi",
-                hide: (watchValues) => watchValues.pembayaran !== "asuransi"
-            },
-            {
-              id: "tambahAsuransi",
-              name: "tambahAsuransi",
-              label: "",
-              type: "custom",
-              customRender: () => (
-                <Button variant="info" onClick={handleOpenModal} style={{ marginTop: "30px"}}>
-                  Tambah Asuransi
-                </Button>
-              ),
-              colSize: 6,
-              className: "mt-2",
-              hide: (watchValues) => watchValues.pembayaran !== "asuransi"
-            },
-            {
-              id: "nonPKSNotification",
-              name: "nonPKSNotification",
-              label: "",
-              type: "custom",
-              customRender: ({ methods }) => {
-                const asuransiPasien = methods.watch("asuransiPasien");
-                const selectedInsurance = insuranceList.find(ins => ins.provider === asuransiPasien);
-                
-                if (selectedInsurance && !selectedInsurance.isPKS) {
-                  return (
-                    <Alert variant="warning" className="mt-3">
-                      <Alert.Heading>Asuransi Non-PKS</Alert.Heading>
-                      <p>
-                        Asuransi <strong>{selectedInsurance.provider}</strong> tidak bekerja sama dengan rumah sakit (Non-PKS).
-                        Pembayaran akan diatur sebagai Tunai, tetapi Anda tetap bisa mengajukan reimbursement ke pihak asuransi setelah layanan selesai.
-                      </p>
-                    </Alert>
-                  );
-                }
-                return null;
-              },
-              colSize: 12,
-              hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+            { 
+              value: "asuransi", 
+              label: "Asuransi", 
+              icon: "🔒", 
+              subtitle: "Klaim asuransi",
+              description: "Gunakan asuransi kesehatan Anda untuk pembayaran layanan."
             }
-        ]
-      },
+          ]
+        }
+      ],
+      fields: [
+        {
+          id: "asuransiPasien",
+          name: "asuransiPasien",
+          label: "Asuransi yang digunakan pasien",
+          type: "select",
+          options: insuranceList.map((item) => ({ 
+            label: item.provider, 
+            value: item.provider,
+            isPKS: item.isPKS
+          })),
+          colSize: 6,
+          hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+        },
+        {
+          id: "nomorAsuransi",
+          name: "nomorAsuransi",
+          label: "Nomor Kartu Asuransi",
+          type: "number",
+          colSize: 6,
+          placeholder: "masukkan nomor asuransi",
+          hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+        },
+        {
+          id: "tambahAsuransi",
+          name: "tambahAsuransi",
+          label: "",
+          type: "custom",
+          customRender: () => (
+            <Button variant="info" onClick={handleOpenModal} style={{ marginTop: "30px"}}>
+              Tambah Asuransi
+            </Button>
+          ),
+          colSize: 6,
+          className: "mt-2",
+          hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+        },
+        {
+          id: "nonPKSNotification",
+          name: "nonPKSNotification",
+          label: "",
+          type: "custom",
+          customRender: ({ methods }) => {
+            const asuransiPasien = methods.watch("asuransiPasien");
+            const selectedInsurance = insuranceList.find(ins => ins.provider === asuransiPasien);
+            
+            if (selectedInsurance && !selectedInsurance.isPKS) {
+              return (
+                <Alert variant="warning" className="mt-3">
+                  <Alert.Heading>Asuransi Non-PKS</Alert.Heading>
+                  <p>
+                    Asuransi <strong>{selectedInsurance.provider}</strong> tidak bekerja sama dengan rumah sakit (Non-PKS).
+                    Pembayaran akan diatur sebagai Tunai, tetapi Anda tetap bisa mengajukan reimbursement ke pihak asuransi setelah layanan selesai.
+                  </p>
+                </Alert>
+              );
+            }
+            return null;
+          },
+          colSize: 12,
+          hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+        }
+      ]
+    },
     {
       section: "Pilih Poli",
       icon: "🏥",
@@ -287,11 +302,11 @@ const PatientRegistrationPage = () => {
               icon: "🧠", 
               subtitle: "Untuk masalah Saraf Kejepit"
             },
-            { 
-                value: "kulit", 
-                label: "Poli Kulit", 
-                icon: "🧴", 
-                subtitle: "Untuk masalah Kulit"
+            {
+              value: "kulit", 
+              label: "Poli Kulit", 
+              icon: "🧴", 
+              subtitle: "Untuk masalah Kulit"
             },
           ]
         }
@@ -607,12 +622,12 @@ const PatientRegistrationPage = () => {
         doctorsData={filteredDoctorsByInsurance.length > 0 ? filteredDoctorsByInsurance : doctors}
       />
 
-        <ModalInsurance
-            onOpen={showInsuranceModal}
-            onClose={handleCloseModal}
-            onSubmit={handleInsuranceSubmit}
-            formConfig={formConfig}
-        />
+      <ModalInsurance
+        onOpen={showInsuranceModal}
+        onClose={handleCloseModal}
+        onSubmit={handleInsuranceSubmit}
+        formConfig={formConfig}
+      />
     </div>
   );
 };
