@@ -1099,7 +1099,7 @@ a:hover {
 }
 
 /*---------------------------------------------------------------------
-                                Sidebar
+                                Sidebarbesar
 -----------------------------------------------------------------------*/
 .iq-sidebar {
   position: fixed;
@@ -1125,6 +1125,158 @@ a:hover {
 
 .iq-sidebar #sidebar-scrollbar {
   margin-top: 15px;
+}
+
+/*---------------------------------------------------------------------
+                                SidebarItems
+-----------------------------------------------------------------------*/
+
+.iq-menu-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 8px 0;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+body.sidebar-main .iq-menu-item {
+  margin: 0;
+}
+
+.iq-menu-item::before {
+  content: "";
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.iq-menu-item:hover::before {
+  opacity: 1;
+}
+
+.iq-menu-item:hover {
+  transform: translateX(5px);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icon-sidebar {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.iq-menu-item:hover .icon-sidebar {
+  transform: scale(1.1);
+  color: #00b4ff;
+}
+
+.label-sidebar {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.iq-menu-item:hover .label-sidebar {
+  transform: translateX(5px);
+  color: #00b4ff;
+}
+
+/* Submenu Item Styles */
+.iq-submenu-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 8px 0;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+body.sidebar-main .iq-submenu-item {
+  margin: 0;
+}
+
+.iq-submenu-item::before {
+  content: "";
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 180, 255, 0.2), transparent);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.iq-submenu-item:hover::before {
+  width: 100%;
+  opacity: 1;
+}
+
+.iq-submenu-item:hover {
+  transform: translateX(5px);
+  background-color: rgba(0, 180, 255, 0.05);
+}
+
+.iq-submenu-item:hover .icon-sidebar {
+  transform: scale(1.1) rotate(10deg);
+  color: #00b4ff;
+}
+
+.iq-submenu-item:hover .label-sidebar {
+  transform: translateX(5px);
+  color: #00b4ff;
+}
+
+/* Sliding Animation */
+.sidebar-slide-enter {
+  transform: translateX(100%);
+}
+.sidebar-slide-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in;
+}
+.sidebar-slide-exit {
+  transform: translateX(0);
+}
+.sidebar-slide-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in;
+}
+
+/* end */
+body.sidebar-main .iq-top-navbar {
+  width: calc(100% - 140px);
+}
+
+body.sidebar-main .iq-top-navbar.fixed-header {
+  width: calc(100% - 80px);
+}
+
+body.sidebar-main .content-page {
+  margin-left: 80px;
+}
+
+/* edit terbaru */
+
+body.sidebar-main .iq-sidebar-logo {
+  width: 80px;
+}
+
+@media screen and (min-width: 1300px) {
+  body.sidebar-main .sidebar-logo {
+    content: url("/Images/logo-mmc-no-bg.png");
+  }
+
+  body.sidebar-main .iq-sidebar:hover .sidebar-logo {
+    content: url("/Images/icon-dashboard.png");
+  }
+  body.sidebar-main .label-sidebar {
+    display: none;
+  }
 }
 
 /*---------------------------------------------------------------------
@@ -2335,37 +2487,6 @@ body.sidebar-main .iq-menu-bt-sidebar .iq-menu-bt {
 
 .iq-user-dropdown {
   width: 350px;
-}
-
-body.sidebar-main .iq-top-navbar {
-  width: calc(100% - 140px);
-}
-
-body.sidebar-main .iq-top-navbar.fixed-header {
-  width: calc(100% - 80px);
-}
-
-body.sidebar-main .content-page {
-  margin-left: 80px;
-}
-
-/* edit terbaru */
-
-body.sidebar-main .iq-sidebar-logo {
-  width: 80px;
-}
-
-@media screen and (min-width: 1300px) {
-  body.sidebar-main .sidebar-logo {
-    content: url("/Images/logo-mmc-no-bg.png");
-  }
-
-  body.sidebar-main .iq-sidebar:hover .sidebar-logo {
-    content: url("/Images/icon-dashboard.png");
-  }
-  body.sidebar-main .label-sidebar {
-    display: none;
-  }
 }
 
 /* edit sampe sini */
