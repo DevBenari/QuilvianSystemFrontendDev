@@ -33,14 +33,6 @@ const FormAddGolongan = () => {
       fields: [
         {
           type: "text",
-          label: "Kode Golongan",
-          name: "kodeGolonganDarah",
-          placeholder: "Masukkan Kode Golongan...",
-          defaultValue: "",
-          colSize: 6,
-        },
-        {
-          type: "text",
           label: "Nama Golongan",
           name: "namaGolonganDarah",
           placeholder: "Masukkan Nama Golongan...",

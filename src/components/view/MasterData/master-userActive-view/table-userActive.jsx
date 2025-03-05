@@ -74,7 +74,7 @@ const TableDataUserActive = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/master-userActive/add-userActive"
-                  label="Tambah UserActive"
+                  label="Tambah User Active"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

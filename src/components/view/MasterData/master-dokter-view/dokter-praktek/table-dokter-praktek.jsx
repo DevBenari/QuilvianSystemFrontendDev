@@ -73,7 +73,7 @@ const TableDataDokterPraktek = () => {
                   </h4>
                 </div>
                 <ButtonNav
-                  path="//MasterData/master-dokter/dokter-praktek/add-dokter-praktek"
+                  path="/MasterData/master-dokter/dokter-praktek/add-dokter-praktek"
                   label="Tambah  DokterPraktek"
                   icon="ri-add-fill"
                   size="sm"

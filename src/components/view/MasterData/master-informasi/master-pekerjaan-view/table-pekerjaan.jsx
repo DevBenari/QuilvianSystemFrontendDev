@@ -75,7 +75,7 @@ const TableDataPekerjaan = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/master-informasi/master-pekerjaan/add-pekerjaan"
-                  label="Add Pekerjaan"
+                  label="Tambah Pekerjaan"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

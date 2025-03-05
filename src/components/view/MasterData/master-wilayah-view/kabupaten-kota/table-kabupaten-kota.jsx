@@ -73,7 +73,7 @@ const TableDataKabupatenKota = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/master-wilayah/kabupaten-kota/add-kabupaten-kota"
-                  label="Add Kabupaten / Kota"
+                  label="Tambah Kabupaten / Kota"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

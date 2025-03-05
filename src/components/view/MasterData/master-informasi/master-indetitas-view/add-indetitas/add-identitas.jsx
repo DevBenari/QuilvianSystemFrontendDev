@@ -36,16 +36,7 @@ const AddFormIdentitas = () => {
   // Konfigurasi Form Fields
   const formFields = [
     {
-      section: "Informasi Identitas",
       fields: [
-        {
-          type: "text",
-          label: "Kode Identitas",
-          name: "kdIdentitas",
-          placeholder: "Masukkan Kode Identitas...",
-          colSize: 6,
-          rules: { required: "Kode Identitas harus diisi" },
-        },
         {
           type: "text",
           label: "Jenis Identitas",

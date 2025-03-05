@@ -77,14 +77,14 @@ const FormAddDepartement = () => {
           rules: { required: "Email harus diisi" },
         },
         {
-          type: "time",
+          type: "date",
           label: "Jam Buka",
           name: "jamBuka",
           colSize: 6,
           rules: { required: "Jam Buka harus diisi" },
         },
         {
-          type: "time",
+          type: "date",
           label: "Jam Tutup",
           name: "jamTutup",
           colSize: 6,

@@ -74,7 +74,7 @@ const TableDataGolongan = () => {
                 </h4>
                 <ButtonNav
                   path="/MasterData/master-informasi/golongan-darah/add-golongan"
-                  label="Add Golongan"
+                  label="Tambah Golongan"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

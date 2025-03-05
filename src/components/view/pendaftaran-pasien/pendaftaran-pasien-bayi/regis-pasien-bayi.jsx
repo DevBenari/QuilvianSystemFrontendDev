@@ -7,24 +7,17 @@ import { Button, Card, Col, Image, Row } from "react-bootstrap";
 import ButtonNav from "@/components/ui/button-navigation";
 
 import { useDispatch, useSelector } from "react-redux";
-import { EditPasienSlice } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 import { fetchPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 import { fetchTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 import { fetchPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
-import { fetchNegara } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 import { fetchGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
 import { fetchIdentitas } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import useAgamaData from "@/lib/hooks/useAgamaData";
 import useSelectWilayah from "@/lib/hooks/useSelectWilayah";
-import ImageUploader from "@/components/ui/uploadPhoto-field";
-import UploadPhotoField from "@/components/ui/uploadPhoto-field";
-import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import PrintPatientCard from "../../kiosk/add-guest-kiosk/patientCard";
-import PrintableQueueNumber from "../../kiosk/add-guest-kiosk/patientAntrian";
+
 import { dataKelas } from "@/utils/dataKelas";
 import useSelectKelas from "@/lib/hooks/useSelectKelas";
-import { BayiEdit, getBayiById } from "@/lib/hooks/admisi/pasienBayi";
 import { dataDokter } from "@/utils/SearchSelect";
 
 const AddPasienBayi = memo(() => {

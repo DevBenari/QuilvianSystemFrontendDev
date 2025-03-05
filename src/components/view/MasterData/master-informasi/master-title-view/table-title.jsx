@@ -75,7 +75,7 @@ const TableDataTitle = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/master-informasi/title/add-title"
-                  label="Add Title"
+                  label="Tambah Title"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

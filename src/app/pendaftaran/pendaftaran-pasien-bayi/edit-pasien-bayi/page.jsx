@@ -17,11 +17,7 @@ import { fetchIdentitas } from "@/lib/state/slice/Manajemen-kesehatan-slices/Mas
 import { useRouter, useSearchParams } from "next/navigation";
 import useAgamaData from "@/lib/hooks/useAgamaData";
 import useSelectWilayah from "@/lib/hooks/useSelectWilayah";
-import ImageUploader from "@/components/ui/uploadPhoto-field";
-import UploadPhotoField from "@/components/ui/uploadPhoto-field";
-import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import PrintPatientCard from "../../kiosk/add-guest-kiosk/patientCard";
-import PrintableQueueNumber from "../../kiosk/add-guest-kiosk/patientAntrian";
+
 import { dataKelas } from "@/utils/dataKelas";
 import useSelectKelas from "@/lib/hooks/useSelectKelas";
 import { BayiEdit, getBayiById } from "@/lib/hooks/admisi/pasienBayi";

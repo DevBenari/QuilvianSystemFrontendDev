@@ -70,7 +70,7 @@ const TableDataProvinsi = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/master-wilayah/provinsi/add-provinsi"
-                  label="Add Provinsi"
+                  label="Tambah Provinsi"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

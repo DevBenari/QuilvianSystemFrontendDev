@@ -75,7 +75,7 @@ const TableDataNegara = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/master-informasi/negara/add-negara"
-                  label="Add Negara"
+                  label="Tambah Negara"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

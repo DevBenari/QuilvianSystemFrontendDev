@@ -78,7 +78,7 @@ const TableDataPendidikan = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/master-informasi/master-pendidikan/add-pendidikan"
-                  label="Add Pendidikan"
+                  label="Tambah Pendidikan"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

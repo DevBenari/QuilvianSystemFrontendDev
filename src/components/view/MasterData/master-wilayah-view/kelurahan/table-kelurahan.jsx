@@ -74,7 +74,7 @@ const TableDataKelurahan = () => {
                 </div>
                 <ButtonNav
                   path="/MasterData/master-wilayah/kelurahan/add-kelurahan"
-                  label="Add Kelurahan"
+                  label="Tambah Kelurahan"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""

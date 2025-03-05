@@ -45,7 +45,7 @@ const FormAddKategoriPeralatan = () => {
   return (
     <Fragment>
       <DynamicForm
-        title="Tambah Data KategoriPeralatan"
+        title="Tambah Data Kategori Peralatan"
         formConfig={formFields}
         onSubmit={handleSubmit}
         backPath={
