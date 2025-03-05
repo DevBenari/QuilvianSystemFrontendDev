@@ -27,7 +27,7 @@ import useSelectKelas from "@/lib/hooks/useSelectKelas";
 import { BayiEdit, getBayiById } from "@/lib/hooks/admisi/pasienBayi";
 import { dataDokter } from "@/utils/SearchSelect";
 
-const EditPasienBayi = memo(() => {
+const AddPasienBayi = memo(() => {
   const { setValue } = useForm();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
@@ -37,20 +37,6 @@ const EditPasienBayi = memo(() => {
   const searchParams = useSearchParams();
 
   const id = searchParams.get("id");
-
-  const [bayiEditData, setBayiEditData] = useState(null);
-
-  useEffect(() => {
-    if (id) {
-      getBayiById(id)
-        .then((response) => {
-          setBayiEditData(response);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch bayi:", error);
-        });
-    }
-  }, [id]);
 
   const {
     selectedKelas,
@@ -133,7 +119,7 @@ const EditPasienBayi = memo(() => {
     dispatch(fetchTitle({ page, totalPage }));
     dispatch(fetchPekerjaan({ page, totalPage }));
     dispatch(fetchGolongan({ page, totalPage }));
-    dispatch(EditPasienSlice());
+
     dispatch(fetchIdentitas({ page, totalPage }));
   }, [dispatch, page, totalPage]);
 
@@ -251,7 +237,7 @@ const EditPasienBayi = memo(() => {
           id: "namaBayi",
           label: "Nama Bayi",
           name: "namaPasienMelahirkan",
-          value: bayiEditData?.namaPasienMelahirkan || "",
+
           colSize: 6,
         },
         {
@@ -260,7 +246,7 @@ const EditPasienBayi = memo(() => {
           label: "Nama Keluarga",
           name: "namaKeluarga",
           placeholder: "Nama keluarga",
-          value: bayiEditData?.namaKeluarga || "",
+
           colSize: 6,
         },
         {
@@ -268,9 +254,9 @@ const EditPasienBayi = memo(() => {
           id: "dokter",
           label: "Pilih Dokter Penanggung Jawab",
           name: "dokter",
-          placeholder: bayiEditData?.dokter || "",
+
           options: dataDokter,
-          value: bayiEditData?.dokter || "",
+
           rules: { required: "Pilih Dokter Penanggung Jawab is required" },
           colSize: 6,
         },
@@ -280,7 +266,7 @@ const EditPasienBayi = memo(() => {
           label: "Tempat Lahir",
           name: "tempatLahir",
           placeholder: "Masukkan tempat lahir...",
-          value: bayiEditData?.tempatLahir || "",
+
           rules: { required: "Tempat Lahir is required" },
           colSize: 6,
         },
@@ -290,7 +276,7 @@ const EditPasienBayi = memo(() => {
           label: "Tanggal Lahir",
           placeholder: "Masukkan tanggal lahir...",
           name: "tanggalLahir",
-          value: bayiEditData?.tanggalLahir || "",
+
           rules: { required: "Tanggal Lahir is required" },
           colSize: 6,
         },
@@ -304,7 +290,7 @@ const EditPasienBayi = memo(() => {
             { label: "Laki-laki", value: "laki-laki" },
             { label: "Perempuan", value: "perempuan" },
           ],
-          value: bayiEditData?.jenisKelamin || "",
+
           rules: { required: "Jenis Kelamin is required" },
           colSize: 6,
         },
@@ -318,7 +304,7 @@ const EditPasienBayi = memo(() => {
             { label: "Hidup", value: "Hidup" },
             { label: "Meninggal", value: "Meninggal" },
           ],
-          value: bayiEditData?.keadaanBayi || "",
+
           rules: { required: "Keadaan Bayi is required" },
           colSize: 6,
         },
@@ -332,12 +318,12 @@ const EditPasienBayi = memo(() => {
           id: "kelas",
           label: "Pilih Kelas Rawat Bayi",
           name: "kelas",
-          placeholder: bayiEditData?.kelas,
+
           options: dataKelas.map((item) => ({
             label: item.kelas,
             value: item.kelas,
           })),
-          value: bayiEditData?.kelas || selectedKelas,
+
           onChangeCallback: (value) => handleChange("kelas", value),
           rules: { required: "Pilih Kelas Rawat Bayi is required" },
           colSize: 6,
@@ -347,12 +333,12 @@ const EditPasienBayi = memo(() => {
           id: "ruang",
           label: "Pilih Ruang Rawat Bayi",
           name: "ruang",
-          placeholder: bayiEditData?.ruang,
+
           options: filteredRuang.map((item) => ({
             label: item.nama,
             value: item.nama,
           })),
-          value: bayiEditData?.ruang || selectedRuang,
+
           onChangeCallback: (value) => handleChange("ruang", value),
           rules: { required: "Pilih Ruang Rawat Bayi is required" },
           colSize: 6,
@@ -362,12 +348,12 @@ const EditPasienBayi = memo(() => {
           id: "tempatTidur",
           label: "Pilih Tempat Tidur Rawat Bayi",
           name: "tempatTidur",
-          placeholder: bayiEditData?.tempatTidur,
+
           options: filteredTempatTidur.map((item) => ({
             label: item,
             value: item,
           })),
-          value: bayiEditData?.tempatTidur,
+
           onChangeCallback: (value) => handleChange("tempatTidur", value),
           rules: { required: "Pilih Tempat Tidur Rawat Bayi is required" },
           colSize: 6,
@@ -376,25 +362,9 @@ const EditPasienBayi = memo(() => {
     },
   ];
 
-  const handleSubmit = async (bayiData) => {
-    try {
-      const response = await BayiEdit(bayiData, id);
-      alert("Bayi updated successfully!");
-      router.push("/pendaftaran/pendaftaran-pasien-bayi");
-      console.log("Response:", response);
-    } catch (error) {
-      console.error("Failed to update bayi:", error);
-      alert("Failed to update bayi.");
-    }
+  const handleSubmit = (data) => {
+    console.log("data", data);
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!bayiEditData) {
-    return <div className="text-danger">Bayi not found.</div>;
-  }
 
   return (
     <Fragment>
@@ -404,11 +374,11 @@ const EditPasienBayi = memo(() => {
         onSubmit={handleSubmit}
         externalOptions={{ titles: titlesOptions }}
         backPath="/pendaftaran/pendaftaran-pasien-bayi"
-        isAddMode={false}
+        isAddMode={true}
       />
     </Fragment>
   );
 });
 
-EditPasienBayi.displayName = "EditPasienBayi";
-export default EditPasienBayi;
+AddPasienBayi.displayName = "AddPasienBayi";
+export default AddPasienBayi;

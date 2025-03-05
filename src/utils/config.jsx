@@ -82,7 +82,10 @@ export const menus = {
       title: "Pendaftaran",
       subItems: [
         { title: "Pasien Baru", href: "/pendaftaran/pendaftaran-pasien-baru" },
-        { title: "Pasien Bayi", href: "/pendaftaran/pendaftaran-pasien-bayi" },
+        {
+          title: "Pasien Bayi",
+          href: "/pendaftaran/pendaftaran-pasien-bayi/table-pasien-bayi",
+        },
         {
           title: "Pendaftaran Pasien Laboratorium",
           href: "/pendaftaran/pendaftaran-pasien-laboratorium",

@@ -1,9 +1,8 @@
-
 import React, { memo } from "react";
 import styles from "@/app/page.module.css";
 import DashboardPendaftaranBayi from "@/components/view/pendaftaran-pasien/pendaftaran-pasien-bayi/tables-pasien-bayi";
 
-export const PendaftaranPasienBayi = memo(() => {
+export const TablePasienBayi = memo(() => {
   return (
     <div className={styles.page}>
       <DashboardPendaftaranBayi />
@@ -11,6 +10,6 @@ export const PendaftaranPasienBayi = memo(() => {
   );
 });
 
-PendaftaranPasienBayi.displayName = "PendaftaranPasienBayi";
+TablePasienBayi.displayName = "TablePasienBayi";
 
-export default PendaftaranPasienBayi;
+export default TablePasienBayi;
