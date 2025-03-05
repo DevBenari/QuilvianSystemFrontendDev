@@ -218,7 +218,11 @@ export const menus = {
       subItems: [
         {
           title: "Daftar Asuransi",
-          href: "/MasterData/master-asuransi/daftar-asuransi",
+          href: "/MasterData/master-asuransi/asuransi/daftar-asuransi",
+        },
+        {
+          title: "Coveran Asuransi",
+          href: "/MasterData/master-asuransi/coveran-asuransi/daftar-CoveranAsuransi",
         },
       ],
     },
@@ -340,6 +344,14 @@ export const menus = {
         {
           title: "Dokter Praktek",
           href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
+        },
+        {
+          title: "Dokter Poli",
+          href: "/MasterData/master-dokter/dokter-poli/table-DokterPoli",
+        },
+        {
+          title: "Jadwal Praktek Dokter",
+          href: "/MasterData/master-dokter/jadwal-praktek/table-jadwal-praktek",
         },
       ],
     },
