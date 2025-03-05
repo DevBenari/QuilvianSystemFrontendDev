@@ -47,4 +47,8 @@ jobs:
         run: |
           docker build -t ikbalyuliyanto7/quilvian-frontend-api .
           docker tag ikbalyuliyanto7/quilvian-frontend-api ikbalyuliyanto7/quilvian-frontend-api:latest
+<<<<<<< HEAD
           docker push ikbalyuliyanto7/quilvian-frontend-api
+=======
+          docker push ikbalyuliyanto7/quilvian-frontend-api
+>>>>>>> c53080f8b4197e1d096995a5c5804a2ad86478aa
