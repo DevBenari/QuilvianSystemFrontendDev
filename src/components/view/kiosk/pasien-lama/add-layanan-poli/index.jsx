@@ -47,6 +47,7 @@ const PatientRegistrationPage = () => {
   const [insuranceList, setInsuranceList] = useState([]);
   const [filteredDoctorsByInsurance, setFilteredDoctorsByInsurance] = useState({});
   const [nonPKSInsuranceSelected, setNonPKSInsuranceSelected] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
   
   const handleOpenModal = () => setShowInsuranceModal(true);
   const handleCloseModal = () => setShowInsuranceModal(false);
@@ -91,6 +92,7 @@ const PatientRegistrationPage = () => {
     
     setFilteredDoctorsByInsurance(filteredDoctors);
   };
+  
 
   // Form config
   const formConfig = [
@@ -487,21 +489,38 @@ const PatientRegistrationPage = () => {
       description: "Periksa dan konfirmasi data pendaftaran Anda",
       fields: [],
       customRender: ({ methods }) => {
+        // Safely get form values
         const formData = methods.getValues();
+        
+        // Log the form data for debugging
+        console.log("Confirmation Section Form Data:", formData);
+    
+        // Safely get selected poli and doctor
         const selectedPoli = formData.selectedPoli;
         const selectedDoctor = formData.selectedDoctor;
-        const pembayaran = formData.pembayaran;
-        const asuransiPasien = formData.asuransiPasien;
-        
-        // Get doctor name and schedule
-        const doctor = selectedPoli && selectedDoctor ? 
-          doctors[selectedPoli].find(d => d.id === selectedDoctor) : null;
-        
+    
+        // Mapping for more readable poli names
+        const poliNameMap = {
+          'umum': 'Poli Umum', 
+          'gigi': 'Poli Gigi', 
+          'mata': 'Poli Mata',
+          'kandungan': 'Poli Kandungan',
+          'anak': 'Poli Anak',
+          'jantung': 'Poli Jantung',
+          'saraf': 'Poli Saraf',
+          'kulit': 'Poli Kulit'
+        };
+    
+        // Find the doctor details
+        const doctor = selectedPoli && selectedDoctor 
+          ? doctors[selectedPoli].find(d => d.id === selectedDoctor)
+          : null;
+    
         return (
           <div className="confirmation-section">
             <h4 className="mb-4">Konfirmasi Data Pendaftaran</h4>
-            <p>Silakan periksa kembali data pendaftaran Anda:</p>
             
+            {/* Personal Data Section */}
             <Card className="mb-4">
               <Card.Header>
                 <h5 className="m-0">Data Pribadi</h5>
@@ -509,72 +528,58 @@ const PatientRegistrationPage = () => {
               <Card.Body>
                 <Row>
                   <Col xs={12} md={6} className="mb-3">
-                    <strong>Nama Lengkap:</strong> {formData.name}
+                    <strong>Nama Lengkap:</strong> {formData.name || '-'}
                   </Col>
                   <Col xs={12} md={6} className="mb-3">
-                    <strong>NIK:</strong> {formData.nik}
+                    <strong>NIK:</strong> {formData.nik || '-'}
                   </Col>
                   <Col xs={12} md={6} className="mb-3">
-                    <strong>Tanggal Lahir:</strong> {formData.dob}
+                    <strong>Tanggal Lahir:</strong> {formData.dob || '-'}
                   </Col>
                   <Col xs={12} md={6} className="mb-3">
-                    <strong>Jenis Kelamin:</strong> {formData.gender}
-                  </Col>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>No. Telepon:</strong> {formData.phone}
-                  </Col>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Email:</strong> {formData.email || '-'}
-                  </Col>
-                  <Col xs={12} className="mb-3">
-                    <strong>Alamat:</strong> {formData.address}
+                    <strong>Jenis Kelamin:</strong> {formData.gender || '-'}
                   </Col>
                 </Row>
               </Card.Body>
             </Card>
-            
+    
+            {/* Service Details Section */}
             <Card className="mb-4">
               <Card.Header>
-                <h5 className="m-0">Data Layanan</h5>
+                <h5 className="m-0">Detail Layanan</h5>
               </Card.Header>
               <Card.Body>
                 <Row>
                   <Col xs={12} md={6} className="mb-3">
-                    <strong>Poli:</strong> {selectedPoli ? 
-                      {
-                        'umum': 'Poli Umum', 
-                        'gigi': 'Poli Gigi', 
-                        'mata': 'Poli Mata',
-                        'kandungan': 'Poli Kandungan',
-                        'anak': 'Poli Anak',
-                        'jantung': 'Poli Jantung',
-                        'saraf': 'Poli Saraf',
-                        'kulit': 'Poli Kulit'
-                      }[selectedPoli] : '-'}
+                    <strong>Poli:</strong> {selectedPoli ? poliNameMap[selectedPoli] : '-'}
                   </Col>
                   <Col xs={12} md={6} className="mb-3">
                     <strong>Dokter:</strong> {doctor ? doctor.name : '-'}
                   </Col>
-                  <Col xs={12} className="mb-3">
-                    <strong>Jadwal Praktik:</strong> {doctor ? doctor.schedule : '-'}
-                  </Col>
+                  {doctor && (
+                    <Col xs={12} className="mb-3">
+                      <strong>Jadwal Praktik:</strong> {doctor.schedule}
+                    </Col>
+                  )}
                 </Row>
               </Card.Body>
             </Card>
-            
+    
+            {/* Payment Details Section */}
             <Card className="mb-4">
               <Card.Header>
-                <h5 className="m-0">Data Pembayaran</h5>
+                <h5 className="m-0">Detail Pembayaran</h5>
               </Card.Header>
               <Card.Body>
                 <Row>
                   <Col xs={12} md={6} className="mb-3">
-                    <strong>Metode Pembayaran:</strong> {pembayaran === 'tunai' ? 'Tunai' : 'Asuransi'}
+                    <strong>Metode Pembayaran:</strong> 
+                    {formData.pembayaran === 'tunai' ? 'Tunai' : 'Asuransi'}
                   </Col>
-                  {pembayaran === 'asuransi' && (
+                  {formData.pembayaran === 'asuransi' && (
                     <>
                       <Col xs={12} md={6} className="mb-3">
-                        <strong>Asuransi:</strong> {asuransiPasien || '-'}
+                        <strong>Asuransi:</strong> {formData.asuransiPasien || '-'}
                       </Col>
                       <Col xs={12} className="mb-3">
                         <strong>Nomor Kartu:</strong> {formData.nomorAsuransi || '-'}
@@ -584,11 +589,10 @@ const PatientRegistrationPage = () => {
                 </Row>
               </Card.Body>
             </Card>
-            
+    
+            {/* Important Notes */}
             <div className="alert alert-info">
-              <p className="mb-1">
-                <strong>Catatan Penting:</strong>
-              </p>
+              <p className="mb-1"><strong>Catatan Penting:</strong></p>
               <ul className="mb-0">
                 <li>Hadir 30 menit sebelum jadwal untuk keperluan administrasi.</li>
                 <li>Bawa kartu identitas (KTP) dan kartu asuransi (jika ada).</li>
@@ -600,6 +604,8 @@ const PatientRegistrationPage = () => {
       }
     }
   ];
+
+  console.log("Form Config:", formConfig);
 
   // Handle form submission
   const handleSubmit = (data) => {
@@ -614,6 +620,7 @@ const PatientRegistrationPage = () => {
   return (
     <div className="patient-registration-page">
       <DynamicStepCardForm
+        key={currentStep}
         title="Pendaftaran Pasien"
         formConfig={formConfig}
         onSubmit={handleSubmit}
