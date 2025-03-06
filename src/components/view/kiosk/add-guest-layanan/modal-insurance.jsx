@@ -9,7 +9,7 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
     const [insuranceData, setInsuranceData] = useState({ 
         provider: "", 
         policyNumber: "",
-        isPKS: true  // Add this field to track PKS status
+        isPKS: true
     });
     
     // Create defaultValues safely by checking if formConfig exists
@@ -93,13 +93,13 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                                             setInsuranceData(prev => ({ 
                                                 ...prev, 
                                                 provider: "", 
-                                                isPKS: false  // Set to non-PKS for custom insurance
+                                                isPKS: false
                                             }));
                                         } else {
                                             setInsuranceData(prev => ({ 
                                                 ...prev, 
                                                 provider: selected.value,
-                                                isPKS: true   // Pre-defined insurances are PKS
+                                                isPKS: true
                                             }));
                                         }
                                     } else {
@@ -117,7 +117,7 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                                         setInsuranceData(prev => ({ 
                                             ...prev, 
                                             provider: e.target.value,
-                                            isPKS: false // Custom insurance is non-PKS
+                                            isPKS: false
                                         }))
                                     }
                                 />

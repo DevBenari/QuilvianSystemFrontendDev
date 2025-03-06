@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { Row, Col, Form, Card, Container } from "react-bootstrap";
 // Custom hooks
@@ -25,7 +25,9 @@ const DynamicStepCardForm = ({
   isAddMode = false,
   sourceData = {},
   externalOptions = {},
+  onFormMethodsReady ,
   formType = "default",
+  className, 
   defaultValues = {},
   onCardSelect,
   customValidators = {},
@@ -61,7 +63,11 @@ const DynamicStepCardForm = ({
     mode: "onChange",
   });
 
-
+  useEffect(() => {
+    if (onFormMethodsReady && typeof onFormMethodsReady === 'function') {
+      onFormMethodsReady(methods);
+    }
+  }, [methods, onFormMethodsReady]);
 
   const {
     getValues,
@@ -184,6 +190,7 @@ const DynamicStepCardForm = ({
                       customFieldRenderers={customFieldRenderers}
                       onCardSelect={onCardSelect}
                       isEditing={isEditing}
+                      className={className}
                     />
 
                     

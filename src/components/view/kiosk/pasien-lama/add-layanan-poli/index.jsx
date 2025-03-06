@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Row, Col, Card, Button, Alert } from "react-bootstrap";
 import DynamicStepCardForm from "@/components/features/dynamic-form/dynamicForm/DynamicStepCardForm";
 import ModalInsurance from "../../add-guest-layanan/modal-insurance";
@@ -48,20 +48,33 @@ const PatientRegistrationPage = () => {
   const [filteredDoctorsByInsurance, setFilteredDoctorsByInsurance] = useState({});
   const [nonPKSInsuranceSelected, setNonPKSInsuranceSelected] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [formMethodRef, setFormMethodRef] = useState(null);
   
   const handleOpenModal = () => setShowInsuranceModal(true);
   const handleCloseModal = () => setShowInsuranceModal(false);
+  const formMethodsRef = useRef(null);
+
+
+  const handleFormMethodReady = (methods) => {
+    setFormMethodRef(methods);
+    formMethodsRef.current = methods;
+  }
 
   const handleInsuranceSubmit = (insuranceData) => {
     setInsuranceList((prevList) => [...prevList, insuranceData]);
     console.log("Insurance Data Submitted:", insuranceData);
     
-    // Check if the insurance is non-PKS
     if (!insuranceData.isPKS) {
       setNonPKSInsuranceSelected(true);
     }
     
-    // Filter doctors based on the newly added insurance
+    if (formMethodRef) {
+      formMethodRef.setValue("nomorAsuransi", insuranceData.policyNumber);
+      formMethodRef.setValue("asuransiPasien", insuranceData.provider);
+      formMethodRef.trigger(["nomorAsuransi", "asuransiPasien"])
+    }
+
     updateDoctorsByInsurance([...insuranceList, insuranceData]);
   };
 
@@ -158,13 +171,13 @@ const PatientRegistrationPage = () => {
       section: "Asuransi",
       icon: "📋",
       description: "Pilih metode pembayaran Anda",
-      fields: [],
       cards: [
         {
           name: "pembayaran",
           title: "Metode Pembayaran",
           description: "Silakan pilih metode pembayaran yang akan Anda gunakan:",
-          colSize: 6,
+          colSize: 4,
+          className: "d-flex align-items-center justify-content-center",
           required: true,
           rules: { required: "Silakan pilih metode pembayaran" },
           options: [
@@ -182,7 +195,77 @@ const PatientRegistrationPage = () => {
               subtitle: "Klaim asuransi",
               description: "Gunakan asuransi kesehatan Anda untuk pembayaran layanan."
             }
-          ]
+          ],
+          customRender: ({ methods }) => {
+            const pembayaran = methods.watch("pembayaran");
+            const asuransiSelected = pembayaran === "asuransi";
+            
+            // Jika pembayaran sudah dipilih dan itu adalah asuransi, maka kita hanya menampilkan info
+            if (selectedPaymentMethod === "asuransi") {
+              return (
+                <div className="mb-3">
+                  <h5>Metode Pembayaran: Asuransi</h5>
+                  <Button 
+                    variant="outline-secondary" 
+                    size="sm"
+                    onClick={() => {
+                      setSelectedPaymentMethod(null);
+                      methods.setValue("pembayaran", "");
+                    }}
+                  >
+                    Ubah Metode Pembayaran
+                  </Button>
+                </div>
+              );
+            }
+            
+            // Render kartu metode pembayaran normal
+            return (
+              <Row>
+                {[
+                  { 
+                    value: "tunai", 
+                    label: "Tunai", 
+                    icon: "💵", 
+                    subtitle: "Bayar langsung",
+                    description: "Pembayaran dilakukan langsung di kasir rumah sakit setelah selesai pelayanan."
+                  },
+                  { 
+                    value: "asuransi", 
+                    label: "Asuransi", 
+                    icon: "🔒", 
+                    subtitle: "Klaim asuransi",
+                    description: "Gunakan asuransi kesehatan Anda untuk pembayaran layanan."
+                  }
+                ].map((option) => {
+                  const isSelected = methods.watch("pembayaran") === option.value;
+                  
+                  return (
+                    <Col md={6} key={option.value}>
+                      <Card 
+                        className={`selection-card mb-3 cursor-pointer ${isSelected ? 'selected shadow-lg border-primary' : ''}`}
+                        onClick={() => {
+                          methods.setValue("pembayaran", option.value);
+                          // Jika asuransi dipilih, set state
+                          if (option.value === "asuransi") {
+                            setSelectedPaymentMethod("asuransi");
+                          }
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <Card.Body className="text-center p-4">
+                          <div className="card-icon mb-3">{option.icon}</div>
+                          <Card.Title>{option.label}</Card.Title>
+                          <Card.Subtitle className="mb-2 text-muted">{option.subtitle}</Card.Subtitle>
+                          <Card.Text>{option.description}</Card.Text>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  );
+                })}
+              </Row>
+            );
+          }
         }
       ],
       fields: [
@@ -192,12 +275,12 @@ const PatientRegistrationPage = () => {
           label: "Asuransi yang digunakan pasien",
           type: "select",
           options: insuranceList.map((item) => ({ 
-            label: item.provider, 
+            label: `${item.provider} - ${item.policyNumber}`, 
             value: item.provider,
             isPKS: item.isPKS
           })),
           colSize: 6,
-          hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+          hide: (watchValues) => selectedPaymentMethod !== "asuransi"
         },
         {
           id: "nomorAsuransi",
@@ -206,21 +289,21 @@ const PatientRegistrationPage = () => {
           type: "number",
           colSize: 6,
           placeholder: "masukkan nomor asuransi",
-          hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+          hide: (watchValues) => selectedPaymentMethod !== "asuransi"
         },
         {
           id: "tambahAsuransi",
           name: "tambahAsuransi",
           label: "",
           type: "custom",
-          customRender: () => (
+          customRender: ({ methods }) => (
             <Button variant="info" onClick={handleOpenModal} style={{ marginTop: "30px"}}>
               Tambah Asuransi
             </Button>
           ),
           colSize: 6,
           className: "mt-2",
-          hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+          hide: (watchValues) => selectedPaymentMethod !== "asuransi"
         },
         {
           id: "nonPKSNotification",
@@ -245,7 +328,7 @@ const PatientRegistrationPage = () => {
             return null;
           },
           colSize: 12,
-          hide: (watchValues) => watchValues.pembayaran !== "asuransi"
+          hide: (watchValues) => selectedPaymentMethod !== "asuransi"
         }
       ]
     },
@@ -350,7 +433,7 @@ const PatientRegistrationPage = () => {
             let availableDoctors = [];
             
             // Special case: If non-PKS insurance is selected, show all doctors
-            if (pembayaran === "asuransi" && isNonPKS) {
+            if (selectedPaymentMethod === "asuransi" && isNonPKS) {
               availableDoctors = doctors[selectedPoli] || [];
               
               // Show information about non-PKS reimbursement
@@ -397,7 +480,7 @@ const PatientRegistrationPage = () => {
             }
             
             // Regular flow - if paying with insurance, filter by insurance
-            if (pembayaran === "asuransi" && asuransiPasien) {
+            if (selectedPaymentMethod === "asuransi" && asuransiPasien) {
               // Get doctors that accept this specific insurance
               availableDoctors = doctors[selectedPoli]?.filter(doctor => 
                 doctor.acceptedInsurances.includes(asuransiPasien)
@@ -411,7 +494,7 @@ const PatientRegistrationPage = () => {
                   </div>
                 );
               }
-            } else if (pembayaran === "asuransi" && !asuransiPasien) {
+            } else if (selectedPaymentMethod === "asuransi" && !asuransiPasien) {
               return (
                 <div className="alert alert-warning">
                   Silakan pilih asuransi terlebih dahulu atau tambahkan asuransi baru.
@@ -574,9 +657,9 @@ const PatientRegistrationPage = () => {
                 <Row>
                   <Col xs={12} md={6} className="mb-3">
                     <strong>Metode Pembayaran:</strong> 
-                    {formData.pembayaran === 'tunai' ? 'Tunai' : 'Asuransi'}
+                    {selectedPaymentMethod === 'asuransi' ? 'Asuransi' : 'Tunai'}
                   </Col>
-                  {formData.pembayaran === 'asuransi' && (
+                  {selectedPaymentMethod === 'asuransi' && (
                     <>
                       <Col xs={12} md={6} className="mb-3">
                         <strong>Asuransi:</strong> {formData.asuransiPasien || '-'}
@@ -606,6 +689,7 @@ const PatientRegistrationPage = () => {
   ];
 
   console.log("Form Config:", formConfig);
+  
 
   // Handle form submission
   const handleSubmit = (data) => {
@@ -627,6 +711,7 @@ const PatientRegistrationPage = () => {
         isAddMode={true}
         backPath="/kiosk"
         doctorsData={filteredDoctorsByInsurance.length > 0 ? filteredDoctorsByInsurance : doctors}
+        onFormMethodsReady={handleFormMethodReady} 
       />
 
       <ModalInsurance

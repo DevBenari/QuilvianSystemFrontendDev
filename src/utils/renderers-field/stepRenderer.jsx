@@ -12,7 +12,8 @@ const StepRenderer = ({
   shouldHideField, 
   customFieldRenderers,
   onCardSelect,
-  isEditing
+  isEditing,
+  className
 }) => {
   // Tambahkan penanganan khusus untuk customRender
   if (step.customRender) {
@@ -29,6 +30,18 @@ const StepRenderer = ({
   // Rendering untuk field dan card biasa
   return (
     <Row>
+      {step.cards && step.cards.map((cardGroup, index) => (
+        <div key={cardGroup.name || `card-group-${index}`} className='mb-4'>
+          <CardSelectionGroup
+            cardGroup={cardGroup}
+            methods={methods}
+            filteredItems={filteredItems}
+            formType={formType}
+            onCardSelect={onCardSelect}
+            className={`${className} mb-4`}
+          />
+        </div>
+      ))}
       {step.fields && (
         <Row>
           {step.fields
@@ -48,17 +61,7 @@ const StepRenderer = ({
         </Row>
       )}
 
-      {step.cards && step.cards.map((cardGroup, index) => (
-        <div key={cardGroup.name || `card-group-${index}`} className="mb-4">
-          <CardSelectionGroup
-            cardGroup={cardGroup}
-            methods={methods}
-            filteredItems={filteredItems}
-            formType={formType}
-            onCardSelect={onCardSelect}
-          />
-        </div>
-      ))}
+      
     </Row>
   );
 };

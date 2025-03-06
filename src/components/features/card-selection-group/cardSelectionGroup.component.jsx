@@ -7,7 +7,8 @@ const CardSelectionGroup = ({
   methods,
   filteredItems,
   formType,
-  onCardSelect
+  onCardSelect,
+  className
 }) => {
   const {
     name,
@@ -164,7 +165,7 @@ const CardSelectionGroup = ({
       
       {/* If we have options to show, display the cards */}
       {!shouldShowFilterWarning() && !shouldShowNoOptionsWarning() && cardOptions && cardOptions.length > 0 && (
-        <Row>
+        <Row className='d-flex justify-content-center align-items-center'>
           {cardOptions.map((option) => (
             <Col 
               xs={12} 
