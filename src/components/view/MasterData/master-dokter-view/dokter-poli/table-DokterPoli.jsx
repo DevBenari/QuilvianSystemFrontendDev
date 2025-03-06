@@ -107,25 +107,20 @@ const TableDataDokterPoli = () => {
                     columns={[
                       { key: "no", label: "No" }, // Nomor urut
                       {
-                        key: "createdDate",
+                        key: "createDateTime",
                         label: "Tanggal Dibuat",
                       },
                       {
                         key: "createByName",
                         label: "Dibuat Oleh",
                       },
-                      { key: "kdDokterPoli", label: "Kode DokterPoli" },
-                      { key: "nmDokterPoli", label: "Nama DokterPoli" },
-                      { key: "sip", label: "SIP" },
-                      { key: "str", label: "STR" },
-                      { key: "tglSip", label: "Tanggal SIP" },
-                      { key: "tglStr", label: "Tanggal STR" },
-                      { key: "panggilDokterPoli", label: "Panggilan" },
-                      { key: "nik", label: "NIK" },
+                      { key: "kodeDokterPoli", label: "Kode DokterPoli" },
+                      { key: "namaDokter", label: "Nama DokterPoli" },
+                      { key: "namaPoliklinik", label: "Nama Poliklinik" },
                     ]}
                     slugConfig={{
-                      textField: "nmDokterPoli",
-                      idField: "dokterId",
+                      textField: "namaDokter",
+                      idField: "dokterPoliId",
                     }} // ID DokterPoli untuk Slug
                     basePath="/MasterData/master-dokter/dokter-poli/edit-DokterPoli"
                     paginationProps={{

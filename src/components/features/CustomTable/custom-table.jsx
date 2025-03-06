@@ -23,11 +23,29 @@ const CustomTableComponent = memo(
   }) => {
     const router = useRouter();
 
+    const dateKeys = [
+      "createdDate",
+      "createDateTime",
+      "tanggalDaftar",
+      "tglSip",
+      "tglStr",
+      "tanggalMulaiKerjasama",
+      "tanggalAkhirKerjasama",
+      "tanggalPersalinan",
+      "tanggalLahir",
+      "ttlBayi", // Tambahkan key tanggal lainnya jika perlu
+    ];
+
+    const isDateKey = (key) => dateKeys.includes(key);
+
     const formatDate = (date) => {
       if (!date) return "-"; // Jika tanggal null/undefined, tampilkan "-"
-      return format(parseISO(date), "dd/MM/yyyy");
+      try {
+        return format(parseISO(date), "dd/MM/yyyy");
+      } catch {
+        return date; // Jika parsing gagal, kembalikan nilai asli
+      }
     };
-
     const handleDoubleClick = (item) => {
       const textField = item[slugConfig.textField];
       const idField = item[slugConfig.idField];
@@ -92,13 +110,7 @@ const CustomTableComponent = memo(
                               paginationProps.itemsPerPage +
                             index +
                             1
-                          : col.key === "createdDate" ||
-                            col.key === "createDateTime" ||
-                            col.key === "tanggalDaftar" ||
-                            col.key === "tglSip" ||
-                            col.key === "tglStr" ||
-                            col.key === "tanggalMulaiKerjasama" ||
-                            col.key === "tanggalAkhirKerjasama"
+                          : isDateKey(col.key)
                           ? formatDate(item[col.key])
                           : item
                           ? item[col.key] ?? "-"

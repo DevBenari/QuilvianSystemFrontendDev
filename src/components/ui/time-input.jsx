@@ -1,42 +1,42 @@
 import React, { memo } from "react";
-import Flatpickr from "react-flatpickr";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useController, useFormContext } from "react-hook-form";
 import { Form } from "react-bootstrap";
 
 const TimeField = memo(
-  ({ name, label, rules, className, placeholder, ...props }) => {
+  ({ name, label, rules, className, placeholder, defaultValue, ...props }) => {
     const { control } = useFormContext();
     const {
       field,
       fieldState: { error },
     } = useController({ name, control, rules });
 
-    // ✅ Fungsi untuk memformat waktu menjadi HH:mm
-    const formatTime = (time) => {
-      const hours = time.getHours().toString().padStart(2, "0");
-      const minutes = time.getMinutes().toString().padStart(2, "0");
-      return `${hours}:${minutes}`;
+    // ✅ Fungsi untuk menangani input timestamp ISO 8601
+    const parseTimestamp = (timestamp) => {
+      if (!timestamp) return null;
+      const date = new Date(timestamp); // Konversi ke objek Date
+      return isNaN(date.getTime()) ? null : date; // Pastikan tanggal valid
     };
+
+    // ✅ Ambil defaultValue jika ada, lalu parsing jika dalam format timestamp ISO 8601
+    const initialValue = defaultValue ? parseTimestamp(defaultValue) : null;
 
     return (
       <Form.Group className={className}>
         {label && <Form.Label>{label}</Form.Label>}
-        <Flatpickr
+        <DatePicker
           {...field}
           {...props}
-          options={{
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true,
-          }}
+          selected={initialValue || field.value} // Gunakan default atau nilai dari state
+          onChange={(time) => field.onChange(time)} // Simpan objek Date langsung
+          showTimeSelect
+          showTimeSelectOnly
+          timeIntervals={15} // Setiap 15 menit
+          timeFormat="HH:mm"
+          dateFormat="HH:mm"
           className={`form-control ${error ? "is-invalid" : ""}`}
-          onChange={([time]) => {
-            // ✅ Format waktu sebelum mengupdate form state
-            const formattedTime = formatTime(time);
-            field.onChange(formattedTime);
-          }}
-          placeholder={placeholder}
+          placeholderText={placeholder}
         />
         {error && (
           <Form.Control.Feedback type="invalid">
