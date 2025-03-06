@@ -48,3 +48,5 @@ jobs:
       #     docker build -t ikbalyuliyanto7/quilvian-frontend-api .
       #     docker tag ikbalyuliyanto7/quilvian-frontend-api ikbalyuliyanto7/quilvian-frontend-api:latest
       #     docker push ikbalyuliyanto7/quilvian-frontend-api
+
+      # Salah di server docker.sh
