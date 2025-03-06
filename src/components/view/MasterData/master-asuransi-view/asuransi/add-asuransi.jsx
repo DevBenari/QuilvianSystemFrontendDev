@@ -1,31 +1,39 @@
 "use client";
-import React, { useState, Fragment } from "react";
+import React, { Fragment, memo, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+// import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
+import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
+import { Button, Card, Col, Image, Row } from "react-bootstrap";
+import ButtonNav from "@/components/ui/button-navigation";
+
+import { useDispatch, useSelector } from "react-redux";
+import { AddPasienSlice } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
+import { fetchPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
+import { fetchTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
+import { fetchPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
+import { fetchNegara } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
+import { fetchGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
+import { fetchIdentitas } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import useAgamaData from "@/lib/hooks/useAgamaData";
+import useSelectWilayah from "@/lib/hooks/useSelectWilayah";
 
+import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
+
+import PrintPatientCard from "@/components/view/kiosk/add-guest-kiosk/patientCard";
+import PrintableQueueNumber from "@/components/view/kiosk/add-guest-kiosk/patientAntrian";
 import { showAlert } from "@/components/features/alert/custom-alert";
-import { createAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
+import { createAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiSlice";
 
-const AsuransiAddForm = () => {
+const PendaftaranPasienAsuransi = memo(() => {
+  const { setValue } = useForm();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedData, setSubmittedData] = useState(null);
   const dispatch = useDispatch();
   const router = useRouter();
-
-  const handleSubmit = async (data) => {
-    try {
-      console.log("Form Data:", data);
-      await dispatch(createAsuransi(data)).unwrap();
-      showAlert.success("Data berhasil disimpan", () => {
-        router.push("/MasterData/master-asuransi/daftar-asuransi");
-      });
-    } catch (error) {
-      console.error("Gagal menambahkan asuransi:", error);
-      showAlert.error("Gagal menambahkan data asuransi");
-    }
-  };
-
   const formFields = [
     {
+      section: "Data Asuransi",
       fields: [
         {
           type: "text",
@@ -64,7 +72,6 @@ const AsuransiAddForm = () => {
           name: "kategoriAsuransi",
           placeholder: "Masukkan Kategori Asuransi...",
           colSize: 6,
-          rules: { required: "Kategori Asuransi harus diisi" },
         },
         {
           type: "text",
@@ -74,12 +81,15 @@ const AsuransiAddForm = () => {
           colSize: 6,
           rules: { required: "Status Asuransi harus diisi" },
         },
+      ],
+    },
+    {
+      section: "Kerjasama",
+      fields: [
         {
           type: "date",
           label: "Tanggal Mulai Kerjasama",
           name: "tanggalMulaiKerjasama",
-          placeholder: "Masukkan RS Rekanan...",
-
           colSize: 6,
           rules: { required: "Tanggal Mulai Kerjasama harus diisi" },
         },
@@ -87,8 +97,6 @@ const AsuransiAddForm = () => {
           type: "date",
           label: "Tanggal Akhir Kerjasama",
           name: "tanggalAkhirKerjasama",
-          placeholder: "Masukkan RS Rekanan...",
-
           colSize: 6,
           rules: { required: "Tanggal Akhir Kerjasama harus diisi" },
         },
@@ -96,25 +104,45 @@ const AsuransiAddForm = () => {
           type: "text",
           label: "RS Rekanan",
           name: "rsRekanan",
-          colSize: 6,
           placeholder: "Masukkan RS Rekanan...",
-          rules: { required: "Rekanan harus diisi" },
+          colSize: 6,
+        },
+        {
+          type: "select",
+          label: "PKS",
+          name: "isPKS",
+          options: [
+            { value: true, label: "Ya" },
+            { value: false, label: "Tidak" },
+          ],
+          colSize: 6,
         },
         {
           type: "text",
           label: "Metode Klaim",
           name: "metodeKlaim",
-          colSize: 6,
           placeholder: "Masukkan Metode Klaim...",
-          rules: { required: "Metode Klaim harus diisi" },
+          colSize: 6,
         },
         {
           type: "date",
           label: "Waktu Klaim",
           name: "waktuKlaim",
           colSize: 6,
-          placeholder: "Masukkan Metode Klaim...",
-          rules: { required: "Waktu Klaim harus diisi" },
+        },
+        {
+          type: "number",
+          label: "Batas Maksimum Klaim Per Tahun",
+          name: "batasMaxKlaimPerTahun",
+          placeholder: "Masukkan Batas Maksimum Klaim Per Tahun...",
+          colSize: 6,
+        },
+        {
+          type: "number",
+          label: "Batas Maksimum Klaim Per Kunjungan",
+          name: "batasMaxKlaimPerKunjungan",
+          placeholder: "Masukkan Batas Maksimum Klaim Per Kunjungan...",
+          colSize: 6,
         },
         {
           type: "text",
@@ -122,33 +150,13 @@ const AsuransiAddForm = () => {
           name: "dokumenKlaim",
           placeholder: "Masukkan Dokumen Klaim...",
           colSize: 6,
-          rules: { required: "Batas maksimal klaim per tahun harus diisi" },
-          placeholder: "Masukkan Batas maksimal klaim per tahun harus diisi...",
         },
-        {
-          type: "number",
-          label: "Batas Maksimal Klaim Per Tahun",
-          name: "batasMaxKlaimPerTahun",
-          colSize: 6,
-          rules: { required: "Batas maksimal klaim per tahun harus diisi" },
-          placeholder: "Masukkan Batas Maksimal Klaim Per Tahun...",
-        },
-        {
-          type: "number",
-          label: "Batas Maksimal Klaim Per Kunjungan",
-          name: "batasMaxKlaimPerKunjungan",
-          colSize: 6,
-          rules: { required: "Batas maksimal klaim per tahun harus diisi" },
-          placeholder: "Masukkan Batas Maksimal Klaim Per Kunjungan...",
-        },
-
         {
           type: "text",
           label: "Layanan",
           name: "layanan",
           placeholder: "Masukkan Layanan...",
           colSize: 6,
-          rules: { required: "Layanan harus diisi" },
         },
         {
           type: "number",
@@ -159,9 +167,9 @@ const AsuransiAddForm = () => {
         },
         {
           type: "text",
-          label: "Obat Ditanggung",
+          label: "Obat yang Ditanggung",
           name: "obatDitanggung",
-          placeholder: "Masukkan Obat Ditanggung...",
+          placeholder: "Masukkan Obat yang Ditanggung...",
           colSize: 6,
         },
         {
@@ -178,8 +186,13 @@ const AsuransiAddForm = () => {
           placeholder: "Masukkan Biaya Tidak Ditanggung...",
           colSize: 6,
         },
+      ],
+    },
+    {
+      section: "Pembayaran dan Informasi Perusahaan",
+      fields: [
         {
-          type: "number",
+          type: "text",
           label: "Masa Tunggu",
           name: "masaTunggu",
           placeholder: "Masukkan Masa Tunggu...",
@@ -194,9 +207,9 @@ const AsuransiAddForm = () => {
         },
         {
           type: "text",
-          label: "No Rekening Rumah Sakit",
+          label: "Nomor Rekening Rumah Sakit",
           name: "noRekRumahSakit",
-          placeholder: "Masukkan No Rekening Rumah Sakit...",
+          placeholder: "Masukkan Nomor Rekening Rumah Sakit...",
           colSize: 6,
         },
         {
@@ -208,16 +221,16 @@ const AsuransiAddForm = () => {
         },
         {
           type: "text",
-          label: "Nama Bank Cabang",
+          label: "Cabang Bank",
           name: "namaBankCabang",
-          placeholder: "Masukkan Nama Bank Cabang...",
+          placeholder: "Masukkan Nama Cabang Bank...",
           colSize: 6,
         },
         {
           type: "text",
-          label: "Term Of Payment",
+          label: "Term of Payment",
           name: "termOfPayment",
-          placeholder: "Masukkan Term Of Payment...",
+          placeholder: "Masukkan Term of Payment...",
           colSize: 6,
         },
         {
@@ -228,9 +241,9 @@ const AsuransiAddForm = () => {
         },
         {
           type: "number",
-          label: "Penalti Terlambat Bayar",
+          label: "Penalti Keterlambatan Pembayaran",
           name: "penaltiTerlambatBayar",
-          placeholder: "Masukkan Penalti Terlambat Bayar...",
+          placeholder: "Masukkan Penalti Keterlambatan...",
           colSize: 6,
         },
         {
@@ -256,9 +269,9 @@ const AsuransiAddForm = () => {
         },
         {
           type: "text",
-          label: "No Telepon",
+          label: "Nomor Telepon",
           name: "noTelepon",
-          placeholder: "Masukkan No Telepon...",
+          placeholder: "Masukkan Nomor Telepon...",
           colSize: 6,
         },
         {
@@ -270,9 +283,9 @@ const AsuransiAddForm = () => {
         },
         {
           type: "text",
-          label: "No Hotline Darurat",
+          label: "Nomor Hotline Darurat",
           name: "noHotlineDarurat",
-          placeholder: "Masukkan No Hotline Darurat...",
+          placeholder: "Masukkan Nomor Hotline Darurat...",
           colSize: 6,
         },
         {
@@ -284,9 +297,9 @@ const AsuransiAddForm = () => {
         },
         {
           type: "text",
-          label: "No Telepon Perwakilan",
+          label: "Nomor Telepon Perwakilan",
           name: "noTeleponPerwakilan",
-          placeholder: "Masukkan No Telepon Perwakilan...",
+          placeholder: "Masukkan Nomor Telepon Perwakilan...",
           colSize: 6,
         },
         {
@@ -307,17 +320,96 @@ const AsuransiAddForm = () => {
     },
   ];
 
+  if (isSubmitted && submittedData) {
+    return (
+      <Card className="m-4">
+        <Card.Body>
+          <div className="kiosk-logo mb-4">
+            <Image src="/Images/pngwing-com.png" fluid alt="logo" />
+          </div>
+          <h4 className="text-success text-center mt-4">
+            Data Pendaftaran Pasien Berhasil Disimpan
+          </h4>
+
+          <Row className="no-print">
+            <Col lg={12}>
+              <Card className="d-flex justify-content-center align-items-center">
+                <Card.Body>
+                  <PrintPatientCard patientData={submittedData} />
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          {selectedPrintType === "card" && (
+            <div className="print-only">
+              <PrintPatientCard patientData={submittedData} />
+            </div>
+          )}
+          {selectedPrintType === "queue" && (
+            <div className="print-only">
+              <PrintableQueueNumber
+                queueData={{
+                  queueNumber: submittedData.queueNumber,
+                  service: "Poli Umum",
+                  date: submittedData.registrationDate,
+                  patientName: submittedData.namaPasien,
+                }}
+              />
+            </div>
+          )}
+
+          <div className="d-flex justify-content-between mt-4 no-print">
+            <ButtonNav
+              label="Kembali ke Halaman Utama"
+              variant="primary"
+              path="/kiosk"
+            />
+            <Button
+              variant="primary"
+              onClick={() => handlePrint("card")}
+              className="text-center mt-3 ml-5"
+            >
+              {/* <Printer className="me-2" size={20} /> */}
+              Cetak Kartu Pasien
+            </Button>
+          </div>
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  const handleFormSubmit = (data) => {
+    setIsSubmitted(true);
+    setSubmittedData(data);
+  };
+
+  const handleSubmitWithApi = async (data) => {
+    try {
+      console.log("Form Data:", data);
+      await dispatch(createAsuransi(data)).unwrap();
+      showAlert.success("Data berhasil disimpan", () => {
+        // router.push("/MasterData/master-asuransi/daftar-asuransi");
+      });
+    } catch (error) {
+      console.error("Gagal menambahkan asuransi:", error);
+      showAlert.error("Gagal menambahkan data asuransi");
+    }
+  };
+
   return (
     <Fragment>
-      <DynamicForm
-        title="Tambah Data Asuransi"
+      <DynamicStepForm
+        title="Pendaftaran Pasien Asuransi"
         formConfig={formFields}
-        onSubmit={handleSubmit}
-        backPath="/MasterData/master-asuransi/daftar-asuransi"
+        onSubmit={handleSubmitWithApi}
+        onFormSubmit={handleFormSubmit}
+        backPath="/MasterData/master-asuransi/asuransi/table-asuransi"
         isAddMode={true}
       />
     </Fragment>
   );
-};
+});
 
-export default AsuransiAddForm;
+PendaftaranPasienAsuransi.displayName = "PendaftaranPasienAsuransi";
+export default PendaftaranPasienAsuransi;

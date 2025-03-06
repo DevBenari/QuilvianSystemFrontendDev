@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAsuransi,
   fetchAsuransiWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiSlice";
 
 const TableDataAsuransi = () => {
   const methods = useForm();
@@ -68,8 +68,8 @@ const TableDataAsuransi = () => {
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-asuransi/add-asuransi"
-                  label="Add Asuransi"
+                  path="/MasterData/master-asuransi/asuransi/add-asuransi"
+                  label="Tambah Asuransi"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -133,7 +133,7 @@ const TableDataAsuransi = () => {
                       textField: "namaAsuransi",
                       idField: "asuransiId",
                     }}
-                    basePath="/MasterData/master-asuransi/edit-asuransi"
+                    basePath="/MasterData/master-asuransi/asuransi/edit-asuransi"
                     paginationProps={{
                       currentPage: page,
                       totalPages: totalPages,

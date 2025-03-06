@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, Fragment, useMemo } from "react";
+import React, { useEffect, useState, Fragment, useMemo, memo } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -12,8 +12,9 @@ import {
   fetchCoveranAsuransiById,
   updateCoveranAsuransi,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/CoveranAsuransiSlice";
+import useAsuransiData from "@/lib/hooks/useAsuransi";
 
-const CoveranAsuransiEditForm = ({ params }) => {
+const CoveranAsuransiEditForm = memo(({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -134,7 +135,7 @@ const CoveranAsuransiEditForm = ({ params }) => {
         },
         {
           type: "select",
-          label: "asuransiId",
+          label: "Jenis Asuransi",
           name: "asuransiId",
           colSize: 6,
           rules: { required: "Asuransi harus dipilih" },
@@ -188,7 +189,7 @@ const CoveranAsuransiEditForm = ({ params }) => {
   return (
     <Fragment>
       <DynamicForm
-        title="Edit Data CoveranAsuransi"
+        title="Edit Data Coveran Asuransi"
         formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         handleDelete={handleDelete}
@@ -198,6 +199,8 @@ const CoveranAsuransiEditForm = ({ params }) => {
       />
     </Fragment>
   );
-};
+});
+
+CoveranAsuransiEditForm.displayName = "CoveranAsuransiEditForm";
 
 export default CoveranAsuransiEditForm;

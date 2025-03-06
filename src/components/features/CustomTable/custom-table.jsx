@@ -33,7 +33,11 @@ const CustomTableComponent = memo(
       "tanggalAkhirKerjasama",
       "tanggalPersalinan",
       "tanggalLahir",
-      "ttlBayi", // Tambahkan key tanggal lainnya jika perlu
+      "ttlBayi",
+      "jamBuka",
+      "jamTutup",
+      "tglBerlaku",
+      "tglBerakhir",
     ];
 
     const isDateKey = (key) => dateKeys.includes(key);

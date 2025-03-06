@@ -13,32 +13,32 @@ import CustomSearchFilter from "@/components/features/custom-search/CustomSearch
 
 import LoadingScreen from "@/components/features/loading/loadingScreen";
 import {
-  fetchPoliKlinik,
-  fetchPoliKlinikWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
+  fetchSubPoli,
+  fetchSubPoliWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/SubPoliSlice";
 
-const TableDataPoliKlinik = () => {
+const TableDataSubPoli = () => {
   const methods = useForm();
   const dispatch = useDispatch();
 
   const [filteredData, setFilteredData] = useState([]);
   const {
-    data: PoliKlinikData,
+    data: SubPoliData,
     loading,
     error,
     totalPages,
-  } = useSelector((state) => state.PoliKlinik);
+  } = useSelector((state) => state.SubPoli);
 
   const [page, setPage] = useState(1);
   const perPage = 10;
 
   useEffect(() => {
-    dispatch(fetchPoliKlinik({ page, perPage }));
+    dispatch(fetchSubPoli({ page, perPage }));
   }, [dispatch, page]);
 
   useEffect(() => {
-    setFilteredData(PoliKlinikData);
-  }, [PoliKlinikData]);
+    setFilteredData(SubPoliData);
+  }, [SubPoliData]);
 
   return (
     <FormProvider {...methods}>
@@ -46,9 +46,7 @@ const TableDataPoliKlinik = () => {
         <div className="d-flex justify-content-between iq-card-header">
           <h2 className="mb-3">
             Master Data <br />
-            <span className="letter-spacing fw-bold">
-              List Daftar PoliKlinik
-            </span>
+            <span className="letter-spacing fw-bold">List Daftar SubPoli</span>
           </h2>
           <button
             className="btn btn-dark my-3 mx-3"
@@ -59,7 +57,7 @@ const TableDataPoliKlinik = () => {
         </div>
         <Col lg="12" className="mt-2">
           <CustomSearchFilter
-            fetchFunction={fetchPoliKlinikWithFilters}
+            fetchFunction={fetchSubPoliWithFilters}
             setFilteredData={setFilteredData}
           />
         </Col>
@@ -69,14 +67,14 @@ const TableDataPoliKlinik = () => {
           <Col sm="12" className="p-3">
             <div className="iq-card p-3">
               <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-PoliKlinik">
-                  <h4 className="card-PoliKlinik font-widest">
-                    Tabel List Daftar PoliKlinik
+                <div className="iq-header-SubPoli">
+                  <h4 className="card-SubPoli font-widest">
+                    Tabel List Daftar Sub Poli
                   </h4>
                 </div>
                 <ButtonNav
-                  path="/MasterData/master-PoliKlinik/add-PoliKlinik"
-                  label="Tambah  PoliKlinik"
+                  path="/MasterData/master-PoliKlinik/subPoli/add-subPoli"
+                  label="Tambah Sub Poli"
                   icon="ri-add-fill"
                   size="sm"
                   variant=""
@@ -101,28 +99,23 @@ const TableDataPoliKlinik = () => {
                     { key: "no", label: "No" },
                     { key: "createByName", label: "Dibuat Oleh" },
                     { key: "createDateTime", label: "Tanggal Dibuat" },
-                    {
-                      key: "kepalaPoliklinik",
-                      label: "Kode  PoliKlinik",
-                    },
-                    {
-                      key: "namaPoliklinik",
-                      label: "Nama  PoliKlinik",
-                    },
-                    { key: "telepon", label: "No Telepon" },
-                    { key: "email", label: "email" },
-                    { key: "hariOperasional", label: "Hari Operasional" },
+                    { key: "kodeSubPoli", label: "Kode Sub Poli" },
+                    { key: "namaSubPoli", label: "Nama Sub Poli" },
+                    { key: "kepalaSubPoli", label: "Kepala Sub Poli" },
+                    { key: "lokasi", label: "Lokasi" },
+                    { key: "telepon", label: "Telepon" },
+                    { key: "email", label: "Email" },
                     { key: "jamBuka", label: "Jam Buka" },
                     { key: "jamTutup", label: "Jam Tutup" },
-                    { key: "layananPoliklinik", label: "Layanan Poliklinik" },
-                    { key: "jumlahMaxPasien", label: "Jumlah Max Pasien" },
-                    { key: "deskripsi", label: "dekripsi" },
+                    { key: "layananSubPoli", label: "Layanan Sub Poli" },
+                    { key: "deskripsi", label: "Deskripsi" },
+                    { key: "namaPoliklinik", label: "Nama Poliklinik" },
                   ]}
                   slugConfig={{
                     textField: "namaPoliklinik",
-                    idField: "poliKlinikId",
+                    idField: "subPoliId",
                   }}
-                  basePath="/MasterData/master-PoliKlinik/edit-PoliKlinik"
+                  basePath="/MasterData/master-SubPoli/edit-SubPoli"
                   paginationProps={{
                     currentPage: page,
                     totalPages: totalPages,
@@ -139,4 +132,4 @@ const TableDataPoliKlinik = () => {
   );
 };
 
-export default TableDataPoliKlinik;
+export default TableDataSubPoli;

@@ -67,7 +67,7 @@ const TableDataCoveranAsuransi = () => {
               <div className="iq-card-header d-flex justify-content-between">
                 <div className="iq-header-CoveranAsuransi">
                   <h4 className="card-CoveranAsuransi font-widest">
-                    Tabel List Daftar CoveranAsuransi
+                    Tabel List Daftar Coveran Asuransi
                   </h4>
                 </div>
                 <ButtonNav
@@ -101,39 +101,25 @@ const TableDataCoveranAsuransi = () => {
                     data={filteredData}
                     columns={[
                       { key: "no", label: "No" },
-                      {
-                        key: "createDateTime",
-                        label: "Tanggal Dibuat",
-                      },
-                      {
-                        key: "createByName",
-                        label: "Dibuat Oleh",
-                      },
+                      { key: "createByName", label: "Dibuat Oleh" },
+                      { key: "createDateTime", label: "Tanggal Dibuat" },
                       {
                         key: "kodeCoveranAsuransi",
-                        label: "Kode CoveranAsuransi",
+                        label: "Kode Coveran Asuransi",
                       },
-                      {
-                        key: "namaCoveranAsuransi",
-                        label: "Nama CoveranAsuransi",
-                      },
-                      {
-                        key: "statusCoveranAsuransi",
-                        label: "Status CoveranAsuransi",
-                      },
-                      {
-                        key: "tanggalMulaiKerjasama",
-                        label: "Tanggal Mulai Kerjasama",
-                      },
-                      {
-                        key: "tanggalAkhirKerjasama",
-                        label: "Tanggal Akhir Kerjasama",
-                      },
+                      { key: "namaAsuransi", label: "Nama Asuransi" },
+                      { key: "serviceCode", label: "Kode Layanan" },
+                      { key: "serviceDesc", label: "Deskripsi Layanan" },
+                      { key: "serviceCodeClass", label: "Kode Kelas Layanan" },
+                      { key: "class", label: "Kelas" },
+                      { key: "tarif", label: "Tarif" },
+                      { key: "tglBerlaku", label: "Tanggal Berlaku" },
+                      { key: "tglBerakhir", label: "Tanggal Berakhir" },
                     ]}
                     itemsPerPage={10}
                     slugConfig={{
-                      textField: "namaCoveranAsuransi",
-                      idField: "asuransiId",
+                      textField: "namaAsuransi",
+                      idField: "coveranAsuransiId",
                     }}
                     basePath="/MasterData/master-asuransi/coveran-asuransi/edit-CoveranAsuransi"
                     paginationProps={{

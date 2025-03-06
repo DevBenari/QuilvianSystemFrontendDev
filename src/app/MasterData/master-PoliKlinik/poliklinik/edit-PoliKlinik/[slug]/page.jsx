@@ -102,14 +102,14 @@ const EditPoliKlinikForm = ({ params }) => {
           rules: { required: "Hari Operasional harus diisi" },
         },
         {
-          type: "time",
+          type: "date",
           label: "Jam Buka",
           name: "jamBuka",
           colSize: 6,
           rules: { required: "Jam Buka harus diisi" },
         },
         {
-          type: "time",
+          type: "date",
           label: "Jam Tutup",
           name: "jamTutup",
           colSize: 6,
@@ -145,7 +145,7 @@ const EditPoliKlinikForm = ({ params }) => {
 
   const handleSubmit = async (data) => {
     try {
-      if (!dataPoliKlinik.poliKlinikId) {
+      if (!dataPoliKlinik.poliklinikId) {
         showAlert.error(
           "Gagal memperbarui data: ID PoliKlinik tidak ditemukan."
         );
@@ -155,7 +155,7 @@ const EditPoliKlinikForm = ({ params }) => {
       console.log("Data yang dikirim ke backend:", data);
 
       await dispatch(
-        updatePoliKlinik({ id: dataPoliKlinik.poliKlinikId, data })
+        updatePoliKlinik({ id: dataPoliKlinik.poliklinikId, data })
       ).unwrap();
 
       showAlert.success("Data PoliKlinik berhasil diperbarui!", () => {
@@ -169,7 +169,7 @@ const EditPoliKlinikForm = ({ params }) => {
 
   // Fungsi Hapus Data
   const handleDelete = async () => {
-    if (!dataPoliKlinik?.poliKlinikId) {
+    if (!dataPoliKlinik?.poliklinikId) {
       showAlert.error("Gagal menghapus: ID PoliKlinik tidak ditemukan.");
       return;
     }
@@ -179,7 +179,7 @@ const EditPoliKlinikForm = ({ params }) => {
       async () => {
         try {
           await dispatch(
-            deletePoliKlinik(dataPoliKlinik.poliKlinikId)
+            deletePoliKlinik(dataPoliKlinik.poliklinikId)
           ).unwrap();
           showAlert.success("Data PoliKlinik berhasil dihapus!", () => {
             router.push("/MasterData/master-PoliKlinik/table-PoliKlinik");

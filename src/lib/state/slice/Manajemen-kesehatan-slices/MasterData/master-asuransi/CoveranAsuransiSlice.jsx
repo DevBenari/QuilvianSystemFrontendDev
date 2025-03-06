@@ -105,9 +105,13 @@ export const updateCoveranAsuransi = createAsyncThunk(
   "CoveranAsuransi/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/CoveranAsuransi`, data, {
-        headers: getHeaders(),
-      });
+      const response = await InstanceAxios.post(
+        `/CoveranAsuransi/${id}`,
+        data,
+        {
+          headers: getHeaders(),
+        }
+      );
 
       console.log("Response API (Add):", response.data);
       return response.data;
@@ -146,7 +150,7 @@ const CoveranAsuransiSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
-    selectedCoveranAsuransi: null,
+    selectedCoveranAsuransi: [],
   },
   reducers: {},
   extraReducers: (builder) => {

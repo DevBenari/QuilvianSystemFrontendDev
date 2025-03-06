@@ -301,7 +301,11 @@ export const menus = {
       subItems: [
         {
           title: "Data Poliklinik",
-          href: "/MasterData/master-PoliKlinik/table-PoliKlinik",
+          href: "/MasterData/master-PoliKlinik/poliklinik/table-PoliKlinik",
+        },
+        {
+          title: "Data Sub Poli",
+          href: "/MasterData/master-PoliKlinik/subPoli/table-subPoli",
         },
       ],
     },

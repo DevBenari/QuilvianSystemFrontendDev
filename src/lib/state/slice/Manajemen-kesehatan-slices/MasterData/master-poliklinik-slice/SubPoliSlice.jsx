@@ -2,21 +2,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-// 🔹 Fetch PoliKlinik dengan pagination untuk CustomTableComponent
-// ✅ Fetch semua data PoliKlinik dengan pagination
-export const fetchPoliKlinik = createAsyncThunk(
-  "PoliKlinik/fetchData",
+// 🔹 Fetch SubPoli dengan pagination untuk CustomTableComponent
+// ✅ Fetch semua data SubPoli dengan pagination
+export const fetchSubPoli = createAsyncThunk(
+  "SubPoli/fetchData",
   async (
     { page = 1, perPage = 10, isInfiniteScroll = false },
     { rejectWithValue, getState }
   ) => {
     try {
-      const currentState = getState().PoliKlinik;
+      const currentState = getState().SubPoli;
       if (currentState.loadedPages.includes(page)) {
         console.log("Data already loaded for page:", page);
         return null;
       }
-      const response = await InstanceAxios.get(`/PoliKlinik`, {
+      const response = await InstanceAxios.get(`/SubPoli`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
@@ -36,12 +36,12 @@ export const fetchPoliKlinik = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch PoliKlinik dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
-export const fetchPoliKlinikWithFilters = createAsyncThunk(
-  "PoliKlinik/fetchWithFilters",
+// 🔹 Fetch SubPoli dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
+export const fetchSubPoliWithFilters = createAsyncThunk(
+  "SubPoli/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/PoliKlinik/paged`, {
+      const response = await InstanceAxios.get(`/SubPoli/paged`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -62,12 +62,12 @@ export const fetchPoliKlinikWithFilters = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch data PoliKlinik berdasarkan ID
-export const fetchPoliKlinikById = createAsyncThunk(
-  "PoliKlinik/fetchById",
+// 🔹 Fetch data SubPoli berdasarkan ID
+export const fetchSubPoliById = createAsyncThunk(
+  "SubPoli/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/PoliKlinik/${id}`, {
+      const response = await InstanceAxios.get(`/SubPoli/${id}`, {
         headers: getHeaders(),
       });
 
@@ -81,12 +81,12 @@ export const fetchPoliKlinikById = createAsyncThunk(
   }
 );
 
-// 🔹 Tambah PoliKlinik
-export const createPoliKlinik = createAsyncThunk(
-  "PoliKlinik/create",
+// 🔹 Tambah SubPoli
+export const createSubPoli = createAsyncThunk(
+  "SubPoli/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/PoliKlinik`, data, {
+      const response = await InstanceAxios.post(`/SubPoli`, data, {
         headers: getHeaders(),
       });
 
@@ -94,49 +94,47 @@ export const createPoliKlinik = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan PoliKlinik "
+        error.response?.data || "Gagal menambahkan SubPoli "
       );
     }
   }
 );
 
-// 🔹 Update PoliKlinik  berdasarkan ID
-export const updatePoliKlinik = createAsyncThunk(
-  "PoliKlinik/update",
+// 🔹 Update SubPoli  berdasarkan ID
+export const updateSubPoli = createAsyncThunk(
+  "SubPoli/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.put(`/PoliKlinik/${id}`, data, {
+      const response = await InstanceAxios.put(`/SubPoli/${id}`, data, {
         headers: getHeaders(),
       });
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui PoliKlinik "
+        error.response?.data || "Gagal memperbarui SubPoli "
       );
     }
   }
 );
 
-export const deletePoliKlinik = createAsyncThunk(
-  "PoliKlinik/delete",
+export const deleteSubPoli = createAsyncThunk(
+  "SubPoli/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.delete(`/PoliKlinik/${id}`, {
+      const response = await InstanceAxios.delete(`/SubPoli/${id}`, {
         headers: getHeaders(),
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data || "Gagal menghapus PoliKlinik"
-      );
+      return rejectWithValue(error.response?.data || "Gagal menghapus SubPoli");
     }
   }
 );
 
 // 🔹 Redux Slice
 // 🔹 Redux Slice
-const PoliKlinikSlice = createSlice({
-  name: "PoliKlinik",
+const SubPoliSlice = createSlice({
+  name: "SubPoli",
   initialState: {
     data: [],
     loadedPages: [],
@@ -149,12 +147,12 @@ const PoliKlinikSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch PoliKlinik hanya dengan pagination (CustomTableComponent)
-      .addCase(fetchPoliKlinik.pending, (state) => {
+      // ✅ Fetch SubPoli hanya dengan pagination (CustomTableComponent)
+      .addCase(fetchSubPoli.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchPoliKlinik.fulfilled, (state, action) => {
+      .addCase(fetchSubPoli.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
 
         state.loading = false;
@@ -163,8 +161,7 @@ const PoliKlinikSlice = createSlice({
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
-              (existingItem) =>
-                existingItem.poliklinikId === newItem.poliklinikId
+              (existingItem) => existingItem.subPoliId === newItem.subPoliId
             )
         );
 
@@ -181,67 +178,66 @@ const PoliKlinikSlice = createSlice({
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
       })
-      .addCase(fetchPoliKlinik.rejected, (state, action) => {
+      .addCase(fetchSubPoli.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
-      // ✅ Fetch PoliKlinik dengan search & filter (CustomSearchFilter)
-      .addCase(fetchPoliKlinikWithFilters.pending, (state) => {
+      // ✅ Fetch SubPoli dengan search & filter (CustomSearchFilter)
+      .addCase(fetchSubPoliWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchPoliKlinikWithFilters.fulfilled, (state, action) => {
+      .addCase(fetchSubPoliWithFilters.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data?.rows || [];
         state.totalItems = action.payload.data?.totalRows || 0;
         state.totalPages = action.payload.data?.totalPages || 1;
         state.currentPage = action.payload.data?.currentPage || 1;
       })
-      .addCase(fetchPoliKlinikWithFilters.rejected, (state, action) => {
+      .addCase(fetchSubPoliWithFilters.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // Fetch By ID
-      .addCase(fetchPoliKlinikById.pending, (state) => {
+      .addCase(fetchSubPoliById.pending, (state) => {
         state.loading = true;
-        state.selectedPoliKlinik = null;
+        state.selectedSubPoli = null;
       })
-      .addCase(fetchPoliKlinikById.fulfilled, (state, action) => {
+      .addCase(fetchSubPoliById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedPoliKlinik = action.payload;
+        state.selectedSubPoli = action.payload;
       })
-      .addCase(fetchPoliKlinikById.rejected, (state, action) => {
+      .addCase(fetchSubPoliById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Tambah PoliKlinik
-      .addCase(createPoliKlinik.fulfilled, (state, action) => {
+      // Tambah SubPoli
+      .addCase(createSubPoli.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
-      // Update PoliKlinik
-      .addCase(updatePoliKlinik.fulfilled, (state, action) => {
+      // Update SubPoli
+      .addCase(updateSubPoli.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (PoliKlinik) =>
-            PoliKlinik.poliklinikId === action.payload.poliklinikId
+          (SubPoli) => SubPoli.subPoliId === action.payload.subPoliId
         );
         if (index !== -1) {
           state.data[index] = action.payload;
         }
       })
 
-      // Hapus PoliKlinik
-      .addCase(deletePoliKlinik.fulfilled, (state, action) => {
+      // Hapus SubPoli
+      .addCase(deleteSubPoli.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (PoliKlinik) => PoliKlinik.poliklinikId !== action.payload
+          (SubPoli) => SubPoli.subPoliId !== action.payload
         );
       });
   },
 });
 
-export default PoliKlinikSlice.reducer;
+export default SubPoliSlice.reducer;

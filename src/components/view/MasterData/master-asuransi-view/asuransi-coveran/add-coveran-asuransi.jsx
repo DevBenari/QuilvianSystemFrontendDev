@@ -107,7 +107,7 @@ const CoveranAsuransiAddForm = () => {
         },
         {
           type: "select",
-          label: "asuransiId",
+          label: "Jenis Asuransi",
           name: "asuransiId",
           colSize: 6,
           rules: { required: "Asuransi harus dipilih" },

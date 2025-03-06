@@ -1,4 +1,4 @@
-import FormAddPoliKlinik from "@/components/view/MasterData/master-PoliKlinik-view/add-PoliKlinik";
+import FormAddPoliKlinik from "@/components/view/MasterData/master-PoliKlinik-view/poliklinik-view/add-PoliKlinik";
 import React from "react";
 
 const PageListPoliKlinik = () => {
