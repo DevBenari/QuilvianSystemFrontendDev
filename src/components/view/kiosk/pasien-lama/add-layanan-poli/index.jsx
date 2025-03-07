@@ -1,8 +1,10 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { Row, Col, Card, Button, Alert } from "react-bootstrap";
+import React from "react";
+import { useSelector } from "react-redux";
 import DynamicStepCardForm from "@/components/features/dynamic-form/dynamicForm/DynamicStepCardForm";
-import ModalInsurance from "../../add-guest-layanan/modal-insurance";
+import ModalInsurance from "@/components/view/kiosk/add-guest-layanan/modal-insurance";
+import { fetchPoliKlinik } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
+import useRegistration from "@/lib/hooks/kiosk/useRegistration";
 
 const PatientRegistrationPage = () => {
   // Dokter data berdasarkan poli dengan penambahan daftar asuransi yang diterima
@@ -32,83 +34,44 @@ const PatientRegistrationPage = () => {
       { id: 'dr-mira', name: 'dr. Mira Susanti, Sp.JP', schedule: 'Selasa, Kamis, 13.00-17.00', acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] }
     ]
   };
-
-  // Asuransi data
-  const insurances = [
-    { id: 'bpjs', name: 'BPJS Kesehatan', type: 'Asuransi Kesehatan Nasional' },
-    { id: 'prudential', name: 'Prudential', type: 'Asuransi Swasta' },
-    { id: 'allianz', name: 'Allianz', type: 'Asuransi Swasta' },
-    { id: 'axa', name: 'AXA Mandiri', type: 'Asuransi Swasta' },
-    { id: 'other', name: 'Lainnya', type: 'Asuransi Lainnya' },
-    { id: 'none', name: 'Tidak Ada', type: 'Bayar Mandiri' }
-  ];
-
-  const [showInsuranceModal, setShowInsuranceModal] = useState(false);
-  const [insuranceList, setInsuranceList] = useState([]);
-  const [filteredDoctorsByInsurance, setFilteredDoctorsByInsurance] = useState({});
-  const [nonPKSInsuranceSelected, setNonPKSInsuranceSelected] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-  const [formMethodRef, setFormMethodRef] = useState(null);
   
-  const handleOpenModal = () => setShowInsuranceModal(true);
-  const handleCloseModal = () => setShowInsuranceModal(false);
-  const formMethodsRef = useRef(null);
-
-
-  const handleFormMethodReady = (methods) => {
-    setFormMethodRef(methods);
-    formMethodsRef.current = methods;
-  }
-
-  const handleInsuranceSubmit = (insuranceData) => {
-    setInsuranceList((prevList) => [...prevList, insuranceData]);
-    console.log("Insurance Data Submitted:", insuranceData);
-    
-    if (!insuranceData.isPKS) {
-      setNonPKSInsuranceSelected(true);
-    }
-    
-    if (formMethodRef) {
-      formMethodRef.setValue("nomorAsuransi", insuranceData.policyNumber);
-      formMethodRef.setValue("asuransiPasien", insuranceData.provider);
-      formMethodRef.trigger(["nomorAsuransi", "asuransiPasien"])
-    }
-
-    updateDoctorsByInsurance([...insuranceList, insuranceData]);
+  // Mapping for more readable poli names
+  const poliNameMap = {
+    'umum': 'Poli Umum', 
+    'gigi': 'Poli Gigi', 
+    'mata': 'Poli Mata',
+    'kandungan': 'Poli Kandungan',
+    'anak': 'Poli Anak',
+    'jantung': 'Poli Jantung',
+    'saraf': 'Poli Saraf',
+    'kulit': 'Poli Kulit'
   };
 
-  // Function to update doctors based on selected insurances
-  const updateDoctorsByInsurance = (insurances) => {
-    const filteredDoctors = {};
-    
-    // For each specialty (poli)
-    Object.keys(doctors).forEach(poliKey => {
-      // Filter doctors who accept at least one of the selected insurances
-      filteredDoctors[poliKey] = doctors[poliKey].filter(doctor => {
-        // If no insurance or 'Tidak Ada' (self-pay) is selected, show all doctors
-        if (insurances.length === 0 || insurances.some(ins => ins.provider === 'Tidak Ada')) {
-          return true;
-        }
-        
-        // For non-PKS insurances, show all doctors since payment will be cash
-        if (insurances.some(ins => !ins.isPKS)) {
-          return true;
-        }
-        
-        // Check if the doctor accepts any of the selected insurances
-        return doctor.acceptedInsurances.some(acceptedIns => 
-          insurances.some(selectedIns => selectedIns.provider === acceptedIns)
-        );
-      });
-    });
-    
-    setFilteredDoctorsByInsurance(filteredDoctors);
+  // Fetch poli data from Redux store
+  const {data: lisPoli, page, totalPages } = useSelector((state) => state.PoliKlinik);
+
+  // Use the registration hook
+  const registration = useRegistration({
+    fetchMasterDataAction: () => fetchPoliKlinik({page, totalPages}),
+    initialDoctorsData: doctors
+  });
+  
+  // Handle form submission
+  const onSubmitSuccess = (data) => {
+    console.log("Form Submitted Successfully:", data);
+    alert("Pendaftaran berhasil! Silakan cek email Anda untuk konfirmasi.");
+    // Redirect to success page or dashboard
+    // window.location.href = "/registration-success";
   };
   
+  // Wrap the handleSubmit function to include success callback
+  const handleSubmit = (data) => {
+    registration.handleSubmit(data, onSubmitSuccess);
+  };
 
-  // Form config
+  // Build form configuration with sections and fields
   const formConfig = [
+    // Section 1: Personal Information
     {
       section: "Data Diri",
       icon: "👤",
@@ -167,171 +130,15 @@ const PatientRegistrationPage = () => {
         }
       ]
     },
+    // Section 2: Insurance and Payment Method
     {
       section: "Asuransi",
       icon: "📋",
       description: "Pilih metode pembayaran Anda",
-      cards: [
-        {
-          name: "pembayaran",
-          title: "Metode Pembayaran",
-          description: "Silakan pilih metode pembayaran yang akan Anda gunakan:",
-          colSize: 4,
-          className: "d-flex align-items-center justify-content-center",
-          required: true,
-          rules: { required: "Silakan pilih metode pembayaran" },
-          options: [
-            { 
-              value: "tunai", 
-              label: "Tunai", 
-              icon: "💵", 
-              subtitle: "Bayar langsung",
-              description: "Pembayaran dilakukan langsung di kasir rumah sakit setelah selesai pelayanan."
-            },
-            { 
-              value: "asuransi", 
-              label: "Asuransi", 
-              icon: "🔒", 
-              subtitle: "Klaim asuransi",
-              description: "Gunakan asuransi kesehatan Anda untuk pembayaran layanan."
-            }
-          ],
-          customRender: ({ methods }) => {
-            const pembayaran = methods.watch("pembayaran");
-            const asuransiSelected = pembayaran === "asuransi";
-            
-            // Jika pembayaran sudah dipilih dan itu adalah asuransi, maka kita hanya menampilkan info
-            if (selectedPaymentMethod === "asuransi") {
-              return (
-                <div className="mb-3">
-                  <h5>Metode Pembayaran: Asuransi</h5>
-                  <Button 
-                    variant="outline-secondary" 
-                    size="sm"
-                    onClick={() => {
-                      setSelectedPaymentMethod(null);
-                      methods.setValue("pembayaran", "");
-                    }}
-                  >
-                    Ubah Metode Pembayaran
-                  </Button>
-                </div>
-              );
-            }
-            
-            // Render kartu metode pembayaran normal
-            return (
-              <Row>
-                {[
-                  { 
-                    value: "tunai", 
-                    label: "Tunai", 
-                    icon: "💵", 
-                    subtitle: "Bayar langsung",
-                    description: "Pembayaran dilakukan langsung di kasir rumah sakit setelah selesai pelayanan."
-                  },
-                  { 
-                    value: "asuransi", 
-                    label: "Asuransi", 
-                    icon: "🔒", 
-                    subtitle: "Klaim asuransi",
-                    description: "Gunakan asuransi kesehatan Anda untuk pembayaran layanan."
-                  }
-                ].map((option) => {
-                  const isSelected = methods.watch("pembayaran") === option.value;
-                  
-                  return (
-                    <Col md={6} key={option.value}>
-                      <Card 
-                        className={`selection-card mb-3 cursor-pointer ${isSelected ? 'selected shadow-lg border-primary' : ''}`}
-                        onClick={() => {
-                          methods.setValue("pembayaran", option.value);
-                          // Jika asuransi dipilih, set state
-                          if (option.value === "asuransi") {
-                            setSelectedPaymentMethod("asuransi");
-                          }
-                        }}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <Card.Body className="text-center p-4">
-                          <div className="card-icon mb-3">{option.icon}</div>
-                          <Card.Title>{option.label}</Card.Title>
-                          <Card.Subtitle className="mb-2 text-muted">{option.subtitle}</Card.Subtitle>
-                          <Card.Text>{option.description}</Card.Text>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  );
-                })}
-              </Row>
-            );
-          }
-        }
-      ],
-      fields: [
-        {
-          id: "asuransiPasien",
-          name: "asuransiPasien",
-          label: "Asuransi yang digunakan pasien",
-          type: "select",
-          options: insuranceList.map((item) => ({ 
-            label: `${item.provider} - ${item.policyNumber}`, 
-            value: item.provider,
-            isPKS: item.isPKS
-          })),
-          colSize: 6,
-          hide: (watchValues) => selectedPaymentMethod !== "asuransi"
-        },
-        {
-          id: "nomorAsuransi",
-          name: "nomorAsuransi",
-          label: "Nomor Kartu Asuransi",
-          type: "number",
-          colSize: 6,
-          placeholder: "masukkan nomor asuransi",
-          hide: (watchValues) => selectedPaymentMethod !== "asuransi"
-        },
-        {
-          id: "tambahAsuransi",
-          name: "tambahAsuransi",
-          label: "",
-          type: "custom",
-          customRender: ({ methods }) => (
-            <Button variant="info" onClick={handleOpenModal} style={{ marginTop: "30px"}}>
-              Tambah Asuransi
-            </Button>
-          ),
-          colSize: 6,
-          className: "mt-2",
-          hide: (watchValues) => selectedPaymentMethod !== "asuransi"
-        },
-        {
-          id: "nonPKSNotification",
-          name: "nonPKSNotification",
-          label: "",
-          type: "custom",
-          customRender: ({ methods }) => {
-            const asuransiPasien = methods.watch("asuransiPasien");
-            const selectedInsurance = insuranceList.find(ins => ins.provider === asuransiPasien);
-            
-            if (selectedInsurance && !selectedInsurance.isPKS) {
-              return (
-                <Alert variant="warning" className="mt-3">
-                  <Alert.Heading>Asuransi Non-PKS</Alert.Heading>
-                  <p>
-                    Asuransi <strong>{selectedInsurance.provider}</strong> tidak bekerja sama dengan rumah sakit (Non-PKS).
-                    Pembayaran akan diatur sebagai Tunai, tetapi Anda tetap bisa mengajukan reimbursement ke pihak asuransi setelah layanan selesai.
-                  </p>
-                </Alert>
-              );
-            }
-            return null;
-          },
-          colSize: 12,
-          hide: (watchValues) => selectedPaymentMethod !== "asuransi"
-        }
-      ]
+      cards: registration.getPaymentMethodCards(),
+      fields: registration.getInsuranceFields()
     },
+    // Section 3: Select Clinic
     {
       section: "Pilih Poli",
       icon: "🏥",
@@ -344,380 +151,47 @@ const PatientRegistrationPage = () => {
           colSize: 3,
           required: true,
           rules: { required: "Silakan pilih poli" },
-          options: [
-            { 
-              value: "umum", 
-              label: "Poli Umum", 
-              icon: "🩺", 
-              subtitle: "Untuk pemeriksaan kesehatan umum"
-            },
-            { 
-              value: "gigi", 
-              label: "Poli Gigi", 
-              icon: "🦷", 
-              subtitle: "Untuk masalah kesehatan gigi dan mulut"
-            },
-            { 
-              value: "mata", 
-              label: "Poli Mata", 
-              icon: "👁️", 
-              subtitle: "Untuk masalah penglihatan dan kesehatan mata"
-            },
-            { 
-              value: "kandungan", 
-              label: "Poli Kandungan", 
-              icon: "🤰", 
-              subtitle: "Untuk ibu hamil dan masalah kewanitaan"
-            },
-            { 
-              value: "anak", 
-              label: "Poli Anak", 
-              icon: "👶", 
-              subtitle: "Untuk anak usia 0-18 tahun"
-            },
-            { 
-              value: "jantung", 
-              label: "Poli Jantung", 
-              icon: "❤️", 
-              subtitle: "Untuk masalah kardiovaskular"
-            },
-            { 
-              value: "saraf", 
-              label: "Poli Saraf", 
-              icon: "🧠", 
-              subtitle: "Untuk masalah Saraf Kejepit"
-            },
-            {
-              value: "kulit", 
-              label: "Poli Kulit", 
-              icon: "🧴", 
-              subtitle: "Untuk masalah Kulit"
-            },
-          ]
+          options: lisPoli.map((item) => ({ label: item.namaPoli, value: item.poliId })),
         }
       ]
     },
+    // Section 4: Select Doctor
     {
       section: "Pilih Dokter",
       icon: "👨‍⚕️",
       description: "Pilih dokter yang tersedia pada poliklinik ",
       fields: [],
       cards: [
-        {
-          name: "selectedDoctor",
-          title: "Pilih Dokter",
-          description: "Silakan pilih dokter yang tersedia pada poli yang Anda pilih:",
-          colSize: 6,
-          required: true,
-          rules: { required: "Silakan pilih dokter" },
-          options: [], // Will be dynamically populated
-          customRender: ({ methods }) => {
-            const selectedPoli = methods.watch("selectedPoli");
-            const asuransiPasien = methods.watch("asuransiPasien");
-            const pembayaran = methods.watch("pembayaran");
-            
-            // Find the selected insurance to check if it's PKS or non-PKS
-            const selectedInsurance = insuranceList.find(ins => ins.provider === asuransiPasien);
-            const isNonPKS = selectedInsurance && !selectedInsurance.isPKS;
-            
-            // No poli selected yet
-            if (!selectedPoli) {
-              return (
-                <div className="alert alert-warning">
-                  Silakan pilih poli terlebih dahulu pada langkah sebelumnya.
-                </div>
-              );
-            }
-            
-            // Get doctors for the selected poli
-            let availableDoctors = [];
-            
-            // Special case: If non-PKS insurance is selected, show all doctors
-            if (selectedPaymentMethod === "asuransi" && isNonPKS) {
-              availableDoctors = doctors[selectedPoli] || [];
-              
-              // Show information about non-PKS reimbursement
-              return (
-                <>
-                  <div className="alert alert-info mb-4">
-                    <p className="mb-1"><strong>Informasi Pembayaran:</strong></p>
-                    <p>
-                      Karena Anda menggunakan asuransi non-PKS, pembayaran akan dilakukan secara Tunai, 
-                      tetapi Anda dapat mengajukan reimbursement ke pihak asuransi setelah layanan selesai.
-                    </p>
-                  </div>
-                  
-                  <h5 className="mb-3">Pilih Dokter</h5>
-                  {availableDoctors.length === 0 ? (
-                    <div className="alert alert-danger">
-                      Tidak ada dokter yang tersedia untuk poli ini.
-                    </div>
-                  ) : (
-                    <Row>
-                      {availableDoctors.map((doctor) => {
-                        const isSelected = methods.watch("selectedDoctor") === doctor.id;
-                        return (
-                          <Col xs={12} md={6} key={doctor.id}>
-                            <Card 
-                              className={`selection-card mb-3 cursor-pointer ${isSelected ? 'selected shadow-lg border-primary' : ''}`}
-                              onClick={() => methods.setValue("selectedDoctor", doctor.id)}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <Card.Body className="text-center p-4">
-                                <div className="card-icon mb-3">👨‍⚕️</div>
-                                <Card.Title>{doctor.name}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">Jadwal Praktik:</Card.Subtitle>
-                                <Card.Text>{doctor.schedule}</Card.Text>
-                              </Card.Body>
-                            </Card>
-                          </Col>
-                        );
-                      })}
-                    </Row>
-                  )}
-                </>
-              );
-            }
-            
-            // Regular flow - if paying with insurance, filter by insurance
-            if (selectedPaymentMethod === "asuransi" && asuransiPasien) {
-              // Get doctors that accept this specific insurance
-              availableDoctors = doctors[selectedPoli]?.filter(doctor => 
-                doctor.acceptedInsurances.includes(asuransiPasien)
-              ) || [];
-              
-              if (availableDoctors.length === 0) {
-                return (
-                  <div className="alert alert-danger">
-                    <p>Tidak ada dokter yang tersedia untuk poli <strong>{selectedPoli}</strong> yang menerima asuransi <strong>{asuransiPasien}</strong>.</p>
-                    <p>Silakan pilih poli lain atau metode pembayaran lain.</p>
-                  </div>
-                );
-              }
-            } else if (selectedPaymentMethod === "asuransi" && !asuransiPasien) {
-              return (
-                <div className="alert alert-warning">
-                  Silakan pilih asuransi terlebih dahulu atau tambahkan asuransi baru.
-                </div>
-              );
-            } else {
-              // For cash payment, show all doctors
-              availableDoctors = doctors[selectedPoli] || [];
-              
-              if (availableDoctors.length === 0) {
-                return (
-                  <div className="alert alert-danger">
-                    Tidak ada dokter yang tersedia untuk poli ini.
-                  </div>
-                );
-              }
-            }
-            
-            // Convert to options format
-            const doctorOptions = availableDoctors.map(doctor => ({
-              value: doctor.id,
-              label: doctor.name,
-              icon: "👨‍⚕️",
-              subtitle: "Jadwal Praktik:",
-              description: doctor.schedule,
-              asuransi: doctor.acceptedInsurances.join(", ")
-            }));
-            
-            // Render cards
-            return (
-              <>
-                <h5 className="mb-3">Pilih Dokter</h5>
-                <p className="mb-3">Silakan pilih dokter yang tersedia pada poli yang Anda pilih:</p>
-                
-                <Row>
-                  {doctorOptions.map((option) => {
-                    const isSelected = methods.watch("selectedDoctor") === option.value;
-                    
-                    return (
-                      <Col xs={12} md={6} key={option.value}>
-                        <Card 
-                          className={`selection-card mb-3 cursor-pointer ${isSelected ? 'selected shadow-lg border-primary' : ''}`}
-                          onClick={() => methods.setValue("selectedDoctor", option.value)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <Card.Body className="text-center p-4">
-                            <div className="card-icon mb-3">{option.icon}</div>
-                            <Card.Title>{option.label}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">{option.subtitle}</Card.Subtitle>
-                            <Card.Text>{option.description}</Card.Text>
-                            <div className="mt-2 badge bg-info text-white">
-                              Menerima: {option.asuransi}
-                            </div>
-                          </Card.Body>
-                        </Card>
-                      </Col>
-                    );
-                  })}
-                </Row>
-                
-                {methods.formState.errors.selectedDoctor && (
-                  <div className="text-danger mb-3">
-                    {methods.formState.errors.selectedDoctor.message}
-                  </div>
-                )}
-              </>
-            );
-          }
-        }
+        registration.getDoctorSelectionCard(registration.filteredDoctorsByInsurance)
       ]
     },
+    // Section 5: Confirmation
     {
       section: "Konfirmasi",
       icon: "✅",
       description: "Periksa dan konfirmasi data pendaftaran Anda",
       fields: [],
-      customRender: ({ methods }) => {
-        // Safely get form values
-        const formData = methods.getValues();
-        
-        // Log the form data for debugging
-        console.log("Confirmation Section Form Data:", formData);
-    
-        // Safely get selected poli and doctor
-        const selectedPoli = formData.selectedPoli;
-        const selectedDoctor = formData.selectedDoctor;
-    
-        // Mapping for more readable poli names
-        const poliNameMap = {
-          'umum': 'Poli Umum', 
-          'gigi': 'Poli Gigi', 
-          'mata': 'Poli Mata',
-          'kandungan': 'Poli Kandungan',
-          'anak': 'Poli Anak',
-          'jantung': 'Poli Jantung',
-          'saraf': 'Poli Saraf',
-          'kulit': 'Poli Kulit'
-        };
-    
-        // Find the doctor details
-        const doctor = selectedPoli && selectedDoctor 
-          ? doctors[selectedPoli].find(d => d.id === selectedDoctor)
-          : null;
-    
-        return (
-          <div className="confirmation-section">
-            <h4 className="mb-4">Konfirmasi Data Pendaftaran</h4>
-            
-            {/* Personal Data Section */}
-            <Card className="mb-4">
-              <Card.Header>
-                <h5 className="m-0">Data Pribadi</h5>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Nama Lengkap:</strong> {formData.name || '-'}
-                  </Col>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>NIK:</strong> {formData.nik || '-'}
-                  </Col>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Tanggal Lahir:</strong> {formData.dob || '-'}
-                  </Col>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Jenis Kelamin:</strong> {formData.gender || '-'}
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-    
-            {/* Service Details Section */}
-            <Card className="mb-4">
-              <Card.Header>
-                <h5 className="m-0">Detail Layanan</h5>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Poli:</strong> {selectedPoli ? poliNameMap[selectedPoli] : '-'}
-                  </Col>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Dokter:</strong> {doctor ? doctor.name : '-'}
-                  </Col>
-                  {doctor && (
-                    <Col xs={12} className="mb-3">
-                      <strong>Jadwal Praktik:</strong> {doctor.schedule}
-                    </Col>
-                  )}
-                </Row>
-              </Card.Body>
-            </Card>
-    
-            {/* Payment Details Section */}
-            <Card className="mb-4">
-              <Card.Header>
-                <h5 className="m-0">Detail Pembayaran</h5>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Metode Pembayaran:</strong> 
-                    {selectedPaymentMethod === 'asuransi' ? 'Asuransi' : 'Tunai'}
-                  </Col>
-                  {selectedPaymentMethod === 'asuransi' && (
-                    <>
-                      <Col xs={12} md={6} className="mb-3">
-                        <strong>Asuransi:</strong> {formData.asuransiPasien || '-'}
-                      </Col>
-                      <Col xs={12} className="mb-3">
-                        <strong>Nomor Kartu:</strong> {formData.nomorAsuransi || '-'}
-                      </Col>
-                    </>
-                  )}
-                </Row>
-              </Card.Body>
-            </Card>
-    
-            {/* Important Notes */}
-            <div className="alert alert-info">
-              <p className="mb-1"><strong>Catatan Penting:</strong></p>
-              <ul className="mb-0">
-                <li>Hadir 30 menit sebelum jadwal untuk keperluan administrasi.</li>
-                <li>Bawa kartu identitas (KTP) dan kartu asuransi (jika ada).</li>
-                <li>Pendaftaran ini dapat dibatalkan maksimal 24 jam sebelum jadwal.</li>
-              </ul>
-            </div>
-          </div>
-        );
-      }
+      customRender: ({ methods }) => registration.renderConfirmationSection(methods, doctors, poliNameMap)
     }
   ];
-
-  console.log("Form Config:", formConfig);
-  
-
-  // Handle form submission
-  const handleSubmit = (data) => {
-    console.log("Form Data:", data);
-    // Here you would typically send the data to your backend API
-    alert("Pendaftaran berhasil! Silakan cek email Anda untuk konfirmasi.");
-    handleCloseModal(false)
-    // Redirect to success page or dashboard
-    // window.location.href = "/registration-success";
-  };
 
   return (
     <div className="patient-registration-page">
       <DynamicStepCardForm
-        key={currentStep}
+        key={registration.currentStep}
         title="Pendaftaran Pasien"
         formConfig={formConfig}
         onSubmit={handleSubmit}
         isAddMode={true}
         backPath="/kiosk"
-        doctorsData={filteredDoctorsByInsurance.length > 0 ? filteredDoctorsByInsurance : doctors}
-        onFormMethodsReady={handleFormMethodReady} 
+        doctorsData={registration.filteredDoctorsByInsurance}
+        onFormMethodsReady={registration.handleFormMethodReady} 
       />
 
       <ModalInsurance
-        onOpen={showInsuranceModal}
-        onClose={handleCloseModal}
-        onSubmit={handleInsuranceSubmit}
+        onOpen={registration.showInsuranceModal}
+        onClose={registration.handleCloseModal}
+        onSubmit={registration.handleInsuranceSubmit}
         formConfig={formConfig}
       />
     </div>

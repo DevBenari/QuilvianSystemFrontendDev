@@ -154,7 +154,7 @@ const RadiologyRegistrationPage = () => {
     
     if (formMethodRef) {
       formMethodRef.setValue("nomorAsuransi", insuranceData.policyNumber);
-      formMethodRef.setValue("asuransiPasien", insuranceData.provider);
+      formMethodRef.setValue("asuransiPasien", insuranceData.namaAsuransi);
       formMethodRef.trigger(["nomorAsuransi", "asuransiPasien"])
     }
 
@@ -166,7 +166,7 @@ const RadiologyRegistrationPage = () => {
 
     Object.keys(radiologiDoctors).forEach(radiologiKey => {
       filteredDoctors[radiologiKey] = radiologiDoctors[radiologiKey].filter(doctor => {
-        if (insurances.length === 0 || insurances.some(ins => ins.provider === 'Tidak Ada')) {
+        if (insurances.length === 0 || insurances.some(ins => ins.namaAsuransi === 'Tidak Ada')) {
           return true;
         }
         
@@ -175,7 +175,7 @@ const RadiologyRegistrationPage = () => {
         }
         
         return doctor.acceptedInsurances.some(acceptedIns => 
-          insurances.some(selectedIns => selectedIns.provider === acceptedIns)
+          insurances.some(selectedIns => selectedIns.namaAsuransi === acceptedIns)
         );
       });
     });
@@ -343,8 +343,8 @@ const RadiologyRegistrationPage = () => {
           label: "Asuransi yang digunakan pasien",
           type: "select",
           options: insuranceList.map((item) => ({ 
-            label: `${item.provider} - ${item.policyNumber}`, 
-            value: item.provider,
+            label: `${item.namaAsuransi} - ${item.nomorPolis}`, 
+            value: item.namaAsuransi,
             isPKS: item.isPKS
           })),
           colSize: 6,
@@ -380,14 +380,14 @@ const RadiologyRegistrationPage = () => {
           type: "custom",
           customRender: ({ methods }) => {
             const asuransiPasien = methods.watch("asuransiPasien");
-            const selectedInsurance = insuranceList.find(ins => ins.provider === asuransiPasien);
+            const selectedInsurance = insuranceList.find(ins => ins.namaAsuransi === asuransiPasien);
             
             if (selectedInsurance && !selectedInsurance.isPKS) {
               return (
                 <Alert variant="warning" className="mt-3">
                   <Alert.Heading>Asuransi Non-PKS</Alert.Heading>
                   <p>
-                    Asuransi <strong>{selectedInsurance.provider}</strong> tidak bekerja sama dengan rumah sakit (Non-PKS).
+                    Asuransi <strong>{selectedInsurance.namaAsuransi}</strong> tidak bekerja sama dengan rumah sakit (Non-PKS).
                     Pembayaran akan diatur sebagai Tunai, tetapi Anda tetap bisa mengajukan reimbursement ke pihak asuransi setelah layanan selesai.
                   </p>
                 </Alert>
@@ -440,7 +440,7 @@ const RadiologyRegistrationPage = () => {
             const asuransiPasien = methods.watch("asuransiPasien");
             const pembayaran =  methods.watch("pembayaran");
 
-            const selectedInsurance = insuranceList.find(ins => ins.provider === asuransiPasien);
+            const selectedInsurance = insuranceList.find(ins => ins.namaAsuransi === asuransiPasien);
             const isNonPKS = selectedInsurance && !selectedInsurance.isPKS;
 
             if(!selectedradiology){
