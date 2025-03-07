@@ -17,7 +17,6 @@ import DepartementSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/Maste
 import KategoriPeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/KategoriPeralatanSlice";
 import PeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/PeralatanSlice";
 import DokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
-import DokterPraktekSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
 import PositionSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-slice/PositionSlice";
 import UserActiveSlice from "@/lib/state/slice/auth/master-userActive/UserActive";
 import authSlice from "@/lib/state/slice/auth/LoginSlice";
@@ -42,7 +41,6 @@ const store = configureStore({
     pendidikan: pendidikanSlice,
     negara: NegaraSlice,
     Dokter: DokterSlice,
-    DokterPraktek: DokterPraktekSlice,
     identitas: indetitasSlice,
     jabatan: jabatanSlice,
     anggota: anggotaSlice,

@@ -1,4 +1,4 @@
-import NegaraAddForm from "@/components/view/MasterData/master-informasi/master-negara-view/add-negara";
+import NegaraAddForm from "@/components/view/MasterData/master-informasi/master-negara-view/add-negara-view";
 import React from "react";
 
 const AddNegaraPage = () => {

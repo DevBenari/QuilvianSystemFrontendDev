@@ -7,80 +7,79 @@ import CustomTableComponent from "@/components/features/CustomTable/custom-table
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
 import {
-  fetchPekerjaan,
-  fetchPekerjaanWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
-import { FaBriefcase } from "react-icons/fa"; // Icon untuk Pekerjaan
+  fetchIdentitas,
+  fetchIdentitasWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import { FaIdCard } from "react-icons/fa"; // Icon untuk Identitas
 
-const TableDataPekerjaan = () => {
+const TableDataIdentitas = () => {
   const methods = useForm();
   const dispatch = useDispatch();
 
   // 🔹 Ambil data dari Redux store
   const {
-    data: pekerjaanData,
+    data: identitasData,
     loading,
     error,
     totalPages,
-  } = useSelector((state) => state.pekerjaan);
+  } = useSelector((state) => state.identitas);
 
   // 🔹 State untuk Pagination
   const [page, setPage] = useState(1);
-  const perPage = 5; // Bisa diubah sesuai kebutuhan
+  const perPage = 10;
 
-  // 🔹 Konversi data pekerjaan agar selalu dalam bentuk array
-  const pekerjaanList = useMemo(
-    () => (Array.isArray(pekerjaanData) ? pekerjaanData : []),
-    [pekerjaanData]
+  // 🔹 Konversi data identitas agar selalu dalam bentuk array
+  const identitasList = useMemo(
+    () => (Array.isArray(identitasData) ? identitasData : []),
+    [identitasData]
   );
 
   // 🔹 State untuk menyimpan hasil filter
-  const [filteredPekerjaan, setFilteredPekerjaan] = useState([]);
+  const [filteredIdentitas, setFilteredIdentitas] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchPekerjaan({ page, perPage }));
+    dispatch(fetchIdentitas({ page, perPage }));
   }, [dispatch, page]);
 
   useEffect(() => {
-    setFilteredPekerjaan(pekerjaanList);
-  }, [pekerjaanList]);
+    setFilteredIdentitas(identitasList);
+  }, [identitasList]);
 
   return (
     <FormProvider {...methods}>
       <CustomTableComponent
         // Header
-        headerTitle="Pencarian Data Pekerjaan"
-        headerSubtitle="Manajemen Daftar Pekerjaan dalam Master Data"
-        icon={FaBriefcase} // Icon Pekerjaan
+        headerTitle="Pencarian Data Identitas"
+        headerSubtitle="Manajemen Jenis Identitas dalam Master Data"
+        icon={FaIdCard} // Icon Identitas
         // Custom Search Filter
-        fetchFunction={fetchPekerjaanWithFilters}
-        setFilteredData={setFilteredPekerjaan}
+        fetchFunction={fetchIdentitasWithFilters}
+        setFilteredData={setFilteredIdentitas}
         showSearch={true}
         // Table Component
-        tableTitle="Tabel List Daftar Pekerjaan"
-        data={filteredPekerjaan}
+        tableTitle="Tabel List Identitas"
+        data={filteredIdentitas}
         columns={[
           { key: "no", label: "No" },
           { key: "createDateTime", label: "Tanggal Dibuat" },
           { key: "createByName", label: "Dibuat Oleh" },
-          { key: "kodePekerjaan", label: "Kode Pekerjaan" },
-          { key: "namaPekerjaan", label: "Nama Pekerjaan" },
+          { key: "kodeIdentitas", label: "Kode Identitas" },
+          { key: "jenisIdentitas", label: "Jenis Identitas" },
         ]}
         slugConfig={{
-          textField: "namaPekerjaan",
-          idField: "pekerjaanId",
+          textField: "kodeIdentitas",
+          idField: "identitasId",
         }}
-        basePath="/MasterData/master-informasi/master-pekerjaan/edit-pekerjaan-form"
         paginationProps={{
           currentPage: page,
-          totalPages: totalPages,
+          totalPages,
           itemsPerPage: perPage,
           onPageChange: setPage,
         }}
         addButton={
           <ButtonNav
-            path="/MasterData/master-informasi/master-pekerjaan/add-pekerjaan"
-            label="Tambah Pekerjaan"
+            path="/MasterData/master-informasi/identitas/add-identitas"
+            label="Tambah Identitas"
             icon="ri-add-fill"
             size="sm"
             className="btn btn-sm iq-bg-success"
@@ -91,4 +90,4 @@ const TableDataPekerjaan = () => {
   );
 };
 
-export default TableDataPekerjaan;
+export default TableDataIdentitas;

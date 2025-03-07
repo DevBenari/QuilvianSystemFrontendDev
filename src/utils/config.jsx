@@ -386,6 +386,120 @@ export const menus = {
       ],
     },
   ],
+  IGD: [
+    {
+      title: "Administrasi",
+      subItems: [
+        {
+          title: "Pendaftaran Pasien IGD",
+          href: "/IGD/administrasi/pendaftaran-pasien-igd",
+        },
+        {
+          title: "Status Pasien IGD",
+          href: "/IGD/administrasi/status-pasien-igd",
+        },
+        {
+          title: "Daftar Pasien",
+          href: "/IGD/administrasi/table-pasien-igd",
+        },
+      ],
+    },
+    {
+      title: "Triase",
+      subItems: [
+        {
+          title: "Daftar Antrian Triase",
+          href: "/IGD/Antrean-Triase/table-poli",
+        },
+        {
+          title: "Penilaian Triase",
+          href: "/IGD/Antrean-Triase/penilaian",
+        },
+      ],
+    },
+    {
+      title: "Penanganan Pasien",
+      subItems: [
+        {
+          title: "Pemeriksaan Awal",
+          href: "/IGD/pemeriksaan-awal",
+        },
+        {
+          title: "Tindakan Medis",
+          href: "/IGD/tindakan-medis",
+        },
+        {
+          title: "Monitoring Pasien",
+          href: "/IGD/monitoring-pasien",
+        },
+      ],
+    },
+    {
+      title: "Diagnostik & Terapi",
+      subItems: [
+        {
+          title: "Permintaan Laboratorium",
+          href: "/IGD/permintaan-lab",
+        },
+        {
+          title: "Permintaan Radiologi",
+          href: "/IGD/permintaan-radiologi",
+        },
+        {
+          title: "Farmasi IGD",
+          href: "/IGD/farmasi-igd",
+        },
+      ],
+    },
+    {
+      title: "Manajemen Ruangan",
+      subItems: [
+        {
+          title: "Status Ruangan",
+          href: "/IGD/status-ruangan",
+        },
+        {
+          title: "Permintaan Transfer",
+          href: "/IGD/permintaan-transfer",
+        },
+      ],
+    },
+    {
+      title: "Disposisi Pasien",
+      subItems: [
+        {
+          title: "Rawat Inap",
+          href: "/IGD/rawat-inap",
+        },
+        {
+          title: "Pemulangan Pasien",
+          href: "/IGD/pemulangan-pasien",
+        },
+        {
+          title: "Rujukan Pasien",
+          href: "/IGD/rujukan-pasien",
+        },
+      ],
+    },
+    {
+      title: "Laporan & Analitik",
+      subItems: [
+        {
+          title: "Dashboard IGD",
+          href: "/IGD/dashboard",
+        },
+        {
+          title: "Laporan Harian",
+          href: "/IGD/laporan-harian",
+        },
+        {
+          title: "Statistik & Kinerja",
+          href: "/IGD/statistik-kinerja",
+        },
+      ],
+    },
+  ],
+
   instalasiRawatJalan: [
     {
       title: "Daftar Poli",

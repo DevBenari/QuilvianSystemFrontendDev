@@ -54,11 +54,6 @@ const SideBarItems = memo(() => {
           icon: <RiHospitalLine className="fs-4" />,
         },
         {
-          pathname: "/UGD",
-          label: "UGD",
-          icon: <FaFirstAid className="fs-4" />,
-        },
-        {
           pathname: "/radiologi",
           label: "Radiologi",
           icon: <MdScanner className="fs-4" />,

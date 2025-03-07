@@ -1,4 +1,4 @@
-import AddJabatanForm from "@/components/view/MasterData/master-informasi/master-jabatan-view/add-jabatan/page";
+import AddJabatanForm from "@/components/view/MasterData/master-informasi/master-jabatan-view/add-jabatan-view";
 import React from "react";
 
 const PageAddJabatan = () => {

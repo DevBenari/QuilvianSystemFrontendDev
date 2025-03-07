@@ -7,70 +7,70 @@ import CustomTableComponent from "@/components/features/CustomTable/custom-table
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
 import {
-  fetchPekerjaan,
-  fetchPekerjaanWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
-import { FaBriefcase } from "react-icons/fa"; // Icon untuk Pekerjaan
+  fetchNegara,
+  fetchNegaraWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
+import { FaGlobeAmericas } from "react-icons/fa"; // Icon untuk Negara
 
-const TableDataPekerjaan = () => {
+const TableDataNegara = () => {
   const methods = useForm();
   const dispatch = useDispatch();
 
   // 🔹 Ambil data dari Redux store
   const {
-    data: pekerjaanData,
+    data: negaraData,
     loading,
     error,
     totalPages,
-  } = useSelector((state) => state.pekerjaan);
+  } = useSelector((state) => state.negara);
 
   // 🔹 State untuk Pagination
   const [page, setPage] = useState(1);
   const perPage = 5; // Bisa diubah sesuai kebutuhan
 
-  // 🔹 Konversi data pekerjaan agar selalu dalam bentuk array
-  const pekerjaanList = useMemo(
-    () => (Array.isArray(pekerjaanData) ? pekerjaanData : []),
-    [pekerjaanData]
+  // 🔹 Konversi data negara agar selalu dalam bentuk array
+  const negaraList = useMemo(
+    () => (Array.isArray(negaraData) ? negaraData : []),
+    [negaraData]
   );
 
   // 🔹 State untuk menyimpan hasil filter
-  const [filteredPekerjaan, setFilteredPekerjaan] = useState([]);
+  const [filteredNegara, setFilteredNegara] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchPekerjaan({ page, perPage }));
+    dispatch(fetchNegara({ page, perPage }));
   }, [dispatch, page]);
 
   useEffect(() => {
-    setFilteredPekerjaan(pekerjaanList);
-  }, [pekerjaanList]);
+    setFilteredNegara(negaraList);
+  }, [negaraList]);
 
   return (
     <FormProvider {...methods}>
       <CustomTableComponent
         // Header
-        headerTitle="Pencarian Data Pekerjaan"
-        headerSubtitle="Manajemen Daftar Pekerjaan dalam Master Data"
-        icon={FaBriefcase} // Icon Pekerjaan
+        headerTitle="Pencarian Data Negara"
+        headerSubtitle="Manajemen Daftar Negara dalam Master Data"
+        icon={FaGlobeAmericas} // Icon Negara
         // Custom Search Filter
-        fetchFunction={fetchPekerjaanWithFilters}
-        setFilteredData={setFilteredPekerjaan}
+        fetchFunction={fetchNegaraWithFilters}
+        setFilteredData={setFilteredNegara}
         showSearch={true}
         // Table Component
-        tableTitle="Tabel List Daftar Pekerjaan"
-        data={filteredPekerjaan}
+        tableTitle="Tabel List Daftar Negara"
+        data={filteredNegara}
         columns={[
-          { key: "no", label: "No" },
-          { key: "createDateTime", label: "Tanggal Dibuat" },
+          { key: "no", label: "No" }, // Kolom nomor urut
+          { key: "createdDate", label: "Tanggal Dibuat" },
           { key: "createByName", label: "Dibuat Oleh" },
-          { key: "kodePekerjaan", label: "Kode Pekerjaan" },
-          { key: "namaPekerjaan", label: "Nama Pekerjaan" },
+          { key: "kodeNegara", label: "Kode Negara" },
+          { key: "namaNegara", label: "Nama Negara" },
         ]}
         slugConfig={{
-          textField: "namaPekerjaan",
-          idField: "pekerjaanId",
+          textField: "namaNegara",
+          idField: "negaraId",
         }}
-        basePath="/MasterData/master-informasi/master-pekerjaan/edit-pekerjaan-form"
+        basePath="/MasterData/master-informasi/negara/edit-negara"
         paginationProps={{
           currentPage: page,
           totalPages: totalPages,
@@ -79,8 +79,8 @@ const TableDataPekerjaan = () => {
         }}
         addButton={
           <ButtonNav
-            path="/MasterData/master-informasi/master-pekerjaan/add-pekerjaan"
-            label="Tambah Pekerjaan"
+            path="/MasterData/master-informasi/negara/add-negara"
+            label="Tambah Negara"
             icon="ri-add-fill"
             size="sm"
             className="btn btn-sm iq-bg-success"
@@ -91,4 +91,4 @@ const TableDataPekerjaan = () => {
   );
 };
 
-export default TableDataPekerjaan;
+export default TableDataNegara;
