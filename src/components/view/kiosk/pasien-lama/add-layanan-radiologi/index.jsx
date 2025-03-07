@@ -1,39 +1,124 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
+'use client';
+import React, { useState, useRef } from "react";
 import { Row, Col, Card, Button, Alert } from "react-bootstrap";
 import DynamicStepCardForm from "@/components/features/dynamic-form/dynamicForm/DynamicStepCardForm";
 import ModalInsurance from "../../add-guest-layanan/modal-insurance";
 
-const PatientRegistrationPage = () => {
-  // Dokter data berdasarkan poli dengan penambahan daftar asuransi yang diterima
-  const doctors = {
-    umum: [
-      { id: 'dr-budi', name: 'dr. Budi Santoso', schedule: 'Senin-Jumat, 08.00-14.00', acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz'] },
-      { id: 'dr-ani', name: 'dr. Ani Wijaya', schedule: 'Senin-Sabtu, 14.00-20.00', acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] }
+const RadiologyRegistrationPage = () => {
+  // Radiologi services data
+  const radiologyServices = [
+    { 
+      id: 'xray', 
+      name: 'Rontgen (X-Ray)', 
+      description: 'Pemeriksaan menggunakan sinar-X untuk melihat struktur tulang dan organ internal',
+      price: 'Rp 250.000 - Rp 500.000',
+      duration: '15-30 menit'
+    },
+    { 
+      id: 'ct_scan', 
+      name: 'CT Scan', 
+      description: 'Pencitraan detail menggunakan sinar-X untuk melihat struktur internal tubuh',
+      price: 'Rp 1.500.000 - Rp 3.000.000',
+      duration: '30-60 menit'
+    },
+    { 
+      id: 'mri', 
+      name: 'MRI (Magnetic Resonance Imaging)', 
+      description: 'Pencitraan menggunakan medan magnet untuk melihat detail jaringan lunak',
+      price: 'Rp 2.000.000 - Rp 4.000.000',
+      duration: '45-90 menit'
+    },
+    { 
+      id: 'ultrasound', 
+      name: 'Ultrasonografi (USG)', 
+      description: 'Pemeriksaan menggunakan gelombang suara untuk melihat organ internal',
+      price: 'Rp 350.000 - Rp 800.000',
+      duration: '20-45 menit'
+    },
+    { 
+      id: 'mammography', 
+      name: 'Mammografi', 
+      description: 'Pemeriksaan khusus payudara untuk deteksi dini kanker',
+      price: 'Rp 800.000 - Rp 1.500.000',
+      duration: '30-45 menit'
+    },
+    { 
+      id: 'bone-density', 
+      name: 'Densitometri Tulang', 
+      description: 'Pemeriksaan kepadatan tulang untuk mendeteksi risiko osteoporosis',
+      price: 'Rp 500.000 - Rp 1.000.000',
+      duration: '20-30 menit'
+    }
+  ];
+
+  // Dokter radiologi
+  const radiologiDoctors = {
+    ct_Scan: [
+      {
+        id: 'dr-ahmad',
+        name: 'Dr. Ahmad',
+        description: 'Spesialis CT Scan dan Radiologi',
+        schedule: 'Selasa-Sabtu, 09.00-17.00',
+        acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri', 'Prudential']
+      },
+      {
+        id: 'dr-budi',
+        name: 'Dr. Budi',
+        description: 'Spesialis Radiologi',
+        schedule: 'Senin-Jumat, 08.00-16.00',
+        acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz']
+      },
+      {
+        id: 'dr-rita',
+        name: 'Dr. Rita',
+        description: 'Spesialis Radiologis dan CT Scan',
+        schedule: 'Senin-Sabtu, 09.00-18.00',
+        acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri']
+      }
     ],
-    gigi: [
-      { id: 'drg-maya', name: 'drg. Maya Putri', schedule: 'Senin, Rabu, Jumat, 09.00-15.00', acceptedInsurances: ['Prudential', 'Allianz', 'AXA Mandiri'] },
-      { id: 'drg-rudi', name: 'drg. Rudi Hermawan', schedule: 'Selasa, Kamis, Sabtu, 10.00-16.00', acceptedInsurances: ['BPJS Kesehatan'] }
+    xray: [
+      {
+        id: 'dr-Jono',
+        name: 'Dr. Jono',
+        description: 'Spesialis Radiologi dan X-Ray',
+        schedule: 'Senin-Jumat, 08.00-16.00',
+        acceptedInsurances: ['BPJS Kesehatan', 'Prudential']
+      },
+      {
+        id: 'dr-Lina',
+        name: 'Dr. Lina',
+        description: 'Spesialis Radiologi dan X-Ray',
+        schedule: 'Senin-Sabtu, 09.00-18.00',
+        acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri']
+      }
     ],
-    mata: [
-      { id: 'dr-dina', name: 'dr. Dina Setiawan, Sp.M', schedule: 'Senin, Kamis, 08.00-12.00', acceptedInsurances: ['BPJS Kesehatan', 'Prudential'] },
-      { id: 'dr-hadi', name: 'dr. Hadi Pratama, Sp.M', schedule: 'Selasa, Jumat, 13.00-17.00', acceptedInsurances: ['Allianz', 'AXA Mandiri'] }
+    ultrasound: [
+      {
+        id: 'dr-Kiki',
+        name: 'Dr. Kiki',
+        description: 'Spesialis Radiologi dan USG',
+        schedule: 'Senin-Jumat, 08.00-16.00',
+        acceptedInsurances: ['BPJS Kesehatan', 'Prudential']
+      },
+      {
+        id: 'dr-Dewi',
+        name: 'Dr. Dewi',
+        description: 'Spesialis Radiologi dan USG',
+        schedule: 'Senin-Sabtu, 09.00-18.00',
+        acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri']
+      },
+      {
+        id: 'dr-Yono',
+        name: 'Dr. Yono',
+        description: 'Spesialis Radiologi dan USG',
+        schedule: 'Senin-Jumat, 08.00-16.00',
+        acceptedInsurances: ['Allianz', 'Prudential']
+      }
     ],
-    kandungan: [
-      { id: 'dr-ratna', name: 'dr. Ratna Dewi, Sp.OG', schedule: 'Senin, Rabu, Jumat, 09.00-15.00', acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'AXA Mandiri'] },
-      { id: 'dr-sinta', name: 'dr. Sinta Permata, Sp.OG', schedule: 'Selasa, Kamis, Sabtu, 10.00-16.00', acceptedInsurances: ['Allianz'] }
-    ],
-    anak: [
-      { id: 'dr-ahmad', name: 'dr. Ahmad Ridwan, Sp.A', schedule: 'Senin-Rabu, 08.00-14.00', acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz', 'AXA Mandiri'] },
-      { id: 'dr-lisa', name: 'dr. Lisa Kusuma, Sp.A', schedule: 'Kamis-Sabtu, 09.00-15.00', acceptedInsurances: ['BPJS Kesehatan'] }
-    ],
-    jantung: [
-      { id: 'dr-hartono', name: 'dr. Hartono, Sp.JP', schedule: 'Senin, Rabu, Jumat, 08.00-12.00', acceptedInsurances: ['Prudential', 'Allianz'] },
-      { id: 'dr-mira', name: 'dr. Mira Susanti, Sp.JP', schedule: 'Selasa, Kamis, 13.00-17.00', acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] }
-    ]
+
   };
 
-  // Asuransi data
+  // Insurances same as previous example
   const insurances = [
     { id: 'bpjs', name: 'BPJS Kesehatan', type: 'Asuransi Kesehatan Nasional' },
     { id: 'prudential', name: 'Prudential', type: 'Asuransi Swasta' },
@@ -55,12 +140,10 @@ const PatientRegistrationPage = () => {
   const handleCloseModal = () => setShowInsuranceModal(false);
   const formMethodsRef = useRef(null);
 
-
   const handleFormMethodReady = (methods) => {
     setFormMethodRef(methods);
     formMethodsRef.current = methods;
   }
-
   const handleInsuranceSubmit = (insuranceData) => {
     setInsuranceList((prevList) => [...prevList, insuranceData]);
     console.log("Insurance Data Submitted:", insuranceData);
@@ -78,36 +161,28 @@ const PatientRegistrationPage = () => {
     updateDoctorsByInsurance([...insuranceList, insuranceData]);
   };
 
-  // Function to update doctors based on selected insurances
   const updateDoctorsByInsurance = (insurances) => {
     const filteredDoctors = {};
-    
-    // For each specialty (poli)
-    Object.keys(doctors).forEach(poliKey => {
-      // Filter doctors who accept at least one of the selected insurances
-      filteredDoctors[poliKey] = doctors[poliKey].filter(doctor => {
-        // If no insurance or 'Tidak Ada' (self-pay) is selected, show all doctors
+
+    Object.keys(radiologiDoctors).forEach(radiologiKey => {
+      filteredDoctors[radiologiKey] = radiologiDoctors[radiologiKey].filter(doctor => {
         if (insurances.length === 0 || insurances.some(ins => ins.provider === 'Tidak Ada')) {
           return true;
         }
         
-        // For non-PKS insurances, show all doctors since payment will be cash
         if (insurances.some(ins => !ins.isPKS)) {
           return true;
         }
         
-        // Check if the doctor accepts any of the selected insurances
         return doctor.acceptedInsurances.some(acceptedIns => 
           insurances.some(selectedIns => selectedIns.provider === acceptedIns)
         );
       });
     });
-    
     setFilteredDoctorsByInsurance(filteredDoctors);
-  };
-  
+  }
 
-  // Form config
+  // Form configuration
   const formConfig = [
     {
       section: "Data Diri",
@@ -157,13 +232,6 @@ const PatientRegistrationPage = () => {
           type: "email",
           placeholder: "Contoh: email@domain.com",
           colSize: 6,
-        },
-        {
-          name: "address",
-          label: "Alamat",
-          type: "textarea",
-          placeholder: "Masukkan alamat lengkap",
-          colSize: 12,
         }
       ]
     },
@@ -333,110 +401,60 @@ const PatientRegistrationPage = () => {
       ]
     },
     {
-      section: "Pilih Poli",
-      icon: "🏥",
-      description: "Pilih layanan kesehatan yang Anda butuhkan",
+      section: "Pilih Layanan Radiologi",
+      icon: "🩻",
+      description: "Pilih jenis pemeriksaan radiologi yang Anda butuhkan",
       cards: [
         {
-          name: "selectedPoli",
-          title: "Pilih Layanan Poli",
-          description: "Silakan pilih poli yang sesuai dengan kebutuhan Anda:",
+          name: "selectedRadiology",
+          title: "Layanan Radiologi",
+          description: "Silakan pilih pemeriksaan radiologi yang Anda butuhkan:",
           colSize: 3,
           required: true,
-          rules: { required: "Silakan pilih poli" },
-          options: [
-            { 
-              value: "umum", 
-              label: "Poli Umum", 
-              icon: "🩺", 
-              subtitle: "Untuk pemeriksaan kesehatan umum"
-            },
-            { 
-              value: "gigi", 
-              label: "Poli Gigi", 
-              icon: "🦷", 
-              subtitle: "Untuk masalah kesehatan gigi dan mulut"
-            },
-            { 
-              value: "mata", 
-              label: "Poli Mata", 
-              icon: "👁️", 
-              subtitle: "Untuk masalah penglihatan dan kesehatan mata"
-            },
-            { 
-              value: "kandungan", 
-              label: "Poli Kandungan", 
-              icon: "🤰", 
-              subtitle: "Untuk ibu hamil dan masalah kewanitaan"
-            },
-            { 
-              value: "anak", 
-              label: "Poli Anak", 
-              icon: "👶", 
-              subtitle: "Untuk anak usia 0-18 tahun"
-            },
-            { 
-              value: "jantung", 
-              label: "Poli Jantung", 
-              icon: "❤️", 
-              subtitle: "Untuk masalah kardiovaskular"
-            },
-            { 
-              value: "saraf", 
-              label: "Poli Saraf", 
-              icon: "🧠", 
-              subtitle: "Untuk masalah Saraf Kejepit"
-            },
-            {
-              value: "kulit", 
-              label: "Poli Kulit", 
-              icon: "🧴", 
-              subtitle: "Untuk masalah Kulit"
-            },
-          ]
+          rules: { required: "Silakan pilih layanan radiologi" },
+          options: radiologyServices.map(service => ({
+            value: service.id,
+            label: service.name,
+            icon: "🩻",
+            subtitle: service.price,
+            description: service.description
+          }))
         }
       ]
     },
     {
-      section: "Pilih Dokter",
+      section: "Pilih Dokter Radiologi",
       icon: "👨‍⚕️",
-      description: "Pilih dokter yang tersedia pada poliklinik ",
-      fields: [],
+      description: "Pilih dokter radiologi untuk pemeriksaan Anda",
       cards: [
         {
           name: "selectedDoctor",
-          title: "Pilih Dokter",
-          description: "Silakan pilih dokter yang tersedia pada poli yang Anda pilih:",
+          title: "Pilih Dokter Radiologi",
+          description: "Silakan pilih dokter yang akan melakukan pemeriksaan:",
           colSize: 6,
           required: true,
-          rules: { required: "Silakan pilih dokter" },
-          options: [], // Will be dynamically populated
-          customRender: ({ methods }) => {
-            const selectedPoli = methods.watch("selectedPoli");
+          rules: { required: "Silakan pilih dokter radiologi" },
+          options: [],
+          customRender: ({methods}) => {
+            const selectedradiology = methods.watch("selectedRadiology");
             const asuransiPasien = methods.watch("asuransiPasien");
-            const pembayaran = methods.watch("pembayaran");
-            
-            // Find the selected insurance to check if it's PKS or non-PKS
+            const pembayaran =  methods.watch("pembayaran");
+
             const selectedInsurance = insuranceList.find(ins => ins.provider === asuransiPasien);
             const isNonPKS = selectedInsurance && !selectedInsurance.isPKS;
-            
-            // No poli selected yet
-            if (!selectedPoli) {
+
+            if(!selectedradiology){
               return (
                 <div className="alert alert-warning">
                   Silakan pilih poli terlebih dahulu pada langkah sebelumnya.
                 </div>
-              );
+              )
             }
-            
-            // Get doctors for the selected poli
+
             let availableDoctors = [];
-            
-            // Special case: If non-PKS insurance is selected, show all doctors
-            if (selectedPaymentMethod === "asuransi" && isNonPKS) {
-              availableDoctors = doctors[selectedPoli] || [];
-              
-              // Show information about non-PKS reimbursement
+
+            if(selectedPaymentMethod === "asuransi" && isNonPKS){
+              availableDoctors = radiologiDoctors[selectedradiology] || [];
               return (
                 <>
                   <div className="alert alert-info mb-4">
@@ -478,18 +496,16 @@ const PatientRegistrationPage = () => {
                 </>
               );
             }
-            
-            // Regular flow - if paying with insurance, filter by insurance
-            if (selectedPaymentMethod === "asuransi" && asuransiPasien) {
-              // Get doctors that accept this specific insurance
-              availableDoctors = doctors[selectedPoli]?.filter(doctor => 
+
+            if(selectedPaymentMethod === "asuransi" && asuransiPasien){
+              availableDoctors = radiologiDoctors[selectedradiology]?.filter(doctor => 
                 doctor.acceptedInsurances.includes(asuransiPasien)
               ) || [];
-              
-              if (availableDoctors.length === 0) {
+
+              if(availableDoctors.length === 0){
                 return (
                   <div className="alert alert-danger">
-                    <p>Tidak ada dokter yang tersedia untuk poli <strong>{selectedPoli}</strong> yang menerima asuransi <strong>{asuransiPasien}</strong>.</p>
+                    <p>Tidak ada dokter yang tersedia untuk poli <strong>{selectedradiology}</strong> yang menerima asuransi <strong>{asuransiPasien}</strong>.</p>
                     <p>Silakan pilih poli lain atau metode pembayaran lain.</p>
                   </div>
                 );
@@ -500,11 +516,10 @@ const PatientRegistrationPage = () => {
                   Silakan pilih asuransi terlebih dahulu atau tambahkan asuransi baru.
                 </div>
               );
-            } else {
-              // For cash payment, show all doctors
-              availableDoctors = doctors[selectedPoli] || [];
-              
-              if (availableDoctors.length === 0) {
+            }
+            else {
+              availableDoctors = radiologiDoctors[selectedradiology] || [];
+              if(availableDoctors.length === 0) {
                 return (
                   <div className="alert alert-danger">
                     Tidak ada dokter yang tersedia untuk poli ini.
@@ -512,18 +527,15 @@ const PatientRegistrationPage = () => {
                 );
               }
             }
-            
-            // Convert to options format
+
             const doctorOptions = availableDoctors.map(doctor => ({
               value: doctor.id,
               label: doctor.name,
               icon: "👨‍⚕️",
-              subtitle: "Jadwal Praktik:",
-              description: doctor.schedule,
+              subtitle: "Jadwal Praktik" + doctor.schedule,
               asuransi: doctor.acceptedInsurances.join(", ")
-            }));
-            
-            // Render cards
+            }))
+
             return (
               <>
                 <h5 className="mb-3">Pilih Dokter</h5>
@@ -570,40 +582,28 @@ const PatientRegistrationPage = () => {
       section: "Konfirmasi",
       icon: "✅",
       description: "Periksa dan konfirmasi data pendaftaran Anda",
-      fields: [],
       customRender: ({ methods }) => {
-        // Safely get form values
         const formData = methods.getValues();
         
-        // Log the form data for debugging
-        console.log("Confirmation Section Form Data:", formData);
-    
-        // Safely get selected poli and doctor
-        const selectedPoli = formData.selectedPoli;
+        const selectedRadiology = formData.selectedRadiology;
         const selectedDoctor = formData.selectedDoctor;
-    
-        // Mapping for more readable poli names
-        const poliNameMap = {
-          'umum': 'Poli Umum', 
-          'gigi': 'Poli Gigi', 
-          'mata': 'Poli Mata',
-          'kandungan': 'Poli Kandungan',
-          'anak': 'Poli Anak',
-          'jantung': 'Poli Jantung',
-          'saraf': 'Poli Saraf',
-          'kulit': 'Poli Kulit'
-        };
-    
-        // Find the doctor details
-        const doctor = selectedPoli && selectedDoctor 
-          ? doctors[selectedPoli].find(d => d.id === selectedDoctor)
-          : null;
-    
+
+        const layananMap = {
+          'ct_scan': 'CT Scan',
+          'mammography': 'Mammography',
+          'ultrasound': 'USG',
+          'xray': 'X-Ray(Rontgen)',
+          'mri': "MRI (Magnetic Resonance Imaging)"
+        }
+
+        const doctor = selectedRadiology && selectedDoctor 
+          ? radiologiDoctors[selectedRadiology].find(d => d.id === selectedDoctor)
+          : null ; 
+
         return (
           <div className="confirmation-section">
-            <h4 className="mb-4">Konfirmasi Data Pendaftaran</h4>
+            <h4 className="mb-4">Konfirmasi Pendaftaran Radiologi</h4>
             
-            {/* Personal Data Section */}
             <Card className="mb-4">
               <Card.Header>
                 <h5 className="m-0">Data Pribadi</h5>
@@ -616,39 +616,26 @@ const PatientRegistrationPage = () => {
                   <Col xs={12} md={6} className="mb-3">
                     <strong>NIK:</strong> {formData.nik || '-'}
                   </Col>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Tanggal Lahir:</strong> {formData.dob || '-'}
-                  </Col>
-                  <Col xs={12} md={6} className="mb-3">
-                    <strong>Jenis Kelamin:</strong> {formData.gender || '-'}
-                  </Col>
                 </Row>
               </Card.Body>
             </Card>
-    
-            {/* Service Details Section */}
+
             <Card className="mb-4">
               <Card.Header>
-                <h5 className="m-0">Detail Layanan</h5>
+                <h5 className="m-0">Detail Layanan Radiologi</h5>
               </Card.Header>
               <Card.Body>
                 <Row>
                   <Col xs={12} md={6} className="mb-3">
-                    <strong>Poli:</strong> {selectedPoli ? poliNameMap[selectedPoli] : '-'}
+                    <strong>Jenis Pemeriksaan:</strong> {selectedRadiology ? layananMap[selectedRadiology] : '-'}
                   </Col>
-                  <Col xs={12} md={6} className="mb-3">
+                  <Col xs={12} className="mb-3">
                     <strong>Dokter:</strong> {doctor ? doctor.name : '-'}
                   </Col>
-                  {doctor && (
-                    <Col xs={12} className="mb-3">
-                      <strong>Jadwal Praktik:</strong> {doctor.schedule}
-                    </Col>
-                  )}
                 </Row>
               </Card.Body>
             </Card>
-    
-            {/* Payment Details Section */}
+
             <Card className="mb-4">
               <Card.Header>
                 <h5 className="m-0">Detail Pembayaran</h5>
@@ -657,29 +644,23 @@ const PatientRegistrationPage = () => {
                 <Row>
                   <Col xs={12} md={6} className="mb-3">
                     <strong>Metode Pembayaran:</strong> 
-                    {selectedPaymentMethod === 'asuransi' ? 'Asuransi' : 'Tunai'}
+                    {formData.pembayaran === 'tunai' ? 'Tunai' : 'Asuransi'}
                   </Col>
-                  {selectedPaymentMethod === 'asuransi' && (
-                    <>
-                      <Col xs={12} md={6} className="mb-3">
-                        <strong>Asuransi:</strong> {formData.asuransiPasien || '-'}
-                      </Col>
-                      <Col xs={12} className="mb-3">
-                        <strong>Nomor Kartu:</strong> {formData.nomorAsuransi || '-'}
-                      </Col>
-                    </>
+                  {formData.pembayaran === 'asuransi' && (
+                    <Col xs={12} md={6} className="mb-3">
+                      <strong>Asuransi:</strong> {formData.asuransiPasien || '-'}
+                    </Col>
                   )}
                 </Row>
               </Card.Body>
             </Card>
-    
-            {/* Important Notes */}
+
             <div className="alert alert-info">
               <p className="mb-1"><strong>Catatan Penting:</strong></p>
               <ul className="mb-0">
-                <li>Hadir 30 menit sebelum jadwal untuk keperluan administrasi.</li>
-                <li>Bawa kartu identitas (KTP) dan kartu asuransi (jika ada).</li>
-                <li>Pendaftaran ini dapat dibatalkan maksimal 24 jam sebelum jadwal.</li>
+                <li>Harap bawa surat rujukan (jika ada).</li>
+                <li>Datang 30 menit sebelum jadwal untuk persiapan.</li>
+                <li>Kenakan pakaian yang nyaman dan mudah dilepas.</li>
               </ul>
             </div>
           </div>
@@ -687,9 +668,6 @@ const PatientRegistrationPage = () => {
       }
     }
   ];
-
-  console.log("Form Config:", formConfig);
-  
 
   // Handle form submission
   const handleSubmit = (data) => {
@@ -702,15 +680,15 @@ const PatientRegistrationPage = () => {
   };
 
   return (
-    <div className="patient-registration-page">
+    <div className="radiology-registration-page">
       <DynamicStepCardForm
         key={currentStep}
-        title="Pendaftaran Pasien"
+        title="Pendaftaran Layanan Radiologi"
         formConfig={formConfig}
         onSubmit={handleSubmit}
         isAddMode={true}
         backPath="/kiosk"
-        doctorsData={filteredDoctorsByInsurance.length > 0 ? filteredDoctorsByInsurance : doctors}
+        doctorsData={filteredDoctorsByInsurance.length > 0 ? filteredDoctorsByInsurance : radiologiDoctors}
         onFormMethodsReady={handleFormMethodReady} 
       />
 
@@ -724,4 +702,4 @@ const PatientRegistrationPage = () => {
   );
 };
 
-export default PatientRegistrationPage;
+export default RadiologyRegistrationPage;

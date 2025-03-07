@@ -20,7 +20,7 @@ const KioskPasienLamaPage = () => {
         title: 'Laboratorium',
         description: 'Pemeriksaan laboratorium dan cek darah',
         icon: '🧪',
-        path: '/kiosk/kiosk-laboratorium',
+        path: '/kiosk/regist-pasien-lama/regist-pasien-lab',
         variant: 'info'
       },
       {
@@ -28,7 +28,7 @@ const KioskPasienLamaPage = () => {
         title: 'Radiologi',
         description: 'Layanan X-ray, CT Scan, MRI, dan USG',
         icon: '📡',
-        path: '/kiosk/kiosk-radiologi',
+        path: '/kiosk/regist-pasien-lama/regist-pasien-radiologi',
         variant: 'warning'
       },
       {
@@ -36,7 +36,7 @@ const KioskPasienLamaPage = () => {
         title: 'Operasi',
         description: 'Jadwal dan informasi layanan operasi',
         icon: '⚕️',
-        path: '/operasi',
+        path: '/kiosk/regist-pasien-lama/regist-pasien-operasi',
         variant: 'danger'
       }
     ];
