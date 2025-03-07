@@ -1,4 +1,4 @@
-import TableDataAsuransi from "@/components/view/MasterData/master-asuransi/table-asuransi";
+import TableDataAsuransi from "@/components/view/MasterData/master-asuransi-view/table-asuransi";
 import React from "react";
 
 const PageListDaftarAsuransi = () => {

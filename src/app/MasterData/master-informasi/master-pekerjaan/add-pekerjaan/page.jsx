@@ -1,4 +1,4 @@
-import FormAddPekerjaan from "@/components/view/MasterData/master-informasi/master-pekerjaan/add-pekerjaan";
+import FormAddPekerjaan from "@/components/view/MasterData/master-informasi/master-pekerjaan-view/add-pekerjaan";
 import React from "react";
 
 const PageAddPekerjaan = () => {

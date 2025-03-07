@@ -1,3 +1,4 @@
+// DynamicStepCardForm.jsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
@@ -75,7 +76,7 @@ const DynamicStepCardForm = ({
     formState: { errors },
     handleSubmit: formSubmit,
     reset,
-    control
+    control,
   } = methods;
 
   const watchedValues = methods.watch();
@@ -128,6 +129,7 @@ const DynamicStepCardForm = ({
 
   const handleFormSubmit = (data) => {
     setSubmittedData(data);
+    if (onFormSubmitted) onFormSubmitted(data);
     if (onFormSubmitted) onFormSubmitted(data);
     onSubmit(data);
   };

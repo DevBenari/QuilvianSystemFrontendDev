@@ -6,26 +6,30 @@ import FullScreen from "@/components/ui/fullscreen";
 import Link from "next/link";
 
 import UseIsMobile from "@/lib/hooks/useIsMobile";
-import Sidemenu from "./side-menu";
+
+import { usePathname } from "next/navigation";
+import HamburgerMenu from "./hamburger-menu";
 // import user1 from "@/assets/images/user/1.jpg";
 // import user2 from "@/assets/images/user/02.jpg";
 // import user3 from "@/assets/images/user/03.jpg";
 // import user4 from "@/assets/images/user/04.jpg";
 // import user5 from "@/assets/images/user/05.jpg";
 
-const Navbars = memo(({ module }) => {
+const Navbars = memo(({ module, iconJudul: IconJudul }) => {
   const isMobile = UseIsMobile(1000);
   const [isClicked, setIsClicked] = useState(false);
   const mobileOutside = UseIsMobile(1300);
   const sidebarRef = useRef(null);
+  const pathname = usePathname();
+
   const minisidebar = () => {
-    setIsClicked(isClicked);
+    setIsClicked((prev) => !prev); // Toggle state dengan cara yang benar
     document.body.classList.toggle("sidebar-main");
   };
 
   // Event untuk menutup sidebar ketika klik di luar sidebar
   useEffect(() => {
-    if (!mobileOutside) return; // Hanya aktif jika layar di bawah 1300px
+    if (!mobileOutside) return;
 
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -38,7 +42,7 @@ const Navbars = memo(({ module }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [!mobileOutside]);
+  }, [mobileOutside]);
 
   return (
     <Fragment>
@@ -57,38 +61,39 @@ const Navbars = memo(({ module }) => {
                 </Link>
               </form>
             </div>
-
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-toggle="collapse"
-              data-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <i className="ri-menu-3-line"></i>
-            </button>
+            {isMobile && !(pathname === "/" || pathname === "/Login") && (
+              <button
+                className="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                {/* SideMenu hanya muncul di mobile dan tidak tampil di halaman login dan dahsboard*/}
+                <HamburgerMenu module={module} iconJudul={IconJudul} />
+              </button>
+            )}
             <div className="iq-menu-bt align-self-center">
-              <div className="wrapper-menu">
-                <div className="main-circle">
-                  <i className="ri-more-fill"></i>
+              {isMobile && (
+                <div className="wrapper-menu" ref={sidebarRef}>
+                  <div className="main-circle">
+                    <i className="ri-more-fill"></i>
+                  </div>
+                  <div className="hover-circle">
+                    <i className="ri-more-fill" onClick={minisidebar}></i>
+                  </div>
                 </div>
-                <div className="hover-circle">
-                  <i className="ri-more-fill" onClick={minisidebar}></i>
-                </div>
-              </div>
+              )}
             </div>
-            {/* Navbar layar 1300 px ke atas */}
 
-            <div className="position-hamburger">
-              {/* SideMenu hanya muncul di mobile */}
-              {isMobile && <Sidemenu module={module} />}
-            </div>
+            {/* Navbar layar 1300 px ke atas */}
 
             <div
               className="collapse navbar-collapse justify-content-end"
               id="navbarSupportedContent"
+              ref={sidebarRef}
             >
               <ul className="navbar-nav ml-auto navbar-list">
                 <Nav.Item as="li" className="nav-icon dropdown full-screen">

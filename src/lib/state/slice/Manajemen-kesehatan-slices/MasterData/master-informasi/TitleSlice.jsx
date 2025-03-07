@@ -136,7 +136,8 @@ const titleSlice = createSlice({
       })
       .addCase(fetchTitle.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Gagal mengambil data";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // ✅ Fetch Title dengan search & filter (CustomSearchFilter)

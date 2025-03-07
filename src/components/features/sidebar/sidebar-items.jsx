@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect, memo } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
@@ -23,8 +24,9 @@ import { GiMicroscope } from "react-icons/gi";
 
 const SideBarItems = memo(() => {
   const [activeMenu, setActiveMenu] = useState(null);
+  const [hoveredItem, setHoveredItem] = useState(null);
 
-  // Menu items configuration
+  // Menu items configuration (same as before)
   const menuItems = [
     {
       label: "Pelayanan Kesehatan",
@@ -133,7 +135,6 @@ const SideBarItems = memo(() => {
       icon: <RiUserLine className="fs-4" />,
     },
   ];
-
   // Load active menu from localStorage
   useEffect(() => {
     const savedMenu = localStorage.getItem("activeMenu");
@@ -161,13 +162,17 @@ const SideBarItems = memo(() => {
           <Row
             key={item.key}
             onClick={item.subMenu ? () => toggleMenu(item.key) : undefined}
-            className="align-items-center p-3 iq-menu-item cursor-pointer mt-3 iq-side"
+            onMouseEnter={() => setHoveredItem(item.key)}
+            onMouseLeave={() => setHoveredItem(null)}
+            className={`align-items-center p-2 iq-menu-item cursor-pointer mt-3 iq-side ${
+              hoveredItem === item.key ? "hovered" : ""
+            }`}
           >
             <Link
               href={item.pathname}
               className="d-flex align-items-center text-white text-decoration-none w-100"
             >
-              <Col xs="auto" className="pe-2  icon-sidebar">
+              <Col xs="auto" className="pe-2 icon-sidebar">
                 {item.icon || <RiUserLine className="fs-4" />}
               </Col>
               <Col className="ps-2 text-white label-sidebar">{item.label}</Col>
@@ -184,8 +189,8 @@ const SideBarItems = memo(() => {
       {/* Sliding Submenu */}
       {activeMenu && (
         <div className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300">
-          <div className="p-3 mt-4 bg-dark">
-            <Row className="align-items-center">
+          <div className="mt-4 bg-dark">
+            <Row className="align-items-center p-3">
               <Col xs="auto">
                 <Button
                   variant="link"
@@ -208,13 +213,13 @@ const SideBarItems = memo(() => {
               </Col>
             </Row>
           </div>
-          <div className="p-3">
+          <div>
             {menuItems
               .find((item) => item.key === activeMenu)
               ?.subMenu.map((subItem, index) => (
                 <Row
                   key={index}
-                  className="align-items-center p-3 iq-submenu-item"
+                  className="align-items-center  iq-submenu-item"
                 >
                   <Link
                     href={subItem.pathname}

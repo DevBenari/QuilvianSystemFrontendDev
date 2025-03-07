@@ -72,7 +72,7 @@ const DashboardPendaftaranBayi = memo(() => {
               <div className="iq-card-header d-flex justify-content-between">
                 <h4 className="card-title font-widest">Tabel Pasien Bayi</h4>
                 <ButtonNav
-                  path="/pendaftaran/pendaftaran-pasien-baru"
+                  path="/pendaftaran/pendaftaran-pasien-bayi/add-pasien-bayi"
                   label="Add Pasien Bayi"
                   icon="ri-add-fill"
                   size="sm"

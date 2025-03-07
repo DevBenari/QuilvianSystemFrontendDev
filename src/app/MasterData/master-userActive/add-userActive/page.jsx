@@ -1,4 +1,4 @@
-import FormAddUserActive from "@/components/view/MasterData/master-userActive/add-userActive";
+import FormAddUserActive from "@/components/view/MasterData/master-userActive-view/add-userActive";
 import React from "react";
 
 const PageListUserActiv = () => {

@@ -94,7 +94,7 @@ export const createDepartement = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan Departement darah"
+        error.response?.data || "Gagal menambahkan Departement "
       );
     }
   }
@@ -111,7 +111,7 @@ export const updateDepartement = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui Departement darah"
+        error.response?.data || "Gagal memperbarui Departement "
       );
     }
   }
@@ -145,6 +145,7 @@ const DepartementSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
+    selectedDepartement: [],
   },
   reducers: {},
   extraReducers: (builder) => {

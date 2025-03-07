@@ -1,4 +1,4 @@
-import FormAddPosition from "@/components/view/MasterData/master-position/add-position";
+import FormAddPosition from "@/components/view/MasterData/master-position-view/add-position";
 import React from "react";
 
 const PageListPosition = () => {

@@ -1,4 +1,4 @@
-import TableDataUserActive from "@/components/view/MasterData/master-userActive/table-userActive";
+import TableDataUserActive from "@/components/view/MasterData/master-userActive-view/table-userActive";
 import React from "react";
 
 const PageListUserActive = () => {

@@ -1,18 +1,36 @@
 "use client";
-
-import React, { Fragment, useState, useEffect, useCallback, memo } from "react";
-import { useRouter } from "next/navigation"; // Import the useRouter hook
+import React, { Fragment, memo, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import dataWilayah from "@/utils/dataWilayah";
-import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
-import { pemeriksaRadiologi } from "@/utils/dataTindakan";
+// import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
+import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
+import { Button, Card, Col, Image, Row } from "react-bootstrap";
+import ButtonNav from "@/components/ui/button-navigation";
+
+import { useDispatch, useSelector } from "react-redux";
+import { AddPasienSlice } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
+import { fetchPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
+import { fetchTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
+import { fetchPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
+import { fetchNegara } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
+import { fetchGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
+import { fetchIdentitas } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
+import { useRouter } from "next/navigation";
+import useAgamaData from "@/lib/hooks/useAgamaData";
+import useSelectWilayah from "@/lib/hooks/useSelectWilayah";
+import ImageUploader from "@/components/ui/uploadPhoto-field";
+import UploadPhotoField from "@/components/ui/uploadPhoto-field";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
-import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import PrintPatientCard from "../../kiosk/add-guest-kiosk/patientCard";
+import PrintableQueueNumber from "../../kiosk/add-guest-kiosk/patientAntrian";
+import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 
-const PendaftaranPasienRadiologi = () => {
-  const router = useRouter();
-
+const PendaftaranPasienRadiologi = memo(() => {
   const { setValue } = useForm();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedData, setSubmittedData] = useState(null);
+  const [selectedPrintType, setSelectedPrintType] = useState(null);
+  const router = useRouter();
+  const [selectImage, setSelectImage] = useState(null);
   // fungsi untuk melakukan select provinsi
   const {
     selectedNegara,
@@ -38,11 +56,70 @@ const PendaftaranPasienRadiologi = () => {
     handleLoadMoreProvinsi,
     handleLoadMoreKabupaten,
     handleLoadMoreKecamatan,
-    handleLoadMoreKelurahan
-  } = UseSelectWilayah();
+    handleLoadMoreKelurahan,
+  } = useSelectWilayah();
+
+  useEffect(() => {
+    if (selectedNegara) {
+      const isIndonesia =
+        negaraOptions.find((opt) => opt.value === selectedNegara)?.label ===
+        "Indonesia";
+      if (!isIndonesia) {
+        // Reset nilai provinsi dan kabupaten jika bukan Indonesia
+        setValue("provinsiId", null);
+        setValue("kabupatenKotaId", null);
+      }
+    }
+  }, [selectedNegara, setValue, negaraOptions]);
+
+  // const {provinsiOptions, loading: provinsiLoading, handleLoadMore } = UseProvinsiData();
+  const {
+    agamaOptions,
+    loading: agamaLoading,
+    handleLoadMore: handleLoadMoreAgama,
+  } = useAgamaData();
+  const dispatch = useDispatch();
+
+  const {
+    data: pendidikanData,
+    error,
+    loading,
+    totalPage,
+  } = useSelector((state) => state.pendidikan);
+  const { data: titles } = useSelector((state) => state.titles);
+  const { data: pekerjaanData } = useSelector((state) => state.pekerjaan);
+  const { data: GolonganDarah } = useSelector((state) => state.golongan);
+  const { data: identitas } = useSelector((state) => state.identitas);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    dispatch(fetchPendidikan({ page, totalPage }));
+    dispatch(fetchTitle({ page, totalPage }));
+    dispatch(fetchPekerjaan({ page, totalPage }));
+    dispatch(fetchGolongan({ page, totalPage }));
+    dispatch(AddPasienSlice());
+    dispatch(fetchIdentitas({ page, totalPage }));
+  }, [dispatch, page, totalPage]);
+
+  const titlesOptions =
+    titles.map((item) => ({
+      label: item.namaTitle, // Label seperti "Tn", "Ny", "Mr"
+      value: item.titleId, // ID untuk value
+    })) || [];
+
+  // useEffect(() => {
+  //     if (error) {
+  //         router.push("/error-page");
+  //     }
+  // }, [error, router]);
+
+  if (loading) {
+    return <div>Loading data pasien...</div>;
+  }
 
   const formFields = [
     {
+      section: "Informasi Pasien",
       fields: [
         {
           type: "text",
@@ -53,6 +130,7 @@ const PendaftaranPasienRadiologi = () => {
           rules: { required: "No Registrasi is required" },
           colSize: 6,
         },
+
         {
           type: "text",
           id: "noRekamMedis",
@@ -72,6 +150,29 @@ const PendaftaranPasienRadiologi = () => {
           colSize: 6,
         },
         {
+          type: "select",
+          id: "titlesId",
+          label: "Title",
+          name: "titlesId",
+          placeholder: "Title",
+          options: titlesOptions,
+          rules: { required: "Title is required" },
+          colSize: 6,
+        },
+        {
+          type: "select",
+          id: "jenisKelamin",
+          label: "Jenis Kelamin",
+          name: "jenisKelamin",
+          placeholder: "Jenis Kelamin",
+          options: [
+            { label: "Laki-laki", value: "Laki-Laki" },
+            { label: "Perempuan", value: "Perempuan" },
+          ],
+          rules: { required: "Jenis Kelamin is required" },
+          colSize: 6,
+        },
+        {
           type: "text",
           id: "nomorHP",
           label: "Nomor HP",
@@ -88,20 +189,7 @@ const PendaftaranPasienRadiologi = () => {
           rules: { required: "Tanggal Lahir is required" },
           colSize: 6,
         },
-        {
-          type: "select",
-          id: "jenisKelamin",
-          label: "Jenis Kelamin",
-          name: "jenisKelamin",
-          placeholder: "Jenis Kelamin",
-          options: [
-            { label: "Laki-laki", value: "laki-laki" },
-            { label: "Perempuan", value: "perempuan" },
-          ],
-          rules: { required: "Jenis Kelamin is required" },
 
-          colSize: 6,
-        },
         {
           type: "email",
           id: "email",
@@ -117,7 +205,11 @@ const PendaftaranPasienRadiologi = () => {
           },
           colSize: 6,
         },
-
+      ],
+    },
+    {
+      section: "Informasi Demografis",
+      fields: [
         {
           type: "select",
           id: "negaraId",
@@ -129,93 +221,106 @@ const PendaftaranPasienRadiologi = () => {
           onChange: (selected) => {
             setSelectedNegara(selected?.value);
             // Reset nilai provinsi dan kabupaten
-            setValue('provinsiId', null);
-            setValue('kabupatenKotaId', null);
+            setValue("provinsiId", null);
+            setValue("kabupatenKotaId", null);
           },
           onMenuScrollToBottom: handleLoadMoreNegara,
           rules: { required: "Negara harus dipilih" },
-          colSize: 6
+          colSize: 6,
         },
         {
-            type: "select",
-            id: "provinsiId",
-            label: "Provinsi",
-            name: "provinsiId",
-            placeholder: "Pilih Provinsi",
-            options: provinsiOptions,
-            isLoading: provinsiLoading,
-            onChange: (selected) => {
-                setSelectedProvinsi(selected?.value);
-                // Reset nilai kabupaten ketika provinsi berubah
-                setValue('kabupatenKotaId', null);
+          type: "select",
+          id: "provinsiId",
+          label: "Provinsi",
+          name: "provinsiId",
+          placeholder: "Pilih Provinsi",
+          options: provinsiOptions,
+          isLoading: provinsiLoading,
+          onChange: (selected) => {
+            setSelectedProvinsi(selected?.value);
+            // Reset nilai kabupaten ketika provinsi berubah
+            setValue("kabupatenKotaId", null);
+          },
+          onMenuScrollToBottom: handleLoadMoreProvinsi,
+          disabled:
+            !selectedNegara ||
+            negaraOptions.find((opt) => opt.value === selectedNegara)?.label !==
+              "Indonesia",
+          rules: {
+            required: {
+              value:
+                selectedNegara &&
+                negaraOptions.find((opt) => opt.value === selectedNegara)
+                  ?.label === "Indonesia",
+              message: "Provinsi harus dipilih untuk warga Indonesia",
             },
-            onMenuScrollToBottom: handleLoadMoreProvinsi,
-            disabled: !selectedNegara || (
-                negaraOptions.find(opt => opt.value === selectedNegara)?.label !== 'Indonesia'
-            ),
-            rules: { 
-                required: {
-                value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
-                message: "Provinsi harus dipilih untuk warga Indonesia"
-                }
-            },
-            colSize: 6
+          },
+          colSize: 6,
         },
         {
-            type: "select",
-            id: "kabupatenKotaId",
-            label: "Kabupaten/Kota",
-            name: "kabupatenKotaId",
-            placeholder: "Pilih Kabupaten/Kota",
-            options: kabupatenOptions,
-            // isLoading: kabupatenLoading,
-            onChange: (selected) => setSelectedKabupaten(selected?.value),
-            onMenuScrollToBottom: handleLoadMoreKabupaten,
-            disabled: !selectedProvinsi,
-            rules: { 
-                required: {
-                value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
-                message: "Kabupaten/Kota harus dipilih untuk warga Indonesia"
-                }
+          type: "select",
+          id: "kabupatenKotaId",
+          label: "Kabupaten/Kota",
+          name: "kabupatenKotaId",
+          placeholder: "Pilih Kabupaten/Kota",
+          options: kabupatenOptions,
+          // isLoading: kabupatenLoading,
+          onChange: (selected) => setSelectedKabupaten(selected?.value),
+          onMenuScrollToBottom: handleLoadMoreKabupaten,
+          disabled: !selectedProvinsi,
+          rules: {
+            required: {
+              value:
+                selectedNegara &&
+                negaraOptions.find((opt) => opt.value === selectedNegara)
+                  ?.label === "Indonesia",
+              message: "Kabupaten/Kota harus dipilih untuk warga Indonesia",
             },
-            colSize: 6
+          },
+          colSize: 6,
         },
         {
-            type: "select",
-            id: "kecamatanId",
-            label: "Kecamatan",
-            name: "kecamatanId",
-            placeholder: "Pilih Kecamatan",
-            options: kecamatanOptions,
-            // isLoading: kecamatanLoading,
-            onChange: (selected) => setSelectedKecamatan(selected?.value),
-            onMenuScrollToBottom: handleLoadMoreKecamatan,
-            disabled: !selectedKabupaten,
-            rules: { 
-                required: {
-                    value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
-                    message: "Provinsi harus dipilih untuk warga Indonesia"
-                }
+          type: "select",
+          id: "kecamatanId",
+          label: "Kecamatan",
+          name: "kecamatanId",
+          placeholder: "Pilih Kecamatan",
+          options: kecamatanOptions,
+          // isLoading: kecamatanLoading,
+          onChange: (selected) => setSelectedKecamatan(selected?.value),
+          onMenuScrollToBottom: handleLoadMoreKecamatan,
+          disabled: !selectedKabupaten,
+          rules: {
+            required: {
+              value:
+                selectedNegara &&
+                negaraOptions.find((opt) => opt.value === selectedNegara)
+                  ?.label === "Indonesia",
+              message: "Provinsi harus dipilih untuk warga Indonesia",
             },
-            colSize: 6
+          },
+          colSize: 6,
         },
         {
-            type: "select",
-            id: "kelurahanId",
-            label: "Kelurahan",
-            name: "kelurahanId",
-            placeholder: "Pilih Kelurahan",
-            options: kelurahanOptions,
-            onChange: (selected) => setSelectedKelurahan(selected?.value),
-            onMenuScrollToBottom: handleLoadMoreKelurahan,
-            disabled: !selectedKecamatan,
-            rules: { 
-                required: {
-                    value: selectedNegara && negaraOptions.find(opt => opt.value === selectedNegara)?.label === 'Indonesia',
-                    message: "Provinsi harus dipilih untuk warga Indonesia"
-                }
+          type: "select",
+          id: "kelurahanId",
+          label: "Kelurahan",
+          name: "kelurahanId",
+          placeholder: "Pilih Kelurahan",
+          options: kelurahanOptions,
+          onChange: (selected) => setSelectedKelurahan(selected?.value),
+          onMenuScrollToBottom: handleLoadMoreKelurahan,
+          disabled: !selectedKecamatan,
+          rules: {
+            required: {
+              value:
+                selectedNegara &&
+                negaraOptions.find((opt) => opt.value === selectedNegara)
+                  ?.label === "Indonesia",
+              message: "Provinsi harus dipilih untuk warga Indonesia",
             },
-            colSize: 6
+          },
+          colSize: 6,
         },
         {
           type: "textarea",
@@ -229,7 +334,7 @@ const PendaftaranPasienRadiologi = () => {
       ],
     },
     {
-      // section: "Detail Konsultasi",
+      section: "Detail Konsultasi",
       fields: [
         {
           type: "select",
@@ -271,8 +376,7 @@ const PendaftaranPasienRadiologi = () => {
       ],
     },
     {
-      section: "Dirujuk",
-
+      section: "Rujukan",
       fields: [
         {
           type: "select",
@@ -345,7 +449,7 @@ const PendaftaranPasienRadiologi = () => {
       ],
     },
     {
-      section: "Kode Member",
+      section: "Promo Kode Member",
       fields: [
         {
           type: "select",
@@ -406,10 +510,6 @@ const PendaftaranPasienRadiologi = () => {
           ),
           colSize: 12,
         },
-      ],
-    },
-    {
-      fields: [
         {
           type: "select",
           id: "dokterPemeriksa",
@@ -439,38 +539,145 @@ const PendaftaranPasienRadiologi = () => {
           rules: { required: "pemeriksaan Test Cito is required" },
           colSize: 6,
         },
-        {
-          type: "select",
-          id: "cetakkartu",
-          label: "Cetak Kartu",
-          name: "cetakkartu",
-          placeholder: "Pilih Cetak Kartu",
-          options: [
-            { label: "Ya", value: "ya" },
-            { label: "Tidak ", value: "tidak " },
-          ],
-          rules: { required: "Cetak Kartu is required" },
-          colSize: 6,
-        },
       ],
     },
   ];
 
   const handleSubmit = (data) => {
-    console.log("Form Data:", data);
+    // Create a new FormData object
+    const formData = new FormData();
+
+    // Add all text fields to FormData
+    Object.keys(data).forEach((key) => {
+      // Skip the file field, we'll handle it separately
+      if (key !== "foto" && data[key] !== null && data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
+    });
+
+    // Add the "vm" field which seems to be required according to the error
+    formData.append("vm", "true"); // Adjust the value as needed for your API
+
+    // Add the file if it exists
+    if (data.foto instanceof File) {
+      formData.append("fotoPasien", data.foto);
+    }
+
+    console.log("Data yang dikirim ke backend:", Object.fromEntries(formData));
+
+    // Dispatch the action with FormData
+    dispatch(AddPasienSlice(formData))
+      .then((result) => {
+        if (AddPasienSlice.fulfilled.match(result)) {
+          console.log("Data pasien berhasil dikirim:", result.payload);
+          alert("Data pasien berhasil dikirim!");
+
+          const enhancedData = {
+            ...data,
+            provinsiId: data.provinsiId || null,
+            noRekamMedis: `RM-${new Date().getTime()}`,
+            queueNumber: `A-${Math.floor(Math.random() * 100)}`,
+            registrationDate: new Date().toLocaleDateString("id-ID"),
+            noIdentitas: `${data.noIdentitas}`,
+            qrCodeUrl: result.payload.qrCodeUrl || null,
+            fotoPasienUrl: result.payload.uploadFotoUrl || null,
+          };
+
+          setSubmittedData(enhancedData);
+          setIsSubmitted(true);
+        } else {
+          console.error("Gagal mengirim data:", result.error?.message);
+          alert("Gagal mengirim data pasien!");
+        }
+      })
+      .catch((error) => {
+        console.error("Error saat dispatch:", error);
+        alert("Terjadi kesalahan saat mengirim data pasien!");
+      });
+  };
+
+  if (isSubmitted && submittedData) {
+    return (
+      <Card className="m-4">
+        <Card.Body>
+          <div className="kiosk-logo mb-4">
+            <Image src="/Images/pngwing-com.png" fluid alt="logo" />
+          </div>
+          <h4 className="text-success text-center mt-4">
+            Data Pendaftaran Pasien Berhasil Disimpan
+          </h4>
+
+          <Row className="no-print">
+            <Col lg={12}>
+              <Card className="d-flex justify-content-center align-items-center">
+                <Card.Body>
+                  <PrintPatientCard patientData={submittedData} />
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          {selectedPrintType === "card" && (
+            <div className="print-only">
+              <PrintPatientCard patientData={submittedData} />
+            </div>
+          )}
+          {selectedPrintType === "queue" && (
+            <div className="print-only">
+              <PrintableQueueNumber
+                queueData={{
+                  queueNumber: submittedData.queueNumber,
+                  service: "Poli Umum",
+                  date: submittedData.registrationDate,
+                  patientName: submittedData.namaPasien,
+                }}
+              />
+            </div>
+          )}
+
+          <div className="d-flex justify-content-between mt-4 no-print">
+            <ButtonNav
+              label="Kembali ke Halaman Utama"
+              variant="primary"
+              path="/kiosk"
+            />
+            <Button
+              variant="primary"
+              onClick={() => handlePrint("card")}
+              className="text-center mt-3 ml-5"
+            >
+              {/* <Printer className="me-2" size={20} /> */}
+              Cetak Kartu Pasien
+            </Button>
+          </div>
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  const handleFormSubmit = (data) => {
+    setIsSubmitted(true);
+    setSubmittedData(data);
+  };
+
+  const handleSubmitWithConsole = (data) => {
+    console.log(data);
   };
 
   return (
     <Fragment>
-      <DynamicForm
-        title="Registrasi Radiologi"
+      <DynamicStepForm
+        title="Pendaftaran Pasien Radiologi"
         formConfig={formFields}
-        onSubmit={handleSubmit}
-        backPath={"/pendaftaran/pendaftaran-pasien-radiologi"}
-        isAddMode={true}  
+        onSubmit={handleSubmitWithConsole}
+        onFormSubmit={handleFormSubmit}
+        externalOptions={{ titles: titlesOptions }}
+        backPath="/pendaftaran/pendaftaran-pasien-radiologi"
+        isAddMode={true}
       />
     </Fragment>
   );
-};
+});
 
+PendaftaranPasienRadiologi.displayName = "PendaftaranPasienRadiologi";
 export default PendaftaranPasienRadiologi;
