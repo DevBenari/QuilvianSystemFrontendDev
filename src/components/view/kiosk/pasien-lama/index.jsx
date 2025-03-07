@@ -36,7 +36,7 @@ const KioskPasienLamaPage = () => {
         title: 'Operasi',
         description: 'Jadwal dan informasi layanan operasi',
         icon: '⚕️',
-        path: '/operasi',
+        path: '/kiosk/regist-pasien-lama/regist-pasien-operasi',
         variant: 'danger'
       }
     ];
