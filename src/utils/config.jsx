@@ -353,10 +353,7 @@ export const menus = {
           title: "Data Dokter",
           href: "/MasterData/master-dokter/dokter/table-dokter",
         },
-        {
-          title: "Dokter Praktek",
-          href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
-        },
+
         {
           title: "Dokter Poli",
           href: "/MasterData/master-dokter/dokter-poli/table-DokterPoli",
