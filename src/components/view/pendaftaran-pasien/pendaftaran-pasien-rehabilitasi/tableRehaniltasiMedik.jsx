@@ -3,39 +3,37 @@
 import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilterNonApi from "@/components/features/custom-search/CustomSearchComponen/custom-search-non-api";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
-import { dataRawatJalan } from "@/utils/dataPerjanjian";
-import { FaUserMd } from "react-icons/fa"; // Icon untuk Perjanjian Rawat Jalan
+import { daftarPasien } from "@/utils/config";
+import { FaHandHoldingMedical } from "react-icons/fa"; // Icon untuk Rehabilitasi Medik
 
-const DashboardPerjanjianRawatJalan = () => {
+const DashBoardAdmisiRehabilitasiMedik = () => {
   const methods = useForm();
-  const [filteredPatients, setFilteredPatients] = useState(dataRawatJalan);
+  const [filteredPatients, setFilteredPatients] = useState(daftarPasien);
 
   return (
     <FormProvider {...methods}>
       <CustomTableComponent
         // 🔹 Header
-        headerTitle="Pencarian Data Perjanjian Rawat Jalan"
-        headerSubtitle="Manajemen Perjanjian Pasien untuk Rawat Jalan"
-        icon={FaUserMd} // Icon Rawat Jalan
-        iconBgColor="bg-info-subtle" // Warna background ikon (Biru lembut)
-        iconColor="text-info" // Warna ikon (Biru)
+        headerTitle="Pencarian Data Pasien Rehabilitasi Medik"
+        headerSubtitle="Manajemen Daftar Pasien dalam Layanan Rehabilitasi Medik"
+        icon={FaHandHoldingMedical} // Icon Rehabilitasi Medik
+        iconBgColor="bg-success-subtle" // Warna background ikon (Hijau lembut)
+        iconColor="text-success" // Warna ikon (Hijau)
         // 🔹 Custom Search Filter
         setFilteredData={setFilteredPatients}
         showSearch={true}
         // 🔹 Table Component
-        tableTitle="Tabel Perjanjian Pasien Rawat Jalan"
+        tableTitle="Tabel Perjanjian Pasien Rehabilitasi Medik"
         data={filteredPatients}
         columns={[
           { key: "id", label: "ID" },
           { key: "nomorRekamMedis", label: "No Rekam Medis" },
           { key: "date", label: "Tanggal" },
-          { key: "nama", label: "Nama" },
-          { key: "alamat", label: "Alamat" },
-          { key: "dokter", label: "Dokter" },
-          { key: "penjamin", label: "Penjamin" },
-          { key: "telepon", label: "No Telp" },
+          { key: "nama", label: "Nama Pasien" },
+          { key: "jenisKelamin", label: "Jenis Kelamin" },
+          { key: "umur", label: "Umur" },
         ]}
         paginationProps={{
           currentPage: 1,
@@ -45,8 +43,8 @@ const DashboardPerjanjianRawatJalan = () => {
         }}
         addButton={
           <ButtonNav
-            path="/perjanjian/add-perjanjian"
-            label="Buat Janji"
+            path="/pendaftaran/pendaftaran-pasien-rehabilitasi/add-rehabilitasi-medik"
+            label="Tambah Pasien"
             icon="ri-add-fill"
             size="sm"
             className="btn btn-sm iq-bg-success"
@@ -65,4 +63,4 @@ const DashboardPerjanjianRawatJalan = () => {
   );
 };
 
-export default DashboardPerjanjianRawatJalan;
+export default DashBoardAdmisiRehabilitasiMedik;

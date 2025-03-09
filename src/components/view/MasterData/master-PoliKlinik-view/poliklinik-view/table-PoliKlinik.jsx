@@ -54,6 +54,7 @@ const TableDataPoliKlinik = () => {
         fetchFunction={fetchPoliKlinikWithFilters}
         setFilteredData={setFilteredData}
         showSearch={true}
+        loading={loading}
         // Table Component
         tableTitle="Tabel List PoliKlinik"
         data={filteredData}
@@ -91,16 +92,6 @@ const TableDataPoliKlinik = () => {
           />
         }
       />
-      {/* Loading Animation */}
-      {loading && <LoadingScreen text="Please wait, loading..." />}
-
-      {/* Error or No Data */}
-      {!loading && (error || filteredData.length === 0) && (
-        <Alert variant="warning" className="text-center mt-3">
-          <i className="ri-information-line me-2"></i>
-          Tidak ada data yang tersedia.
-        </Alert>
-      )}
     </FormProvider>
   );
 };

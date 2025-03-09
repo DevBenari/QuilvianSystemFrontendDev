@@ -96,7 +96,7 @@ export const menus = {
         },
         {
           title: "Pendaftaran Pasien Rehabilitasi",
-          href: "/pendaftaran/pendaftaran-pasien-rehabilitasi",
+          href: "/pendaftaran/pendaftaran-pasien-rehabilitasi/table-rehabilitasi-medik",
         },
 
         {
