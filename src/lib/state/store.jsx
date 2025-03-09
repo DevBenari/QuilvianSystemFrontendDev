@@ -23,6 +23,7 @@ import PositionSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterDa
 import UserActiveSlice from "@/lib/state/slice/auth/master-userActive/UserActive";
 import authSlice from "@/lib/state/slice/auth/LoginSlice";
 import PoliKlinikSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
+import DokterPoli from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPoli";
 
 const store = configureStore({
   reducer: {
@@ -50,6 +51,7 @@ const store = configureStore({
     Peralatan: PeralatanSlice,
     Position: PositionSlice,
     PoliKlinik: PoliKlinikSlice,
+    dokterPoli: DokterPoli
   },
 });
 

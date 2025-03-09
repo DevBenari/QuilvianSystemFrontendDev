@@ -16,7 +16,7 @@ export const fetchPoliKlinik = createAsyncThunk(
         console.log("Data already loaded for page:", page);
         return null;
       }
-      const response = await InstanceAxios.get(`/PoliKlinik`, {
+      const response = await InstanceAxios.get(`/Poliklinik`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
@@ -41,7 +41,7 @@ export const fetchPoliKlinikWithFilters = createAsyncThunk(
   "PoliKlinik/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/PoliKlinik/paged`, {
+      const response = await InstanceAxios.get(`/Poliklinik/paged`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -67,7 +67,7 @@ export const fetchPoliKlinikById = createAsyncThunk(
   "PoliKlinik/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/PoliKlinik/${id}`, {
+      const response = await InstanceAxios.get(`/Poliklinik/${id}`, {
         headers: getHeaders(),
       });
 
@@ -86,7 +86,7 @@ export const createPoliKlinik = createAsyncThunk(
   "PoliKlinik/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/PoliKlinik`, data, {
+      const response = await InstanceAxios.post(`/Poliklinik`, data, {
         headers: getHeaders(),
       });
 
@@ -121,7 +121,7 @@ export const deletePoliKlinik = createAsyncThunk(
   "PoliKlinik/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.delete(`/PoliKlinik/${id}`, {
+      const response = await InstanceAxios.delete(`/Poliklinik/${id}`, {
         headers: getHeaders(),
       });
       return response.data;

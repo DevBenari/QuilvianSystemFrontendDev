@@ -118,8 +118,6 @@ const DynamicStepCardForm = ({
 
   // Form action handlers
   const handleEdit = () => setIsEditing(true);
-  console.log("🔹 Step Config Saat Ini:", formConfig[currentStep]);
-
   
   const handleCancel = () => {
     setIsEditing(false);
@@ -141,8 +139,6 @@ const DynamicStepCardForm = ({
     }
     return field.hide;
   };
-
-  console.log("🔹 Step Saat Ini:", currentStep)
 
   return (
     <FormProvider {...methods}>

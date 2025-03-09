@@ -1,40 +1,112 @@
 "use client";
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import DynamicStepCardForm from "@/components/features/dynamic-form/dynamicForm/DynamicStepCardForm";
 import ModalInsurance from "@/components/view/kiosk/add-guest-layanan/modal-insurance";
 import { fetchPoliKlinik } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
 import useRegistration from "@/lib/hooks/kiosk/useRegistration";
 
-const PatientRegistrationPage = () => {
-  // Dokter data berdasarkan poli dengan penambahan daftar asuransi yang diterima
-  const doctors = {
-    umum: [
-      { id: 'dr-budi', name: 'dr. Budi Santoso', schedule: 'Senin-Jumat, 08.00-14.00', acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz'] },
-      { id: 'dr-ani', name: 'dr. Ani Wijaya', schedule: 'Senin-Sabtu, 14.00-20.00', acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] }
-    ],
-    gigi: [
-      { id: 'drg-maya', name: 'drg. Maya Putri', schedule: 'Senin, Rabu, Jumat, 09.00-15.00', acceptedInsurances: ['Prudential', 'Allianz', 'AXA Mandiri'] },
-      { id: 'drg-rudi', name: 'drg. Rudi Hermawan', schedule: 'Selasa, Kamis, Sabtu, 10.00-16.00', acceptedInsurances: ['BPJS Kesehatan'] }
-    ],
-    mata: [
-      { id: 'dr-dina', name: 'dr. Dina Setiawan, Sp.M', schedule: 'Senin, Kamis, 08.00-12.00', acceptedInsurances: ['BPJS Kesehatan', 'Prudential'] },
-      { id: 'dr-hadi', name: 'dr. Hadi Pratama, Sp.M', schedule: 'Selasa, Jumat, 13.00-17.00', acceptedInsurances: ['Allianz', 'AXA Mandiri'] }
-    ],
-    kandungan: [
-      { id: 'dr-ratna', name: 'dr. Ratna Dewi, Sp.OG', schedule: 'Senin, Rabu, Jumat, 09.00-15.00', acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'AXA Mandiri'] },
-      { id: 'dr-sinta', name: 'dr. Sinta Permata, Sp.OG', schedule: 'Selasa, Kamis, Sabtu, 10.00-16.00', acceptedInsurances: ['Allianz'] }
-    ],
-    anak: [
-      { id: 'dr-ahmad', name: 'dr. Ahmad Ridwan, Sp.A', schedule: 'Senin-Rabu, 08.00-14.00', acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz', 'AXA Mandiri'] },
-      { id: 'dr-lisa', name: 'dr. Lisa Kusuma, Sp.A', schedule: 'Kamis-Sabtu, 09.00-15.00', acceptedInsurances: ['BPJS Kesehatan'] }
-    ],
-    jantung: [
-      { id: 'dr-hartono', name: 'dr. Hartono, Sp.JP', schedule: 'Senin, Rabu, Jumat, 08.00-12.00', acceptedInsurances: ['Prudential', 'Allianz'] },
-      { id: 'dr-mira', name: 'dr. Mira Susanti, Sp.JP', schedule: 'Selasa, Kamis, 13.00-17.00', acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] }
+// Mock doctor API fetching function (replace with your actual API call)
+const fetchDoctors = async () => {
+  // This would be replaced with your actual API call
+  console.log("Fetching doctors data from API...");
+  
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // Return the mock data in the format your API would return
+  return {
+    success: true,
+    data: [
+      { 
+        doctorId: 'dr-budi', 
+        doctorName: 'dr. Budi Santoso', 
+        poliId: 'umum', 
+        schedule: 'Senin-Jumat, 08.00-14.00', 
+        acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz'] 
+      },
+      { 
+        doctorId: 'dr-ani', 
+        doctorName: 'dr. Ani Wijaya', 
+        poliId: 'umum', 
+        schedule: 'Senin-Sabtu, 14.00-20.00', 
+        acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] 
+      },
+      { 
+        doctorId: 'drg-maya', 
+        doctorName: 'drg. Maya Putri', 
+        poliId: 'gigi', 
+        schedule: 'Senin, Rabu, Jumat, 09.00-15.00', 
+        acceptedInsurances: ['Prudential', 'Allianz', 'AXA Mandiri'] 
+      },
+      { 
+        doctorId: 'drg-rudi', 
+        doctorName: 'drg. Rudi Hermawan', 
+        poliId: 'gigi', 
+        schedule: 'Selasa, Kamis, Sabtu, 10.00-16.00', 
+        acceptedInsurances: ['BPJS Kesehatan'] 
+      },
+      { 
+        doctorId: 'dr-dina', 
+        doctorName: 'dr. Dina Setiawan, Sp.M', 
+        poliId: 'mata', 
+        schedule: 'Senin, Kamis, 08.00-12.00', 
+        acceptedInsurances: ['BPJS Kesehatan', 'Prudential'] 
+      },
+      { 
+        doctorId: 'dr-hadi', 
+        doctorName: 'dr. Hadi Pratama, Sp.M', 
+        poliId: 'mata', 
+        schedule: 'Selasa, Jumat, 13.00-17.00', 
+        acceptedInsurances: ['Allianz', 'AXA Mandiri'] 
+      },
+      { 
+        doctorId: 'dr-ratna', 
+        doctorName: 'dr. Ratna Dewi, Sp.OG', 
+        poliId: 'kandungan', 
+        schedule: 'Senin, Rabu, Jumat, 09.00-15.00', 
+        acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'AXA Mandiri'] 
+      },
+      { 
+        doctorId: 'dr-sinta', 
+        doctorName: 'dr. Sinta Permata, Sp.OG', 
+        poliId: 'kandungan', 
+        schedule: 'Selasa, Kamis, Sabtu, 10.00-16.00', 
+        acceptedInsurances: ['Allianz'] 
+      },
+      { 
+        doctorId: 'dr-ahmad', 
+        doctorName: 'dr. Ahmad Ridwan, Sp.A', 
+        poliId: 'anak', 
+        schedule: 'Senin-Rabu, 08.00-14.00', 
+        acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz', 'AXA Mandiri'] 
+      },
+      { 
+        doctorId: 'dr-lisa', 
+        doctorName: 'dr. Lisa Kusuma, Sp.A', 
+        poliId: 'anak', 
+        schedule: 'Kamis-Sabtu, 09.00-15.00', 
+        acceptedInsurances: ['BPJS Kesehatan'] 
+      },
+      { 
+        doctorId: 'dr-hartono', 
+        doctorName: 'dr. Hartono, Sp.JP', 
+        poliId: 'jantung', 
+        schedule: 'Senin, Rabu, Jumat, 08.00-12.00', 
+        acceptedInsurances: ['Prudential', 'Allianz'] 
+      },
+      { 
+        doctorId: 'dr-mira', 
+        doctorName: 'dr. Mira Susanti, Sp.JP', 
+        poliId: 'jantung', 
+        schedule: 'Selasa, Kamis, 13.00-17.00', 
+        acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] 
+      }
     ]
   };
-  
+};
+
+const PatientRegistrationPage = () => {
   // Mapping for more readable poli names
   const poliNameMap = {
     'umum': 'Poli Umum', 
@@ -49,11 +121,12 @@ const PatientRegistrationPage = () => {
 
   // Fetch poli data from Redux store
   const {data: lisPoli, page, totalPages } = useSelector((state) => state.PoliKlinik);
-
-  // Use the registration hook
+  
+  // Use the registration hook with doctor API fetching
   const registration = useRegistration({
     fetchMasterDataAction: () => fetchPoliKlinik({page, totalPages}),
-    initialDoctorsData: doctors
+    fetchDoctorsAction: fetchDoctors, // Pass the doctor API fetching function
+    initialDoctorsData: {} // Start with empty data and let the API populate it
   });
   
   // Handle form submission
@@ -151,7 +224,11 @@ const PatientRegistrationPage = () => {
           colSize: 3,
           required: true,
           rules: { required: "Silakan pilih poli" },
-          options: lisPoli.map((item) => ({ label: item.namaPoli, value: item.poliId })),
+          options: lisPoli.map((item) => ({ 
+            label: item.namaPoliklinik, 
+            value: item.poliklinikId,
+            description: item.deskripsi
+          })),
         }
       ]
     },
@@ -162,7 +239,7 @@ const PatientRegistrationPage = () => {
       description: "Pilih dokter yang tersedia pada poliklinik ",
       fields: [],
       cards: [
-        registration.getDoctorSelectionCard(registration.filteredDoctorsByInsurance)
+        registration.getDoctorSelectionCard()
       ]
     },
     // Section 5: Confirmation
@@ -171,7 +248,11 @@ const PatientRegistrationPage = () => {
       icon: "✅",
       description: "Periksa dan konfirmasi data pendaftaran Anda",
       fields: [],
-      customRender: ({ methods }) => registration.renderConfirmationSection(methods, doctors, poliNameMap)
+      customRender: ({ methods }) => registration.renderConfirmationSection(
+        methods, 
+        registration.filteredDoctorsByInsurance, 
+        poliNameMap
+      )
     }
   ];
 
@@ -184,7 +265,6 @@ const PatientRegistrationPage = () => {
         onSubmit={handleSubmit}
         isAddMode={true}
         backPath="/kiosk"
-        doctorsData={registration.filteredDoctorsByInsurance}
         onFormMethodsReady={registration.handleFormMethodReady} 
       />
 
