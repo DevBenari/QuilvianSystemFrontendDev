@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import store from "@/lib/state/store";
 import { Provider } from "react-redux";
+import AuthWrapper from "./auth-wrapper";
 
 export default function ScrollLayout({ children }) {
   useEffect(() => {
@@ -12,7 +13,11 @@ export default function ScrollLayout({ children }) {
 
   return (
     <>
-      <Provider store={store}>{children}</Provider>
+      <Provider store={store}>
+        <AuthWrapper>
+          {children}
+        </AuthWrapper>
+      </Provider>
     </>
   );
 }

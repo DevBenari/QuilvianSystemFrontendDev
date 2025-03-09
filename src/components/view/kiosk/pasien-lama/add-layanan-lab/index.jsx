@@ -10,7 +10,6 @@ const LaboratoryRegistrationPage = () => {
   // Dokter Patologi Klinik
   const laboratoryDoctors = {
     basicblood: [
-    
         { 
           id: 'dr-budi', 
           name: 'dr. Budi Santoso, Sp.PK', 
@@ -335,8 +334,8 @@ const LaboratoryRegistrationPage = () => {
             label: "Asuransi yang digunakan pasien",
             type: "select",
             options: insuranceList.map((item) => ({ 
-              label: `${item.provider} - ${item.policyNumber}`, 
-              value: item.provider,
+              label: `${item.namaAsuransi} - ${nomorPolis}`, 
+              value: item.asuransiId,
               isPKS: item.isPKS
             })),
             colSize: 6,
@@ -560,7 +559,7 @@ const LaboratoryRegistrationPage = () => {
                 </div>
               );
             }else {
-              availableDoctors = laboratoryDoctors(selectLaboratory) || [];
+              availableDoctors = laboratoryDoctors[selectLaboratory] || [];
 
               if(availableDoctors.length === 0) {
                 return (
@@ -677,6 +676,8 @@ const LaboratoryRegistrationPage = () => {
       description: "Periksa dan konfirmasi data pendaftaran Anda",
       customRender: ({ methods }) => {
         const formData = methods.getValues();
+        const selectedLaboratory = formData.selectedLaboratory;
+        const selectedDoctor = formData.selectedDoctor;
         let selectedServices = [];
         
         // Determine which services to display based on service type
@@ -696,7 +697,10 @@ const LaboratoryRegistrationPage = () => {
           if (service) selectedServices = [service];
         }
         
-        const selectedDoctor = laboratoryDoctors.find(d => d.id === formData.selectedDoctor);
+        const doctor = selectedLaboratory && selectedDoctor 
+          ? laboratoryDoctors[selectedLaboratory].find(d => d.id === selectedDoctor)
+          : null;
+        ;
         
         // Calculate total price range
         let minTotal = 0;
@@ -754,12 +758,6 @@ const LaboratoryRegistrationPage = () => {
                     <strong>Jenis Layanan:</strong> {formData.serviceType === 'package' ? 'Paket Pemeriksaan' : 'Pemeriksaan Individual'}
                   </Col>
                   
-                  {formData.serviceType === 'package' && (
-                    <Col xs={12} className="mb-3">
-                      <strong>Paket:</strong> {laboratoryPackages.find(p => p.id === formData.selectedPackage)?.name || '-'}
-                    </Col>
-                  )}
-                  
                   <Col xs={12} className="mb-3">
                     <strong>Pemeriksaan yang Dipilih:</strong>
                     <ul className="mt-2">
@@ -773,15 +771,7 @@ const LaboratoryRegistrationPage = () => {
                   </Col>
                   
                   <Col xs={12} className="mb-3">
-                    <strong>Estimasi Biaya Total:</strong>{' '}
-                    {formData.serviceType === 'package' 
-                      ? laboratoryPackages.find(p => p.id === formData.selectedPackage)?.price || '-'
-                      : `Rp ${minTotal.toLocaleString()} - Rp ${maxTotal.toLocaleString()}`
-                    }
-                  </Col>
-                  
-                  <Col xs={12} className="mb-3">
-                    <strong>Dokter:</strong> {selectedDoctor ? selectedDoctor.name : '-'}
+                    <strong>Dokter:</strong> {doctor ? doctor.name : '-'}
                   </Col>
                 </Row>
               </Card.Body>

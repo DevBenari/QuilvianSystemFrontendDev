@@ -174,7 +174,7 @@ const CardSelectionGroup = ({
               key={`${name}-${option.value}`}
             >
               <Card 
-                className={`selection-card mb-3 cursor-pointer ${selectedValue === option.value ? 'selected shadow-lg border-primary' : ''}`}
+                className={`selection-card mb-3 cursor-pointer border border-grey rounded-lg shadow-md  ${selectedValue === option.value ? 'selected shadow-lg border-primary' : ''}`}
                 onClick={() => handleCardSelection(option.value, option.additionalData)}
                 style={{ cursor: 'pointer' }}
               >

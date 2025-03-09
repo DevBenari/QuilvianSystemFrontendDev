@@ -66,7 +66,7 @@ const FormAddPoliKlinik = () => {
           rules: { required: "Hari Operasional harus diisi" },
         },
         {
-          type: "date",
+          type: "useDepartementData",
           label: "Jam Buka",
           name: "jamBuka",
           colSize: 6,
