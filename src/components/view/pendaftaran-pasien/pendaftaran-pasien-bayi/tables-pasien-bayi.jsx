@@ -1,19 +1,20 @@
 "use client";
 
-import React, { Fragment, memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteBayi, useBayi } from "@/lib/hooks/admisi/pasienBayi";
+import { useBayi } from "@/lib/hooks/admisi/pasienBayi";
 
-import { Col, Row, Spinner } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import ButtonNav from "@/components/ui/button-navigation";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import { Spinner, Alert } from "react-bootstrap";
+
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import ButtonNav from "@/components/ui/button-navigation";
+import { FaBaby } from "react-icons/fa"; // Icon untuk Pasien Bayi
 
 const DashboardPendaftaranBayi = memo(() => {
-  const router = useRouter();
   const { bayi, loading, error } = useBayi();
-  const [filteredPatientsBayi, setFilteredPatientsBayi] = useState(bayi);
+  const [filteredPatientsBayi, setFilteredPatientsBayi] = useState([]);
 
   useEffect(() => {
     if (bayi) {
@@ -21,105 +22,71 @@ const DashboardPendaftaranBayi = memo(() => {
     }
   }, [bayi]);
 
-  const handleAdd = () => {
-    router.push("/pendaftaran/pendaftaran-pasien-baru");
-  };
-
-  const handleEdit = (id) => {
-    router.push(
-      `/pendaftaran/pendaftaran-pasien-bayi/edit-pasien-bayi?id=${id}`
-    );
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteBayi(id);
-      alert("Data berhasil dihapus!");
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-      alert("Gagal menghapus data.");
-    }
-  };
-
   const methods = useForm();
 
   return (
     <FormProvider {...methods}>
-      <Col lg="12" className="iq-card p-4">
-        <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Searching Pasien Bayi</h2>
+      <CustomTableComponent
+        // 🔹 Header
+        headerTitle="Pencarian Data Pasien Bayi"
+        headerSubtitle="Manajemen Daftar Pasien Bayi dalam Sistem Pendaftaran"
+        icon={FaBaby} // Icon Pasien Bayi
+        iconBgColor="bg-info-subtle" // Warna background ikon (Biru lembut)
+        iconColor="text-info" // Warna ikon (Biru)
+        // 🔹 Custom Search Filter
+        setFilteredData={setFilteredPatientsBayi}
+        showSearch={true}
+        // 🔹 Table Component
+        tableTitle="Tabel Pasien Bayi"
+        data={filteredPatientsBayi}
+        columns={[
+          { key: "no", label: "No" },
+          { key: "namaPasienMelahirkan", label: "Nama Pasien Melahirkan" },
+          { key: "dokter", label: "Dokter" },
+          { key: "kelas", label: "Kelas" },
+          { key: "ruang", label: "Ruang" },
+        ]}
+        paginationProps={{
+          currentPage: 1,
+          totalPages: Math.ceil(filteredPatientsBayi.length / 8),
+          itemsPerPage: 8,
+          onPageChange: () => {}, // Fungsi pagination bisa ditambahkan jika ada backend
+        }}
+        addButton={
+          <ButtonNav
+            path="/pendaftaran/pendaftaran-pasien-bayi/add-pasien-bayi"
+            label="Tambah Pasien Bayi"
+            icon="ri-add-fill"
+            size="sm"
+            className="btn btn-sm iq-bg-success"
+          />
+        }
+        additionalButtons={
           <button
-            className="btn btn-dark my-3 mx-3"
+            className="btn btn-dark btn-sm mx-2"
             onClick={() => window.location.reload()}
           >
-            <i className="ri-refresh-line"></i>
+            <i className="ri-refresh-line"></i> Refresh
           </button>
-        </div>
-        <Col lg="12" className="mt-2">
-          <CustomSearchFilter
-            data={bayi}
-            setFilteredPatients={setFilteredPatientsBayi}
-            onFilteredPatients={filteredPatientsBayi}
-          />
-        </Col>
-      </Col>
-
-      <div className="mt-3">
-        <Row>
-          <Col sm="12" className="p-3">
-            <div className="iq-card p-3">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="card-title font-widest">Tabel Pasien Bayi</h4>
-                <ButtonNav
-                  path="/pendaftaran/pendaftaran-pasien-bayi/add-pasien-bayi"
-                  label="Add Pasien Bayi"
-                  icon="ri-add-fill"
-                  size="sm"
-                  variant=""
-                  className="btn btn-sm iq-bg-success"
-                />
-              </div>
-              {loading && (
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={{ height: "200px" }}
-                >
-                  <Spinner animation="border" variant="primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </Spinner>
-                </div>
-              )}
-              {error && <div className="text-danger">{error}</div>}
-              {!loading && !error && (
-                <div className="iq-card-body">
-                  <CustomTableComponent
-                    data={filteredPatientsBayi}
-                    columns={[
-                      { key: "no", label: "No" },
-                      {
-                        key: "namaPasienMelahirkan",
-                        label: "Nama Pasien Melahirkan",
-                      },
-                      { key: "dokter", label: "Dokter" },
-                      { key: "kelas", label: "Kelas" },
-                      { key: "ruang", label: "Ruang" },
-                    ]}
-                    slugConfig={{
-                      textField: "namaPasienMelahirkan",
-                      idField: "id",
-                    }}
-                    basePath="/pendaftaran/pendaftaran-pasien-bayi/edit-pasien-bayi"
-                    itemsPerPage={8}
-                    onRemove={handleDelete}
-                    onEdit={handleEdit}
-                  />
-                </div>
-              )}
+        }
+        loading={
+          loading ? (
+            <div className="text-center p-4">
+              <Spinner animation="border" variant="primary" />
+              <p className="mt-2">Mengambil data, harap tunggu...</p>
             </div>
-          </Col>
-        </Row>
-      </div>
+          ) : error ? (
+            <Alert variant="warning" className="text-center">
+              {error}
+            </Alert>
+          ) : filteredPatientsBayi.length === 0 ? (
+            <Alert variant="warning" className="text-center">
+              <i className="ri-information-line me-2"></i>
+              Tidak ada data yang tersedia.
+            </Alert>
+          ) : null
+        }
+      />
     </FormProvider>
   );
 });

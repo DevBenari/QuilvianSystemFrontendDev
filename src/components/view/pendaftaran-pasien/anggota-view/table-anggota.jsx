@@ -2,22 +2,23 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FormProvider, useForm } from "react-hook-form";
+import { Alert } from "react-bootstrap";
 
 import ButtonNav from "@/components/ui/button-navigation";
-import { Row, Col, Spinner, Alert } from "react-bootstrap";
-import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import LoadingScreen from "@/components/features/loading/loadingScreen";
 import {
   fetchAnggota,
   fetchAnggotaWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/admisi/Anggota/anggotaSlice";
+import { FaUsers } from "react-icons/fa"; // Icon untuk Anggota
 
 const TableDataAnggota = () => {
   const methods = useForm();
   const dispatch = useDispatch();
 
-  // Ambil data dari Redux Store
+  // 🔹 Ambil data dari Redux Store
   const {
     data: AnggotaData,
     loading,
@@ -25,118 +26,74 @@ const TableDataAnggota = () => {
     totalPages,
   } = useSelector((state) => state.anggota);
 
-  // Gunakan useMemo untuk menghindari perhitungan ulang yang tidak perlu
+  // 🔹 Gunakan useMemo untuk memastikan data tetap konsisten
   const AnggotaList = useMemo(() => {
     return Array.isArray(AnggotaData) ? AnggotaData : [];
   }, [AnggotaData]);
 
   // 🔹 State untuk Pagination
   const [page, setPage] = useState(1);
-  const perPage = 2; // Bisa diubah sesuai kebutuhan
+  const perPage = 10;
 
-  // State untuk hasil filter pencarian
+  // 🔹 State untuk menyimpan hasil filter pencarian
   const [filteredAnggota, setFilteredAnggota] = useState([]);
 
-  // Fetch data saat pertama kali render
+  // 🔹 Fetch data saat pertama kali render
   useEffect(() => {
     dispatch(fetchAnggota({ page, perPage }));
   }, [dispatch, page]);
 
-  // Update filteredAnggota ketika AnggotaList berubah
+  // 🔹 Update filteredAnggota ketika AnggotaList berubah
   useEffect(() => {
     setFilteredAnggota(AnggotaList);
   }, [AnggotaList]);
 
-  console.log("anggota Data:", AnggotaList);
-
   return (
     <FormProvider {...methods}>
-      <Col lg="12" className="iq-card p-4">
-        <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">
-            Master Data <br />
-            <span className="letter-spacing fw-bold">List Daftar Anggota</span>
-          </h2>
-        </div>
-        <Col lg="12" className="mt-2">
-          <CustomSearchFilter
-            fetchFunction={fetchAnggotaWithFilters}
-            setFilteredData={setFilteredAnggota}
+      <CustomTableComponent
+        // 🔹 Header
+        headerTitle="Pencarian Data Anggota"
+        headerSubtitle="Manajemen Daftar Anggota dalam Master Data"
+        icon={FaUsers} // Icon Anggota
+        iconBgColor="bg-primary-subtle" // Warna background ikon (Biru lembut)
+        iconColor="text-primary" // Warna ikon (Biru)
+        // 🔹 Custom Search Filter
+        fetchFunction={fetchAnggotaWithFilters}
+        setFilteredData={setFilteredAnggota}
+        showSearch={true}
+        loading={loading}
+        // 🔹 Table Component
+        tableTitle="Tabel List Anggota"
+        data={filteredAnggota}
+        columns={[
+          { key: "no", label: "No" },
+          { key: "createDateTime", label: "Tanggal Dibuat" },
+          { key: "createByName", label: "Dibuat Oleh" },
+          { key: "kodeKeanggotaan", label: "Kode Anggota" },
+          { key: "jenisKeanggotaan", label: "Jenis Anggota" },
+          { key: "jenisPromo", label: "Jenis Promo" },
+        ]}
+        slugConfig={{
+          textField: "jenisKeanggotaan",
+          idField: "keanggotaanId",
+        }}
+        basePath="/pendaftaran/anggota/edit-anggota"
+        paginationProps={{
+          currentPage: page,
+          totalPages: totalPages,
+          itemsPerPage: perPage,
+          onPageChange: setPage,
+        }}
+        addButton={
+          <ButtonNav
+            path="/pendaftaran/anggota/add-anggota"
+            label="Tambah Anggota"
+            icon="ri-add-fill"
+            size="sm"
+            className="btn btn-sm iq-bg-success"
           />
-        </Col>
-      </Col>
-      <div className="mt-3">
-        <Row>
-          <Col sm="12" className="p-3">
-            <div className="iq-card p-3">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-Anggota">
-                  <h4 className="card-Anggota font-widest">
-                    Tabel List Daftar Anggota
-                  </h4>
-                </div>
-                <ButtonNav
-                  path="/pendaftaran/anggota/add-anggota"
-                  label="Tambah Anggota"
-                  icon="ri-add-fill"
-                  size="sm"
-                  variant=""
-                  className="btn btn-sm iq-bg-success"
-                />
-              </div>
-
-              {/* Tampilkan loading spinner jika sedang mengambil data */}
-              {loading ? (
-                <div className="text-center p-4">
-                  <Spinner animation="border" variant="primary" />
-                  <p className="mt-2">Mengambil data, harap tunggu...</p>
-                </div>
-              ) : error ? (
-                <Alert variant="warning" className="text-center">
-                  {error}
-                </Alert>
-              ) : filteredAnggota.length === 0 ? (
-                <Alert variant="warning" className="text-center">
-                  <i className="ri-information-line me-2"></i>
-                  Tidak ada data yang tersedia.
-                </Alert>
-              ) : (
-                <div className="iq-card-body">
-                  <CustomTableComponent
-                    data={filteredAnggota}
-                    columns={[
-                      { key: "no", label: "No" },
-                      {
-                        key: "createDateTime",
-                        label: "Tanggal Dibuat",
-                      },
-                      {
-                        key: "createByName",
-                        label: "Dibuat Oleh",
-                      },
-                      { key: "kodeKeanggotaan", label: "Kode Anggota" },
-                      { key: "jenisKeanggotaan", label: "Jenis Anggota" },
-                      { key: "jenisPromo", label: "Jenis Promo" },
-                    ]}
-                    slugConfig={{
-                      textField: "jenisKeanggotaan",
-                      idField: "keanggotaanId",
-                    }}
-                    basePath="/pendaftaran/anggota/edit-anggota"
-                    paginationProps={{
-                      currentPage: page,
-                      totalPages: totalPages,
-                      itemsPerPage: perPage,
-                      onPageChange: setPage, // Fungsi untuk mengubah halaman
-                    }}
-                    itemsPerPage={perPage}
-                  />
-                </div>
-              )}
-            </div>
-          </Col>
-        </Row>
-      </div>
+        }
+      />
     </FormProvider>
   );
 };

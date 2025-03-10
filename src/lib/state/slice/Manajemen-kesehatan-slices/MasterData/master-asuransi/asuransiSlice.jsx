@@ -165,7 +165,7 @@ const AsuransiSlice = createSlice({
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
-              (existingItem) => existingItem.AsuransiId === newItem.AsuransiId
+              (existingItem) => existingItem.asuransiId === newItem.asuransiId
             )
         );
 
@@ -228,7 +228,7 @@ const AsuransiSlice = createSlice({
       // Update Asuransi Darah
       .addCase(updateAsuransi.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (Asuransi) => Asuransi.AsuransiId === action.payload.AsuransiId
+          (Asuransi) => Asuransi.asuransiId === action.payload.asuransiId
         );
         if (index !== -1) {
           state.data[index] = action.payload;
@@ -238,7 +238,7 @@ const AsuransiSlice = createSlice({
       // Hapus Asuransi Darah
       .addCase(deleteAsuransi.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (Asuransi) => Asuransi.AsuransiId !== action.payload
+          (Asuransi) => Asuransi.asuransiId !== action.payload
         );
       });
   },

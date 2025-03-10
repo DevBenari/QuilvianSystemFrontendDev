@@ -39,7 +39,7 @@ const LoginPage = () => {
     if (result.meta.requestStatus === "fulfilled") {
       setTimeout(() => {
         router.push("/");
-      }, [2000]);
+      }, [1000]);
     } else {
       setErrorMessage(
         result.payload || "Terjadi kesalahan. Silakan coba lagi."

@@ -14,6 +14,7 @@ const DateInput = memo(
     placeholder,
     options = {},
     onChange,
+    defaultValue,
     ...props
   }) => {
     const {
@@ -21,40 +22,34 @@ const DateInput = memo(
       fieldState: { error },
     } = useController({ name, control, rules });
 
-    // Fungsi untuk memformat tanggal menjadi "YYYY-MM-DD"
-    const formatDate = (date) => {
-      if (!date) return "-";
-
-      // Tanggal default yang harus diganti dengan "Belum diupdate"
-      const defaultDate = "0001-01-01T00:00:00+00:00";
-
-      if (date.toISOString() === defaultDate) {
-        return "Belum diupdate";
-      }
-
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-
-      return `${year}-${month}-${day}`;
+    // ✅ Fungsi untuk menangani timestamp ISO 8601 dan mengonversinya ke objek Date
+    const parseTimestamp = (timestamp) => {
+      if (!timestamp) return null;
+      const date = new Date(timestamp);
+      return isNaN(date.getTime()) ? null : date; // Pastikan tanggal valid
     };
 
+    // ✅ Ambil defaultValue jika ada, lalu parsing jika dalam format timestamp ISO 8601
+    const initialValue = defaultValue ? parseTimestamp(defaultValue) : null;
+
     return (
-      <Form.Group className={"mb-3" || className}>
-        {label && <Form.Label className="">{label}</Form.Label>}
+      <Form.Group className={`mb-3 ${className}`}>
+        {label && <Form.Label>{label}</Form.Label>}
         <DatePicker
-          selected={field.value ? new Date(field.value) : null}
+          selected={
+            initialValue || (field.value ? new Date(field.value) : null)
+          }
           onChange={(date) => {
-            const formattedDate = formatDate(date);
-            field.onChange(formattedDate);
-            if (onChange) onChange(formattedDate);
+            if (!date) return; // Jika tanggal kosong, tidak lakukan apa-apa
+            const timestamp = date.toISOString(); // Simpan dalam format timestamp ISO 8601
+            field.onChange(timestamp);
+            if (onChange) onChange(timestamp);
           }}
-          dateFormat="yyyy-MM-dd"
           className={`form-control ${error ? "is-invalid" : ""}`}
           placeholderText={placeholder}
           showMonthDropdown
           showYearDropdown
-          dropdownMode="select" // Mode dropdown untuk memilih tahun
+          dropdownMode="select" // Dropdown untuk memilih tahun
           {...props}
         />
         {error && (
