@@ -1,4 +1,5 @@
 import { InstanceAxios } from '@/lib/axiosInstance/InstanceAxios';
+import { getHeaders } from '@/lib/headers/headers';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 
@@ -6,7 +7,9 @@ export const fetchAsuransiPasien = createAsyncThunk(
     'asuransiPasien/fetchAsuransiPasien',
     async (_, { rejectWithValue }) => {
         try {
-            const response = await InstanceAxios.get('/asuransi-pasien');
+            const response = await InstanceAxios.get('/asuransi-pasien', {
+              headers: getHeaders(),
+            });
             return response.data;
         }catch(error){
             return rejectWithValue(error.message);
@@ -18,7 +21,9 @@ export const fetchAsuransiPasienByPasienId = createAsyncThunk(
   'asuransiPasien/fetchAsuransiPasienByPasienId',
   async (pasienId, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/asuransi-pasien?pasienId=${pasienId}`);
+      const response = await InstanceAxios.get(`/asuransi-pasien?pasienId=${pasienId}`, {
+        headers: getHeaders(),
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Terjadi kesalahan saat mengambil data asuransi pasien');
@@ -31,7 +36,9 @@ export const createAsuransiPasien = createAsyncThunk(
   'asuransiPasien/createAsuransiPasien',
   async (asuransiPasienData, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post('/asuransi-pasien', asuransiPasienData);
+      const response = await InstanceAxios.post('/asuransi-pasien', asuransiPasienData, {
+        headers: getHeaders(),
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Terjadi kesalahan saat menyimpan data asuransi pasien');

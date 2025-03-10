@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import DynamicStepCardForm from "@/components/features/dynamic-form/dynamicForm/DynamicStepCardForm";
-import ModalInsurance from "@/components/view/kiosk/add-guest-layanan/modal-insurance";
+import ModalInsurance from "@/components/view/kiosk/pasien-lama/add-layanan-poli/modal-insurance";
 import { fetchPoliKlinik } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
 import useRegistration from "@/lib/hooks/kiosk/useRegistration";
 

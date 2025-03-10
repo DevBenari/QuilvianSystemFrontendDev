@@ -89,36 +89,7 @@ const DynamicStepCardForm = ({
     control,
   });
 
-<<<<<<< HEAD
-  // Update filtered doctors when poli changes
-  useEffect(() => {
-    if (selectedPoli && doctorsData && doctorsData[selectedPoli]) {
-      setFilteredDoctors(doctorsData[selectedPoli]);
-    } else {
-      setFilteredDoctors([]);
-    }
-  }, [selectedPoli, doctorsData]);
-  console.log(selectedPoli)
-
-  // Effect for title and gender
-  useEffect(() => {
-    const titleLabel = titles.find(option => option.value === titlesId)?.label;
-    let newJenisKelamin = "";
-    if (["Tn", "Mr"].includes(titleLabel)) {
-      newJenisKelamin = "Laki-Laki";
-    } else if (["Mrs", "Ny", "Nn"].includes(titleLabel)) {
-      newJenisKelamin = "Perempuan";
-    }
-  
-    if (newJenisKelamin !== currentJenisKelamin) {
-      setValue("jenisKelamin", newJenisKelamin, { shouldValidate: true });
-    }
-  }, [titlesId, currentJenisKelamin, setValue, titles]);
-
-  // Show alert message
-=======
   // Alert message handler
->>>>>>> origin/rizkiG
   const showAlertMessage = (message) => {
     setAlertMessage(message);
     setShowAlert(true);
