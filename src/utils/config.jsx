@@ -96,7 +96,7 @@ export const menus = {
         },
         {
           title: "Pendaftaran Pasien Rehabilitasi",
-          href: "/pendaftaran/pendaftaran-pasien-rehabilitasi",
+          href: "/pendaftaran/pendaftaran-pasien-rehabilitasi/table-rehabilitasi-medik",
         },
 
         {
@@ -218,7 +218,11 @@ export const menus = {
       subItems: [
         {
           title: "Daftar Asuransi",
-          href: "/MasterData/master-asuransi/daftar-asuransi",
+          href: "/MasterData/master-asuransi/asuransi/daftar-asuransi",
+        },
+        {
+          title: "Coveran Asuransi",
+          href: "/MasterData/master-asuransi/coveran-asuransi/daftar-CoveranAsuransi",
         },
       ],
     },
@@ -247,6 +251,14 @@ export const menus = {
     {
       title: " Manajemen Operasi ",
       subItems: [
+        {
+          title: "Operasi",
+          href: "/MasterData/master-operasi/operasi/table-operasi",
+        },
+        {
+          title: "Persalinan",
+          href: "/MasterData/master-operasi/persalinan/table-persalinan",
+        },
         {
           title: "Daftar Manajemen Operasi",
           href: "/MasterData/master-operasi/daftar-manajemen-operasi",
@@ -289,7 +301,11 @@ export const menus = {
       subItems: [
         {
           title: "Data Poliklinik",
-          href: "/MasterData/master-PoliKlinik/table-PoliKlinik",
+          href: "/MasterData/master-PoliKlinik/poliklinik/table-PoliKlinik",
+        },
+        {
+          title: "Data Sub Poli",
+          href: "/MasterData/master-PoliKlinik/subPoli/table-subPoli",
         },
       ],
     },
@@ -337,9 +353,14 @@ export const menus = {
           title: "Data Dokter",
           href: "/MasterData/master-dokter/dokter/table-dokter",
         },
+
         {
-          title: "Dokter Praktek",
-          href: "/MasterData/master-dokter/dokter-praktek/table-dokter-praktek",
+          title: "Dokter Poli",
+          href: "/MasterData/master-dokter/dokter-poli/table-DokterPoli",
+        },
+        {
+          title: "Jadwal Praktek Dokter",
+          href: "/MasterData/master-dokter/jadwal-praktek/table-jadwal-praktek",
         },
       ],
     },
@@ -365,6 +386,120 @@ export const menus = {
       ],
     },
   ],
+  IGD: [
+    {
+      title: "Administrasi",
+      subItems: [
+        {
+          title: "Pendaftaran Pasien IGD",
+          href: "/IGD/administrasi/pendaftaran-pasien-igd",
+        },
+        {
+          title: "Status Pasien IGD",
+          href: "/IGD/administrasi/status-pasien-igd",
+        },
+        {
+          title: "Daftar Pasien",
+          href: "/IGD/administrasi/table-pasien-igd",
+        },
+      ],
+    },
+    {
+      title: "Triase",
+      subItems: [
+        {
+          title: "Daftar Antrian Triase",
+          href: "/IGD/Antrean-Triase/table-poli",
+        },
+        {
+          title: "Penilaian Triase",
+          href: "/IGD/Antrean-Triase/penilaian",
+        },
+      ],
+    },
+    {
+      title: "Penanganan Pasien",
+      subItems: [
+        {
+          title: "Pemeriksaan Awal",
+          href: "/IGD/pemeriksaan-awal",
+        },
+        {
+          title: "Tindakan Medis",
+          href: "/IGD/tindakan-medis",
+        },
+        {
+          title: "Monitoring Pasien",
+          href: "/IGD/monitoring-pasien",
+        },
+      ],
+    },
+    {
+      title: "Diagnostik & Terapi",
+      subItems: [
+        {
+          title: "Permintaan Laboratorium",
+          href: "/IGD/permintaan-lab",
+        },
+        {
+          title: "Permintaan Radiologi",
+          href: "/IGD/permintaan-radiologi",
+        },
+        {
+          title: "Farmasi IGD",
+          href: "/IGD/farmasi-igd",
+        },
+      ],
+    },
+    {
+      title: "Manajemen Ruangan",
+      subItems: [
+        {
+          title: "Status Ruangan",
+          href: "/IGD/status-ruangan",
+        },
+        {
+          title: "Permintaan Transfer",
+          href: "/IGD/permintaan-transfer",
+        },
+      ],
+    },
+    {
+      title: "Disposisi Pasien",
+      subItems: [
+        {
+          title: "Rawat Inap",
+          href: "/IGD/rawat-inap",
+        },
+        {
+          title: "Pemulangan Pasien",
+          href: "/IGD/pemulangan-pasien",
+        },
+        {
+          title: "Rujukan Pasien",
+          href: "/IGD/rujukan-pasien",
+        },
+      ],
+    },
+    {
+      title: "Laporan & Analitik",
+      subItems: [
+        {
+          title: "Dashboard IGD",
+          href: "/IGD/dashboard",
+        },
+        {
+          title: "Laporan Harian",
+          href: "/IGD/laporan-harian",
+        },
+        {
+          title: "Statistik & Kinerja",
+          href: "/IGD/statistik-kinerja",
+        },
+      ],
+    },
+  ],
+
   instalasiRawatJalan: [
     {
       title: "Daftar Poli",

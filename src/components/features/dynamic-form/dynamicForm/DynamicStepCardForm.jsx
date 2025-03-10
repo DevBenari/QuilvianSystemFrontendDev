@@ -26,18 +26,18 @@ const DynamicStepCardForm = ({
   isAddMode = false,
   sourceData = {},
   externalOptions = {},
-  onFormMethodsReady ,
+  onFormMethodsReady,
   formType = "default",
-  className, 
+  className,
   defaultValues = {},
   onCardSelect,
   customValidators = {},
-  customFieldRenderers = {}
+  customFieldRenderers = {},
 }) => {
   const [isEditing, setIsEditing] = useState(isAddMode);
   const [submittedData, setSubmittedData] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState("");
 
   // Initialize form with default values
   const initialValues = {
@@ -56,7 +56,7 @@ const DynamicStepCardForm = ({
       }
       return defaults;
     }, {}),
-    ...defaultValues // Override with provided default values
+    ...defaultValues, // Override with provided default values
   };
 
   const methods = useForm({
@@ -65,7 +65,7 @@ const DynamicStepCardForm = ({
   });
 
   useEffect(() => {
-    if (onFormMethodsReady && typeof onFormMethodsReady === 'function') {
+    if (onFormMethodsReady && typeof onFormMethodsReady === "function") {
       onFormMethodsReady(methods);
     }
   }, [methods, onFormMethodsReady]);
@@ -86,7 +86,7 @@ const DynamicStepCardForm = ({
     formType,
     watchedValues,
     sourceData,
-    control
+    control,
   });
 
   // Alert message handler
@@ -106,19 +106,19 @@ const DynamicStepCardForm = ({
     handleNext,
     handlePrevious,
     navigateToStep,
-    validateCurrentStep
+    validateCurrentStep,
   } = useFormNavigation({
     steps: formConfig,
     methods,
     getValues,
     showAlertMessage,
     customValidators,
-    formType
+    formType,
   });
 
   // Form action handlers
   const handleEdit = () => setIsEditing(true);
-  
+
   const handleCancel = () => {
     setIsEditing(false);
     navigateToStep(0);
@@ -131,7 +131,7 @@ const DynamicStepCardForm = ({
     if (onFormSubmitted) onFormSubmitted(data);
     onSubmit(data);
   };
-  
+
   // Check if field should be hidden
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
@@ -156,16 +156,16 @@ const DynamicStepCardForm = ({
                 />
               </Card.Header>
               <Card.Body>
-                <FormAlert 
-                  showAlert={showAlert} 
-                  alertMessage={alertMessage} 
-                  onClose={() => setShowAlert(false)} 
+                <FormAlert
+                  showAlert={showAlert}
+                  alertMessage={alertMessage}
+                  onClose={() => setShowAlert(false)}
                 />
 
                 <ProgressIndicator progress={progress} />
-                
-                <StepsNavigation 
-                  steps={formConfig} 
+
+                <StepsNavigation
+                  steps={formConfig}
                   currentStep={currentStep}
                   completedSteps={completedSteps}
                   onStepSelect={navigateToStep}
@@ -176,11 +176,11 @@ const DynamicStepCardForm = ({
                     <h3 className="step-title mb-4">
                       Step {currentStep + 1}: {formConfig[currentStep].section}
                     </h3>
-                    
+
                     {/* Render the current step */}
                     <StepRenderer
                       step={formConfig[currentStep]}
-                      methods={methods}  // Pastikan methods dilempar
+                      methods={methods} // Pastikan methods dilempar
                       filteredItems={filteredItems}
                       formType={formType}
                       currentStep={currentStep}
@@ -191,12 +191,11 @@ const DynamicStepCardForm = ({
                       className={className}
                     />
 
-                    
                     <div className="d-flex justify-content-between mt-4">
-                      <button 
-                        type="button" 
-                        className="btn btn-outline-secondary" 
-                        onClick={handlePrevious} 
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={handlePrevious}
                         disabled={currentStep === 0}
                       >
                         <i className="ri-arrow-left-line me-1"></i> Previous
@@ -209,9 +208,9 @@ const DynamicStepCardForm = ({
                           </button>
                         )
                       ) : (
-                        <button 
-                          type="button" 
-                          className="btn btn-primary" 
+                        <button
+                          type="button"
+                          className="btn btn-primary"
                           onClick={(e) => handleNext(e)}
                         >
                           Next <i className="ri-arrow-right-line ms-1"></i>

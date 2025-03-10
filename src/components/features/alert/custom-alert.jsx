@@ -16,6 +16,16 @@ export const showAlert = {
     });
   },
 
+  error: (message) => {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: message,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "OK",
+    });
+  },
+
   warning: (message) => {
     Swal.fire({
       icon: "warning",

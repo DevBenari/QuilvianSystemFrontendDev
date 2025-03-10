@@ -164,7 +164,7 @@ const PoliKlinikSlice = createSlice({
           (newItem) =>
             !state.data.some(
               (existingItem) =>
-                existingItem.poliKlinikId === newItem.poliKlinikId
+                existingItem.poliklinikId === newItem.poliklinikId
             )
         );
 
@@ -228,7 +228,7 @@ const PoliKlinikSlice = createSlice({
       .addCase(updatePoliKlinik.fulfilled, (state, action) => {
         const index = state.data.findIndex(
           (PoliKlinik) =>
-            PoliKlinik.poliKlinikId === action.payload.poliKlinikId
+            PoliKlinik.poliklinikId === action.payload.poliklinikId
         );
         if (index !== -1) {
           state.data[index] = action.payload;
@@ -238,7 +238,7 @@ const PoliKlinikSlice = createSlice({
       // Hapus PoliKlinik
       .addCase(deletePoliKlinik.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (PoliKlinik) => PoliKlinik.poliKlinikId !== action.payload
+          (PoliKlinik) => PoliKlinik.poliklinikId !== action.payload
         );
       });
   },

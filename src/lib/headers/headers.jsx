@@ -6,10 +6,10 @@ export const getHeaders = (includeContentType = true) => {
     Accept: "application/json",
     Authorization: `Bearer ${token}`, // Add the token dynamically
   };
-  
+
   if (includeContentType) {
     headers["Content-Type"] = "application/json";
   }
-  
+
   return headers;
 };
