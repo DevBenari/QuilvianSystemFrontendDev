@@ -21,7 +21,7 @@ import ContentPage from '@/components/ui/content-page'
 // import "choices.js/public/assets/styles/choices.min.css";
 // import "flatpickr/dist/flatpickr.css";
 
-const ScrollLayout = dynamic(() => import('../components/ui/scrollLayout'), {ssr: false});
+const ScrollLayout = dynamic(() => import('@/components/ui/scrollLayout'), {ssr: false});
 
 export const metadata = {
   title: "Quilvian System",
