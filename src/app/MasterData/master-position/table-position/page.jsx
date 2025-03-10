@@ -1,4 +1,4 @@
-import TableDataPosition from "@/components/view/MasterData/master-position/table-position";
+import TableDataPosition from "@/components/view/MasterData/master-position-view/table-position";
 import React from "react";
 
 const PageListPosition = () => {

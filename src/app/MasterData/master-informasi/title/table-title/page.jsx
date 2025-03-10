@@ -1,4 +1,4 @@
-import TableDataTitle from "@/components/view/MasterData/master-informasi/master-title/table-title";
+import TableDataTitle from "@/components/view/MasterData/master-informasi/master-title-view/table-title";
 import React from "react";
 
 const PageListTitle = () => {

@@ -82,7 +82,10 @@ export const menus = {
       title: "Pendaftaran",
       subItems: [
         { title: "Pasien Baru", href: "/pendaftaran/pendaftaran-pasien-baru" },
-        { title: "Pasien Bayi", href: "/pendaftaran/pendaftaran-pasien-bayi" },
+        {
+          title: "Pasien Bayi",
+          href: "/pendaftaran/pendaftaran-pasien-bayi/table-pasien-bayi",
+        },
         {
           title: "Pendaftaran Pasien Laboratorium",
           href: "/pendaftaran/pendaftaran-pasien-laboratorium",
@@ -95,10 +98,7 @@ export const menus = {
           title: "Pendaftaran Pasien Rehabilitasi",
           href: "/pendaftaran/pendaftaran-pasien-rehabilitasi",
         },
-        {
-          title: "Pendaftaran Pasien Medical Check Up",
-          href: "/pendaftaran/pendaftaran-pasien-medical-check-up",
-        },
+
         {
           title: "Pendaftaran Pasien Fasilitas",
           href: "/pendaftaran/pendaftaran-pasien-fasilitas",
@@ -115,7 +115,7 @@ export const menus = {
           title: "Pendaftaran Pasien IGD",
           href: "/pendaftaran/pendaftaran-pasien-igd",
         },
-        { title: "Keanggotaan", href: "/pendaftaran/keanggotaan" },
+        { title: "Keanggotaan", href: "/pendaftaran/anggota/table-anggota" },
       ],
     },
     {
@@ -196,15 +196,7 @@ export const menus = {
         },
       ],
     },
-    {
-      title: "Keanggotaan",
-      subItems: [
-        {
-          title: "Tipe Keanggotaan",
-          href: "/MasterData/master-anggota/table-anggota",
-        },
-      ],
-    },
+
     // {
     //   title: "Data Pegawai",
     //   subItems: [
@@ -293,15 +285,11 @@ export const menus = {
       ],
     },
     {
-      title: "Poliklinik",
+      title: "Master Poliklinik",
       subItems: [
         {
-          title: "Data Tindakan Poliklinik",
-          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik/table-tindakan-poliklinik",
-        },
-        {
-          title: "Daftar Tarif Poliklinik",
-          href: "/MasterData/master-poliklinik/data-tindakan-poli-klinik/tarif-tindakan-poliklinik",
+          title: "Data Poliklinik",
+          href: "/MasterData/master-PoliKlinik/table-PoliKlinik",
         },
       ],
     },

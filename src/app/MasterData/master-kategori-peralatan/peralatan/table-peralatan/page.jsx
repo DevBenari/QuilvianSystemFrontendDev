@@ -1,4 +1,4 @@
-import TableDataPeralatan from "@/components/view/MasterData/master-kategori-peralatan/peralatan/table-peralatan";
+import TableDataPeralatan from "@/components/view/MasterData/master-kategori-peralatan-view/peralatan/table-peralatan";
 import React from "react";
 
 const PageListPeralatan = () => {

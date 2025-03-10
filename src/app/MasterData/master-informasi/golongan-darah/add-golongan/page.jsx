@@ -1,4 +1,4 @@
-import FormAddGolongan from "@/components/view/MasterData/master-informasi/master-golongan/add-golongan";
+import FormAddGolongan from "@/components/view/MasterData/master-informasi/master-golongan-view/add-golongan";
 import React from "react";
 
 const PageAddGolongan = () => {

@@ -1,18 +1,9 @@
-version: "3.8"
-
+version: "3"
 services:
-  quilvian-frontend:
+  nextjs-app:
     build: .
     image: rizkigunawan/quilvian-system-frontend:latest
     ports:
-      - "80:3000"
-    env_file:
-      - .env
-    restart: always
-    volumes:
-      - ./logs:/app/logs
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production

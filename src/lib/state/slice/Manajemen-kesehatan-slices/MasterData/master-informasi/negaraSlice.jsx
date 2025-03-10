@@ -5,10 +5,13 @@ import { getHeaders } from "@/lib/headers/headers";
 // CRUD Thunks
 export const fetchNegara = createAsyncThunk(
   "negara/fetchData",
-  async ({ page = 1, perPage = 10, isInfiniteScroll = false }, { rejectWithValue, getState }) => {
+  async (
+    { page = 1, perPage = 10, isInfiniteScroll = false },
+    { rejectWithValue, getState }
+  ) => {
     try {
       const currentState = getState().negara;
-      if(currentState.loadedPages.includes(page)) {
+      if (currentState.loadedPages.includes(page)) {
         console.log("Data already loaded for page:", page);
         return null;
       }
@@ -23,7 +26,7 @@ export const fetchNegara = createAsyncThunk(
         pagination: response.data.pagination,
         page,
         meta: { arg: { page, isInfiniteScroll } },
-      };// Pastikan API mengembalikan struktur data yang benar
+      }; // Pastikan API mengembalikan struktur data yang benar
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
@@ -167,7 +170,8 @@ const negaraSlice = createSlice({
       })
       .addCase(fetchNegara.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Terjadi kesalahan";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // ✅ Fetch Negara dengan search & filter (CustomSearchFilter)
