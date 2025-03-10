@@ -10,6 +10,7 @@ export const fetchPegawai = createAsyncThunk(
       const response = await InstanceAxios.get("/Pegawai", {
         headers: getHeaders(),
       });
+      console.log(response.data)
       return response.data;
     } catch (error) {
       const errorMessage =
