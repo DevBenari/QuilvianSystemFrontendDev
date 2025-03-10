@@ -16,7 +16,7 @@ import DepartementSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/Maste
 import KategoriPeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/KategoriPeralatanSlice";
 import PeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/PeralatanSlice";
 import DokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
-import PositionSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-slice/PositionSlice";
+import PositionSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-slice/positionSlice";
 import UserActiveSlice from "@/lib/state/slice/auth/master-userActive/UserActive";
 import authSlice from "@/lib/state/slice/auth/LoginSlice";
 import PoliKlinikSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";

@@ -9,7 +9,7 @@ import ButtonNav from "@/components/ui/button-navigation";
 import {
   fetchAsuransiPasien,
   fetchAsuransiPasienWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 import { FaShieldHeart } from "react-icons/fa6";
 
 const TableDataAsuransi = () => {
