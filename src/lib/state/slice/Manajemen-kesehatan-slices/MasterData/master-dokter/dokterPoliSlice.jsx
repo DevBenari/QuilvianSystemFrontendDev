@@ -4,10 +4,11 @@ import { getHeaders } from "@/lib/headers/headers";
 
 // 🔹 Fetch DokterPoli dengan pagination untuk CustomTableComponent
 // ✅ Fetch semua data DokterPoli dengan pagination
+// 🔹 Fetch DokterPoli dengan pagination dan filter berdasarkan Poli/Asuransi
 export const fetchDokterPoli = createAsyncThunk(
   "DokterPoli/fetchData",
   async (
-    { page = 1, perPage = 10, isInfiniteScroll = false },
+    { page = 1, perPage = 10, isInfiniteScroll = false, poliId, asuransiId },
     { rejectWithValue, getState }
   ) => {
     try {
@@ -16,8 +17,14 @@ export const fetchDokterPoli = createAsyncThunk(
         console.log("Data already loaded for page:", page);
         return null;
       }
-      const response = await InstanceAxios.get(`/DokterPoli`, {
-        params: { page, perPage },
+
+      let url = "/DokterPoli";
+      let params = { page, perPage };
+      if (poliId) params.poliId = poliId;
+      if (asuransiId) params.asuransiId = asuransiId;
+
+      const response = await InstanceAxios.get(url, {
+        params,
         headers: getHeaders(),
       });
 
@@ -35,7 +42,6 @@ export const fetchDokterPoli = createAsyncThunk(
     }
   }
 );
-
 // 🔹 Fetch DokterPoli dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
 export const fetchDokterPoliWithFilters = createAsyncThunk(
   "DokterPoli/fetchWithFilters",
@@ -145,21 +151,22 @@ const DokterPoliSlice = createSlice({
     loading: false,
     error: null,
     selectedDokterPoli: [],
+    doctorsByPoli: {},
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch DokterPoli hanya dengan pagination (CustomTableComponent)
+      // Fetch Doctors
+
       .addCase(fetchDokterPoli.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchDokterPoli.fulfilled, (state, action) => {
-        if (!action.payload) return; // Skip if we already had the data
-
+        if (!action.payload) return;
         state.loading = false;
 
-        // Add new data without duplicates
+        // Menyaring data baru agar tidak duplikasi
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
@@ -169,21 +176,55 @@ const DokterPoliSlice = createSlice({
         );
 
         if (action.meta.arg.isInfiniteScroll) {
-          // Infinite scroll - append data
           state.data = [...state.data, ...newData];
           state.loadedPages.push(action.payload.page);
         } else {
-          // Regular pagination - replace data
           state.data = action.payload.data;
         }
 
         state.totalItems = action.payload.pagination?.totalRows || 0;
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
+
+        // Struktur data dokter berdasarkan Poli
+        const doctorsByPoli = {};
+        action.payload.data.forEach((doctor) => {
+          if (!doctor.poliId) return;
+          if (!doctorsByPoli[doctor.poliId]) {
+            doctorsByPoli[doctor.poliId] = [];
+          }
+          doctorsByPoli[doctor.poliId].push({
+            id: doctor.dokterId,
+            name: doctor.namaDokter,
+            acceptedInsurances: doctor.asuransiId ? [doctor.asuransiId] : [],
+          });
+        });
+
+        Object.keys(doctorsByPoli).forEach((poliId) => {
+          const existingDoctors = state.doctorsByPoli[poliId] || [];
+          const newDoctors = doctorsByPoli[poliId];
+          const doctorMap = {};
+          existingDoctors.forEach((doctor) => {
+            doctorMap[doctor.id] = doctor;
+          });
+          newDoctors.forEach((doctor) => {
+            if (doctorMap[doctor.id]) {
+              doctorMap[doctor.id].acceptedInsurances = [
+                ...new Set([
+                  ...doctorMap[doctor.id].acceptedInsurances,
+                  ...doctor.acceptedInsurances,
+                ]),
+              ];
+            } else {
+              doctorMap[doctor.id] = doctor;
+            }
+          });
+          state.doctorsByPoli[poliId] = Object.values(doctorMap);
+        });
       })
       .addCase(fetchDokterPoli.rejected, (state, action) => {
         state.loading = false;
-        state.data = []; // Set data menjadi kosong saat error 404
+        state.data = [];
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 

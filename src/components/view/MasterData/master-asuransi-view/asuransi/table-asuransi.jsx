@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { FormProvider, useForm } from "react-hook-form";
 import { Alert, Spinner } from "react-bootstrap";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
+
 import {
-  fetchAsuransi,
-  fetchAsuransiWithFilters,
+  fetchAsuransiPasien,
+  fetchAsuransiPasienWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiSlice";
-import { FaShieldHeart } from "react-icons/fa"; // Icon untuk Asuransi
+import { FaShieldHeart } from "react-icons/fa6";
 
 const TableDataAsuransi = () => {
   const methods = useForm();
@@ -33,7 +33,7 @@ const TableDataAsuransi = () => {
 
   // 🔹 Pastikan data dari Redux store selalu berupa array sebelum disimpan
   useEffect(() => {
-    dispatch(fetchAsuransi({ page, perPage }));
+    dispatch(fetchAsuransiPasien({ page, perPage }));
   }, [dispatch, page]);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const TableDataAsuransi = () => {
         iconBgColor="bg-success-subtle" // Warna background ikon (Hijau lembut)
         iconColor="text-success" // Warna ikon (Hijau)
         // Custom Search Filter
-        fetchFunction={fetchAsuransiWithFilters}
+        fetchFunction={fetchAsuransiPasienWithFilters}
         setFilteredData={setFilteredData}
         showSearch={true}
         // Table Component
@@ -58,13 +58,9 @@ const TableDataAsuransi = () => {
         data={filteredData}
         columns={[
           { key: "no", label: "No" },
-          { key: "createDateTime", label: "Tanggal Dibuat" },
-          { key: "createByName", label: "Dibuat Oleh" },
-          { key: "kodeAsuransi", label: "Kode Asuransi" },
+          { key: "namaPasien", label: "Nama Pasien" },
           { key: "namaAsuransi", label: "Nama Asuransi" },
-          { key: "statusAsuransi", label: "Status Asuransi" },
-          { key: "tanggalMulaiKerjasama", label: "Tanggal Mulai Kerjasama" },
-          { key: "tanggalAkhirKerjasama", label: "Tanggal Akhir Kerjasama" },
+          { key: "noPolis", label: "No Polis" },
         ]}
         itemsPerPage={10}
         slugConfig={{
@@ -87,32 +83,25 @@ const TableDataAsuransi = () => {
             className="btn btn-sm iq-bg-success"
           />
         }
+        loading={
+          loading && (
+            <div
+              className="d-flex flex-column justify-content-center align-items-center"
+              style={{ height: "300px" }}
+            >
+              <Spinner
+                animation="border"
+                variant="primary"
+                role="status"
+                style={{ width: "4rem", height: "4rem" }}
+              />
+              <h5 className="mt-3 text-primary fw-bold">
+                Loading data, please wait...
+              </h5>
+            </div>
+          )
+        }
       />
-      {/* Loading Animation */}
-      {loading && (
-        <div
-          className="d-flex flex-column justify-content-center align-items-center"
-          style={{ height: "300px" }}
-        >
-          <Spinner
-            animation="border"
-            variant="primary"
-            role="status"
-            style={{ width: "4rem", height: "4rem" }}
-          />
-          <h5 className="mt-3 text-primary fw-bold">
-            Loading data, please wait...
-          </h5>
-        </div>
-      )}
-
-      {/* Error or No Data */}
-      {!loading && (error || filteredData.length === 0) && (
-        <Alert variant="warning" className="text-center mt-3">
-          <i className="ri-information-line me-2"></i>
-          Tidak ada data yang tersedia.
-        </Alert>
-      )}
     </FormProvider>
   );
 };

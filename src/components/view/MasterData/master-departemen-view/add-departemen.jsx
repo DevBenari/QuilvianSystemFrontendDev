@@ -78,17 +78,17 @@ const FormAddDepartement = () => {
         },
         {
           type: "date",
-          label: "Jam Buka",
+          label: "Tanggal Buka",
           name: "jamBuka",
           colSize: 6,
-          rules: { required: "Jam Buka harus diisi" },
+          rules: { required: "Tanggal Buka harus diisi" },
         },
         {
           type: "date",
-          label: "Jam Tutup",
+          label: "tanggal Tutup",
           name: "jamTutup",
           colSize: 6,
-          rules: { required: "Jam Tutup harus diisi" },
+          rules: { required: "tanggal Tutup harus diisi" },
         },
         {
           type: "text",

@@ -6,11 +6,12 @@ import { Spinner, Alert } from "react-bootstrap";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
+
+import { FaCalendarCheck } from "react-icons/fa"; // Icon untuk Jadwal Praktek
 import {
   fetchJadwalPraktek,
   fetchJadwalPraktekWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/JadwalPraktekSlice";
-import { FaCalendarCheck } from "react-icons/fa"; // Icon untuk Jadwal Praktek
 
 const TableDataJadwalPraktek = () => {
   const methods = useForm();

@@ -64,8 +64,8 @@ const TableDataDepartement = () => {
           { key: "namaDepartement", label: "Nama Departemen" },
           { key: "lokasi", label: "Lokasi" },
           { key: "telepon", label: "Telepon" },
-          { key: "jamBuka", label: "Jam Buka" },
-          { key: "jamTutup", label: "Jam Tutup" },
+          { key: "jamBuka", label: "Tanggal Buka" },
+          { key: "jamTutup", label: "Tanggal Tutup" },
           { key: "layanan", label: "Layanan" },
         ]}
         slugConfig={{
