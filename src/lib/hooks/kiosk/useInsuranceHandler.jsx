@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAsuransiPasien } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 
 /**
  * Custom hook for managing insurance-related functionality
@@ -8,11 +10,36 @@ import { useState } from "react";
  */
 export const useInsuranceManagement = ({
   initialInsuranceList = [],
-  formMethodsRef = null
+  formMethodsRef = null,
+  pasienId = null
 }) => {
+  const dispatch = useDispatch();
+  const { data: asuransiPasienList, loading } = useSelector(state => state.asuransiPasien || { data: [], loading: false });
+  
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
   const [insuranceList, setInsuranceList] = useState(initialInsuranceList);
   const [nonPKSInsuranceSelected, setNonPKSInsuranceSelected] = useState(false);
+
+  // Fetch asuransi pasien data when pasienId is available
+  useEffect(() => {
+    if (pasienId) {
+      dispatch(fetchAsuransiPasien(pasienId));
+    }
+  }, [dispatch, pasienId]);
+
+  // Update insuranceList when asuransiPasienList changes
+  useEffect(() => {
+    if (asuransiPasienList && asuransiPasienList.length > 0) {
+      const formattedList = asuransiPasienList.map(item => ({
+        namaAsuransi: item.namaAsuransi,
+        nomorPolis: item.noPolis,
+        isPKS: true, // Assume all fetched insurances are PKS by default
+        asuransiId: item.asuransiId
+      }));
+      
+      setInsuranceList(formattedList);
+    }
+  }, [asuransiPasienList]);
 
   // Modal handlers
   const handleOpenModal = (e) => {
@@ -32,7 +59,8 @@ export const useInsuranceManagement = ({
     const formattedInsurance = {
       namaAsuransi: insuranceData.NamaAsuransi || insuranceData.namaAsuransi,
       nomorPolis: insuranceData.NomorPolis || insuranceData.nomorPolis,
-      isPKS: insuranceData.IsPKS || insuranceData.isPKS
+      isPKS: insuranceData.IsPKS || insuranceData.isPKS,
+      asuransiId: insuranceData.asuransiId
     };
 
     setInsuranceList((prevList) => [...prevList, formattedInsurance]);
@@ -62,7 +90,8 @@ export const useInsuranceManagement = ({
         options: insuranceList.map((item) => ({
           label: `${item.namaAsuransi} - ${item.nomorPolis}`,
           value: item.namaAsuransi,
-          isPKS: item.isPKS
+          isPKS: item.isPKS,
+          asuransiId: item.asuransiId
         })),
         colSize: 6,
         hide: (watchValues) => selectedPaymentMethod !== "asuransi"
@@ -131,6 +160,7 @@ export const useInsuranceManagement = ({
     handleCloseModal,
     handleInsuranceSubmit,
     getInsuranceFields,
-    setInsuranceList
+    setInsuranceList,
+    loading
   };
 };
