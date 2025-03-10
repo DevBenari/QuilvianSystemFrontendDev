@@ -10,7 +10,7 @@ import {
   deletePosition,
   fetchPositionById,
   updatePosition,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-slice/PositionSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-slice/positionSlice";
 import useDepartementData from "@/lib/hooks/useDepartemen";
 
 const EditPositionForm = ({ params }) => {
