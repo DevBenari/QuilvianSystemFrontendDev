@@ -1,26 +1,35 @@
-# Gunakan base image resmi Node.js
 FROM node:18-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json dan install dependencies
-COPY package.json ./
-RUN yarn install
 
-# Copy seluruh kode proyek
+# Copy package.json dan yarn.lock
+COPY package.json yarn.lock ./
+
+# Install dependencies dengan production flag
+RUN yarn install --frozen-lockfile --production=false
+
+# Copy kode aplikasi
 COPY . .
 
-# Build Next.js untuk production
+# Build aplikasi
 RUN yarn build
 
-# Gunakan base image yang lebih kecil untuk menjalankan aplikasi
+# Stage 2: Run
 FROM node:18-alpine AS runner
 
 WORKDIR /app
 
-# Copy hasil build dari tahap sebelumnya
-COPY --from=builder /app ./
+# Copy hanya file yang diperlukan dari build stage
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/yarn.lock ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
 
-# Jalankan aplikasi Next.js
+# Install hanya production dependencies
+ENV NODE_ENV=production
+RUN yarn install --frozen-lockfile --production=true && yarn cache clean
+
+# Jalankan aplikasi
 CMD ["yarn", "start"]
