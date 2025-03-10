@@ -4,7 +4,7 @@ import { getHeaders } from "@/lib/headers/headers";
 
 // 🔹 Fetch AsuransiPasien dengan pagination untuk CustomTableComponent
 // ✅ Fetch semua data AsuransiPasien dengan pagination
-export const fetchAsuransiPasien = createAsyncThunk(
+export const fetchAsuransi= createAsyncThunk(
   "AsuransiPasien/fetchData",
   async ({ rejectWithValue }) => {
     try {
@@ -23,7 +23,7 @@ export const fetchAsuransiPasien = createAsyncThunk(
 );
 
 // 🔹 Fetch AsuransiPasien dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
-export const fetchAsuransiPasienWithFilters = createAsyncThunk(
+export const fetchAsuransiWithFilters = createAsyncThunk(
   "AsuransiPasien/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
@@ -49,7 +49,7 @@ export const fetchAsuransiPasienWithFilters = createAsyncThunk(
 );
 
 // 🔹 Fetch data AsuransiPasien berdasarkan ID
-export const fetchAsuransiPasienById = createAsyncThunk(
+export const fetchAsuransiById = createAsyncThunk(
   "AsuransiPasien/fetchById",
   async (id, { rejectWithValue }) => {
     try {
@@ -68,7 +68,7 @@ export const fetchAsuransiPasienById = createAsyncThunk(
 );
 
 // 🔹 Tambah AsuransiPasien Darah
-export const createAsuransiPasien = createAsyncThunk(
+export const createAsuransi= createAsyncThunk(
   "AsuransiPasien/create",
   async (data, { rejectWithValue }) => {
     try {
@@ -87,7 +87,7 @@ export const createAsuransiPasien = createAsyncThunk(
 );
 
 // 🔹 Update AsuransiPasien Darah berdasarkan ID
-export const updateAsuransiPasien = createAsyncThunk(
+export const updateAsuransi = createAsyncThunk(
   "AsuransiPasien/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
@@ -105,7 +105,7 @@ export const updateAsuransiPasien = createAsyncThunk(
   }
 );
 
-export const deleteAsuransiPasien = createAsyncThunk(
+export const deleteAsuransi = createAsyncThunk(
   "AsuransiPasien/delete",
   async (id, { rejectWithValue }) => {
     try {
@@ -138,11 +138,11 @@ const AsuransiPasienSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // ✅ Fetch AsuransiPasien hanya dengan pagination (CustomTableComponent)
-      .addCase(fetchAsuransiPasien.pending, (state) => {
+      .addCase(fetchAsuransi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAsuransiPasien.fulfilled, (state, action) => {
+      .addCase(fetchAsuransi.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
 
         state.loading = false;
@@ -168,51 +168,51 @@ const AsuransiPasienSlice = createSlice({
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
       })
-      .addCase(fetchAsuransiPasien.rejected, (state, action) => {
+      .addCase(fetchAsuransi.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // ✅ Fetch AsuransiPasien dengan search & filter (CustomSearchFilter)
-      .addCase(fetchAsuransiPasienWithFilters.pending, (state) => {
+      .addCase(fetchAsuransiWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAsuransiPasienWithFilters.fulfilled, (state, action) => {
+      .addCase(fetchAsuransiWithFilters.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data?.rows || [];
         state.totalItems = action.payload.data?.totalRows || 0;
         state.totalPages = action.payload.data?.totalPages || 1;
         state.currentPage = action.payload.data?.currentPage || 1;
       })
-      .addCase(fetchAsuransiPasienWithFilters.rejected, (state, action) => {
+      .addCase(fetchAsuransiWithFilters.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // Fetch By ID
-      .addCase(fetchAsuransiPasienById.pending, (state) => {
+      .addCase(fetchAsuransiById.pending, (state) => {
         state.loading = true;
         state.selectedAsuransiPasien = null;
       })
-      .addCase(fetchAsuransiPasienById.fulfilled, (state, action) => {
+      .addCase(fetchAsuransiById.fulfilled, (state, action) => {
         state.loading = false;
         state.selectedAsuransiPasien = action.payload;
       })
-      .addCase(fetchAsuransiPasienById.rejected, (state, action) => {
+      .addCase(fetchAsuransiById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
       // Tambah AsuransiPasien Darah
-      .addCase(createAsuransiPasien.fulfilled, (state, action) => {
+      .addCase(createAsuransi.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
       // Update AsuransiPasien Darah
-      .addCase(updateAsuransiPasien.fulfilled, (state, action) => {
+      .addCase(updateAsuransi.fulfilled, (state, action) => {
         const index = state.data.findIndex(
           (AsuransiPasien) =>
             AsuransiPasien.asuransiId === action.payload.asuransiId
@@ -223,7 +223,7 @@ const AsuransiPasienSlice = createSlice({
       })
 
       // Hapus AsuransiPasien Darah
-      .addCase(deleteAsuransiPasien.fulfilled, (state, action) => {
+      .addCase(deleteAsuransi.fulfilled, (state, action) => {
         state.data = state.data.filter(
           (AsuransiPasien) => AsuransiPasien.asuransiId !== action.payload
         );

@@ -6,15 +6,19 @@ import SelectField from '@/components/ui/select-field';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAsuransi } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice';
+import { createAsuransiPasien, resetCreateStatus } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice';
+import { showAlert } from '@/components/features/alert/custom-alert';
 
-const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => {
+const ModalInsurance = memo(({ onOpen, onClose, onSubmit,  formConfig = [] }) => {
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.Asuransi);
+    const { createLoading, createSuccess, createError } = useSelector((state) => state.asuransiPasien || {});
     
     const [insuranceData, setInsuranceData] = useState({ 
         namaAsuransi: "", 
         nomorPolis: "",
-        isPKS: true
+        isPKS: true,
+        asuransiId: ""
     });
     
     // Create defaultValues safely by checking if formConfig exists
@@ -73,12 +77,77 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
         fetchInsuranceProviders();
     }, [dispatch]);
 
+    // Reset create status when component unmounts
+    useEffect(() => {
+        return () => {
+            dispatch(resetCreateStatus());
+        };
+    }, [dispatch]);
+
+    // Handle create success
+    useEffect(() => {
+        if (createSuccess) {
+            Toast.fire({
+                icon: 'success',
+                title: 'Asuransi pasien berhasil ditambahkan'
+            });
+            
+            // Reset status after showing toast
+            dispatch(resetCreateStatus());
+            onClose();
+        }
+    }, [createSuccess, dispatch, onClose]);
+
+    // Handle create error
+    useEffect(() => {
+        if (createError) {
+            Toast.fire({
+                icon: 'error',
+                title: 'Gagal menambahkan asuransi pasien',
+                text: createError
+            });
+            
+            // Reset status after showing toast
+            dispatch(resetCreateStatus());
+        }
+    }, [createError, dispatch]);
+
     const [showCustomInput, setShowCustomInput] = useState(false);
     
     // Handle the form submission
     const handleFormSubmit = async () => {
-        onSubmit(insuranceData);
-        onClose(true);
+        // if (!pasienId) {
+        //     showAlert.warning()
+        // }
+        
+        // Format data for API
+        const formattedData = {
+            // pasienId: pasienId,
+            noPolis: insuranceData.nomorPolis || insuranceData.nomorPolis,
+            asuransiId: insuranceData.asuransiId
+        };
+        
+        // If it's a custom insurance (non-PKS), we need to handle it differently
+        // For custom insurances, first check if we need to create a new insurance provider
+        if (!insuranceData.isPKS && showCustomInput) {
+            // Since it's a non-PKS insurance, we still create the asuransi pasien record
+            // but mark it as non-PKS for the frontend to handle differently
+            formattedData.isPKS = false;
+        }
+        
+        // Dispatch action to create asuransi pasien
+        await dispatch(createAsuransiPasien(formattedData));
+        
+        // Format data for local component state
+        const formattedInsurance = {
+            namaAsuransi: insuranceData.NamaAsuransi || insuranceData.namaAsuransi,
+            nomorPolis: insuranceData.NomorPolis || insuranceData.nomorPolis,
+            isPKS: insuranceData.IsPKS || insuranceData.isPKS,
+            asuransiId: insuranceData.asuransiId
+        };
+        
+        // Call the onSubmit callback with the formatted insurance data
+        onSubmit(formattedInsurance);
     };
 
     return (
@@ -102,17 +171,28 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                                             setInsuranceData(prev => ({ 
                                                 ...prev, 
                                                 NamaAsuransi: "", 
-                                                IsPKS: false
+                                                IsPKS: false,
+                                                asuransiId: null
                                             }));
                                         } else {
+                                            // Find the selected insurance to get its ID
+                                            const selectedInsurance = insuranceOptions.find(
+                                                option => option.value === selected.value
+                                            );
+                                            
                                             setInsuranceData(prev => ({ 
                                                 ...prev, 
                                                 NamaAsuransi: selected.value,
-                                                IsPKS: true
+                                                IsPKS: true,
+                                                asuransiId: selectedInsurance?.id || null
                                             }));
                                         }
                                     } else {
-                                        setInsuranceData(prev => ({ ...prev, NamaAsuransi: "" }));
+                                        setInsuranceData(prev => ({ 
+                                            ...prev, 
+                                            NamaAsuransi: "",
+                                            asuransiId: null 
+                                        }));
                                     }
                                 }}
                             />
@@ -126,7 +206,8 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                                         setInsuranceData(prev => ({ 
                                             ...prev, 
                                             NamaAsuransi: e.target.value,
-                                            IsPKS: false
+                                            IsPKS: false,
+                                            asuransiId: null
                                         }))
                                     }
                                 />
@@ -148,7 +229,8 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                                             setInsuranceData(prev => ({ 
                                                 ...prev, 
                                                 NamaAsuransi: "",
-                                                IsPKS: true
+                                                IsPKS: true,
+                                                asuransiId: null
                                             }));
                                         }}
                                     >
@@ -177,9 +259,9 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                 <Button 
                     variant="primary" 
                     onClick={handleFormSubmit}
-                    disabled={!insuranceData.NamaAsuransi || !insuranceData.NomorPolis || loading}
+                    disabled={!insuranceData.NamaAsuransi || !insuranceData.NomorPolis || loading || createLoading}
                 >
-                    {loading ? 'Menyimpan...' : 'Simpan'}
+                    {createLoading ? 'Menyimpan...' : 'Simpan'}
                 </Button>
             </Modal.Footer>
         </Modal>
