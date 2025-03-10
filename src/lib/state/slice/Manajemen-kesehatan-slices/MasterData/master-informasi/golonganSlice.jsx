@@ -142,7 +142,8 @@ const golonganSlice = createSlice({
       })
       .addCase(fetchGolongan.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Gagal mengambil data";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // ✅ Fetch agama dengan search & filter (CustomSearchFilter)

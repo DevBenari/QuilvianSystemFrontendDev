@@ -1,4 +1,4 @@
-import TableDataIdentitas from "@/components/view/MasterData/master-informasi/master-indetitas/table-indetitas/table-identitas";
+import TableDataIdentitas from "@/components/view/MasterData/master-informasi/master-indetitas-view/table-indetitas/table-identitas";
 import React from "react";
 
 const PageListIdentitas = () => {

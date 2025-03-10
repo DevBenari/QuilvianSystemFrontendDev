@@ -8,7 +8,7 @@ import NegaraSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData
 import indetitasSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 import jabatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
 import agamaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/AgamaSlice";
-import anggotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-anggota/anggotaSlice";
+import anggotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/admisi/Anggota/anggotaSlice";
 import ProvinsiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 import KabupatenKotaSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
 import KecamatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
@@ -19,10 +19,12 @@ import KategoriPeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices
 import PeralatanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-peralatan/PeralatanSlice";
 import DokterSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
 import DokterPraktekSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPraktek";
-import PositionSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position/PositionSlice";
+import PositionSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-slice/PositionSlice";
 import UserActiveSlice from "@/lib/state/slice/auth/master-userActive/UserActive";
 import authSlice from "@/lib/state/slice/auth/LoginSlice";
-import PoliKlinikSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-PoliKlinik/PoliKlinikSlice";
+import PoliKlinikSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
+import DokterPoli from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPoli";
+import AsuransiPasien from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 
 const store = configureStore({
   reducer: {
@@ -50,6 +52,8 @@ const store = configureStore({
     Peralatan: PeralatanSlice,
     Position: PositionSlice,
     PoliKlinik: PoliKlinikSlice,
+    dokterPoli: DokterPoli,
+    pasienAsuransi: AsuransiPasien 
   },
 });
 

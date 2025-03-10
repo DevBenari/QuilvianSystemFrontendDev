@@ -12,7 +12,7 @@ import {
   deletePoliKlinik,
   fetchPoliKlinikById,
   updatePoliKlinik,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik/PoliKlinikSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
 
 const EditPoliKlinikForm = ({ params }) => {
   const router = useRouter();

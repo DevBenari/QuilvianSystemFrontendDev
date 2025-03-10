@@ -8,13 +8,13 @@ import {
   Image,
   Row,
   Alert,
+  Spinner,
 } from "react-bootstrap";
 import { useForm, FormProvider } from "react-hook-form";
 import TextField from "@/components/ui/text-field";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useRouter } from "next/navigation";
-import { showAlert } from "@/components/features/alert/custom-alert";
 import { LoginUser } from "@/lib/state/slice/auth/LoginSlice";
 
 const LoginPage = () => {
@@ -37,11 +37,9 @@ const LoginPage = () => {
     const result = await dispatch(LoginUser(values));
 
     if (result.meta.requestStatus === "fulfilled") {
-      showAlert.success("Anda Berhasil Login", () => {
-        setTimeout(() => {
-          router.push("/"); // Redirect ke halaman dashboard setelah login
-        }, 500);
-      });
+      setTimeout(() => {
+        router.push("/");
+      }, [2000]);
     } else {
       setErrorMessage(
         result.payload || "Terjadi kesalahan. Silakan coba lagi."
@@ -117,7 +115,18 @@ const LoginPage = () => {
                       className="btn btn-primary float-end"
                       disabled={loading}
                     >
-                      {loading ? "Logging in..." : "Sign in"}
+                      {loading ? (
+                        <>
+                          <Spinner
+                            animation="border"
+                            size="sm"
+                            className="me-2"
+                          />
+                          Logging in...
+                        </>
+                      ) : (
+                        "Sign in"
+                      )}{" "}
                     </Button>
                   </div>
                 </Form>

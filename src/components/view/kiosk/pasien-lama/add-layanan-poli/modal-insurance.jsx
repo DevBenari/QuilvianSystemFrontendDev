@@ -1,15 +1,20 @@
-import React, {memo, useState} from 'react';
+import React, {memo, useState, useEffect} from 'react';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TextField from "@/components/ui/text-field";
 import SelectField from '@/components/ui/select-field';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAsuransi } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice';
 
 const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => {
+    const dispatch = useDispatch();
+    const { loading } = useSelector((state) => state.Asuransi);
+    
     const [insuranceData, setInsuranceData] = useState({ 
-        provider: "", 
-        policyNumber: "",
-        isPKS: true  // Add this field to track PKS status
+        namaAsuransi: "", 
+        nomorPolis: "",
+        isPKS: true
     });
     
     // Create defaultValues safely by checking if formConfig exists
@@ -35,42 +40,46 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
         mode: "onSubmit",
     });
     
-    // Handle form field changes
-    const handleChange = (e) => {
-        // Check if e is an event (from regular inputs) or direct value (from select components)
-        const name = e?.target?.name;
-        const value = e?.target?.value;
-        
-        if (name && value !== undefined) {
-            // Standard event object
-            setInsuranceData(prev => ({ ...prev, [name]: value }));
-        } else if (typeof e === 'object' && e !== null) {
-            // Might be a custom event structure or direct value update
-            const fieldName = e.name;
-            const fieldValue = e.value;
-            
-            if (fieldName) {
-                setInsuranceData(prev => ({ ...prev, [fieldName]: fieldValue }));
+    // Fetch insurance options from API
+    const [insuranceOptions, setInsuranceOptions] = useState([]);
+    
+    // Fetch insurance providers from API
+    useEffect(() => {
+        const fetchInsuranceProviders = async () => {
+            try {
+                // Dispatch the action to fetch all insurance providers
+                const result = await dispatch(fetchAsuransi({ page: 1, perPage: 100 }));
+                
+                if (result.payload && result.payload.data) {
+                    // Map API response to options format
+                    const options = result.payload.data.map(insurance => ({
+                        label: insurance.namaAsuransi,
+                        value: insurance.namaAsuransi,
+                        id: insurance.AsuransiId
+                    }));
+                    
+                    // Add "Lainnya" option at the end
+                    options.push({ label: "Lainnya", value: "Lainnya" });
+                    
+                    setInsuranceOptions(options);
+                }
+            } catch (error) {
+                console.error("Error fetching insurance providers:", error);
+                // Fallback to empty list with just "Lainnya" option
+                setInsuranceOptions([{ label: "Lainnya", value: "Lainnya" }]);
             }
-        }
-    };
-    
-    // Handle the form submission
-    const handleFormSubmit = () => {
-        onSubmit(insuranceData);
-        onClose();
-    };
-    
-    // Insurance options for the SelectField
-    const insuranceOptions = [
-        { label: "BPJS Kesehatan", value: "BPJS Kesehatan" },
-        { label: "Prudential", value: "Prudential" },
-        { label: "Allianz", value: "Allianz" },
-        { label: "AXA Mandiri", value: "AXA Mandiri" },
-        { label: "Lainnya", value: "Lainnya" }
-    ];
+        };
+        
+        fetchInsuranceProviders();
+    }, [dispatch]);
 
     const [showCustomInput, setShowCustomInput] = useState(false);
+    
+    // Handle the form submission
+    const handleFormSubmit = async () => {
+        onSubmit(insuranceData);
+        onClose(true);
+    };
 
     return (
         <Modal show={onOpen} onHide={onClose} centered>
@@ -82,7 +91,7 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                     <div className="mb-3">
                         {!showCustomInput ? (
                             <SelectField
-                                name="provider"
+                                name="NamaAsuransi"
                                 label="Penyedia Asuransi"
                                 options={insuranceOptions}
                                 placeholder="Pilih penyedia asuransi"
@@ -92,18 +101,18 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                                             setShowCustomInput(true);
                                             setInsuranceData(prev => ({ 
                                                 ...prev, 
-                                                provider: "", 
-                                                isPKS: false  // Set to non-PKS for custom insurance
+                                                NamaAsuransi: "", 
+                                                IsPKS: false
                                             }));
                                         } else {
                                             setInsuranceData(prev => ({ 
                                                 ...prev, 
-                                                provider: selected.value,
-                                                isPKS: true   // Pre-defined insurances are PKS
+                                                NamaAsuransi: selected.value,
+                                                IsPKS: true
                                             }));
                                         }
                                     } else {
-                                        setInsuranceData(prev => ({ ...prev, provider: "" }));
+                                        setInsuranceData(prev => ({ ...prev, NamaAsuransi: "" }));
                                     }
                                 }}
                             />
@@ -116,12 +125,12 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                                     onChange={(e) => 
                                         setInsuranceData(prev => ({ 
                                             ...prev, 
-                                            provider: e.target.value,
-                                            isPKS: false // Custom insurance is non-PKS
+                                            NamaAsuransi: e.target.value,
+                                            IsPKS: false
                                         }))
                                     }
                                 />
-                                {insuranceData.provider && (
+                                {insuranceData.NamaAsuransi && (
                                     <div className="alert alert-warning mt-2">
                                         <small>
                                             Asuransi ini tidak bekerja sama dengan rumah sakit (Non-PKS). 
@@ -138,8 +147,8 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                                             setShowCustomInput(false);
                                             setInsuranceData(prev => ({ 
                                                 ...prev, 
-                                                provider: "",
-                                                isPKS: true
+                                                NamaAsuransi: "",
+                                                IsPKS: true
                                             }));
                                         }}
                                     >
@@ -151,11 +160,11 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                     </div>
                     <div className="mb-3">
                         <TextField
-                            name="policyNumber"
+                            name="NomorPolis"
                             label="Nomor Polis"
                             placeholder="Masukkan nomor polis asuransi"
                             onChange={(e) => 
-                                setInsuranceData(prev => ({ ...prev, policyNumber: e.target.value }))
+                                setInsuranceData(prev => ({ ...prev, NomorPolis: e.target.value }))
                             }
                         />
                     </div>
@@ -168,9 +177,9 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                 <Button 
                     variant="primary" 
                     onClick={handleFormSubmit}
-                    disabled={!insuranceData.provider || !insuranceData.policyNumber}
+                    disabled={!insuranceData.NamaAsuransi || !insuranceData.NomorPolis || loading}
                 >
-                    Simpan
+                    {loading ? 'Menyimpan...' : 'Simpan'}
                 </Button>
             </Modal.Footer>
         </Modal>

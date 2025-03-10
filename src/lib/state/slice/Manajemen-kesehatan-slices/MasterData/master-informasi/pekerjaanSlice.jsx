@@ -136,7 +136,8 @@ const pekerjaanSlice = createSlice({
       })
       .addCase(fetchPekerjaan.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Gagal mengambil data";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       .addCase(fetchPekerjaanWithFilters.pending, (state) => {

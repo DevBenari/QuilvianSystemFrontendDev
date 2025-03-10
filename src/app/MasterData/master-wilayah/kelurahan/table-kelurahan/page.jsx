@@ -1,4 +1,4 @@
-import TableDataKelurahan from "@/components/view/MasterData/master-wilayah/kelurahan/table-kelurahan";
+import TableDataKelurahan from "@/components/view/MasterData/master-wilayah-view/kelurahan/table-kelurahan";
 import React from "react";
 
 const DataKelurahanPage = () => {
