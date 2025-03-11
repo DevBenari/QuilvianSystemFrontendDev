@@ -53,14 +53,14 @@ jobs:
           echo "Deployment completed!"
 
           # Kirim notifikasi ke Telegram
-          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-              -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
-              -d text="✅ Deployment Sukses! 🚀%0A
-              🔹 *Docker Image:* $IMAGE_NAME%0A
-              🔹 *Container:* $CONTAINER_NAME%0A
-              📅 *Tanggal:* $(date +'%Y-%m-%d %H:%M:%S')%0A
-              🛠 Deployment dilakukan oleh Branch Frontend *QuilvianDev*%0A
-              🔄 Container telah diperbarui dan berjalan dengan baik. 🎉"
+          curl -X POST "https://api.telegram.org/bot7630899059:AAFqAUGUB7I5V9VGKXbcmoWmbYWvrdmnje8/sendMessage" \
+              -d chat_id=-1002437306112 \
+              -d text="✅ Deployment Sukses! 🚀
+              *Docker Image:* $IMAGE_NAME
+              *Container:* $CONTAINER_NAME
+              *Tanggal:* $(date +'%Y-%m-%d %H:%M:%S')
+              Deployment dilakukan Frontend *QuilvianDev*
+              🔄 Container telah diperbarui. 🎉"
         EOF
 
 # name: Deploy Next.js to Server
