@@ -51,4 +51,12 @@ jobs:
           sudo docker system prune -af
 
           echo "Deployment completed!"
+          curl -X POST https://api.telegram.org/bot7630899057:AAFqAUGUB7I5V9VGKXbcmoWmbYWvrdmnje8/sendMessage \
+              -d chat_id=-1002437306112 \
+              -d text="✅ Deployment Sukses! 🚀%0A
+              🔹 *Docker Image:* $IMAGE_NAME%0A
+              🔹 *Container:* $CONTAINER_NAME%0A
+              📅 *Tanggal:* $DEPLOY_TIME%0A
+              🛠️ Deployment dilakukan oleh Branch Frontend *QuilvianDev*%0A
+              🔄 Container telah diperbarui dan berjalan dengan baik. 🎉"
         EOF
