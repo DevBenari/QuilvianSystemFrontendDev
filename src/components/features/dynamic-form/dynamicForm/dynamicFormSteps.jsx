@@ -67,10 +67,10 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
   
   const {titles = []} = externalOptions;
    // Gunakan useWatch agar tidak memicu re-render berulang
-  const currentJenisKelamin = useWatch({ control: methods.control, name: "jenisKelamin" });
-  const titlesId = useWatch({ control: methods.control, name: "titlesId" });
-  const statusKewarganegaraan = watch("statusKewarganegaraan");
-  const kewarganegaraan = watch("kewarganegaraan");
+  const currentJenisKelamin = useWatch({ control: methods.control, name: "JenisKelamin" });
+  const titlesId = useWatch({ control: methods.control, name: "TitlesId" });
+  const statusKewarganegaraan = watch("StatusKewarganegaraan");
+  const kewarganegaraan = watch("Kewarganegaraan");
 
   useEffect(() => {
     const titleLabel = titles.find(option => option.value === titlesId)?.label;
@@ -82,16 +82,16 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     }
   
     if (newJenisKelamin !== currentJenisKelamin) {
-      setValue("jenisKelamin", newJenisKelamin, { shouldValidate: true });
+      setValue("JenisKelamin", newJenisKelamin, { shouldValidate: true });
     }
   }, [titlesId, currentJenisKelamin, setValue, titles]);
   
   
   useEffect(() => {
     if (statusKewarganegaraan === "WNI") {
-      setValue("kewarganegaraan", "Indonesia");
+      setValue("Kewarganegaraan", "Indonesia");
     } else if (statusKewarganegaraan === "WNA" && kewarganegaraan !== kewarganegaraan) {
-      setValue("kewarganegaraan", kewarganegaraan);
+      setValue("Kewarganegaraan", kewarganegaraan);
     }
   }, [statusKewarganegaraan, kewarganegaraan, setValue]);
 

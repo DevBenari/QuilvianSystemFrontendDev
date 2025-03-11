@@ -1,18 +1,18 @@
 "use client";
+
 import React, { memo, useState, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Col, Row, Spinner } from "react-bootstrap";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-DynamicForm;
-import { pasienLama } from "@/utils/dataPasien";
+import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import { pasienLama } from "@/utils/dataPasien";
+import { FaUserClock } from "react-icons/fa"; // Icon untuk Pasien Lama
 
 const PasienLama = memo(() => {
   const methods = useForm();
   const [filteredData, setFilteredData] = useState(pasienLama);
 
-  // Sinkronisasi data awal
+  // 🔹 Sinkronisasi data awal saat komponen pertama kali dimuat
   useEffect(() => {
     setFilteredData(pasienLama);
   }, []);
@@ -21,58 +21,49 @@ const PasienLama = memo(() => {
     <FormProvider {...methods}>
       <DynamicForm title="Pencarian Pasien Lama" />
 
-      <Col lg="12" className="iq-card p-4 mt-3">
-        <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">Searching Pasien Lama</h2>
+      <CustomTableComponent
+        // 🔹 Header
+        headerTitle="Pencarian Data Pasien Lama"
+        headerSubtitle="Manajemen Daftar Pasien Lama"
+        icon={FaUserClock} // Icon Pasien Lama
+        iconBgColor="bg-warning-subtle" // Warna background ikon (Kuning lembut)
+        iconColor="text-warning" // Warna ikon (Kuning)
+        // 🔹 Custom Search Filter
+
+        setFilteredData={setFilteredData}
+        showSearch={true}
+        // 🔹 Table Component
+        tableTitle="Tabel Pasien Lama"
+        data={filteredData}
+        columns={[
+          { key: "no", label: "No" },
+          { key: "noRm", label: "No RM" },
+          { key: "oldRm", label: "Old RM" },
+          { key: "nama", label: "Nama" },
+          { key: "alamat", label: "Alamat" },
+          { key: "tempatTanggalLahir", label: "Tempat Tanggal Lahir" },
+        ]}
+        slugConfig={{
+          textField: "nama",
+          idField: "id",
+        }}
+        basePath="/pendaftaran/pasien-lama/edit-pasien-lama"
+        paginationProps={{
+          currentPage: 1,
+          totalPages: Math.ceil(filteredData.length / 5),
+          itemsPerPage: 5,
+          onPageChange: () => {}, // Fungsi pagination bisa ditambahkan jika ada backend
+        }}
+        addButton={null} // Jika tidak ada tombol tambah pasien, bisa dikosongkan
+        additionalButtons={
           <button
-            className="btn btn-dark my-3 mx-3"
+            className="btn btn-dark btn-sm mx-2"
             onClick={() => window.location.reload()}
           >
-            <i className="ri-refresh-line"></i>
+            <i className="ri-refresh-line"></i> Refresh
           </button>
-        </div>
-        <Col lg="12" className="mt-2">
-          <CustomSearchFilter
-            data={pasienLama}
-            setFilteredPatients={setFilteredData}
-            onFilteredPatients={filteredData}
-          />
-        </Col>
-      </Col>
-
-      <div className="mt-3">
-        <Row>
-          <Col sm="12" className="p-3">
-            <div className="iq-card p-3">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="card-title font-widest">Tabel Pasien Lama</h4>
-              </div>
-              <div className="iq-card-body">
-                <CustomTableComponent
-                  data={filteredData}
-                  columns={[
-                    { key: "no", label: "No" },
-                    { key: "noRm", label: "No RM" },
-                    { key: "oldRm", label: "Old RM" },
-                    { key: "nama", label: "Nama" },
-                    { key: "alamat", label: "Alamat" },
-                    {
-                      key: "tempatTanggalLahir",
-                      label: "Tempat Tanggal Lahir",
-                    },
-                  ]}
-                  slugConfig={{
-                    textField: "nama",
-                    idField: "id",
-                  }}
-                  basePath="/pendaftaran/pasien-lama/edit-pasien-lama"
-                  itemsPerPage={5}
-                />
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </div>
+        }
+      />
     </FormProvider>
   );
 });
