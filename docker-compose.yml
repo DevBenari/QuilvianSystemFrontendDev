@@ -1,6 +1,9 @@
 services:
   frontend:
-    build: .
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_QUILVIAN: "http://160.20.104.98/api" # Masukkan API URL dari backend
     container_name: quilvian-frontend-container
     ports:
       - "8080:3000"
