@@ -13,9 +13,8 @@ import {
 import { FaUserMd } from "react-icons/fa"; // Icon untuk Dokter
 
 const TableDataDokter = () => {
-  const methods = useForm();
   const dispatch = useDispatch();
-
+  const methods = useForm();
   // 🔹 Ambil data dari Redux store
   const {
     data: DokterData,
@@ -61,6 +60,7 @@ const TableDataDokter = () => {
         // Table Component
         tableTitle="Tabel List Dokter"
         data={filteredDokter}
+        loading={loading}
         columns={[
           { key: "no", label: "No" }, // Nomor urut
           { key: "createdDate", label: "Tanggal Dibuat" },
@@ -71,7 +71,6 @@ const TableDataDokter = () => {
           { key: "str", label: "STR" },
           { key: "tglSip", label: "Tanggal SIP" },
           { key: "tglStr", label: "Tanggal STR" },
-          { key: "panggilDokter", label: "Panggilan" },
           { key: "nik", label: "NIK" },
         ]}
         slugConfig={{ textField: "nmDokter", idField: "dokterId" }} // ID Dokter untuk Slug

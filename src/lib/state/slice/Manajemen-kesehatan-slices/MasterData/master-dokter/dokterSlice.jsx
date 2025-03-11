@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
-import { getHeaders } from "@/lib/headers/headers";
+import { getHeaders, getHeadersFormData } from "@/lib/headers/headers";
+
+import Cookies from "js-cookie";
 
 // 🔹 Fetch Dokter dengan pagination untuk CustomTableComponent
 // ✅ Fetch semua data Dokter dengan pagination
@@ -85,9 +87,10 @@ export const fetchDokterById = createAsyncThunk(
 export const createDokter = createAsyncThunk(
   "Dokter/create",
   async (data, { rejectWithValue }) => {
+    const token = Cookies.get("token");
     try {
       const response = await InstanceAxios.post(`/Dokter`, data, {
-        headers: getHeaders(),
+        headers: getHeadersFormData(),
       });
 
       console.log("Response API (Fetch By ID):", response.data);
@@ -106,7 +109,8 @@ export const updateDokter = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.put(`/Dokter/${id}`, data, {
-        headers: getHeaders(),
+        headers: getHeadersFormData(),
+        body: data, // Body harus berupa FormData
       });
       return response.data;
     } catch (error) {
