@@ -11,6 +11,10 @@ RUN npm install --production
 # Copy semua kode sumber
 COPY . .
 
+# Tambahkan variabel lingkungan dari build-time
+ARG NEXT_PUBLIC_API_QUILVIAN
+ENV NEXT_PUBLIC_API_QUILVIAN=${NEXT_PUBLIC_API_QUILVIAN}
+
 # Build aplikasi Next.js
 RUN npm run build
 
