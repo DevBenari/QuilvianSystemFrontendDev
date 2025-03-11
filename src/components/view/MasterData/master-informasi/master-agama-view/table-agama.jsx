@@ -11,7 +11,7 @@ import CustomTableComponent from "@/components/features/CustomTable/custom-table
 import { FormProvider, useForm } from "react-hook-form";
 import ButtonNav from "@/components/ui/button-navigation";
 import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
-import { FaUserInjured } from "react-icons/fa";
+import { FaPrayingHands, FaUserInjured } from "react-icons/fa";
 
 const TableDataAgama = () => {
   const methods = useForm();
@@ -43,7 +43,7 @@ const TableDataAgama = () => {
           //  start header
           headerTitle="Pencarian Data Agama"
           headerSubtitle="Pembuatann dan Manajemen Data Agama"
-          icon={FaUserInjured} // Menggunakan icon yang bisa diubah
+          icon={FaPrayingHands} // Menggunakan icon yang bisa diubah
           //  end header
           //  custom search filter
           fetchFunction={fetchAgamaWithFilters}
@@ -51,7 +51,7 @@ const TableDataAgama = () => {
           showSearch={true}
           //  end  custom search filter
           //   Table
-          tableTitle="Data Pasien IGD"
+          tableTitle="Data Agama"
           data={filteredData}
           columns={[
             { key: "no", label: "No" },

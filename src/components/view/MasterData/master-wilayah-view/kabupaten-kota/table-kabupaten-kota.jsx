@@ -54,9 +54,9 @@ const TableDataKabupatenKota = () => {
         fetchFunction={fetchKabupatenKotaWithFilters}
         setFilteredData={setFilteredData}
         showSearch={true}
+        loading={loading}
         // Table Component
         tableTitle="Tabel List Kabupaten/Kota"
-        loading={loading}
         data={filteredData}
         columns={[
           { key: "no", label: "No" },

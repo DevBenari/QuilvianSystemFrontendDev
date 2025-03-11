@@ -44,10 +44,12 @@ const KelurahanAddForm = () => {
 
   const handleSubmit = async (data) => {
     try {
-      // Tambahkan negaraId secara default saat submit
       await dispatch(createKelurahan(data)).unwrap();
       showAlert.success("Data berhasil disimpan", () => {
         router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       });
     } catch (error) {
       console.error("Gagal menambahkan Kabupaten Kota:", error);

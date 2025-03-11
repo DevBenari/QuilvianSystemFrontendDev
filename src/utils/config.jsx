@@ -221,6 +221,10 @@ export const menus = {
           href: "/MasterData/master-asuransi/asuransi/daftar-asuransi",
         },
         {
+          title: "Daftar Asuransi Pasien",
+          href: "/MasterData/master-asuransi/asuransi-pasien/daftar-asuransi-pasien",
+        },
+        {
           title: "Coveran Asuransi",
           href: "/MasterData/master-asuransi/coveran-asuransi/daftar-CoveranAsuransi",
         },

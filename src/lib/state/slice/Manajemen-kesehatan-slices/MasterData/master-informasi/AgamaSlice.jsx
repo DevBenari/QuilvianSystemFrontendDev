@@ -94,7 +94,7 @@ export const createAgama = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan Agama darah"
+        error.response?.data || "Gagal menambahkan Agama "
       );
     }
   }
@@ -111,7 +111,7 @@ export const updateAgama = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui Agama darah"
+        error.response?.data || "Gagal memperbarui Agama "
       );
     }
   }

@@ -95,6 +95,9 @@ const KecamatanEditForm = ({ params }) => {
       await dispatch(updateKecamatan({ id, data })).unwrap();
       showAlert.success("Data Kecamatan berhasil diperbarui!", () => {
         router.push("/MasterData/master-wilayah/kecamatan/table-kecamatan");
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       });
     } catch (error) {
       console.error("❌ Gagal memperbarui data Kecamatan:", error);
@@ -110,6 +113,9 @@ const KecamatanEditForm = ({ params }) => {
           await dispatch(deleteKecamatan(dataKecamatan.kecamatanId)).unwrap();
           showAlert.success("Data Kecamatan berhasil dihapus!", () => {
             router.push("/MasterData/master-wilayah/kecamatan/table-kecamatan");
+            setTimeout(() => {
+              window.location.reload();
+            }, 100);
           });
         } catch (error) {
           console.error("❌ Gagal menghapus data Kecamatan:", error);

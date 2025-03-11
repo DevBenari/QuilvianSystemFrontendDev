@@ -1,199 +1,115 @@
-// hooks/useProvinsiData.js
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProvinsi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 import { fetchKabupatenKota } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
 import { fetchKecamatan } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
 import { fetchKelurahan } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
+import { fetchNegara } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 
-const useWilayahData = () => {
+// Custom hook untuk fetching data wilayah
+const useFetchWilayah = (sliceName, fetchAction) => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
-  const lastFetchedPage = useRef(1);
 
-  const {
-    data: ProvinsiData,
-    loading: loadingProvinsi,
-    totalPages: totalPagesProvinsi,
-    loadedPages: loadedPagesProvinsi,
-  } = useSelector((state) => state.Provinsi);
+  const { data, loading, totalPages, loadedPages } = useSelector(
+    (state) => state[sliceName]
+  );
 
   useEffect(() => {
-    if (!loadedPagesProvinsi.includes(1)) {
-      dispatch(fetchProvinsi({ page: 1, perPage: 10, isInfiniteScroll: true }));
+    if (!loadedPages.includes(1)) {
+      dispatch(fetchAction({ page: 1, perPage: 10, isInfiniteScroll: true }));
     }
-  }, [dispatch, loadedPagesProvinsi]);
+  }, [dispatch, loadedPages]);
 
-  const handleLoadMoreProvinsi = () => {
-    if (
-      page < totalPagesProvinsi &&
-      !loadingProvinsi &&
-      !loadedPagesProvinsi.includes(page + 1)
-    ) {
+  const handleLoadMore = () => {
+    if (page < totalPages && !loading && !loadedPages.includes(page + 1)) {
       const nextPage = page + 1;
       setPage(nextPage);
-
-      console.log(`🔄 Fetching page ${nextPage}...`);
+      console.log(`🔄 Fetching page ${nextPage} for ${sliceName}...`);
       dispatch(
-        fetchProvinsi({ page: nextPage, perPage: 10, isInfiniteScroll: true })
+        fetchAction({ page: nextPage, perPage: 10, isInfiniteScroll: true })
       );
     }
   };
 
+  return { data, loading, handleLoadMore };
+};
+
+// Hook utama untuk mengelola data wilayah
+const useWilayahData = () => {
+  // Fetch Negara
+  const {
+    data: NegaraData,
+    loading: loadingNegara,
+    handleLoadMore: handleLoadMoreNegara,
+  } = useFetchWilayah("negara", fetchNegara);
+
+  // Fetch Provinsi
+  const {
+    data: ProvinsiData,
+    loading: loadingProvinsi,
+    handleLoadMore: handleLoadMoreProvinsi,
+  } = useFetchWilayah("Provinsi", fetchProvinsi);
+
+  // Fetch Kabupaten/Kota
+  const {
+    data: KabupatenKotaData,
+    loading: loadingKabupatenKota,
+    handleLoadMore: handleLoadMoreKabupatenKota,
+  } = useFetchWilayah("KabupatenKota", fetchKabupatenKota);
+
+  // Fetch Kecamatan
+  const {
+    data: KecamatanData,
+    loading: loadingKecamatan,
+    handleLoadMore: handleLoadMoreKecamatan,
+  } = useFetchWilayah("Kecamatan", fetchKecamatan);
+
+  // Fetch Kelurahan
+  const {
+    data: KelurahanData,
+    loading: loadingKelurahan,
+    handleLoadMore: handleLoadMoreKelurahan,
+  } = useFetchWilayah("Kelurahan", fetchKelurahan);
+
+  // Format data menjadi options
   const ProvinsiOptions = ProvinsiData.map((item) => ({
     label: item.namaProvinsi,
     value: item.provinsiId,
   }));
 
-  const {
-    data: KabupatenKotaData,
-    loading: loadingKabupatenKota,
-    totalPages: totalPagesKabupatenKota,
-    loadedPages: loadedPagesKabupatenKota,
-  } = useSelector((state) => state.KabupatenKota);
-
-  useEffect(() => {
-    // Initial load
-    if (!loadedPagesKabupatenKota.includes(1)) {
-      dispatch(
-        fetchKabupatenKota({
-          page: 1,
-          perPage: 10,
-          isInfiniteScroll: true,
-        })
-      );
-    }
-  }, [dispatch, loadedPagesKabupatenKota]);
-
-  const handleLoadMoreKabupatenKota = () => {
-    if (
-      page < totalPagesKabupatenKota &&
-      !loadingKabupatenKota &&
-      !loadedPagesKabupatenKota.includes(page + 1)
-    ) {
-      const nextPage = page + 1;
-      lastFetchedPage.current = nextPage;
-      setPage(nextPage);
-
-      dispatch(
-        fetchKabupatenKota({
-          page: nextPage,
-          perPage: 10,
-          isInfiniteScroll: true,
-        })
-      );
-    }
-  };
-
-  // Transform data untuk select options
   const KabupatenKotaOptions = KabupatenKotaData.map((item) => ({
     label: item.namaKabupatenKota,
     value: item.kabupatenKotaId,
   }));
 
-  const {
-    data: KecamatanData,
-    loading: loadingKecamatan,
-    totalPages: totalPagesKecamatan,
-    loadedPages: loadedPagesKecamatan,
-  } = useSelector((state) => state.Kecamatan);
-
-  useEffect(() => {
-    // Initial load
-    if (!loadedPagesKecamatan.includes(1)) {
-      dispatch(
-        fetchKecamatan({
-          page: 1,
-          perPage: 10,
-          isInfiniteScroll: true,
-        })
-      );
-    }
-  }, [dispatch, loadedPagesKecamatan]);
-
-  const handleLoadMoreKecamatan = () => {
-    if (
-      page < totalPagesKecamatan &&
-      !loadingKecamatan &&
-      !loadedPagesKecamatan.includes(page + 1)
-    ) {
-      const nextPage = page + 1;
-      lastFetchedPage.current = nextPage;
-      setPage(nextPage);
-
-      dispatch(
-        fetchKecamatan({
-          page: nextPage,
-          perPage: 10,
-          isInfiniteScroll: true,
-        })
-      );
-    }
-  };
-
-  // Transform data untuk select options
   const KecamatanOptions = KecamatanData.map((item) => ({
     label: item.namaKecamatan,
     value: item.kecamatanId,
   }));
 
-  // Kelurahann
-
-  const {
-    data: KelurahanData,
-    loading: loadingKelurahan,
-    totalPages: totalPagesKelurahan,
-    loadedPages: loadedPagesKelurahan,
-  } = useSelector((state) => state.Kelurahan);
-
-  useEffect(() => {
-    // Initial load
-    if (!loadedPagesKelurahan.includes(1)) {
-      dispatch(
-        fetchKelurahan({
-          page: 1,
-          perPage: 10,
-          isInfiniteScroll: true,
-        })
-      );
-    }
-  }, [dispatch, loadedPagesKelurahan]);
-
-  const handleLoadMoreKelurahan = () => {
-    if (
-      page < totalPagesKelurahan &&
-      !loadingKelurahan &&
-      !loadedPagesKelurahan.includes(page + 1)
-    ) {
-      const nextPage = page + 1;
-      lastFetchedPage.current = nextPage;
-      setPage(nextPage);
-
-      dispatch(
-        fetchKelurahan({
-          page: nextPage,
-          perPage: 10,
-          isInfiniteScroll: true,
-        })
-      );
-    }
-  };
-
-  // Transform data untuk select options
   const KelurahanOptions = KelurahanData.map((item) => ({
     label: item.namaKelurahan,
     value: item.kelurahanId,
   }));
 
+  const NegaraOptions = NegaraData.map((item) => ({
+    label: item.namaNegara,
+    value: item.negaraId,
+  }));
+
   return {
-    KabupatenKotaOptions,
     ProvinsiOptions,
+    KabupatenKotaOptions,
     KecamatanOptions,
     KelurahanOptions,
+    NegaraOptions,
+    loadingNegara,
     loadingProvinsi,
     loadingKabupatenKota,
     loadingKecamatan,
     loadingKelurahan,
+    handleLoadMoreNegara,
     handleLoadMoreProvinsi,
     handleLoadMoreKabupatenKota,
     handleLoadMoreKecamatan,

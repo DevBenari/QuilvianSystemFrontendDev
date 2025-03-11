@@ -56,7 +56,6 @@ const TableDataKecamatan = () => {
         showSearch={true}
         // Table Component
         tableTitle="Tabel List Kecamatan"
-        loading={loading}
         data={filteredData}
         columns={[
           { key: "no", label: "No" },

@@ -2,31 +2,17 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-// 🔹 Fetch Dokter dengan pagination untuk CustomTableComponent
-// ✅ Fetch semua data Dokter dengan pagination
-export const fetchDokter = createAsyncThunk(
-  "Dokter/fetchData",
-  async (
-    { page = 1, perPage = 10, isInfiniteScroll = false },
-    { rejectWithValue, getState }
-  ) => {
+// 🔹 Fetch AsuransiPasien dengan pagination untuk CustomTableComponent
+// ✅ Fetch semua data AsuransiPasien dengan pagination
+export const fetchAsuransiPasien = createAsyncThunk(
+  "AsuransiPasien/fetchData",
+  async ({ rejectWithValue }) => {
     try {
-      const currentState = getState().Dokter;
-      if (currentState.loadedPages.includes(page)) {
-        console.log("Data already loaded for page:", page);
-        return null;
-      }
-      const response = await InstanceAxios.get(`/Dokter`, {
-        params: { page, perPage },
-        headers: getHeaders("multipart/form-data"),
+      const response = await InstanceAxios.get(`/AsuransiPasien`, {
+        headers: getHeaders(),
       });
 
-      return {
-        data: response.data.data,
-        pagination: response.data.pagination,
-        page,
-        meta: { arg: { page, isInfiniteScroll } },
-      };
+      return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
       return rejectWithValue(
@@ -36,12 +22,12 @@ export const fetchDokter = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch Dokter dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
-export const fetchDokterWithFilters = createAsyncThunk(
-  "Dokter/fetchWithFilters",
+// 🔹 Fetch AsuransiPasien dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
+export const fetchAsuransiPasienWithFilters = createAsyncThunk(
+  "AsuransiPasien/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Dokter/paged`, {
+      const response = await InstanceAxios.get(`/AsuransiPasien/paged`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -62,12 +48,12 @@ export const fetchDokterWithFilters = createAsyncThunk(
   }
 );
 
-// 🔹 Fetch data Dokter berdasarkan ID
-export const fetchDokterById = createAsyncThunk(
-  "Dokter/fetchById",
+// 🔹 Fetch data AsuransiPasien berdasarkan ID
+export const fetchAsuransiPasienById = createAsyncThunk(
+  "AsuransiPasien/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Dokter/${id}`, {
+      const response = await InstanceAxios.get(`/AsuransiPasien/${id}`, {
         headers: getHeaders(),
       });
 
@@ -81,12 +67,12 @@ export const fetchDokterById = createAsyncThunk(
   }
 );
 
-// 🔹 Tambah Dokter Darah
-export const createDokter = createAsyncThunk(
-  "Dokter/create",
+// 🔹 Tambah AsuransiPasien Darah
+export const createAsuransiPasien = createAsyncThunk(
+  "AsuransiPasien/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Dokter`, data, {
+      const response = await InstanceAxios.post(`/AsuransiPasien`, data, {
         headers: getHeaders(),
       });
 
@@ -94,46 +80,50 @@ export const createDokter = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan Dokter darah"
+        error.response?.data || "Gagal menambahkan AsuransiPasien darah"
       );
     }
   }
 );
 
-// 🔹 Update Dokter Darah berdasarkan ID
-export const updateDokter = createAsyncThunk(
-  "Dokter/update",
+// 🔹 Update AsuransiPasien Darah berdasarkan ID
+export const updateAsuransiPasien = createAsyncThunk(
+  "AsuransiPasien/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.put(`/Dokter/${id}`, data, {
+      const response = await InstanceAxios.post(`/AsuransiPasien`, data, {
+        headers: getHeaders(),
+      });
+
+      console.log("Response API (Add):", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Gagal memperbarui AsuransiPasien "
+      );
+    }
+  }
+);
+
+export const deleteAsuransiPasien = createAsyncThunk(
+  "AsuransiPasien/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await InstanceAxios.delete(`/AsuransiPasien/${id}`, {
         headers: getHeaders(),
       });
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui Dokter darah"
+        error.response?.data || "Gagal menghapus AsuransiPasien"
       );
     }
   }
 );
 
-export const deleteDokter = createAsyncThunk(
-  "Dokter/delete",
-  async (id, { rejectWithValue }) => {
-    try {
-      const response = await InstanceAxios.delete(`/Dokter/${id}`, {
-        headers: getHeaders(),
-      });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Gagal menghapus Dokter");
-    }
-  }
-);
-
 // 🔹 Redux Slice
-const DokterSlice = createSlice({
-  name: "Dokter",
+const AsuransiPasienSlice = createSlice({
+  name: "AsuransiPasien",
   initialState: {
     data: [],
     loadedPages: [],
@@ -142,16 +132,17 @@ const DokterSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
+    selectedAsuransiPasien: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch Dokter hanya dengan pagination (CustomTableComponent)
-      .addCase(fetchDokter.pending, (state) => {
+      // ✅ Fetch AsuransiPasien hanya dengan pagination (CustomTableComponent)
+      .addCase(fetchAsuransiPasien.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchDokter.fulfilled, (state, action) => {
+      .addCase(fetchAsuransiPasien.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
 
         state.loading = false;
@@ -160,7 +151,8 @@ const DokterSlice = createSlice({
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
-              (existingItem) => existingItem.dokterId === newItem.dokterId
+              (existingItem) =>
+                existingItem.asuransiPasienId === newItem.asuransiPasienId
             )
         );
 
@@ -177,66 +169,67 @@ const DokterSlice = createSlice({
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
       })
-      .addCase(fetchDokter.rejected, (state, action) => {
+      .addCase(fetchAsuransiPasien.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
-      // ✅ Fetch Dokter dengan search & filter (CustomSearchFilter)
-      .addCase(fetchDokterWithFilters.pending, (state) => {
+      // ✅ Fetch AsuransiPasien dengan search & filter (CustomSearchFilter)
+      .addCase(fetchAsuransiPasienWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchDokterWithFilters.fulfilled, (state, action) => {
+      .addCase(fetchAsuransiPasienWithFilters.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data?.rows || [];
         state.totalItems = action.payload.data?.totalRows || 0;
         state.totalPages = action.payload.data?.totalPages || 1;
         state.currentPage = action.payload.data?.currentPage || 1;
       })
-      .addCase(fetchDokterWithFilters.rejected, (state, action) => {
+      .addCase(fetchAsuransiPasienWithFilters.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
       // Fetch By ID
-      .addCase(fetchDokterById.pending, (state) => {
+      .addCase(fetchAsuransiPasienById.pending, (state) => {
         state.loading = true;
-        state.selectedDokter = null;
+        state.selectedAsuransiPasien = null;
       })
-      .addCase(fetchDokterById.fulfilled, (state, action) => {
+      .addCase(fetchAsuransiPasienById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedDokter = action.payload;
+        state.selectedAsuransiPasien = action.payload;
       })
-      .addCase(fetchDokterById.rejected, (state, action) => {
+      .addCase(fetchAsuransiPasienById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Tambah Dokter Darah
-      .addCase(createDokter.fulfilled, (state, action) => {
+      // Tambah AsuransiPasien Darah
+      .addCase(createAsuransiPasien.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
-      // Update Dokter Darah
-      .addCase(updateDokter.fulfilled, (state, action) => {
+      // Update AsuransiPasien Darah
+      .addCase(updateAsuransiPasien.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (Dokter) => Dokter.dokterId === action.payload.dokterId
+          (AsuransiPasien) =>
+            AsuransiPasien.asuransiPasienId === action.payload.asuransiPasienId
         );
         if (index !== -1) {
           state.data[index] = action.payload;
         }
       })
 
-      // Hapus Dokter Darah
-      .addCase(deleteDokter.fulfilled, (state, action) => {
+      // Hapus AsuransiPasien Darah
+      .addCase(deleteAsuransiPasien.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (Dokter) => Dokter.dokterId !== action.payload
+          (AsuransiPasien) => AsuransiPasien.asuransiPasienId !== action.payload
         );
       });
   },
 });
 
-export default DokterSlice.reducer;
+export default AsuransiPasienSlice.reducer;

@@ -480,47 +480,32 @@ const DashboardIGD = () => {
 
           {/* Tabel Pasien */}
           <Row className="mb-4">
-            <Col lg="12">
-              <div className="iq-card">
-                <div className="iq-card-header d-flex justify-content-between">
-                  <div className="d-flex align-items-center">
-                    <FaUsers className="text-primary me-2" size={20} />
-                    <h5 className="mb-0">Daftar Pasien Terkini</h5>
-                  </div>
-                  <div className="d-flex align-items-center">
-                    <FaSearch className="text-muted me-2" />
-                    <Form.Control
-                      type="search"
-                      placeholder="Cari pasien..."
-                      className="w-auto"
-                      value={searchText}
-                      onChange={handleSearchChange}
-                    />
-                  </div>
-                </div>
-                <div className="iq-card-body">
-                  <CustomTableComponent
-                    data={filteredPasien}
-                    columns={[
-                      { key: "id", label: "ID" },
-                      { key: "nama", label: "Nama" },
-                      { key: "usia", label: "Usia" },
-                      { key: "keluhan", label: "Keluhan" },
-                      { key: "status", label: "Status" },
-                      {
-                        key: "keparahan",
-                        label: "Keparahan",
-                        render: (item) => getKeparahanBadge(item.keparahan),
-                      },
-                      { key: "waktuMasuk", label: "Waktu Masuk" },
-                    ]}
-                    itemsPerPage={5}
-                    slugConfig={{ textField: "nama", idField: "id" }}
-                    basePath="/igd/data-pasien/detail-pasien"
-                  />
-                </div>
-              </div>
-            </Col>
+            <CustomTableComponent
+              showHeader={false}
+              tableTitle="Data Pasien"
+              searchName={true}
+              searchText={searchText}
+              TableIcon={FaUsers}
+              buttonRefresh={false}
+              handleSearchChange={handleSearchChange}
+              data={filteredPasien}
+              columns={[
+                { key: "id", label: "ID" },
+                { key: "nama", label: "Nama" },
+                { key: "usia", label: "Usia" },
+                { key: "keluhan", label: "Keluhan" },
+                { key: "status", label: "Status" },
+                {
+                  key: "keparahan",
+                  label: "Keparahan",
+                  render: (item) => getKeparahanBadge(item.keparahan),
+                },
+                { key: "waktuMasuk", label: "Waktu Masuk" },
+              ]}
+              itemsPerPage={5}
+              slugConfig={{ textField: "nama", idField: "id" }}
+              basePath="/igd/data-pasien/detail-pasien"
+            />
 
             {/* Status Ruangan */}
             {/* Status Ruangan - Full Width */}

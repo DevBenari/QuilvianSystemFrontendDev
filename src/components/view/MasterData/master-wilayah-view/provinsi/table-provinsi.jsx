@@ -54,7 +54,6 @@ const TableDataProvinsi = () => {
         // Table Component
         tableTitle="Tabel List Provinsi"
         data={filteredData}
-        loading={loading} // Mengirim loading ke CustomTableComponent
         columns={[
           { key: "no", label: "No" },
           { key: "createDateTime", label: "Tanggal Dibuat" },
@@ -82,6 +81,7 @@ const TableDataProvinsi = () => {
             className="btn btn-sm iq-bg-success"
           />
         }
+        loading={loading}
       />
     </FormProvider>
   );

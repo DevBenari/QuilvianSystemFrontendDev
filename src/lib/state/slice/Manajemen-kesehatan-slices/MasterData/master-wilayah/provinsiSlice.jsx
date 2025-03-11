@@ -18,7 +18,6 @@ export const fetchProvinsi = createAsyncThunk(
 
       const response = await InstanceAxios.get(`/Wilayah/Provinsi`, {
         params: { page, perPage },
-        params: { page, perPage },
         headers: getHeaders(),
       });
 
@@ -147,10 +146,11 @@ const ProvinsiSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
+    selectedProvinsi: [],
   },
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch Provinsi hanya dengan pagination (CustomTableComponent)
+      // ✅ Fetch Departement hanya dengan pagination (CustomTableComponent)
       .addCase(fetchProvinsi.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -183,9 +183,11 @@ const ProvinsiSlice = createSlice({
       })
       .addCase(fetchProvinsi.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Terjadi kesalahan";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
-      // ✅ Fetch Provinsi dengan search & filter (CustomSearchFilter)
+
+      // ✅ Fetch Departement dengan search & filter (CustomSearchFilter)
       .addCase(fetchProvinsiWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -203,8 +205,10 @@ const ProvinsiSlice = createSlice({
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
+      // Fetch By ID
       .addCase(fetchProvinsiById.pending, (state) => {
         state.loading = true;
+        state.selectedProvinsi = null;
       })
       .addCase(fetchProvinsiById.fulfilled, (state, action) => {
         state.loading = false;
@@ -215,19 +219,25 @@ const ProvinsiSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Tambah Departement Darah
       .addCase(createProvinsi.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
+      // Update Departement Darah
       .addCase(updateProvinsi.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (item) => item.provinsiId === action.payload.provinsiId
+          (Departement) => Departement.provinsiId === action.payload.provinsiId
         );
+        if (index !== -1) {
+          state.data[index] = action.payload;
+        }
       })
 
+      // Hapus Departement Darah
       .addCase(deleteProvinsi.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (item) => item.provinsiId !== action.payload
+          (Departement) => Departement.provinsiId !== action.payload
         );
       });
   },
