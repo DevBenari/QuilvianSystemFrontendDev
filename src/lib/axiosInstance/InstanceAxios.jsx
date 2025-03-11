@@ -7,6 +7,7 @@ export const InstanceAxios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_QUILVIAN,
   headers: getHeaders(), // Gunakan getHeaders secara default
 });
+console.log("Base URL API:", process.env.NEXT_PUBLIC_API_QUILVIAN);
 
 // Interceptor untuk menambahkan header secara dinamis sebelum setiap request
 InstanceAxios.interceptors.request.use(
