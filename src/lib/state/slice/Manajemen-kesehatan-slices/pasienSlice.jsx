@@ -59,55 +59,22 @@ export const fetchPasienWithFilters = createAsyncThunk(
   }
 );
 
-// Tambah pasien baru
-// Tambah pasien baru
 export const AddPasienSlice = createAsyncThunk(
   "pasien/addPasien",
-  async (formData, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      // Check if formData is an actual FormData object or a plain JS object
-      let dataToSend;
-      let headers = getHeaders();
+      const response = await InstanceAxios.post(`/PendaftaranPasienBaru`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${Cookies.get("token")}`,
+        },
+      });
 
-      if (formData instanceof FormData) {
-        // If it's already FormData, use it directly
-        // Remove Content-Type header so browser can set the boundary
-        headers = {
-          ...headers,
-          "Content-Type": undefined,
-        };
-        dataToSend = formData;
-      } else {
-        // If it's a regular object with a foto property that's a File
-        dataToSend = { ...formData };
-
-        // Convert file to base64 if it exists
-        if (formData.foto instanceof File) {
-          const base64String = await fileToBase64(formData.foto);
-          dataToSend.foto = base64String;
-          dataToSend.fotoFileName = formData.foto.name;
-        }
-      }
-
-      const response = await InstanceAxios.post(
-        "/PendaftaranPasienBaru",
-        dataToSend,
-        {
-          headers: headers,
-        }
-      );
-
-      console.log("Response API (Add):", response.data);
+      console.log("Response API (Fetch By ID):", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error response dari server:", error.response?.data);
-      if (error.response?.status === 400) {
-        return rejectWithValue(
-          "Permintaan tidak valid! Silakan periksa kembali data Anda."
-        );
-      }
       return rejectWithValue(
-        error.response?.data?.message || "Gagal mengirim data pasien."
+        error.response?.data || "Gagal menambahkan Dokter darah"
       );
     }
   }

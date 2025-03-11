@@ -5,13 +5,11 @@ import { showAlert } from "@/components/features/alert/custom-alert";
 
 export const InstanceAxios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_QUILVIAN,
-  headers: getHeaders(), // Gunakan getHeaders secara default
 });
 
 // Interceptor untuk menambahkan header secara dinamis sebelum setiap request
 InstanceAxios.interceptors.request.use(
-  (config) => {
-    config.headers = getHeaders(); // Selalu perbarui headers dengan token terbaru
+  (config) => { // Selalu perbarui headers dengan token terbaru
     return config;
   },
   (error) => {

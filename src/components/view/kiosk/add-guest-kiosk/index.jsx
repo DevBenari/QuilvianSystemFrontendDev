@@ -20,6 +20,7 @@ import useAgamaData from '@/lib/hooks/useAgamaData';
 import useSelectWilayah from '@/lib/hooks/useSelectWilayah';
 import ImageUploader from '@/components/ui/uploadPhoto-field';
 import UploadPhotoField from '@/components/ui/uploadPhoto-field';
+import { showAlert } from '@/components/features/alert/custom-alert';
 // import UseSelectWilayah from '@/lib/hooks/useSelectWilayah';
 
 const KioskPendaftaranPasien = memo(() => {
@@ -624,57 +625,65 @@ const KioskPendaftaranPasien = memo(() => {
     ]
 
 
-    const handleSubmit = (data) => {
-        // Create a new FormData object
-        const formData = new FormData();
-        
-        // Add all text fields to FormData
-        Object.keys(data).forEach((key) => {
-            // Skip the file field, we'll handle it separately
-            if (key !== 'foto' && data[key] !== null && data[key] !== undefined) {
-                formData.append(key, data[key]);
-            }
-        });
-    
-        // Add the "vm" field which seems to be required according to the error
-        formData.append("vm", "true");  // Adjust the value as needed for your API
-        
-        // Add the file if it exists
-        if (data.foto instanceof File) {
-            formData.append("fotoPasien", data.foto);
-        }
-    
-        console.log("Data yang dikirim ke backend:", Object.fromEntries(formData));
-        
-        // Dispatch the action with FormData
-        dispatch(AddPasienSlice(formData))
-            .then((result) => {
-                if (AddPasienSlice.fulfilled.match(result)) {
-                    console.log("Data pasien berhasil dikirim:", result.payload);
-                    alert("Data pasien berhasil dikirim!");
-                    
-                    const enhancedData = {
-                        ...data,
-                        provinsiId: data.provinsiId || null, 
-                        noRekamMedis: `RM-${new Date().getTime()}`,
-                        queueNumber: `A-${Math.floor(Math.random() * 100)}`,
-                        registrationDate: new Date().toLocaleDateString('id-ID'),
-                        noIdentitas: `${data.noIdentitas}`,
-                        qrCodeUrl: result.payload.qrCodeUrl || null,
-                        fotoPasienUrl: result.payload.uploadFotoUrl || null
-                    };
-    
-                    setSubmittedData(enhancedData);
-                    setIsSubmitted(true);
-                } else {
-                    console.error("Gagal mengirim data:", result.error?.message);
-                    alert("Gagal mengirim data pasien!");
-                }
-            })
-            .catch((error) => {
-                console.error("Error saat dispatch:", error);
-                alert("Terjadi kesalahan saat mengirim data pasien!");
+    const handleSubmit = async (data) => {
+        try{
+            await dispatch(AddPasienSlice(data)).unwrap(); // Tunggu hasil dari dispatch
+            showAlert.success("Data berhasil disimpan", () => {
+                router.push("/kiosk");
             });
+        }catch(error){
+            console.error(error);
+        }
+        // // Create a new FormData object
+        // const formData = new FormData();
+        
+        // // Add all text fields to FormData
+        // Object.keys(data).forEach((key) => {
+        //     // Skip the file field, we'll handle it separately
+        //     if (key !== 'foto' && data[key] !== null && data[key] !== undefined) {
+        //         formData.append(key, data[key]);
+        //     }
+        // });
+    
+        // // Add the "vm" field which seems to be required according to the error
+        // formData.append("vm", "true");  // Adjust the value as needed for your API
+        
+        // // Add the file if it exists
+        // if (data.foto instanceof File) {
+        //     formData.append("fotoPasien", data.foto);
+        // }
+    
+        // console.log("Data yang dikirim ke backend:", Object.fromEntries(formData));
+        
+        // // Dispatch the action with FormData
+        // dispatch(AddPasienSlice(formData))
+        //     .then((result) => {
+        //         if (AddPasienSlice.fulfilled.match(result)) {
+        //             console.log("Data pasien berhasil dikirim:", result.payload);
+        //             alert("Data pasien berhasil dikirim!");
+                    
+        //             const enhancedData = {
+        //                 ...data,
+        //                 provinsiId: data.provinsiId || null, 
+        //                 noRekamMedis: `RM-${new Date().getTime()}`,
+        //                 queueNumber: `A-${Math.floor(Math.random() * 100)}`,
+        //                 registrationDate: new Date().toLocaleDateString('id-ID'),
+        //                 noIdentitas: `${data.noIdentitas}`,
+        //                 qrCodeUrl: result.payload.qrCodeUrl || null,
+        //                 fotoPasienUrl: result.payload.uploadFotoUrl || null
+        //             };
+    
+        //             setSubmittedData(enhancedData);
+        //             setIsSubmitted(true);
+        //         } else {
+        //             console.error("Gagal mengirim data:", result.error?.message);
+        //             alert("Gagal mengirim data pasien!");
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.error("Error saat dispatch:", error);
+        //         alert("Terjadi kesalahan saat mengirim data pasien!");
+        //     });
     };
 
       if (isSubmitted && submittedData) {

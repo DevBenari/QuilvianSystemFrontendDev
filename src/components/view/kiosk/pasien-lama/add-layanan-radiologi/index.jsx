@@ -53,7 +53,7 @@ const RadiologyRegistrationPage = () => {
 
   // Dokter radiologi
   const radiologiDoctors = {
-    ct_Scan: [
+    ct_scan: [
       {
         id: 'dr-ahmad',
         name: 'Dr. Ahmad',
@@ -266,7 +266,6 @@ const RadiologyRegistrationPage = () => {
           ],
           customRender: ({ methods }) => {
             const pembayaran = methods.watch("pembayaran");
-            const asuransiSelected = pembayaran === "asuransi";
             
             // Jika pembayaran sudah dipilih dan itu adalah asuransi, maka kita hanya menampilkan info
             if (selectedPaymentMethod === "asuransi") {
@@ -277,6 +276,7 @@ const RadiologyRegistrationPage = () => {
                     variant="outline-secondary" 
                     size="sm"
                     onClick={() => {
+                      // Fix: Reset the payment method properly
                       setSelectedPaymentMethod(null);
                       methods.setValue("pembayaran", "");
                     }}
@@ -314,10 +314,8 @@ const RadiologyRegistrationPage = () => {
                         className={`selection-card mb-3 cursor-pointer ${isSelected ? 'selected shadow-lg border-primary' : ''}`}
                         onClick={() => {
                           methods.setValue("pembayaran", option.value);
-                          // Jika asuransi dipilih, set state
-                          if (option.value === "asuransi") {
-                            setSelectedPaymentMethod("asuransi");
-                          }
+                          // Set the state for both payment method options
+                          setSelectedPaymentMethod(option.value);
                         }}
                         style={{ cursor: 'pointer' }}
                       >
@@ -688,8 +686,8 @@ const RadiologyRegistrationPage = () => {
         onSubmit={handleSubmit}
         isAddMode={true}
         backPath="/kiosk"
-        doctorsData={filteredDoctorsByInsurance.length > 0 ? filteredDoctorsByInsurance : radiologiDoctors}
-        onFormMethodsReady={handleFormMethodReady} 
+        doctorsData={Object.keys(filteredDoctorsByInsurance).length > 0 ? filteredDoctorsByInsurance : radiologiDoctors}
+  onFormMethodsReady={handleFormMethodReady}
       />
 
       <ModalInsurance

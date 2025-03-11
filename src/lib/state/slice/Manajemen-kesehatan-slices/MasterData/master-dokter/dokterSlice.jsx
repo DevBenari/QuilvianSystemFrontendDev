@@ -87,7 +87,10 @@ export const createDokter = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.post(`/Dokter`, data, {
-        headers: getHeaders(),
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        }
       });
 
       console.log("Response API (Fetch By ID):", response.data);
