@@ -1,9 +1,8 @@
-version: "3"
 services:
-  nextjs-app:
+  frontend:
     build: .
-    image: rizkigunawan/quilvian-system-frontend:latest
+    container_name: quilvian-new-frontend
     ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
+      - "8080:3000"
+    env_file:
+      - .env  # Pastikan ini ada
