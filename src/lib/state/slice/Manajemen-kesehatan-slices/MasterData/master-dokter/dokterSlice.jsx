@@ -146,6 +146,7 @@ const DokterSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
+    selectedDokter: null,
   },
   reducers: {},
   extraReducers: (builder) => {
