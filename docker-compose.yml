@@ -1,8 +1,8 @@
 services:
   frontend:
     build: .
-    container_name: quilvian-new-frontend
+    container_name: quilvian-frontend-container
     ports:
       - "8080:3000"
     env_file:
-      - .env  # Pastikan ini ada
+      - .env
