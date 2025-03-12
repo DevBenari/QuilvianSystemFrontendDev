@@ -1,6 +1,7 @@
 "use client";
 
 import { showAlert } from "@/components/features/alert/custom-alert";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
 import UploadPhotoField from "@/components/ui/uploadPhoto-field";
 import { createDokter } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterSlice";
@@ -90,6 +91,11 @@ const AddFormDokter = () => {
           placeholder: "Masukkan Alamat...",
           colSize: 12,
         },
+      ],
+    },
+    {
+      section: "Foto Dokter",
+      fields: [
         {
           type: "select",
           id: "isAsuransi",
@@ -110,20 +116,6 @@ const AddFormDokter = () => {
           label: "Upload Foto Pasien",
           rules: { required: "Foto pasien wajib diisi" },
           customRender: (props) => <UploadPhotoField {...props} />,
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Nama Foto",
-          name: "FotoName",
-          placeholder: "Masukkan Nama Foto...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Path Foto",
-          name: "FotoPath",
-          placeholder: "Masukkan Path Foto...",
           colSize: 6,
         },
       ],
@@ -151,7 +143,7 @@ const AddFormDokter = () => {
           title="Tambah Data Dokter"
           formConfig={formFields}
           onSubmit={handleSubmit}
-          backPath="/MasterData/master-dokter/table-dokter"
+          backPath="/MasterData/master-dokter/dokter/table-dokter"
           isAddMode={true}
         />
       </Fragment>

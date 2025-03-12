@@ -100,7 +100,7 @@ export const createDokterPoli = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan DokterPoli darah"
+        error.response?.data || "Gagal menambahkan DokterPoli "
       );
     }
   }
@@ -117,7 +117,7 @@ export const updateDokterPoli = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui DokterPoli darah"
+        error.response?.data || "Gagal memperbarui DokterPoli "
       );
     }
   }

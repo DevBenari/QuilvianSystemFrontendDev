@@ -28,7 +28,6 @@ const KelurahanAddForm = () => {
           rules: { required: "Kecamatan is required" },
           colSize: 6,
           onMenuScrollToBottom: handleLoadMoreKecamatan,
-          isLoading: KecamatanLoading,
         },
         {
           type: "text",
@@ -47,20 +46,17 @@ const KelurahanAddForm = () => {
       await dispatch(createKelurahan(data)).unwrap();
       showAlert.success("Data berhasil disimpan", () => {
         router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
       });
     } catch (error) {
-      console.error("Gagal menambahkan Kabupaten Kota:", error);
-      showAlert.error("Gagal menambahkan data Kabupaten Kota");
+      console.error("Gagal menambahkan Kelurahan Kota:", error);
+      showAlert.error("Gagal menambahkan data Kelurahan Kota");
     }
   };
 
   return (
     <Fragment>
       <DynamicForm
-        title="Tambah Data Kabupaten Kota"
+        title="Tambah Data Kelurahan Kota"
         formConfig={formFields}
         onSubmit={handleSubmit}
         backPath="/MasterData/master-wilayah/kelurahan/table-kelurahan"

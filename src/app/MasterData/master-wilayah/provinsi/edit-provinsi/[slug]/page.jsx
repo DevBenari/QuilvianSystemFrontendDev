@@ -103,7 +103,7 @@ const ProvinsiEditForm = ({ params }) => {
           router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
           setTimeout(() => {
             window.location.reload();
-          }, 100);
+          }, 200);
         });
       } catch (error) {
         console.error("❌ Gagal menghapus data Provinsi:", error);

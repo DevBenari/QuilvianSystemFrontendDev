@@ -30,7 +30,6 @@ const KecamatanAddForm = () => {
           rules: { required: "Kabupaten Kota is required" },
           colSize: 6,
           onMenuScrollToBottom: handleLoadMoreKabupatenKota,
-          isLoading: loadingKabupatenKota,
         },
         {
           type: "text",

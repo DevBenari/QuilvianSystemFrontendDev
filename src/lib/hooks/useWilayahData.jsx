@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProvinsi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 import { fetchKabupatenKota } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
@@ -15,22 +15,32 @@ const useFetchWilayah = (sliceName, fetchAction) => {
     (state) => state[sliceName]
   );
 
+  // Membungkus dispatch dengan useCallback untuk menghindari warning dependency
+  const fetchData = useCallback(
+    (params) => {
+      dispatch(fetchAction(params));
+    },
+    [dispatch, fetchAction]
+  );
+
   useEffect(() => {
     if (!loadedPages.includes(1)) {
-      dispatch(fetchAction({ page: 1, perPage: 10, isInfiniteScroll: true }));
+      fetchData({ page: 1, perPage: 10, isInfiniteScroll: true });
     }
-  }, [dispatch, loadedPages]);
+  }, [fetchData, loadedPages]);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (page < totalPages && !loading && !loadedPages.includes(page + 1)) {
       const nextPage = page + 1;
       setPage(nextPage);
       console.log(`🔄 Fetching page ${nextPage} for ${sliceName}...`);
-      dispatch(
-        fetchAction({ page: nextPage, perPage: 10, isInfiniteScroll: true })
-      );
+      fetchData({
+        page: nextPage,
+        perPage: 10,
+        isInfiniteScroll: true,
+      });
     }
-  };
+  }, [fetchData, loading, loadedPages, page, sliceName, totalPages]);
 
   return { data, loading, handleLoadMore };
 };

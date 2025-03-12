@@ -197,22 +197,6 @@ export const menus = {
       ],
     },
 
-    // {
-    //   title: "Data Pegawai",
-    //   subItems: [
-    //     {
-    //       title: "Daftar Pegawai",
-    //       href: "/MasterData/master-pegawai/daftar-pegawai",
-    //     },
-    //     {
-    //       title: "Tambah Data Pegawai",
-    //       href: "/MasterData/master-pegawai/add-pegawai",
-    //     },
-    //     { title: "Akses Group Pegawai", href: "/master-data/group-pegawai" },
-    //     { title: "User Akses", href: "/master-data/akses-pegawai" },
-    //     { title: "Akses User Login", href: "/master-data/log-aktivitas" },
-    //   ],
-    // },
     {
       title: "Asuransi",
       subItems: [
@@ -538,30 +522,3 @@ export const menus = {
     },
   ],
 };
-
-export const menuItems = [
-  {
-    label: "Pelayanan Kesehatan",
-    key: "ManajemenKesehatan",
-    pathname: "/",
-    subMenu: [
-      { pathname: "/MasterData", label: "Master Data" },
-      { pathname: "/pendaftaran", label: "Admisi" },
-      { pathname: "/dokter", label: "Pelayanan Dokter" },
-      { pathname: "/IGD", label: "IGD" },
-      { pathname: "/instalasi-poli", label: "Poli" },
-    ],
-  },
-  {
-    label: "Pelayanan Medis",
-    key: "pelayananMedis",
-    pathname: "/pelayanan-medik",
-    subMenu: [
-      {
-        pathname: "/pelayanan-medik/instalasi-medik",
-        label: "Instalasi Rawat Intensif",
-      },
-      { pathname: "/app/List Pasien", label: "List Pasien" },
-    ],
-  },
-];

@@ -29,7 +29,6 @@ const KabupatenKotaAddForm = () => {
           rules: { required: "Provinsi is required" },
           colSize: 6,
           onMenuScrollToBottom: handleLoadMoreProvinsi,
-          isLoading: loadingProvinsi,
         },
         {
           type: "text",

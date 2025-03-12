@@ -18,12 +18,6 @@ const EditPoliKlinikForm = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const {
-    DepartementOptions,
-    loading: DepartementLoading,
-    handleLoadMore: handleLoadMoreDepartement,
-  } = useDepartementData();
-
   const { selectedPoliKlinik, loading } = useSelector(
     (state) => state.PoliKlinik
   );
@@ -159,7 +153,9 @@ const EditPoliKlinikForm = ({ params }) => {
       ).unwrap();
 
       showAlert.success("Data PoliKlinik berhasil diperbarui!", () => {
-        router.push("/MasterData/master-PoliKlinik/table-PoliKlinik");
+        router.push(
+          "/MasterData/master-PoliKlinik/poliklinik/table-PoliKlinik"
+        );
       });
     } catch (error) {
       console.error("Gagal memperbarui data PoliKlinik", error);
@@ -182,7 +178,9 @@ const EditPoliKlinikForm = ({ params }) => {
             deletePoliKlinik(dataPoliKlinik.poliklinikId)
           ).unwrap();
           showAlert.success("Data PoliKlinik berhasil dihapus!", () => {
-            router.push("/MasterData/master-PoliKlinik/table-PoliKlinik");
+            router.push(
+              "/MasterData/master-PoliKlinik/poliklinik/table-PoliKlinik"
+            );
           });
         } catch (error) {
           showAlert.error("Gagal menghapus data PoliKlinik.");
@@ -208,7 +206,7 @@ const EditPoliKlinikForm = ({ params }) => {
         onSubmit={handleSubmit}
         handleDelete={handleDelete}
         userData={dataPoliKlinik}
-        backPath="/MasterData/master-PoliKlinik/table-PoliKlinik"
+        backPath="/MasterData/master-PoliKlinik/poliklinik/table-PoliKlinik"
         isAddMode={false}
       />
     </Fragment>

@@ -35,7 +35,6 @@ const ProvinsiAddForm = () => {
           rules: { required: "Negara is required" },
           colSize: 6,
           onMenuScrollToBottom: handleLoadMoreNegara,
-          isLoading: loadingNegara,
         },
       ],
     },

@@ -2,9 +2,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FormProvider, useForm } from "react-hook-form";
-import { Spinner, Alert } from "react-bootstrap";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
 import {
   fetchNegara,
@@ -57,11 +55,12 @@ const TableDataNegara = () => {
         setFilteredData={setFilteredNegara}
         showSearch={true}
         // Table Component
+        loading={loading}
         tableTitle="Tabel List Daftar Negara"
         data={filteredNegara}
         columns={[
           { key: "no", label: "No" }, // Kolom nomor urut
-          { key: "createdDate", label: "Tanggal Dibuat" },
+          { key: "createDateTime", label: "Tanggal Dibuat" },
           { key: "createByName", label: "Dibuat Oleh" },
           { key: "kodeNegara", label: "Kode Negara" },
           { key: "namaNegara", label: "Nama Negara" },

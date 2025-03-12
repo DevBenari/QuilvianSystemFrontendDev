@@ -4,9 +4,7 @@ import { Image } from "react-bootstrap";
 
 import { usePathname } from "next/navigation";
 import React, { Fragment, memo, useRef, useEffect, useState } from "react";
-import UseIsMobile from "@/lib/hooks/useIsMobile";
 import SideBarItems from "./sidebar-items";
-import SideBarLogo from "./sidebar-logo";
 
 // Main Sidebar Component
 const Sidebar = memo(() => {

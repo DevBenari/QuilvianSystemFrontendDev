@@ -97,7 +97,7 @@ export const createDokter = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan Dokter darah"
+        error.response?.data || "Gagal menambahkan Dokter "
       );
     }
   }
@@ -115,7 +115,7 @@ export const updateDokter = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui Dokter darah"
+        error.response?.data || "Gagal memperbarui Dokter "
       );
     }
   }

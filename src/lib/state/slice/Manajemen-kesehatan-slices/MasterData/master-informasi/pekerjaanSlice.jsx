@@ -129,7 +129,7 @@ const pekerjaanSlice = createSlice({
       .addCase(fetchPekerjaan.fulfilled, (state, action) => {
         console.log("API Response Data:", action.payload);
         state.loading = false;
-        state.data = action.payload.data || []; // Menyimpan daftar golongan darah
+        state.data = action.payload.data || [];
         state.totalItems = action.payload.pagination?.totalRows || 0;
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.payload.pagination?.currentPage || 1;

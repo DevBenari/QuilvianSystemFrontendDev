@@ -11,7 +11,6 @@ import {
   fetchPoliKlinikWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
 import { FaHospitalUser } from "react-icons/fa"; // Icon untuk PoliKlinik
-import LoadingScreen from "@/components/features/loading/loadingScreen";
 
 const TableDataPoliKlinik = () => {
   const methods = useForm();
@@ -75,7 +74,7 @@ const TableDataPoliKlinik = () => {
           textField: "namaPoliklinik",
           idField: "poliklinikId",
         }}
-        basePath="/MasterData/master-PoliKlinik/edit-PoliKlinik"
+        basePath="/MasterData/master-PoliKlinik/poliklinik/edit-PoliKlinik"
         paginationProps={{
           currentPage: page,
           totalPages: totalPages,
