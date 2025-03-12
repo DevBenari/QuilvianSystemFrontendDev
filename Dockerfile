@@ -1,26 +1,22 @@
-# Gunakan base image resmi Node.js
-FROM node:18-alpine AS builder
+# Menggunakan image Node.js terbaru
+FROM node:18-alpine
 
-# Set working directory
+# Set direktori kerja di dalam container
 WORKDIR /app
 
 # Copy package.json dan install dependencies
-COPY package.json ./
-RUN yarn install
+COPY package.json package-lock.json ./
+RUN npm install --production
 
-# Copy seluruh kode proyek
+# Copy semua kode sumber
 COPY . .
 
-# Build Next.js untuk production
-RUN yarn build
+# Tambahkan variabel lingkungan dari build-time
+ARG NEXT_PUBLIC_API_QUILVIAN
+ENV NEXT_PUBLIC_API_QUILVIAN=${NEXT_PUBLIC_API_QUILVIAN}
 
-# Gunakan base image yang lebih kecil untuk menjalankan aplikasi
-FROM node:18-alpine AS runner
+# Build aplikasi Next.js
+RUN npm run build
 
-WORKDIR /app
-
-# Copy hasil build dari tahap sebelumnya
-COPY --from=builder /app ./
-
-# Jalankan aplikasi Next.js
-CMD ["yarn", "start"]
+# Jalankan Next.js pada mode production
+CMD ["npm", "start"]
