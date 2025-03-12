@@ -28,14 +28,14 @@ jobs:
           cd ~/QuilvianSystemFrontendDevHamzah
 
           echo "Resetting local changes..."
-          sudo git reset --hard origin/QuilvianDev
+          sudo git reset --hard origin/MHamzah
           sudo git clean -fd
 
           echo "Pulling latest changes..."
-          sudo git pull origin QuilvianDev
+          sudo git pull origin MHamzah
 
-          IMAGE_NAME="quilvian-frontend-quilviandev"
-          CONTAINER_NAME="quilvian-frontend-container"
+          IMAGE_NAME="quilvian-frontend-quilviandev-hamzah"
+          CONTAINER_NAME="quilvian-frontend-container-hamzah"
 
           echo "Building new Docker image..."
           sudo docker build --build-arg NEXT_PUBLIC_API_QUILVIAN=http://160.20.104.98/api -t $IMAGE_NAME .
@@ -45,7 +45,7 @@ jobs:
           sudo docker rm $CONTAINER_NAME || true
 
           echo "Running new container with correct port..."
-          sudo docker run -d --name $CONTAINER_NAME -p 8080:3710 --env-file .env $IMAGE_NAME
+          sudo docker run -d --name $CONTAINER_NAME -p 8001:3710 --env-file .env $IMAGE_NAME
 
           echo "Cleaning up unused Docker images..."
           sudo docker system prune -af
@@ -59,7 +59,7 @@ jobs:
               *Docker Image:* $IMAGE_NAME
               *Container:* $CONTAINER_NAME
               *Tanggal:* $(date +'%Y-%m-%d %H:%M:%S')
-              Deployment dilakukan Frontend *QuilvianDev*
+              Deployment dilakukan Frontend *Hamzah*
               🔄 Container telah diperbarui. 🎉"
         EOF
 
