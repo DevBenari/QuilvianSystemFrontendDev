@@ -19,8 +19,6 @@ import {
 } from "react-icons/ri";
 import { Row, Col, Button } from "react-bootstrap";
 
-// Main Sidebar Component
-
 // Virtualized SideBarItems Component
 const VirtualizedSideBarItems = memo(() => {
   const pathname = usePathname();
@@ -30,12 +28,35 @@ const VirtualizedSideBarItems = memo(() => {
   const [hoveredItem, setHoveredItem] = useState(null);
   const [menuView, setMenuView] = useState("main"); // 'main', 'sub', 'nested'
   const [currentItems, setCurrentItems] = useState([]);
+  const [isMiniSidebar, setIsMiniSidebar] = useState(false);
 
   // For measuring dynamic content heights
   const cache = new CellMeasurerCache({
     defaultHeight: 60,
     fixedWidth: true,
   });
+
+  // Detect sidebar-main mode
+  useEffect(() => {
+    const checkSidebarMode = () => {
+      const isMini = document.body.classList.contains("sidebar-main");
+      setIsMiniSidebar(isMini);
+      // Reset cache when sidebar mode changes to force recalculation
+      cache.clearAll();
+    };
+
+    // Check on initial load
+    checkSidebarMode();
+
+    // Add mutation observer to detect class changes on body
+    const observer = new MutationObserver(checkSidebarMode);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Load active menu states from localStorage
   useEffect(() => {
@@ -226,7 +247,7 @@ const VirtualizedSideBarItems = memo(() => {
                   hoveredItem === item.key ? "hovered" : ""
                 } ${item.pathname === pathname ? "active-menu-item" : ""} ${
                   activeMenu === item.key ? "active-menu-item" : ""
-                }`}
+                } ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
               >
                 <Link
                   href={item.pathname}
@@ -244,7 +265,7 @@ const VirtualizedSideBarItems = memo(() => {
                     {item.label}
                   </Col>
                   {item.subMenu && (
-                    <Col xs="auto" className="ms-auto">
+                    <Col xs="auto" className="ms-auto arrow-container">
                       <RiArrowRightSLine className="fs-4" />
                     </Col>
                   )}
@@ -326,7 +347,7 @@ const VirtualizedSideBarItems = memo(() => {
                   itemPathname === pathname ? "active-submenu-item" : ""
                 } ${
                   activeSubMenu === subItem.key ? "active-submenu-item" : ""
-                }`}
+                } ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
               >
                 <Link
                   href={itemPathname}
@@ -344,7 +365,7 @@ const VirtualizedSideBarItems = memo(() => {
                     {subItem.label}
                   </Col>
                   {(subItem.masterDataMenu || subItem.pendaftaranMenu) && (
-                    <Col xs="auto" className="ms-auto">
+                    <Col xs="auto" className="ms-auto arrow-container">
                       <RiArrowRightSLine className="fs-4 arrow-icon" />
                     </Col>
                   )}
@@ -422,7 +443,7 @@ const VirtualizedSideBarItems = memo(() => {
                     activeNestedMenu === category.key
                       ? "active-nested-item"
                       : ""
-                  }`}
+                  } ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
                 >
                   <div className="d-flex align-items-center text-white w-100">
                     <Col xs="auto" className="pe-2 nested-icon">
@@ -432,10 +453,10 @@ const VirtualizedSideBarItems = memo(() => {
                         category.icon || <RiFolderLine className="fs-4" />
                       )}
                     </Col>
-                    <Col className="ps-2 text-white fw-bold">
+                    <Col className="ps-2 text-white fw-bold title-nested-menu">
                       {category.title || "Category"}
                     </Col>
-                    <Col xs="auto" className="ms-auto">
+                    <Col xs="auto" className="ms-auto arrow-container">
                       <RiArrowRightSLine
                         className={`fs-4 arrow-icon ${
                           activeNestedMenu === category.key ? "rotate-90" : ""
@@ -495,24 +516,37 @@ const VirtualizedSideBarItems = memo(() => {
     return 0;
   };
 
+  // Ganti bagian AutoSizer di VirtualizedSideBarItems.js dengan ini:
+
   return (
     <div
-      className="sidebar-virtualized-container"
+      className={`sidebar-virtualized-container ${
+        isMiniSidebar ? "mini-sidebar" : ""
+      }`}
       style={{ height: "calc(100vh - 60px)" }}
     >
       <AutoSizer>
-        {({ width, height }) => (
-          <List
-            width={width}
-            height={height}
-            deferredMeasurementCache={cache}
-            rowHeight={cache.rowHeight}
-            rowRenderer={rowRenderer}
-            rowCount={getItemCount()}
-            overscanRowCount={5}
-            className="sidebar-virtualized-list"
-          />
-        )}
+        {({ height }) => {
+          // Gunakan width berdasarkan mode sidebar
+          const width = isMiniSidebar ? 100 : 260;
+
+          return (
+            <List
+              width={width}
+              height={height}
+              deferredMeasurementCache={cache}
+              rowHeight={cache.rowHeight}
+              rowRenderer={rowRenderer}
+              rowCount={getItemCount()}
+              overscanRowCount={5}
+              className="sidebar-virtualized-list"
+              style={{
+                overflowX: "hidden",
+                transition: "width 0.3s ease-in-out",
+              }}
+            />
+          );
+        }}
       </AutoSizer>
     </div>
   );

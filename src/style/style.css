@@ -1099,8 +1099,198 @@ a:hover {
 }
 
 /*---------------------------------------------------------------------
+                                BodySidebarMain Styles
+-----------------------------------------------------------------------*/
+@media screen and (min-width: 1300px) {
+  body.sidebar-main .logo-menu {
+    content: url("/Images/logo-mmc-no-bg.png");
+  }
+
+  body.sidebar-main .iq-sidebar:hover .logo-menu {
+    content: url("/Images/icon-dashboard.png");
+  }
+}
+
+body.sidebar-main .iq-sidebar .label-sidebar {
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar {
+  width: 100px;
+}
+
+body.sidebar-main .iq-sidebar-menu .iq-menu li a .iq-arrow-right {
+  margin-right: 0;
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar:hover,
+body.sidebar-main .iq-sidebar:hover .iq-sidebar-logo {
+  width: 260px;
+}
+
+body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li a span,
+body.sidebar-main .iq-sidebar:hover .iq-sidebar-logo a span,
+body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li a .badge,
+body.sidebar-main .iq-sidebar:hover .iq-menu-bt,
+body.sidebar-main .iq-sidebar:hover .label-sidebar {
+  opacity: 1;
+  display: inline-block;
+  transition: all 0.45s ease 0s;
+}
+
+body.sidebar-main .iq-menu-item {
+  position: relative;
+  transition: all 0.3s ease;
+
+  margin: auto;
+  background-color: transparent;
+  border-left: 3px solid transparent;
+}
+
+body.sidebar-main .iq-submenu-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-left: 3px solid transparent;
+  margin: 0;
+}
+
+body.sidebar-main .iq-nested-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 0;
+  padding: 0.8rem 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+body.sidebar-main .nested-subitem {
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar:hover .nested-subitem {
+  margin-top: 5px;
+  display: inline-block;
+  opacity: 1;
+}
+
+.title-nested-menu {
+  font-weight: 700;
+  color: #ffffff;
+  padding-left: 5rem;
+}
+
+body.sidebar-main .ps-2.text-white.fw-bold.col {
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar:hover .ps-2.text-white.fw-bold.col {
+  display: block;
+}
+
+/* Perbaikan untuk virtualized sidebar dalam mode sidebar-main */
+
+/* Mengatasi masalah ukuran ReactVirtualized */
+body.sidebar-main .ReactVirtualized__Grid {
+  width: 100px !important;
+  max-width: 100px !important;
+}
+
+body.sidebar-main .iq-sidebar:hover .ReactVirtualized__Grid {
+  width: 260px !important;
+  max-width: 260px !important;
+}
+
+/* Pastikan container dan list mengikuti ukuran yang benar */
+body.sidebar-main .sidebar-virtualized-container {
+  width: 100px !important;
+  overflow: hidden;
+}
+
+body.sidebar-main .iq-sidebar:hover .sidebar-virtualized-container {
+  width: 260px !important;
+  overflow: auto;
+}
+
+/* Atasi masalah submenu slide dalam mode mini sidebar */
+body.sidebar-main .position-absolute.top-0.start-0.sidebar-slide-enter-active {
+  width: 260px !important;
+  left: 100px;
+  z-index: 1000;
+}
+
+body.sidebar-main
+  .iq-sidebar:hover
+  .position-absolute.top-0.start-0.sidebar-slide-enter-active {
+  left: 0;
+}
+
+/* Membuat transisi lebih halus */
+body.sidebar-main .ReactVirtualized__Grid,
+body.sidebar-main .sidebar-virtualized-container {
+  transition: width 0.3s ease-in-out, max-width 0.3s ease-in-out;
+}
+
+/* Centering dan styling untuk item dalam mode mini */
+body.sidebar-main .mini-sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.8rem 0.5rem;
+}
+
+body.sidebar-main .mini-sidebar-item .icon-sidebar,
+body.sidebar-main .mini-sidebar-item .nested-icon {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  min-width: auto;
+  padding-right: 0 !important;
+}
+
+/* CSS untuk mengatasi masalah ukuran layar spesifik */
+@media (max-width: 1599px) {
+  body.sidebar-main .ReactVirtualized__Grid {
+    width: 100px !important;
+  }
+}
+
+/* Reset inline styles dari React Virtualized */
+body.sidebar-main .ReactVirtualized__Grid__innerScrollContainer {
+  width: 100px !important;
+}
+
+body.sidebar-main
+  .iq-sidebar:hover
+  .ReactVirtualized__Grid__innerScrollContainer {
+  width: 260px !important;
+}
+
+/* Membuat agar list konten dapat discroll dengan benar */
+body.sidebar-main .sidebar-virtualized-list {
+  overflow-x: hidden !important;
+}
+
+/*------------
+-------------------------------------------------------
                                 Sidebar Base Styles
 -----------------------------------------------------------------------*/
+.logo-menu {
+  padding: 15px;
+  width: 100%;
+
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  align-items: center;
+}
+
 .iq-sidebar {
   position: fixed;
   z-index: 999;
@@ -1144,11 +1334,10 @@ a:hover {
 .logo-menu {
   padding: 15px;
   width: 100%;
-  background-color: #067f8c;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   position: relative;
   align-items: center;
-  height: 60px; /* Fixed height for correct calculations */
 }
 
 .sidebar-logo {
