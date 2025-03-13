@@ -5,6 +5,7 @@ import { Image } from "react-bootstrap";
 import { usePathname } from "next/navigation";
 import React, { Fragment, memo, useRef, useEffect, useState } from "react";
 import SideBarItems from "./sidebar-items";
+import VirtualizedSideBarItems from "./sidebar-items-virtualized";
 
 // Main Sidebar Component
 const Sidebar = memo(() => {
@@ -23,7 +24,7 @@ const Sidebar = memo(() => {
             />
           </Link>
         </div>
-        <SideBarItems />
+        <VirtualizedSideBarItems />
       </div>
     </Fragment>
   ) : null;
