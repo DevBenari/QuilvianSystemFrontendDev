@@ -1101,12 +1101,13 @@ a:hover {
 /*---------------------------------------------------------------------
                                 Sidebar Base Styles
 -----------------------------------------------------------------------*/
+/* Updated sidebar styles to fix the overflow issue */
 .iq-sidebar {
   position: fixed;
   z-index: 999;
   top: 0;
   width: 260px;
-  height: 100%;
+  height: 100vh; /* Use viewport height instead of percentage */
   background-color: #089bab;
   transition: all 0.3s ease-in-out;
   -moz-transition: all 0.3s ease-in-out;
@@ -1116,9 +1117,19 @@ a:hover {
   -webkit-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
   -moz-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
   box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
+
+  /* Improved scroll handling */
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+
+  /* Add padding at the bottom to ensure last items are visible */
+  padding-bottom: 60px;
+
+  /* Ensure content doesn't overflow */
+  display: flex;
+  flex-direction: column;
 }
 
 .iq-sidebar::-webkit-scrollbar {
@@ -1133,6 +1144,11 @@ a:hover {
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 10px;
 }
+/* Fix for overlapping menu items at bottom */
+.iq-sidebar-logo {
+  position: relative;
+  z-index: 2;
+}
 
 /* Sidebar Logo */
 .iq-sidebar-logo {
@@ -1140,19 +1156,13 @@ a:hover {
   width: 100%;
   background-color: #067f8c;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
+  position: relative;
   align-items: center;
 }
 
 .sidebar-logo {
   height: 40px;
   width: auto;
-}
-
-#sidebar-scrollbar {
-  height: calc(100% - 70px);
-  position: relative;
-  overflow: hidden;
 }
 
 /* Header for Submenus */
@@ -1165,6 +1175,14 @@ a:hover {
 
 .submenu-content {
   padding: 5px 0;
+}
+
+.logo-menu {
+  padding: 15px;
+  width: 100%;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  align-items: center;
 }
 
 /*---------------------------------------------------------------------

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, memo } from "react";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Image } from "react-bootstrap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -166,78 +166,98 @@ const SideBarItems = memo(() => {
 
       {/* First Level Submenu */}
       {activeMenu && (
-        <div className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300 sidebar-slide-enter-active">
-          <div className="submenu-header bg-dark">
-            <Row className="align-items-center p-3">
-              <Col xs="auto">
-                <Button
-                  variant="link"
-                  onClick={() => {
-                    setActiveMenu(null);
-                    setActiveSubMenu(null);
-                    setActiveNestedMenu(null);
-                    localStorage.removeItem("activeMenu");
-                    localStorage.removeItem("activeSubMenu");
-                    localStorage.removeItem("activeNestedMenu");
-                  }}
-                  className="me-3 back-button"
-                >
-                  <RiArrowLeftLine className="text-white fs-4" />
-                </Button>
-              </Col>
-              <Col>
-                <h2 className="h5 mb-0 text-white label-sidebar">
-                  {activeMenuItem?.label}
-                </h2>
-              </Col>
-            </Row>
-          </div>
-          <div className="submenu-content">
-            {activeMenuItem?.subMenu.map((subItem) => (
-              <Row
-                key={subItem.key || `subitem-${subItem.label}`}
-                onClick={
-                  subItem.masterDataMenu || subItem.pendaftaranMenu
-                    ? () => toggleSubMenu(subItem.key)
-                    : undefined
-                }
-                className={`align-items-center iq-submenu-item ${
-                  subItem.pathname === pathname ? "active-submenu-item" : ""
-                } ${
-                  activeSubMenu === subItem.key ? "active-submenu-item" : ""
-                }`}
-              >
-                <Link
-                  href={subItem.pathname}
-                  className="d-flex align-items-center text-white text-decoration-none w-100"
-                  onClick={(e) => {
-                    if (subItem.masterDataMenu || subItem.pendaftaranMenu) {
-                      // Prevent navigation when clicking on items with nested menus
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  <Col xs="auto" className="pe-2 icon-sidebar">
-                    {subItem.icon}
-                  </Col>
-                  <Col className="ps-2 text-white label-sidebar">
-                    {subItem.label}
-                  </Col>
-                  {(subItem.masterDataMenu || subItem.pendaftaranMenu) && (
-                    <Col xs="auto" className="ms-auto">
-                      <RiArrowRightSLine className="fs-4 arrow-icon" />
-                    </Col>
-                  )}
-                </Link>
+        <>
+          <div className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300 sidebar-slide-enter-active">
+            <div className="logo-menu">
+              <Link href="/#">
+                <Image
+                  src="/Images/icon-dashboard.png"
+                  className="img-fluid sidebar-logo"
+                  alt="logo"
+                />
+              </Link>
+            </div>
+            <div className="submenu-header bg-dark">
+              <Row className="align-items-center p-3">
+                <Col xs="auto">
+                  <Button
+                    variant="link"
+                    onClick={() => {
+                      setActiveMenu(null);
+                      setActiveSubMenu(null);
+                      setActiveNestedMenu(null);
+                      localStorage.removeItem("activeMenu");
+                      localStorage.removeItem("activeSubMenu");
+                      localStorage.removeItem("activeNestedMenu");
+                    }}
+                    className="me-3 back-button"
+                  >
+                    <RiArrowLeftLine className="text-white fs-4" />
+                  </Button>
+                </Col>
+                <Col>
+                  <h2 className="h5 mb-0 text-white label-sidebar">
+                    {activeMenuItem?.label}
+                  </h2>
+                </Col>
               </Row>
-            ))}
+            </div>
+            <div className="submenu-content">
+              {activeMenuItem?.subMenu.map((subItem) => (
+                <Row
+                  key={subItem.key || `subitem-${subItem.label}`}
+                  onClick={
+                    subItem.masterDataMenu || subItem.pendaftaranMenu
+                      ? () => toggleSubMenu(subItem.key)
+                      : undefined
+                  }
+                  className={`align-items-center iq-submenu-item ${
+                    subItem.pathname === pathname ? "active-submenu-item" : ""
+                  } ${
+                    activeSubMenu === subItem.key ? "active-submenu-item" : ""
+                  }`}
+                >
+                  <Link
+                    href={subItem.pathname}
+                    className="d-flex align-items-center text-white text-decoration-none w-100"
+                    onClick={(e) => {
+                      if (subItem.masterDataMenu || subItem.pendaftaranMenu) {
+                        // Prevent navigation when clicking on items with nested menus
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    <Col xs="auto" className="pe-2 icon-sidebar">
+                      {subItem.icon}
+                    </Col>
+                    <Col className="ps-2 text-white label-sidebar">
+                      {subItem.label}
+                    </Col>
+                    {(subItem.masterDataMenu || subItem.pendaftaranMenu) && (
+                      <Col xs="auto" className="ms-auto">
+                        <RiArrowRightSLine className="fs-4 arrow-icon" />
+                      </Col>
+                    )}
+                  </Link>
+                </Row>
+              ))}
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Second Level Submenu (MasterData or Pendaftaran) */}
       {activeMenu && activeSubMenu && nestedMenu && (
         <div className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300 sidebar-slide-enter-active">
+          <div className="logo-menu">
+            <Link href="/#">
+              <Image
+                src="/Images/icon-dashboard.png"
+                className="img-fluid sidebar-logo"
+                alt="logo"
+              />
+            </Link>
+          </div>
           <div className="submenu-header bg-dark">
             <Row className="align-items-center p-3">
               <Col xs="auto">

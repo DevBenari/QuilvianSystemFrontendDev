@@ -14,7 +14,7 @@ const Sidebar = memo(() => {
   return showSidebar ? (
     <Fragment>
       <div className="iq-sidebar">
-        <div className="iq-sidebar-logo d-flex justify-content-between ">
+        <div className="logo-menu">
           <Link href="/#">
             <Image
               src="/Images/icon-dashboard.png"
@@ -23,7 +23,6 @@ const Sidebar = memo(() => {
             />
           </Link>
         </div>
-
         <SideBarItems />
       </div>
     </Fragment>
