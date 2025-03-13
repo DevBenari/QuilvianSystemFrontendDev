@@ -2,6 +2,7 @@
 import React, { useState, useEffect, memo } from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   RiUserLine,
   RiArrowRightSLine,
@@ -12,6 +13,7 @@ import {
 import { menuItems } from "@/utils/menuItems";
 
 const SideBarItems = memo(() => {
+  const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [activeNestedMenu, setActiveNestedMenu] = useState(null);
@@ -27,6 +29,39 @@ const SideBarItems = memo(() => {
     if (savedSubMenu) setActiveSubMenu(savedSubMenu);
     if (savedNestedMenu) setActiveNestedMenu(savedNestedMenu);
   }, []);
+
+  // Auto-set active states based on current pathname
+  useEffect(() => {
+    if (!pathname) return;
+
+    // Check for matching paths in menuItems
+    menuItems.forEach((item) => {
+      if (item.subMenu) {
+        item.subMenu.forEach((subItem) => {
+          if (subItem.pathname === pathname) {
+            setActiveMenu(item.key);
+            setActiveSubMenu(subItem.key);
+          }
+
+          // Check nested menus
+          const nestedMenu = subItem.masterDataMenu || subItem.pendaftaranMenu;
+          if (nestedMenu) {
+            nestedMenu.forEach((category) => {
+              category.subItems.forEach((nestedItem) => {
+                if (nestedItem.href === pathname) {
+                  setActiveMenu(item.key);
+                  setActiveSubMenu(subItem.key);
+                  setActiveNestedMenu(category.key);
+                }
+              });
+            });
+          }
+        });
+      } else if (item.pathname === pathname) {
+        setActiveMenu(item.key);
+      }
+    });
+  }, [pathname]);
 
   // Save menu states to localStorage and handle navigation
   const toggleMenu = (key) => {
@@ -79,6 +114,11 @@ const SideBarItems = memo(() => {
 
   const nestedMenu = getNestedMenu();
 
+  // Check if a link is active
+  const isLinkActive = (href) => {
+    return href === pathname;
+  };
+
   return (
     <>
       {/* Main Menu */}
@@ -94,8 +134,10 @@ const SideBarItems = memo(() => {
             onClick={item.subMenu ? () => toggleMenu(item.key) : undefined}
             onMouseEnter={() => setHoveredItem(item.key)}
             onMouseLeave={() => setHoveredItem(null)}
-            className={`align-items-center p-2 iq-menu-item cursor-pointer mt-3 iq-side ${
+            className={`align-items-center iq-menu-item cursor-pointer ${
               hoveredItem === item.key ? "hovered" : ""
+            } ${item.pathname === pathname ? "active-menu-item" : ""} ${
+              activeMenu === item.key ? "active-menu-item" : ""
             }`}
           >
             <Link
@@ -124,8 +166,8 @@ const SideBarItems = memo(() => {
 
       {/* First Level Submenu */}
       {activeMenu && (
-        <div className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300">
-          <div className="mt-4 bg-dark">
+        <div className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300 sidebar-slide-enter-active">
+          <div className="submenu-header bg-dark">
             <Row className="align-items-center p-3">
               <Col xs="auto">
                 <Button
@@ -138,7 +180,7 @@ const SideBarItems = memo(() => {
                     localStorage.removeItem("activeSubMenu");
                     localStorage.removeItem("activeNestedMenu");
                   }}
-                  className="me-3"
+                  className="me-3 back-button"
                 >
                   <RiArrowLeftLine className="text-white fs-4" />
                 </Button>
@@ -150,7 +192,7 @@ const SideBarItems = memo(() => {
               </Col>
             </Row>
           </div>
-          <div>
+          <div className="submenu-content">
             {activeMenuItem?.subMenu.map((subItem) => (
               <Row
                 key={subItem.key || `subitem-${subItem.label}`}
@@ -159,7 +201,11 @@ const SideBarItems = memo(() => {
                     ? () => toggleSubMenu(subItem.key)
                     : undefined
                 }
-                className="align-items-center p-2 iq-submenu-item"
+                className={`align-items-center iq-submenu-item ${
+                  subItem.pathname === pathname ? "active-submenu-item" : ""
+                } ${
+                  activeSubMenu === subItem.key ? "active-submenu-item" : ""
+                }`}
               >
                 <Link
                   href={subItem.pathname}
@@ -179,7 +225,7 @@ const SideBarItems = memo(() => {
                   </Col>
                   {(subItem.masterDataMenu || subItem.pendaftaranMenu) && (
                     <Col xs="auto" className="ms-auto">
-                      <RiArrowRightSLine className="fs-4" />
+                      <RiArrowRightSLine className="fs-4 arrow-icon" />
                     </Col>
                   )}
                 </Link>
@@ -191,8 +237,8 @@ const SideBarItems = memo(() => {
 
       {/* Second Level Submenu (MasterData or Pendaftaran) */}
       {activeMenu && activeSubMenu && nestedMenu && (
-        <div className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300">
-          <div className="mt-4 bg-dark">
+        <div className="position-absolute top-0 start-0 w-100 h-100 bg-primary transition-transform duration-300 sidebar-slide-enter-active">
+          <div className="submenu-header bg-dark">
             <Row className="align-items-center p-3">
               <Col xs="auto">
                 <Button
@@ -203,7 +249,7 @@ const SideBarItems = memo(() => {
                     localStorage.removeItem("activeSubMenu");
                     localStorage.removeItem("activeNestedMenu");
                   }}
-                  className="me-3"
+                  className="me-3 back-button"
                 >
                   <RiArrowLeftLine className="text-white fs-4" />
                 </Button>
@@ -217,13 +263,20 @@ const SideBarItems = memo(() => {
           </div>
           <div className="nested-menu-container">
             {nestedMenu.map((category) => (
-              <div key={category.key || `cat-${category.title}`}>
+              <div
+                key={category.key || `cat-${category.title}`}
+                className="nested-category"
+              >
                 <Row
                   onClick={() => toggleNestedMenu(category.key)}
-                  className="align-items-center p-2 iq-nested-item"
+                  className={`align-items-center iq-nested-item ${
+                    activeNestedMenu === category.key
+                      ? "active-nested-item"
+                      : ""
+                  }`}
                 >
                   <div className="d-flex align-items-center text-white w-100">
-                    <Col xs="auto" className="pe-2">
+                    <Col xs="auto" className="pe-2 nested-icon">
                       {activeNestedMenu === category.key ? (
                         <RiFolderOpenLine className="fs-4" />
                       ) : (
@@ -235,7 +288,7 @@ const SideBarItems = memo(() => {
                     </Col>
                     <Col xs="auto" className="ms-auto">
                       <RiArrowRightSLine
-                        className={`fs-4 ${
+                        className={`fs-4 arrow-icon ${
                           activeNestedMenu === category.key ? "rotate-90" : ""
                         }`}
                         style={{
@@ -250,10 +303,25 @@ const SideBarItems = memo(() => {
                 </Row>
 
                 {/* Display subItems when this category is active */}
-                {activeNestedMenu === category.key && (
+                <div
+                  className={`nested-subitems-wrapper ${
+                    activeNestedMenu === category.key ? "expanded" : ""
+                  }`}
+                  style={{
+                    maxHeight:
+                      activeNestedMenu === category.key
+                        ? `${category.subItems.length * 45}px`
+                        : "0px",
+                  }}
+                >
                   <div className="nested-subitems">
                     {category.subItems.map((item, idx) => (
-                      <Row key={idx} className="ps-4 py-2 nested-subitem">
+                      <Row
+                        key={idx}
+                        className={`nested-subitem ${
+                          isLinkActive(item.href) ? "active-link" : ""
+                        }`}
+                      >
                         <Link
                           href={item.href}
                           className="text-white text-decoration-none d-block w-100"
@@ -263,7 +331,7 @@ const SideBarItems = memo(() => {
                       </Row>
                     ))}
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>

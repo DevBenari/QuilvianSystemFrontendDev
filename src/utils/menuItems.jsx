@@ -17,7 +17,7 @@ import {
 } from "react-icons/ri";
 import { PiWheelchairFill } from "react-icons/pi";
 import { GiMicroscope } from "react-icons/gi";
-import { FaStethoscope, FaFirstAid } from "react-icons/fa";
+import { FaStethoscope } from "react-icons/fa";
 import { MdScanner } from "react-icons/md";
 
 export const menuItems = [

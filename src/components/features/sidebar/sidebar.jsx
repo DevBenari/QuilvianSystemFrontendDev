@@ -23,9 +23,8 @@ const Sidebar = memo(() => {
             />
           </Link>
         </div>
-        <div id="sidebar-scrollbar">
-          <SideBarItems />
-        </div>
+
+        <SideBarItems />
       </div>
     </Fragment>
   ) : null;
