@@ -1,10 +1,13 @@
 "use client";
 import React, { Fragment, memo, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-// import UseSelectWilayah from "@/lib/hooks/useSelectWilayah";
 import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
-import { Button, Card, Col, Image, Row } from "react-bootstrap";
+import { Button, Card, Col, Image, Row, Alert } from "react-bootstrap";
 import ButtonNav from "@/components/ui/button-navigation";
+// import { CreditCard } from "react-feather"; // Import CreditCard icon
+
+// Import the CardScannerModal component
+import CardScannerModal from "@/components/ui/modal-scanCard";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AddPasienSlice } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
@@ -17,20 +20,75 @@ import { fetchIdentitas } from "@/lib/state/slice/Manajemen-kesehatan-slices/Mas
 import { useRouter } from "next/navigation";
 import useAgamaData from "@/lib/hooks/useAgamaData";
 import useSelectWilayah from "@/lib/hooks/useSelectWilayah";
-import ImageUploader from "@/components/ui/uploadPhoto-field";
-import UploadPhotoField from "@/components/ui/uploadPhoto-field";
 import TindakanTableHarga from "@/components/features/tindakanTableWithHarga/tindakanTableHarga";
 import PrintPatientCard from "../../kiosk/add-guest-kiosk/patientCard";
 import PrintableQueueNumber from "../../kiosk/add-guest-kiosk/patientAntrian";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 
 const PendaftaranPasienRadiologi = memo(() => {
-  const { setValue } = useForm();
+  const { setValue, reset } = useForm();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
   const [selectedPrintType, setSelectedPrintType] = useState(null);
   const router = useRouter();
   const [selectImage, setSelectImage] = useState(null);
+  
+  // Scanner modal state
+  const [showScannerModal, setShowScannerModal] = useState(false);
+  const [scanSuccess, setScanSuccess] = useState(false);
+  const [scanMessage, setScanMessage] = useState("");
+
+  // Function to handle opening the scanner modal
+  const handleOpenScanner = () => {
+    setShowScannerModal(true);
+  };
+
+  // Function to handle scanner modal close
+  const handleCloseScanner = () => {
+    setShowScannerModal(false);
+  };
+
+  // Function to handle scan completion and populate form
+  const handleScanComplete = (patientData) => {
+    // Update form fields with scanned data
+    Object.entries(patientData).forEach(([field, value]) => {
+      setValue(field, value);
+    });
+    
+    // If we have a province ID, update the selected province state
+    if (patientData.ProvinsiId) {
+      setSelectedProvinsi(patientData.ProvinsiId);
+    }
+    
+    // If we have a country ID, update the selected country state
+    if (patientData.NegaraId) {
+      setSelectedNegara(patientData.NegaraId);
+    }
+    
+    // If we have a kabupaten ID, update the selected kabupaten state
+    if (patientData.kabupatenKotaId) {
+      setSelectedKabupaten(patientData.kabupatenKotaId);
+    }
+    
+    // Show success message
+    setScanSuccess(true);
+    setScanMessage(`Data pasien berhasil dipindai untuk ${patientData.namaPasien || 'NIK: ' + patientData.noIdentitas}`);
+    
+    // Hide success message after 5 seconds
+    setTimeout(() => {
+      setScanSuccess(false);
+    }, 5000);
+  };
+
+  // Function to handle printing
+  const handlePrint = (type) => {
+    setSelectedPrintType(type);
+    setTimeout(() => {
+      window.print();
+      setSelectedPrintType(null);
+    }, 100);
+  };
+
   // fungsi untuk melakukan select provinsi
   const {
     selectedNegara,
@@ -50,8 +108,6 @@ const PendaftaranPasienRadiologi = memo(() => {
     kelurahanOptions,
     negaraLoading,
     provinsiLoading,
-    kabupatenLoading,
-    kecamatanLoading,
     handleLoadMoreNegara,
     handleLoadMoreProvinsi,
     handleLoadMoreKabupaten,
@@ -72,7 +128,6 @@ const PendaftaranPasienRadiologi = memo(() => {
     }
   }, [selectedNegara, setValue, negaraOptions]);
 
-  // const {provinsiOptions, loading: provinsiLoading, handleLoadMore } = UseProvinsiData();
   const {
     agamaOptions,
     loading: agamaLoading,
@@ -87,9 +142,6 @@ const PendaftaranPasienRadiologi = memo(() => {
     totalPage,
   } = useSelector((state) => state.pendidikan);
   const { data: titles } = useSelector((state) => state.titles);
-  const { data: pekerjaanData } = useSelector((state) => state.pekerjaan);
-  const { data: GolonganDarah } = useSelector((state) => state.golongan);
-  const { data: identitas } = useSelector((state) => state.identitas);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -107,12 +159,6 @@ const PendaftaranPasienRadiologi = memo(() => {
       value: item.titleId, // ID untuk value
     })) || [];
 
-  // useEffect(() => {
-  //     if (error) {
-  //         router.push("/error-page");
-  //     }
-  // }, [error, router]);
-
   if (loading) {
     return <div>Loading data pasien...</div>;
   }
@@ -121,13 +167,36 @@ const PendaftaranPasienRadiologi = memo(() => {
     {
       section: "Informasi Pasien",
       fields: [
+        // Add a custom component for the scan card button at the top of the form
+        {
+          type: "custom",
+          customRender: () => (
+            <div className="mb-4">
+              <Button 
+                variant="primary" 
+                onClick={handleOpenScanner}
+                className="d-flex align-items-center gap-2 w-100"
+              >
+                {/* <CreditCard size={18} /> */}
+                <span>Scan Kartu Pasien / E-KTP</span>
+              </Button>
+              
+              {scanSuccess && (
+                <Alert variant="success" className="mt-3">
+                  {scanMessage}
+                </Alert>
+              )}
+            </div>
+          ),
+          colSize: 12,
+        },
         {
           type: "text",
           id: "noRegistrasi",
           label: "No Registrasi",
           name: "noRegistrasi",
           placeholder: "No Registrasi",
-          rules: { required: "No Registrasi is required" },
+ 
           colSize: 6,
         },
 
@@ -137,7 +206,14 @@ const PendaftaranPasienRadiologi = memo(() => {
           label: "No Rekam Medis",
           name: "noRekamMedis",
           placeholder: "No Rekam Medis",
-          rules: { required: "No Rekam Medis is required" },
+          colSize: 6,
+        },
+        {
+          type: "text",
+          id: "noIdentitas",
+          label: "No. Identitas (NIK/Passport)",
+          name: "noIdentitas",
+          placeholder: "No. Identitas",
           colSize: 6,
         },
         {
@@ -146,30 +222,27 @@ const PendaftaranPasienRadiologi = memo(() => {
           label: "Nama Pasien",
           name: "namaPasien",
           placeholder: "Nama Pasien",
-          rules: { required: "Nama Pasien is required" },
           colSize: 6,
         },
         {
           type: "select",
           id: "titlesId",
           label: "Title",
-          name: "titlesId",
+          name: "TitlesId",
           placeholder: "Title",
           options: titlesOptions,
-          rules: { required: "Title is required" },
           colSize: 6,
         },
         {
           type: "select",
           id: "jenisKelamin",
           label: "Jenis Kelamin",
-          name: "jenisKelamin",
+          name: "JenisKelamin",
           placeholder: "Jenis Kelamin",
           options: [
             { label: "Laki-laki", value: "Laki-Laki" },
             { label: "Perempuan", value: "Perempuan" },
           ],
-          rules: { required: "Jenis Kelamin is required" },
           colSize: 6,
         },
         {
@@ -178,7 +251,6 @@ const PendaftaranPasienRadiologi = memo(() => {
           label: "Nomor HP",
           name: "nomorHP",
           placeholder: "Nomor HP",
-          rules: { required: "Nomor HP is required" },
           colSize: 6,
         },
         {
@@ -186,7 +258,6 @@ const PendaftaranPasienRadiologi = memo(() => {
           id: "tglLahir",
           label: "Tanggal Lahir",
           name: "tglLahir",
-          rules: { required: "Tanggal Lahir is required" },
           colSize: 6,
         },
 
@@ -194,19 +265,14 @@ const PendaftaranPasienRadiologi = memo(() => {
           type: "email",
           id: "email",
           label: "Email",
-          name: "email",
+          name: "Email",
           placeholder: "Email",
-          rules: {
-            required: "Email is required",
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Masukkan email yang valid",
-            },
-          },
           colSize: 6,
         },
       ],
     },
+    
+    // Rest of the form sections remain the same
     {
       section: "Informasi Demografis",
       fields: [
@@ -214,7 +280,7 @@ const PendaftaranPasienRadiologi = memo(() => {
           type: "select",
           id: "negaraId",
           label: "Negara",
-          name: "negaraId",
+          name: "NegaraId",
           placeholder: "Pilih Negara",
           options: negaraOptions,
           isLoading: negaraLoading,
@@ -225,14 +291,13 @@ const PendaftaranPasienRadiologi = memo(() => {
             setValue("kabupatenKotaId", null);
           },
           onMenuScrollToBottom: handleLoadMoreNegara,
-          rules: { required: "Negara harus dipilih" },
           colSize: 6,
         },
         {
           type: "select",
           id: "provinsiId",
           label: "Provinsi",
-          name: "provinsiId",
+          name: "ProvinsiId",
           placeholder: "Pilih Provinsi",
           options: provinsiOptions,
           isLoading: provinsiLoading,
@@ -246,17 +311,9 @@ const PendaftaranPasienRadiologi = memo(() => {
             !selectedNegara ||
             negaraOptions.find((opt) => opt.value === selectedNegara)?.label !==
               "Indonesia",
-          rules: {
-            required: {
-              value:
-                selectedNegara &&
-                negaraOptions.find((opt) => opt.value === selectedNegara)
-                  ?.label === "Indonesia",
-              message: "Provinsi harus dipilih untuk warga Indonesia",
-            },
-          },
           colSize: 6,
         },
+        // Rest of demographic fields remain the same
         {
           type: "select",
           id: "kabupatenKotaId",
@@ -264,7 +321,6 @@ const PendaftaranPasienRadiologi = memo(() => {
           name: "kabupatenKotaId",
           placeholder: "Pilih Kabupaten/Kota",
           options: kabupatenOptions,
-          // isLoading: kabupatenLoading,
           onChange: (selected) => setSelectedKabupaten(selected?.value),
           onMenuScrollToBottom: handleLoadMoreKabupaten,
           disabled: !selectedProvinsi,
@@ -286,7 +342,6 @@ const PendaftaranPasienRadiologi = memo(() => {
           name: "kecamatanId",
           placeholder: "Pilih Kecamatan",
           options: kecamatanOptions,
-          // isLoading: kecamatanLoading,
           onChange: (selected) => setSelectedKecamatan(selected?.value),
           onMenuScrollToBottom: handleLoadMoreKecamatan,
           disabled: !selectedKabupaten,
@@ -296,7 +351,7 @@ const PendaftaranPasienRadiologi = memo(() => {
                 selectedNegara &&
                 negaraOptions.find((opt) => opt.value === selectedNegara)
                   ?.label === "Indonesia",
-              message: "Provinsi harus dipilih untuk warga Indonesia",
+              message: "Kecamatan harus dipilih untuk warga Indonesia",
             },
           },
           colSize: 6,
@@ -317,7 +372,7 @@ const PendaftaranPasienRadiologi = memo(() => {
                 selectedNegara &&
                 negaraOptions.find((opt) => opt.value === selectedNegara)
                   ?.label === "Indonesia",
-              message: "Provinsi harus dipilih untuk warga Indonesia",
+              message: "Kelurahan harus dipilih untuk warga Indonesia",
             },
           },
           colSize: 6,
@@ -333,6 +388,7 @@ const PendaftaranPasienRadiologi = memo(() => {
         },
       ],
     },
+    // Include the rest of your form sections here
     {
       section: "Detail Konsultasi",
       fields: [
@@ -666,6 +722,13 @@ const PendaftaranPasienRadiologi = memo(() => {
 
   return (
     <Fragment>
+      {/* Render the CardScannerModal */}
+      <CardScannerModal
+        show={showScannerModal}
+        onHide={handleCloseScanner}
+        onScanComplete={handleScanComplete}
+      />
+      
       <DynamicStepForm
         title="Pendaftaran Pasien Radiologi"
         formConfig={formFields}
@@ -681,3 +744,4 @@ const PendaftaranPasienRadiologi = memo(() => {
 
 PendaftaranPasienRadiologi.displayName = "PendaftaranPasienRadiologi";
 export default PendaftaranPasienRadiologi;
+

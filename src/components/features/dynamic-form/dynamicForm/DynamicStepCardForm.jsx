@@ -1,14 +1,12 @@
-// DynamicStepCardForm.jsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
-import { Row, Col, Form, Card, Container } from "react-bootstrap";
+import { Row, Col, Form, Card } from "react-bootstrap";
 // Custom hooks
 import useFormNavigation from "@/lib/hooks/form-field/useFormNavigation";
 import useFilteredItems from "@/lib/hooks/form-field/useFilteredItems";
 // Components
 import StepsNavigation from "@/components/ui/stepNavigation";
-// import CardSelectionGroup from "@/components/features/card-selection-group/cardSelectionGroup.component";
 import ButtonNav from "@/components/ui/button-navigation";
 
 // Renderers
@@ -33,6 +31,7 @@ const DynamicStepCardForm = ({
   onCardSelect,
   customValidators = {},
   customFieldRenderers = {},
+  useContainer = false, // New prop to control container rendering
 }) => {
   const [isEditing, setIsEditing] = useState(isAddMode);
   const [submittedData, setSubmittedData] = useState(null);
@@ -128,7 +127,6 @@ const DynamicStepCardForm = ({
   const handleFormSubmit = (data) => {
     setSubmittedData(data);
     if (onFormSubmitted) onFormSubmitted(data);
-    if (onFormSubmitted) onFormSubmitted(data);
     onSubmit(data);
   };
 
@@ -140,90 +138,92 @@ const DynamicStepCardForm = ({
     return field.hide;
   };
 
+  // Form content that will be rendered with or without container
+  const formContent = (
+    <Row className="justify-content-center ">
+      <Col xs={12}>
+        <Card className={`main-card py-3 ${className || ""}`}>
+          <Card.Header className="d-flex justify-content-between align-items-center">
+            <h4 className="m-0">{title}</h4>
+            <ButtonNav
+              className="btn btn-secondary"
+              label="Kembali"
+              path={backPath}
+              icon="ri-arrow-left-line"
+            />
+          </Card.Header>
+          <Card.Body>
+            <FormAlert
+              showAlert={showAlert}
+              alertMessage={alertMessage}
+              onClose={() => setShowAlert(false)}
+            />
+
+            <ProgressIndicator progress={progress} />
+
+            <StepsNavigation
+              steps={formConfig}
+              currentStep={currentStep}
+              completedSteps={completedSteps}
+              onStepSelect={navigateToStep}
+            />
+
+            <Form onSubmit={formSubmit(handleFormSubmit)}>
+              <div className="step-content">
+                <h3 className="step-title mb-4">
+                  Step {currentStep + 1}: {formConfig[currentStep].section}
+                </h3>
+                {/* Render the current step */}
+                <StepRenderer
+                  step={formConfig[currentStep]}
+                  methods={methods}
+                  filteredItems={filteredItems}
+                  formType={formType}
+                  currentStep={currentStep}
+                  shouldHideField={shouldHideField}
+                  customFieldRenderers={customFieldRenderers}
+                  onCardSelect={onCardSelect}
+                  isEditing={isEditing}
+                  className={className}
+                />
+
+                <div className="d-flex justify-content-between mt-4">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={handlePrevious}
+                    disabled={currentStep === 0}
+                  >
+                    <i className="ri-arrow-left-line me-1"></i> Previous
+                  </button>
+
+                  {currentStep === formConfig.length - 1 ? (
+                    (isAddMode || isEditing) && (
+                      <button type="submit" className="btn btn-success">
+                        <i className="ri-check-line me-1"></i> Submit
+                      </button>
+                    )
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={(e) => handleNext(e)}
+                    >
+                      Next <i className="ri-arrow-right-line ms-1"></i>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </Form>
+          </Card.Body>
+        </Card>
+      </Col>
+    </Row>
+  );
+
   return (
     <FormProvider {...methods}>
-      <Container fluid>
-        <Row className="justify-content-center py-4">
-          <Col xs={12}>
-            <Card className="main-card mb-4">
-              <Card.Header className="d-flex justify-content-between align-items-center">
-                <h4 className="m-0">{title}</h4>
-                <ButtonNav
-                  className="btn btn-secondary"
-                  label="Kembali"
-                  path={backPath}
-                  icon="ri-arrow-left-line"
-                />
-              </Card.Header>
-              <Card.Body>
-                <FormAlert
-                  showAlert={showAlert}
-                  alertMessage={alertMessage}
-                  onClose={() => setShowAlert(false)}
-                />
-
-                <ProgressIndicator progress={progress} />
-
-                <StepsNavigation
-                  steps={formConfig}
-                  currentStep={currentStep}
-                  completedSteps={completedSteps}
-                  onStepSelect={navigateToStep}
-                />
-
-                <Form onSubmit={formSubmit(handleFormSubmit)}>
-                  <div className="step-content mt-4">
-                    <h3 className="step-title mb-4">
-                      Step {currentStep + 1}: {formConfig[currentStep].section}
-                    </h3>
-
-                    {/* Render the current step */}
-                    <StepRenderer
-                      step={formConfig[currentStep]}
-                      methods={methods} // Pastikan methods dilempar
-                      filteredItems={filteredItems}
-                      formType={formType}
-                      currentStep={currentStep}
-                      shouldHideField={shouldHideField}
-                      customFieldRenderers={customFieldRenderers}
-                      onCardSelect={onCardSelect}
-                      isEditing={isEditing}
-                      className={className}
-                    />
-
-                    <div className="d-flex justify-content-between mt-4">
-                      <button
-                        type="button"
-                        className="btn btn-outline-secondary"
-                        onClick={handlePrevious}
-                        disabled={currentStep === 0}
-                      >
-                        <i className="ri-arrow-left-line me-1"></i> Previous
-                      </button>
-
-                      {currentStep === formConfig.length - 1 ? (
-                        (isAddMode || isEditing) && (
-                          <button type="submit" className="btn btn-success">
-                            <i className="ri-check-line me-1"></i> Submit
-                          </button>
-                        )
-                      ) : (
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={(e) => handleNext(e)}
-                        >
-                          Next <i className="ri-arrow-right-line ms-1"></i>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+      {formContent}
     </FormProvider>
   );
 };

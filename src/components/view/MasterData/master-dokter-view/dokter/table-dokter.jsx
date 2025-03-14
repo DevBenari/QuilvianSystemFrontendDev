@@ -73,6 +73,7 @@ const TableDataDokter = () => {
           { key: "tglStr", label: "Tanggal STR" },
           { key: "panggilDokter", label: "Panggilan" },
           { key: "nik", label: "NIK" },
+          {key: "fotoPath", label: "Foto Dokter"},
         ]}
         slugConfig={{ textField: "nmDokter", idField: "dokterId" }} // ID Dokter untuk Slug
         basePath="/MasterData/master-dokter/dokter/edit-dokter-form"

@@ -62,8 +62,8 @@ const PatientInfoCard = ({ patientData, onContinue, onBack }) => {
             <div className="avatar-circle bg-light d-flex align-items-center justify-content-center mb-3 mx-auto" style={{ width: '120px', height: '120px', borderRadius: '50%' }}>
               <i className="bi bi-person-circle" style={{ fontSize: '5rem', color: '#6c757d' }}></i>
             </div>
-            <h5>{patientData.nama}</h5>
-            <p className="text-muted mb-0">No. RM: {patientData.noRm || '-'}</p>
+            <h5>{patientData.namaLengkap}</h5>
+            <p className="text-muted mb-0">No. RM: {patientData.noRekamMedis || '-'}</p>
           </Col>
           
           <Col md={9}>
@@ -71,7 +71,7 @@ const PatientInfoCard = ({ patientData, onContinue, onBack }) => {
               <Col md={6}>
                 <dl className="row mb-0">
                   <dt className="col-sm-4">NIK</dt>
-                  <dd className="col-sm-8">{patientData.nik || '-'}</dd>
+                  <dd className="col-sm-8">{patientData.noIdentitas || '-'}</dd>
                   
                   <dt className="col-sm-4">Tgl. Lahir</dt>
                   <dd className="col-sm-8">
@@ -87,7 +87,7 @@ const PatientInfoCard = ({ patientData, onContinue, onBack }) => {
               <Col md={6}>
                 <dl className="row mb-0">
                   <dt className="col-sm-4">Telepon</dt>
-                  <dd className="col-sm-8">{patientData.noTelepon || '-'}</dd>
+                  <dd className="col-sm-8">{patientData.noTelepon1 || '-'}</dd>
                   
                   <dt className="col-sm-4">Email</dt>
                   <dd className="col-sm-8">{patientData.email || '-'}</dd>
@@ -100,7 +100,7 @@ const PatientInfoCard = ({ patientData, onContinue, onBack }) => {
             
             <div className="border-top pt-3">
               <h6>Alamat</h6>
-              <p className="mb-3">{patientData.alamat || '-'}</p>
+              <p className="mb-3">{patientData.alamatIdentitas || '-'}</p>
               
               {patientData.kunjunganTerakhir && (
                 <div className="mb-3">

@@ -18,7 +18,7 @@ export const useInsuranceManagement = ({
   pasienId = null
 }) => {
   const dispatch = useDispatch();
-  const { data: asuransiPasienList, loading } = useSelector(state => state.asuransiPasien || { data: [], loading: false });
+  const { data: asuransiPasienList, loading } = useSelector(state => state.pasienAsuransi );
   
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
   const [insuranceList, setInsuranceList] = useState(initialInsuranceList);

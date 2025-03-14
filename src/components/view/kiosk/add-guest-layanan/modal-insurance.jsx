@@ -9,7 +9,7 @@ import { fetchAsuransi } from '@/lib/state/slice/Manajemen-kesehatan-slices/Mast
 
 const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => {
     const dispatch = useDispatch();
-    const { loading } = useSelector((state) => state.Asuransi);
+    const { data:asuransiList } = useSelector((state) => state.Asuransi);
 
     const [insuranceData, setInsuranceData] = useState({ 
         namaAsuransi: "", 
@@ -177,9 +177,9 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
                 <Button 
                     variant="primary" 
                     onClick={handleFormSubmit}
-                    disabled={!insuranceData.NamaAsuransi || !insuranceData.NomorPolis || loading}
+                    disabled={!insuranceData.NamaAsuransi || !insuranceData.NomorPolis || asuransiList}
                 >
-                    {loading ? 'Menyimpan...' : 'Simpan'}
+                    {asuransiList ? 'Menyimpan...' : 'Simpan'}
                 </Button>
             </Modal.Footer>
         </Modal>

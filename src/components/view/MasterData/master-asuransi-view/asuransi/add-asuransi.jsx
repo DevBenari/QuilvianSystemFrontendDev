@@ -6,7 +6,7 @@ import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dyna
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { showAlert } from "@/components/features/alert/custom-alert";
-import { createAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiSlice";
+import { createAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 const PendaftaranPasienAsuransi = memo(() => {
   const dispatch = useDispatch();
   const formFields = [

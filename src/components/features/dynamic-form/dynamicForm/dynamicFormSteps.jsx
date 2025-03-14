@@ -1,5 +1,6 @@
+// pasien baru 
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { Row, Col, Form, Button, ProgressBar} from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
@@ -17,13 +18,30 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
 
-const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath, isAddMode = false, externalOptions = {} }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+const DynamicStepForm = ({ 
+  title, 
+  formConfig, 
+  onSubmit,
+  onFormSubmited, 
+  backPath, 
+  onStepChange,
+  onNextStep,
+  onPreviousStep,
+  currentStep: externalStep,
+  isAddMode = false, 
+  externalOptions = {},
+  onNegaraChange,
+  navigationConfig = {} 
+}) => {
   const [isEditing, setIsEditing] = useState(isAddMode);
   const [submittedData, setSubmittedData] = useState(null);
+  const [internalStep, setInternalStep] = useState(0);
+  const [formData, setFormData] = useState({});
+  
+  // Gunakan external step jika disediakan
+  const currentStep = externalStep !== undefined ? externalStep : internalStep;
 
   const steps = [
-    // { section: "Main Information", fields: mainFields },
     ...formConfig,
   ];
 
@@ -62,18 +80,40 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     formState: { errors },
     handleSubmit: formSubmit,
     trigger,
+    getValues,
   } = methods;
 
+  // PERBAIKAN: Gunakan useCallback untuk menyimpan data form dan hindari penggunaan watch() secara langsung
+  const updateFormData = useCallback(() => {
+    const currentValues = getValues();
+    setFormData(prev => ({...prev, ...currentValues}));
+  }, [getValues]);
   
-  const {titles = []} = externalOptions;
-   // Gunakan useWatch agar tidak memicu re-render berulang
+  const {titles = [], identity = [], country = []} = externalOptions;
+   // Gunakan useWatch agar tidak memicu re-render berulang (hanya watch field spesifik)
+  const identityPasien = useWatch({ control: methods.control, name: "IdentitasId" });
   const currentJenisKelamin = useWatch({ control: methods.control, name: "JenisKelamin" });
   const titlesId = useWatch({ control: methods.control, name: "TitlesId" });
-  const statusKewarganegaraan = watch("StatusKewarganegaraan");
-  const kewarganegaraan = watch("Kewarganegaraan");
+  const statusKewarganegaraan = useWatch({ control: methods.control, name: "StatusKewarganegaraan" });
+  const negaraId = useWatch({ control: methods.control, name: "NegaraId" });
+
+  // PERBAIKAN: Gunakan useEffect dengan dependency spesifik untuk perubahan step
+  useEffect(() => {
+    // Update form data saat step berubah
+    updateFormData();
+  }, [currentStep, updateFormData]);
 
   useEffect(() => {
+    // Periksa jika titlesId valid dan ditemukan di options
+    if (!titlesId || !titles || titles.length === 0) return;
+    
     const titleLabel = titles.find(option => option.value === titlesId)?.label;
+    if (!titleLabel) return;
+  
+    if (titleLabel === "Bayi") {
+      return; 
+    }
+
     let newJenisKelamin = "";
     if (["Tn", "Mr"].includes(titleLabel)) {
       newJenisKelamin = "Laki-Laki";
@@ -81,19 +121,62 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
       newJenisKelamin = "Perempuan";
     }
   
-    if (newJenisKelamin !== currentJenisKelamin) {
+    if (newJenisKelamin !== "" && newJenisKelamin !== currentJenisKelamin) {
       setValue("JenisKelamin", newJenisKelamin, { shouldValidate: true });
     }
   }, [titlesId, currentJenisKelamin, setValue, titles]);
   
-  
   useEffect(() => {
-    if (statusKewarganegaraan === "WNI") {
-      setValue("Kewarganegaraan", "Indonesia");
-    } else if (statusKewarganegaraan === "WNA" && kewarganegaraan !== kewarganegaraan) {
-      setValue("Kewarganegaraan", kewarganegaraan);
+    // Validasi untuk mencegah loop jika tidak ada perubahan penting
+    if (!identityPasien || !identity || identity.length === 0) return;
+    
+    // Dapatkan detail identitas berdasarkan ID yang dipilih
+    const selectedIdentity = identity.find(item => item.value === identityPasien)?.label;
+    if (!selectedIdentity) return;
+    
+    let newStatusKewarganegaraan = "";
+    if(["KTP", "SIM"].includes(selectedIdentity)) {
+      newStatusKewarganegaraan = "WNI";
+    } else if(["PASPOR", "VISA"].includes(selectedIdentity)) {
+      newStatusKewarganegaraan = "WNA";
     }
-  }, [statusKewarganegaraan, kewarganegaraan, setValue]);
+
+    // Hanya update jika benar-benar berubah
+    if (newStatusKewarganegaraan !== "" && newStatusKewarganegaraan !== statusKewarganegaraan) {
+      setValue("StatusKewarganegaraan", newStatusKewarganegaraan, { shouldValidate: true });
+    }
+  }, [identity, setValue, identityPasien, statusKewarganegaraan]);
+
+  useEffect(() => {
+    // Validasi untuk mencegah loop jika tidak ada perubahan penting
+    if (statusKewarganegaraan === "WNA") {
+      return;
+    }
+    
+    // Jika WNI, cari opsi Indonesia
+    if(statusKewarganegaraan === "WNI") {
+      const indonesiaOption = country.find(
+        option => option.label === "Indonesia"
+      );
+      if (indonesiaOption && negaraId !== indonesiaOption.value) {
+        // Set nilai NegaraId ke Indonesia
+        setValue("NegaraId", indonesiaOption.value);
+        
+        // Panggil onNegaraChange untuk memberi tahu komponen parent
+        if (typeof onNegaraChange === 'function') {
+          onNegaraChange(indonesiaOption);
+        }
+      }
+    }
+    
+    // Hanya update jika Indonesia ditemukan dan nilai belum tepat
+   
+  }, [statusKewarganegaraan, country, negaraId, setValue, onNegaraChange]);
+  
+  // Fungsi untuk mengambil nilai saat ini untuk validasi
+  const getCurrentValues = useCallback(() => {
+    return watch();
+  }, [watch]);
 
   const renderField = (field) => {
     const {
@@ -126,7 +209,7 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
       className,
       readOnly,
       value,
-      disabled,
+      disabled: typeof disabled === 'function' ? disabled(getCurrentValues()) : (!isEditing || disabled),
       ...(onChange ? { onChange } : {}),
       ...(onClick ? { onClick } : {}),
     };
@@ -159,49 +242,123 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     );
   };
 
-  const handleNext = async () => {
-    const currentFields = steps[currentStep].fields.map(field => field.name);
-    const isValid = await trigger(currentFields);
+  // Fungsi untuk validasi fields pada step saat ini
+  const validateCurrentStep = async () => {
+    const fieldNames = steps[currentStep].fields
+      .filter(field => !shouldHideField(field))
+      .map(field => field.name);
+    
+    console.log("Validating fields:", fieldNames);
+    const result = await trigger(fieldNames);
+    return result;
+  };
 
+  // Fungsi untuk menangani tombol Next
+  const handleNextButtonClick = async (e) => {
+    e.preventDefault(); // Mencegah submit form
+    console.log("Next button clicked, validating step:", currentStep);
+    
+    // Validasi field pada step saat ini
+    const isValid = await validateCurrentStep();
+    
     if (isValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+      // Update form data sebelum pindah step
+      updateFormData();
+      
+      // Jika valid, ambil data form saat ini
+      const currentData = getValues();
+      console.log("Step data valid, moving to next step with data:", currentData);
+      
+      // Panggil callback external jika ada
+      if (onNextStep) {
+        onNextStep(currentData);
+      } else {
+        // Jika tidak ada external control, gunakan internal
+        setInternalStep(prev => prev + 1);
+      }
+      
+      // Notify step change
+      if (onStepChange) {
+        onStepChange(currentStep + 1);
+      }
+    } else {
+      console.log("Step validation failed, staying on current step");
     }
   };
 
-  const handlePrevious = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  // Fungsi untuk menangani tombol Previous
+  const handlePreviousButtonClick = (e) => {
+    e.preventDefault(); // Mencegah submit form
+    console.log("Previous button clicked, moving to previous step");
+    
+    // Update form data sebelum pindah step
+    updateFormData();
+    
+    if (onPreviousStep) {
+      onPreviousStep();
+    } else {
+      setInternalStep(prev => Math.max(0, prev - 1));
+    }
+    
+    if (onStepChange) {
+      onStepChange(currentStep - 1);
+    }
   };
 
   const handleEdit = () => setIsEditing(true);
   const handleCancel = () => {
     setIsEditing(false);
-    setCurrentStep(0);
+    setInternalStep(0);
   };
 
-  const handleFormSubmit = (data) => {
-    setSubmittedData(data);
-    onFormSubmited?.(data)
-    onSubmit(data);
+  // Fungsi yang dipanggil saat tombol Submit final ditekan
+  const handleManualSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Manual submit button clicked");
+    
+    // Validasi step terakhir
+    const isValid = await validateCurrentStep();
+    
+    if (isValid) {
+      // Update form data final
+      updateFormData();
+      
+      // Gabungkan data dari semua step
+      const finalData = {...formData, ...getValues()};
+      console.log("Final form data ready to submit:", finalData);
+      
+      // Panggil callback onSubmit dengan data form lengkap
+      if (onSubmit) {
+        onSubmit(finalData);
+      }
+    } else {
+      console.log("Final step validation failed, not submitting");
+    }
   };
 
   const shouldHideField = (field) => {
     if (typeof field.hide === "function") {
-      return field.hide(watch());
+      return field.hide(getCurrentValues());
     }
     return field.hide;
   };
 
   const progress = ((currentStep + 1) / steps.length) * 100;
 
-  
+  // Cek apakah sedang di step terakhir
+  const isLastStep = currentStep === steps.length - 1;
+  // Text untuk tombol next/submit sesuai config atau default
+  const nextButtonText = navigationConfig.nextButtonText || "Next";
+  const prevButtonText = navigationConfig.prevButtonText || "Previous";
+  const submitButtonText = navigationConfig.submitButtonText || "Submit";
 
   return (
     <FormProvider {...methods}>
-      <Row className=" iq-card p-2 mx-3 my-5 rounded " >
+      <Row className="iq-card p-2 mx-3 rounded">
         <div className="iq-card p-2 mt-5">
-        <div className="iq-card-header gap-1 d-flex justify-content-between">
+          <div className="iq-card-header gap-1 d-flex justify-content-between">
             <div className="iq-header-title">
-              <h3 className=" ">{title}</h3>
+              <h3 className="">{title}</h3>
             </div>
             <div className="d-flex gap-2">
               <ButtonNav
@@ -210,13 +367,13 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
                 path={backPath}
                 icon="ri-arrow-left-line"
               />
-              {!isAddMode && !isEditing && ( // Hanya tampil jika bukan add mode dan belum edit
+              {!isAddMode && !isEditing && (
                 <Button className="btn btn-primary" onClick={handleEdit}>
                   <i className="ri-edit-2-line"></i>
                   Edit
                 </Button>
               )}
-              {!isAddMode && isEditing && ( // Tombol cancel hanya tampil di mode edit
+              {!isAddMode && isEditing && (
                 <Button className="btn btn-danger" onClick={handleCancel}>
                   Cancel
                 </Button>
@@ -228,7 +385,8 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
             <ProgressBar now={progress} className="mb-4" />
             <h4 className="mb-4">Step {currentStep + 1}: {steps[currentStep].section}</h4>
 
-            <Form onSubmit={formSubmit(handleFormSubmit)}>
+            {/* Form yang tidak melakukan auto-submit */}
+            <Form noValidate id="dynamic-step-form">
               <Row>
                 {steps[currentStep].fields
                   .filter((field) => !shouldHideField(field))
@@ -240,19 +398,36 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
               </Row>
 
               <div className="d-flex justify-content-between mt-4">
-                <Button type="button" className="btn btn-secondary" onClick={handlePrevious} disabled={currentStep === 0}>
-                  <i className="ri-arrow-left-line me-2"></i> Previous
+                {/* Tombol Previous */}
+                <Button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={handlePreviousButtonClick} 
+                  disabled={currentStep === 0}
+                >
+                  <i className="ri-arrow-left-line me-2"></i> {prevButtonText}
                 </Button>
 
-                {currentStep === steps.length - 1 ? (
+                {/* Tombol Next atau Submit */}
+                {isLastStep ? (
+                  // Tombol Submit di step terakhir
                   (isAddMode || isEditing) && (
-                    <Button type="submit" className="btn btn-primary">
-                      <i className="ri-save-line me-2"></i> Submit
+                    <Button 
+                      type="button" 
+                      className="btn btn-primary"
+                      onClick={handleManualSubmit}
+                    >
+                      <i className="ri-save-line me-2"></i> {submitButtonText}
                     </Button>
                   )
                 ) : (
-                  <Button className="btn btn-primary" onClick={handleNext}>
-                    Next <i className="ri-arrow-right-line ms-2"></i>
+                  // Tombol Next di step lainnya
+                  <Button 
+                    type="button" 
+                    className="btn btn-primary" 
+                    onClick={handleNextButtonClick}
+                  >
+                    {nextButtonText} <i className="ri-arrow-right-line ms-2"></i>
                   </Button>
                 )}
               </div>
@@ -263,4 +438,5 @@ const DynamicStepForm = ({ title, formConfig, onSubmit,onFormSubmited, backPath,
     </FormProvider>
   );
 };
+
 export default DynamicStepForm;

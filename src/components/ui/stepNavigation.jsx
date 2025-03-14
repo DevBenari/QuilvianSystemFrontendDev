@@ -8,7 +8,7 @@ const StepsNavigation = ({
   onStepSelect
 }) => {
   return (
-    <Row className="justify-content-center mb-4">
+    <Row className="justify-content-center ">
       {steps.map((step, idx) => (
         <Col key={`step-${idx}`} xs={12} md={2} className="mb-3">
           <Card 

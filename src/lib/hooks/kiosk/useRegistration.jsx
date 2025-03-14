@@ -23,7 +23,7 @@ import { fetchDoctors } from "@/lib/state/slice/Manajemen-kesehatan-slices/Maste
 }) => {
   const formMethodsRef = useRef(null);
   const dispatch = useDispatch();
-  const { data:doctorsByPoli, loading: doctorsLoading, error: doctorsError } = useSelector(state => state.dokterPoli);
+  const { data:doctorsByPoli, loading: doctorsLoading, error: doctorsError } = useSelector(state => state.DokterPoliSlice);
   
   // Local state
   const [serviceType, setServiceType] = useState("poli"); // "poli", "lab", "radiologi"
