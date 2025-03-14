@@ -364,6 +364,134 @@ export const menuItems = [
         label: "IGD",
         key: "igd",
         icon: <RiHospitalLine className="fs-4" />,
+        // Perbaikan untuk bagian menuIGD dengan menambahkan key dan icon
+        menuIGD: [
+          {
+            title: "Administrasi",
+            key: "administrasiIGD", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Pendaftaran Pasien IGD",
+                href: "/IGD/administrasi/pendaftaran-pasien-igd",
+              },
+              {
+                title: "Status Pasien IGD",
+                href: "/IGD/administrasi/status-pasien-igd",
+              },
+              {
+                title: "Daftar Pasien",
+                href: "/IGD/administrasi/table-pasien-igd",
+              },
+            ],
+          },
+          {
+            title: "Triase",
+            key: "triaseIGD", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Daftar Antrian Triase",
+                href: "/IGD/Antrean-Triase/table-poli",
+              },
+              {
+                title: "Penilaian Triase",
+                href: "/IGD/Antrean-Triase/penilaian",
+              },
+            ],
+          },
+          {
+            title: "Penanganan Pasien",
+            key: "penangananPasienIGD", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Pemeriksaan Awal",
+                href: "/IGD/pemeriksaan-awal",
+              },
+              {
+                title: "Tindakan Medis",
+                href: "/IGD/tindakan-medis",
+              },
+              {
+                title: "Monitoring Pasien",
+                href: "/IGD/monitoring-pasien",
+              },
+            ],
+          },
+          {
+            title: "Diagnostik & Terapi",
+            key: "diagnostikTerapiIGD", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Permintaan Laboratorium",
+                href: "/IGD/permintaan-lab",
+              },
+              {
+                title: "Permintaan Radiologi",
+                href: "/IGD/permintaan-radiologi",
+              },
+              {
+                title: "Farmasi IGD",
+                href: "/IGD/farmasi-igd",
+              },
+            ],
+          },
+          {
+            title: "Manajemen Ruangan",
+            key: "manajemenRuanganIGD", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Status Ruangan",
+                href: "/IGD/status-ruangan",
+              },
+              {
+                title: "Permintaan Transfer",
+                href: "/IGD/permintaan-transfer",
+              },
+            ],
+          },
+          {
+            title: "Disposisi Pasien",
+            key: "disposisiPasienIGD", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Rawat Inap",
+                href: "/IGD/rawat-inap",
+              },
+              {
+                title: "Pemulangan Pasien",
+                href: "/IGD/pemulangan-pasien",
+              },
+              {
+                title: "Rujukan Pasien",
+                href: "/IGD/rujukan-pasien",
+              },
+            ],
+          },
+          {
+            title: "Laporan & Analitik",
+            key: "laporanAnalitikIGD", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Dashboard IGD",
+                href: "/IGD/dashboard",
+              },
+              {
+                title: "Laporan Harian",
+                href: "/IGD/laporan-harian",
+              },
+              {
+                title: "Statistik & Kinerja",
+                href: "/IGD/statistik-kinerja",
+              },
+            ],
+          },
+        ],
       },
       {
         pathname: "/radiologi",

@@ -1,8 +1,7 @@
 "use client";
 import Link from "next/link";
-import { Image } from "react-bootstrap";
 import { usePathname } from "next/navigation";
-import React, { Fragment, memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   List,
   AutoSizer,
@@ -18,9 +17,14 @@ import {
   RiFolderOpenLine,
 } from "react-icons/ri";
 import { Row, Col, Button } from "react-bootstrap";
+import {
+  getNestedMenuFromSubItem,
+  hasNestedMenu,
+  findPathInNestedMenu,
+} from "./menuHandle";
 
-// Virtualized SideBarItems Component
 const VirtualizedSideBarItems = memo(() => {
+  // State management
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
@@ -30,35 +34,49 @@ const VirtualizedSideBarItems = memo(() => {
   const [currentItems, setCurrentItems] = useState([]);
   const [isMiniSidebar, setIsMiniSidebar] = useState(false);
 
-  // For measuring dynamic content heights
+  // Setup for measuring dynamic content heights
   const cache = new CellMeasurerCache({
     defaultHeight: 60,
     fixedWidth: true,
   });
 
-  // Detect sidebar-main mode
+  // ---------- EFFECTS ----------
+
+  // Effect 1: Detect sidebar-main mode changes
   useEffect(() => {
     const checkSidebarMode = () => {
       const isMini = document.body.classList.contains("sidebar-main");
-      setIsMiniSidebar(isMini);
-      // Reset cache when sidebar mode changes to force recalculation
-      cache.clearAll();
+      if (isMiniSidebar !== isMini) {
+        setIsMiniSidebar(isMini);
+        cache.clearAll();
+
+        // Force rerender of the virtualized list
+        setTimeout(() => {
+          window.dispatchEvent(new Event("resize"));
+        }, 50);
+      }
     };
 
-    // Check on initial load
+    // Initial check
     checkSidebarMode();
 
-    // Add mutation observer to detect class changes on body
+    // Setup observers
     const observer = new MutationObserver(checkSidebarMode);
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ["class"],
     });
 
-    return () => observer.disconnect();
-  }, []);
+    window.addEventListener("resize", checkSidebarMode);
 
-  // Load active menu states from localStorage
+    // Cleanup
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", checkSidebarMode);
+    };
+  }, [isMiniSidebar]);
+
+  // Effect 2: Load active menu states from localStorage
   useEffect(() => {
     const savedMenu = localStorage.getItem("activeMenu");
     const savedSubMenu = localStorage.getItem("activeSubMenu");
@@ -69,55 +87,56 @@ const VirtualizedSideBarItems = memo(() => {
     if (savedNestedMenu) setActiveNestedMenu(savedNestedMenu);
   }, []);
 
-  // Auto-set active states based on current pathname
+  // Effect 3: Set active states based on current URL path
   useEffect(() => {
     if (!pathname) return;
 
-    // Check for matching paths in menuItems
     menuItems.forEach((item) => {
+      // Check for main menu match
+      if (item.pathname === pathname) {
+        setActiveMenu(item.key);
+        return;
+      }
+
+      // Check submenu paths
       if (item.subMenu) {
         item.subMenu.forEach((subItem) => {
           if (subItem.pathname === pathname) {
             setActiveMenu(item.key);
             setActiveSubMenu(subItem.key);
+            return;
           }
 
-          // Check nested menus
-          const nestedMenu = subItem.masterDataMenu || subItem.pendaftaranMenu;
-          if (nestedMenu) {
-            nestedMenu.forEach((category) => {
-              category.subItems.forEach((nestedItem) => {
-                if (nestedItem.href === pathname) {
-                  setActiveMenu(item.key);
-                  setActiveSubMenu(subItem.key);
-                  setActiveNestedMenu(category.key);
-                }
-              });
-            });
+          // Check nested menu paths
+          const nestedMenu = getNestedMenuFromSubItem(subItem);
+          if (nestedMenu?.length) {
+            const found = findPathInNestedMenu(nestedMenu, pathname);
+            if (found) {
+              setActiveMenu(item.key);
+              setActiveSubMenu(subItem.key);
+              setActiveNestedMenu(found.key);
+              return;
+            }
           }
         });
-      } else if (item.pathname === pathname) {
-        setActiveMenu(item.key);
       }
     });
   }, [pathname]);
 
-  // Update currentItems based on active menu state
+  // Effect 4: Update currentItems based on active menu state
   useEffect(() => {
     try {
       if (menuView === "main") {
+        // Show main menu items
         setCurrentItems(menuItems || []);
       } else if (menuView === "sub" && activeMenu) {
+        // Show submenu items for active menu
         const activeMenuItem = menuItems.find(
           (item) => item.key === activeMenu
         );
-        if (activeMenuItem?.subMenu) {
-          setCurrentItems(activeMenuItem.subMenu);
-        } else {
-          // Fallback to empty array if no submenu found
-          setCurrentItems([]);
-        }
+        setCurrentItems(activeMenuItem?.subMenu || []);
       } else if (menuView === "nested" && activeMenu && activeSubMenu) {
+        // Show nested menu items for active submenu
         const activeMenuItem = menuItems.find(
           (item) => item.key === activeMenu
         );
@@ -125,14 +144,9 @@ const VirtualizedSideBarItems = memo(() => {
           (item) => item.key === activeSubMenu
         );
 
-        if (activeSubMenuItem?.masterDataMenu) {
-          setCurrentItems(activeSubMenuItem.masterDataMenu);
-        } else if (activeSubMenuItem?.pendaftaranMenu) {
-          setCurrentItems(activeSubMenuItem.pendaftaranMenu);
-        } else {
-          // Fallback to empty array if no nested menu found
-          setCurrentItems([]);
-        }
+        // Dapatkan nested menu items dengan helper function
+        const nestedItems = getNestedMenuFromSubItem(activeSubMenuItem);
+        setCurrentItems(nestedItems || []);
       } else {
         // Fallback for any other state
         setCurrentItems([]);
@@ -142,19 +156,21 @@ const VirtualizedSideBarItems = memo(() => {
       setCurrentItems([]);
     }
 
-    // Reset the cache when items change
+    // Reset cache when items change
     cache.clearAll();
   }, [menuView, activeMenu, activeSubMenu, activeNestedMenu]);
 
-  // Toggle functions
+  // ---------- HANDLERS ----------
+
+  // Toggle main menu
   const toggleMenu = (key) => {
     const newMenu = activeMenu === key ? null : key;
     setActiveMenu(newMenu);
     setActiveSubMenu(null);
     setActiveNestedMenu(null);
 
+    // Update menu view based on selection
     if (newMenu) {
-      // Find the menu item and check if it has submenu
       const menuItem = menuItems.find((item) => item.key === key);
       if (menuItem?.subMenu?.length) {
         setMenuView("sub");
@@ -163,35 +179,36 @@ const VirtualizedSideBarItems = memo(() => {
       setMenuView("main");
     }
 
+    // Update localStorage
     localStorage.setItem("activeMenu", newMenu || "");
     localStorage.removeItem("activeSubMenu");
     localStorage.removeItem("activeNestedMenu");
   };
 
+  // Toggle submenu
   const toggleSubMenu = (key) => {
     const newSubMenu = activeSubMenu === key ? null : key;
     setActiveSubMenu(newSubMenu);
     setActiveNestedMenu(null);
 
+    // Update menu view based on selection
     if (newSubMenu) {
-      // Find the submenu item and check if it has nested menu
       const menuItem = menuItems.find((item) => item.key === activeMenu);
       const subMenuItem = menuItem?.subMenu?.find((item) => item.key === key);
 
-      if (
-        subMenuItem?.masterDataMenu?.length ||
-        subMenuItem?.pendaftaranMenu?.length
-      ) {
+      if (hasNestedMenu(subMenuItem)) {
         setMenuView("nested");
       }
     } else {
       setMenuView("sub");
     }
 
+    // Update localStorage
     localStorage.setItem("activeSubMenu", newSubMenu || "");
     localStorage.removeItem("activeNestedMenu");
   };
 
+  // Toggle nested menu
   const toggleNestedMenu = (key) => {
     const newNestedMenu = activeNestedMenu === key ? null : key;
     setActiveNestedMenu(newNestedMenu);
@@ -199,16 +216,15 @@ const VirtualizedSideBarItems = memo(() => {
   };
 
   // Check if a link is active
-  const isLinkActive = (href) => {
-    return href === pathname;
-  };
+  const isLinkActive = (href) => href === pathname;
 
-  // Handle back button clicks
+  // Handle back navigation
   const handleBackToMain = () => {
     setActiveMenu(null);
     setActiveSubMenu(null);
     setActiveNestedMenu(null);
     setMenuView("main");
+
     localStorage.removeItem("activeMenu");
     localStorage.removeItem("activeSubMenu");
     localStorage.removeItem("activeNestedMenu");
@@ -218,15 +234,246 @@ const VirtualizedSideBarItems = memo(() => {
     setActiveSubMenu(null);
     setActiveNestedMenu(null);
     setMenuView("sub");
+
     localStorage.removeItem("activeSubMenu");
     localStorage.removeItem("activeNestedMenu");
   };
 
-  // Row renderer for the List component
+  // ---------- RENDERERS ----------
+
+  // Render main menu item
+  const renderMainMenuItem = (
+    item,
+    key,
+    parent,
+    style,
+    measure,
+    registerChild
+  ) => {
+    return (
+      <div ref={registerChild} style={style} onLoad={measure}>
+        <Row
+          key={item.key}
+          onClick={item.subMenu ? () => toggleMenu(item.key) : undefined}
+          onMouseEnter={() => setHoveredItem(item.key)}
+          onMouseLeave={() => setHoveredItem(null)}
+          className={`align-items-center iq-menu-item cursor-pointer 
+            ${hoveredItem === item.key ? "hovered" : ""} 
+            ${item.pathname === pathname ? "active-menu-item" : ""} 
+            ${activeMenu === item.key ? "active-menu-item" : ""} 
+            ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
+        >
+          <Link
+            href={item.pathname}
+            className="d-flex align-items-center text-white text-decoration-none w-100"
+            onClick={(e) => {
+              if (item.subMenu) e.preventDefault();
+            }}
+          >
+            <Col xs="auto" className="pe-2 icon-sidebar">
+              {item.icon || <RiUserLine className="fs-4" />}
+            </Col>
+            <Col className="ps-2 text-white label-sidebar">{item.label}</Col>
+            {item.subMenu && (
+              <Col xs="auto" className="ms-auto arrow-container">
+                <RiArrowRightSLine className="fs-4" />
+              </Col>
+            )}
+          </Link>
+        </Row>
+      </div>
+    );
+  };
+
+  // Render sub menu header
+  const renderSubMenuHeader = (key, parent, style, measure, registerChild) => {
+    return (
+      <div ref={registerChild} style={style} onLoad={measure}>
+        <div className="submenu-header bg-dark">
+          <Row className="align-items-center p-3">
+            <Col xs="auto">
+              <Button
+                variant="link"
+                onClick={handleBackToMain}
+                className="me-3 back-button"
+              >
+                <RiArrowLeftLine className="text-white fs-4" />
+              </Button>
+            </Col>
+            <Col>
+              <h2 className="h5 mb-0 text-white label-sidebar">
+                {menuItems.find((i) => i.key === activeMenu)?.label || "Menu"}
+              </h2>
+            </Col>
+          </Row>
+        </div>
+      </div>
+    );
+  };
+
+  // Render sub menu item
+  const renderSubMenuItem = (
+    subItem,
+    index,
+    key,
+    parent,
+    style,
+    measure,
+    registerChild
+  ) => {
+    if (!subItem) return null;
+
+    const itemPathname = subItem.pathname || "#";
+    const hasNested = hasNestedMenu(subItem);
+
+    return (
+      <div ref={registerChild} style={style} onLoad={measure}>
+        <Row
+          key={subItem.key || `subitem-${subItem.label || index}`}
+          onClick={
+            hasNested && subItem.key
+              ? () => toggleSubMenu(subItem.key)
+              : undefined
+          }
+          className={`align-items-center iq-submenu-item 
+            ${itemPathname === pathname ? "active-submenu-item" : ""} 
+            ${activeSubMenu === subItem.key ? "active-submenu-item" : ""} 
+            ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
+        >
+          <Link
+            href={itemPathname}
+            className="d-flex align-items-center text-white text-decoration-none w-100"
+            onClick={(e) => {
+              if (hasNested) e.preventDefault();
+            }}
+          >
+            <Col xs="auto" className="pe-2 icon-sidebar">
+              {subItem.icon}
+            </Col>
+            <Col className="ps-2 text-white label-sidebar">{subItem.label}</Col>
+            {hasNested && (
+              <Col xs="auto" className="ms-auto arrow-container">
+                <RiArrowRightSLine className="fs-4 arrow-icon" />
+              </Col>
+            )}
+          </Link>
+        </Row>
+      </div>
+    );
+  };
+
+  // Render nested menu header
+  const renderNestedMenuHeader = (
+    key,
+    parent,
+    style,
+    measure,
+    registerChild
+  ) => {
+    return (
+      <div ref={registerChild} style={style} onLoad={measure}>
+        <div className="submenu-header bg-dark">
+          <Row className="align-items-center p-3">
+            <Col xs="auto">
+              <Button
+                variant="link"
+                onClick={handleBackToSub}
+                className="me-3 back-button"
+              >
+                <RiArrowLeftLine className="text-white fs-4" />
+              </Button>
+            </Col>
+            <Col>
+              <h2 className="h5 mb-0 text-white label-sidebar">
+                {menuItems
+                  .find((i) => i.key === activeMenu)
+                  ?.subMenu?.find((s) => s.key === activeSubMenu)?.label ||
+                  "Submenu"}
+              </h2>
+            </Col>
+          </Row>
+        </div>
+      </div>
+    );
+  };
+
+  // Render nested menu category
+  const renderNestedMenuCategory = (
+    category,
+    key,
+    parent,
+    style,
+    measure,
+    registerChild
+  ) => {
+    if (!category) return null;
+
+    const isExpanded = activeNestedMenu === category.key;
+
+    return (
+      <div ref={registerChild} style={style} onLoad={measure}>
+        <div className="nested-category">
+          <Row
+            onClick={() => category.key && toggleNestedMenu(category.key)}
+            className={`align-items-center iq-nested-item 
+              ${activeNestedMenu === category.key ? "active-nested-item" : ""} 
+              ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
+          >
+            <div className="d-flex align-items-center text-white w-100">
+              <Col xs="auto" className="pe-2 nested-icon">
+                {activeNestedMenu === category.key ? (
+                  <RiFolderOpenLine className="fs-4" />
+                ) : (
+                  category.icon || <RiFolderLine className="fs-4" />
+                )}
+              </Col>
+              <Col className="ps-2 text-white fw-bold title-nested-menu">
+                {category.title || "Category"}
+              </Col>
+              <Col xs="auto" className="ms-auto arrow-container">
+                <RiArrowRightSLine
+                  className={`fs-4 arrow-icon ${isExpanded ? "rotate-90" : ""}`}
+                  style={{
+                    transform: isExpanded ? "rotate(90deg)" : "none",
+                  }}
+                />
+              </Col>
+            </div>
+          </Row>
+
+          {isExpanded &&
+            category.subItems &&
+            Array.isArray(category.subItems) && (
+              <div className="nested-subitems">
+                {category.subItems.map((subItem, idx) => (
+                  <Row
+                    key={idx}
+                    className={`nested-subitem ${
+                      isLinkActive(subItem.href) ? "active-link" : ""
+                    }`}
+                  >
+                    <Link
+                      href={subItem.href || "#"}
+                      className="text-white text-decoration-none d-block w-100"
+                    >
+                      <span className="ps-3">
+                        {subItem.title || `Item ${idx + 1}`}
+                      </span>
+                    </Link>
+                  </Row>
+                ))}
+              </div>
+            )}
+        </div>
+      </div>
+    );
+  };
+
+  // Main row renderer for the List component
   const rowRenderer = ({ index, key, parent, style }) => {
     const item = currentItems[index];
 
-    // Main menu items
+    // Decide which view to render based on menuView
     if (menuView === "main") {
       return (
         <CellMeasurer
@@ -236,50 +483,13 @@ const VirtualizedSideBarItems = memo(() => {
           parent={parent}
           rowIndex={index}
         >
-          {({ measure, registerChild }) => (
-            <div ref={registerChild} style={style} onLoad={measure}>
-              <Row
-                key={item.key}
-                onClick={item.subMenu ? () => toggleMenu(item.key) : undefined}
-                onMouseEnter={() => setHoveredItem(item.key)}
-                onMouseLeave={() => setHoveredItem(null)}
-                className={`align-items-center iq-menu-item cursor-pointer ${
-                  hoveredItem === item.key ? "hovered" : ""
-                } ${item.pathname === pathname ? "active-menu-item" : ""} ${
-                  activeMenu === item.key ? "active-menu-item" : ""
-                } ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
-              >
-                <Link
-                  href={item.pathname}
-                  className="d-flex align-items-center text-white text-decoration-none w-100"
-                  onClick={(e) => {
-                    if (item.subMenu) {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  <Col xs="auto" className="pe-2 icon-sidebar">
-                    {item.icon || <RiUserLine className="fs-4" />}
-                  </Col>
-                  <Col className="ps-2 text-white label-sidebar">
-                    {item.label}
-                  </Col>
-                  {item.subMenu && (
-                    <Col xs="auto" className="ms-auto arrow-container">
-                      <RiArrowRightSLine className="fs-4" />
-                    </Col>
-                  )}
-                </Link>
-              </Row>
-            </div>
-          )}
+          {({ measure, registerChild }) =>
+            renderMainMenuItem(item, key, parent, style, measure, registerChild)
+          }
         </CellMeasurer>
       );
-    }
-
-    // Sub menu items
-    else if (menuView === "sub") {
-      // First row is the header
+    } else if (menuView === "sub") {
+      // First row is the header in sub view
       if (index === 0) {
         return (
           <CellMeasurer
@@ -289,42 +499,15 @@ const VirtualizedSideBarItems = memo(() => {
             parent={parent}
             rowIndex={index}
           >
-            {({ measure, registerChild }) => (
-              <div ref={registerChild} style={style} onLoad={measure}>
-                <div className="submenu-header bg-dark">
-                  <Row className="align-items-center p-3">
-                    <Col xs="auto">
-                      <Button
-                        variant="link"
-                        onClick={handleBackToMain}
-                        className="me-3 back-button"
-                      >
-                        <RiArrowLeftLine className="text-white fs-4" />
-                      </Button>
-                    </Col>
-                    <Col>
-                      <h2 className="h5 mb-0 text-white label-sidebar">
-                        {menuItems.find((i) => i.key === activeMenu)?.label ||
-                          "Menu"}
-                      </h2>
-                    </Col>
-                  </Row>
-                </div>
-              </div>
-            )}
+            {({ measure, registerChild }) =>
+              renderSubMenuHeader(key, parent, style, measure, registerChild)
+            }
           </CellMeasurer>
         );
       }
 
-      // Actual submenu items
-      const subItem = currentItems[index - 1]; // Adjust for header
-
-      // Make sure subItem exists and has all required properties
-      if (!subItem) return null;
-
-      // Ensure pathname is a string or use a fallback
-      const itemPathname = subItem.pathname || "#";
-
+      // Actual submenu items (index - 1 to account for header)
+      const subItem = currentItems[index - 1];
       return (
         <CellMeasurer
           cache={cache}
@@ -333,53 +516,21 @@ const VirtualizedSideBarItems = memo(() => {
           parent={parent}
           rowIndex={index}
         >
-          {({ measure, registerChild }) => (
-            <div ref={registerChild} style={style} onLoad={measure}>
-              <Row
-                key={subItem.key || `subitem-${subItem.label || index}`}
-                onClick={
-                  (subItem.masterDataMenu || subItem.pendaftaranMenu) &&
-                  subItem.key
-                    ? () => toggleSubMenu(subItem.key)
-                    : undefined
-                }
-                className={`align-items-center iq-submenu-item ${
-                  itemPathname === pathname ? "active-submenu-item" : ""
-                } ${
-                  activeSubMenu === subItem.key ? "active-submenu-item" : ""
-                } ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
-              >
-                <Link
-                  href={itemPathname}
-                  className="d-flex align-items-center text-white text-decoration-none w-100"
-                  onClick={(e) => {
-                    if (subItem.masterDataMenu || subItem.pendaftaranMenu) {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  <Col xs="auto" className="pe-2 icon-sidebar">
-                    {subItem.icon}
-                  </Col>
-                  <Col className="ps-2 text-white label-sidebar">
-                    {subItem.label}
-                  </Col>
-                  {(subItem.masterDataMenu || subItem.pendaftaranMenu) && (
-                    <Col xs="auto" className="ms-auto arrow-container">
-                      <RiArrowRightSLine className="fs-4 arrow-icon" />
-                    </Col>
-                  )}
-                </Link>
-              </Row>
-            </div>
-          )}
+          {({ measure, registerChild }) =>
+            renderSubMenuItem(
+              subItem,
+              index,
+              key,
+              parent,
+              style,
+              measure,
+              registerChild
+            )
+          }
         </CellMeasurer>
       );
-    }
-
-    // Nested menu items
-    else if (menuView === "nested") {
-      // First row is the header
+    } else if (menuView === "nested") {
+      // First row is the header in nested view
       if (index === 0) {
         return (
           <CellMeasurer
@@ -389,43 +540,15 @@ const VirtualizedSideBarItems = memo(() => {
             parent={parent}
             rowIndex={index}
           >
-            {({ measure, registerChild }) => (
-              <div ref={registerChild} style={style} onLoad={measure}>
-                <div className="submenu-header bg-dark">
-                  <Row className="align-items-center p-3">
-                    <Col xs="auto">
-                      <Button
-                        variant="link"
-                        onClick={handleBackToSub}
-                        className="me-3 back-button"
-                      >
-                        <RiArrowLeftLine className="text-white fs-4" />
-                      </Button>
-                    </Col>
-                    <Col>
-                      <h2 className="h5 mb-0 text-white label-sidebar">
-                        {menuItems
-                          .find((i) => i.key === activeMenu)
-                          ?.subMenu?.find((s) => s.key === activeSubMenu)
-                          ?.label || "Submenu"}
-                      </h2>
-                    </Col>
-                  </Row>
-                </div>
-              </div>
-            )}
+            {({ measure, registerChild }) =>
+              renderNestedMenuHeader(key, parent, style, measure, registerChild)
+            }
           </CellMeasurer>
         );
       }
 
-      // Actual nested category items
-      const category = currentItems[index - 1]; // Adjust for header
-
-      // Make sure category exists
-      if (!category) return null;
-
-      const isExpanded = activeNestedMenu === category.key;
-
+      // Actual nested category items (index - 1 to account for header)
+      const category = currentItems[index - 1];
       return (
         <CellMeasurer
           cache={cache}
@@ -434,70 +557,16 @@ const VirtualizedSideBarItems = memo(() => {
           parent={parent}
           rowIndex={index}
         >
-          {({ measure, registerChild }) => (
-            <div ref={registerChild} style={style} onLoad={measure}>
-              <div className="nested-category">
-                <Row
-                  onClick={() => category.key && toggleNestedMenu(category.key)}
-                  className={`align-items-center iq-nested-item ${
-                    activeNestedMenu === category.key
-                      ? "active-nested-item"
-                      : ""
-                  } ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
-                >
-                  <div className="d-flex align-items-center text-white w-100">
-                    <Col xs="auto" className="pe-2 nested-icon">
-                      {activeNestedMenu === category.key ? (
-                        <RiFolderOpenLine className="fs-4" />
-                      ) : (
-                        category.icon || <RiFolderLine className="fs-4" />
-                      )}
-                    </Col>
-                    <Col className="ps-2 text-white fw-bold title-nested-menu">
-                      {category.title || "Category"}
-                    </Col>
-                    <Col xs="auto" className="ms-auto arrow-container">
-                      <RiArrowRightSLine
-                        className={`fs-4 arrow-icon ${
-                          activeNestedMenu === category.key ? "rotate-90" : ""
-                        }`}
-                        style={{
-                          transform:
-                            activeNestedMenu === category.key
-                              ? "rotate(90deg)"
-                              : "none",
-                        }}
-                      />
-                    </Col>
-                  </div>
-                </Row>
-
-                {isExpanded &&
-                  category.subItems &&
-                  Array.isArray(category.subItems) && (
-                    <div className="nested-subitems">
-                      {category.subItems.map((subItem, idx) => (
-                        <Row
-                          key={idx}
-                          className={`nested-subitem ${
-                            isLinkActive(subItem.href) ? "active-link" : ""
-                          }`}
-                        >
-                          <Link
-                            href={subItem.href || "#"}
-                            className="text-white text-decoration-none d-block w-100"
-                          >
-                            <span className="ps-3">
-                              {subItem.title || `Item ${idx + 1}`}
-                            </span>
-                          </Link>
-                        </Row>
-                      ))}
-                    </div>
-                  )}
-              </div>
-            </div>
-          )}
+          {({ measure, registerChild }) =>
+            renderNestedMenuCategory(
+              category,
+              key,
+              parent,
+              style,
+              measure,
+              registerChild
+            )
+          }
         </CellMeasurer>
       );
     }
@@ -505,7 +574,7 @@ const VirtualizedSideBarItems = memo(() => {
     return null;
   };
 
-  // Render the appropriate content based on the current view
+  // Calculate row count based on current view
   const getItemCount = () => {
     if (menuView === "main") {
       return currentItems.length;
@@ -516,8 +585,7 @@ const VirtualizedSideBarItems = memo(() => {
     return 0;
   };
 
-  // Ganti bagian AutoSizer di VirtualizedSideBarItems.js dengan ini:
-
+  // ---------- RENDER COMPONENT ----------
   return (
     <div
       className={`sidebar-virtualized-container ${
@@ -527,12 +595,12 @@ const VirtualizedSideBarItems = memo(() => {
     >
       <AutoSizer>
         {({ height }) => {
-          // Gunakan width berdasarkan mode sidebar
-          const width = isMiniSidebar ? 100 : 260;
+          // Force width based on sidebar mode
+          const listWidth = isMiniSidebar ? 100 : 260;
 
           return (
             <List
-              width={width}
+              width={listWidth}
               height={height}
               deferredMeasurementCache={cache}
               rowHeight={cache.rowHeight}
@@ -542,7 +610,8 @@ const VirtualizedSideBarItems = memo(() => {
               className="sidebar-virtualized-list"
               style={{
                 overflowX: "hidden",
-                transition: "width 0.3s ease-in-out",
+                width: listWidth + "px",
+                maxWidth: listWidth + "px",
               }}
             />
           );

@@ -77,7 +77,7 @@ const Navbars = memo(({ module, iconJudul: IconJudul }) => {
             )}
             <div className="iq-menu-bt align-self-center">
               {isMobile && (
-                <div className="wrapper-menu" ref={sidebarRef}>
+                <div className="wrapper-menu">
                   <div className="main-circle">
                     <i className="ri-more-fill"></i>
                   </div>
