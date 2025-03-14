@@ -488,7 +488,7 @@ export const menus = {
     },
   ],
 
-  instalasiRawatJalan: [
+  RawatJalan: [
     {
       title: "Daftar Poli",
       subItems: [
@@ -499,7 +499,7 @@ export const menus = {
       ],
     },
   ],
-  instalasiRawatInap: [
+  RawatInap: [
     {
       title: "Daftar Rawat Inap",
       subItems: [
@@ -510,7 +510,7 @@ export const menus = {
       ],
     },
   ],
-  instalasiOperasi: [
+  Operasi: [
     {
       title: "Daftar Operasi",
       subItems: [

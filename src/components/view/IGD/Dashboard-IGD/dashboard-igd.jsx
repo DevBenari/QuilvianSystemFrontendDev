@@ -444,7 +444,7 @@ const DashboardIGD = () => {
 
           {/* Grafik dan Status Ruangan */}
           <Row className="mb-4">
-            <Col lg="8">
+            <Col lg="6">
               <div className="iq-card">
                 <div className="iq-card-header d-flex justify-content-between">
                   <h4 className="card-title">Tren Kunjungan IGD</h4>
@@ -460,7 +460,7 @@ const DashboardIGD = () => {
               </div>
             </Col>
             {/* Statistik Kasus IGD */}
-            <Col lg="4">
+            <Col lg="6">
               <div className="iq-card">
                 <div className="iq-card-header d-flex justify-content-between">
                   <div className="iq-header-title">

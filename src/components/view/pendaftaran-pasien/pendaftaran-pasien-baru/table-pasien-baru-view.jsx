@@ -70,7 +70,7 @@ const TableDataPasien = () => {
         }}
         addButton={
           <ButtonNav
-            path="/pendaftaran/pendaftaran-pasien-baru/add-pasien-baru"
+            path="/Rawat-Jalan/pendaftaran-pasien-baru/add-pasien-baru"
             label="Tambah Pasien"
             icon="ri-add-fill"
             size="sm"

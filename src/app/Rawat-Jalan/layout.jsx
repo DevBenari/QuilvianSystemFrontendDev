@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
-
 import { Col, Row } from "react-bootstrap";
 
-const LayoutPendaftaran = ({ children }) => {
+const RawatJalanLayout = ({ children }) => {
   return (
     <div>
       <Row>{children}</Row>
@@ -11,4 +10,4 @@ const LayoutPendaftaran = ({ children }) => {
   );
 };
 
-export default LayoutPendaftaran;
+export default RawatJalanLayout;

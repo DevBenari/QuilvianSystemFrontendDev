@@ -1,4 +1,3 @@
-// File: utils/menuHandlers.js
 // Helper functions untuk menangani berbagai tipe menu di sidebar
 
 /**
@@ -17,12 +16,24 @@ export const getNestedMenuFromSubItem = (subMenuItem) => {
     return subMenuItem.pendaftaranMenu;
   } else if (subMenuItem.menuIGD) {
     return subMenuItem.menuIGD;
-  } else if (subMenuItem.menuRadiologi) {
-    return subMenuItem.menuRadiologi;
   } else if (subMenuItem.menuLaboratorium) {
     return subMenuItem.menuLaboratorium;
-  } else if (subMenuItem.menuFarmasi) {
-    return subMenuItem.menuFarmasi;
+  } else if (subMenuItem.menuRawatJalan) {
+    return subMenuItem.menuRawatJalan;
+  } else if (subMenuItem.menuRawatInap) {
+    return subMenuItem.menuRawatInap;
+  } else if (subMenuItem.menuOperasi) {
+    return subMenuItem.menuOperasi;
+  } else if (subMenuItem.menuRadiologi) {
+    return subMenuItem.menuRadiologi;
+  } else if (subMenuItem.menuRehabilitasi) {
+    return subMenuItem.menuRehabilitasi;
+  } else if (subMenuItem.menuMCU) {
+    return subMenuItem.menuMCU;
+  } else if (subMenuItem.menuBayi) {
+    return subMenuItem.menuBayi;
+  } else if (subMenuItem.menuOptik) {
+    return subMenuItem.menuOptik;
   }
   // Tambahkan pengecekan untuk jenis menu baru di sini
   // else if (subMenuItem.namaMenuBaru) {
@@ -48,7 +59,15 @@ export const hasNestedMenu = (subMenuItem) => {
       subMenuItem.menuIGD?.length ||
       subMenuItem.menuRadiologi?.length ||
       subMenuItem.menuLaboratorium?.length ||
-      subMenuItem.menuFarmasi?.length
+      subMenuItem.menuFarmasi?.length ||
+      subMenuItem.menuRawatJalan?.length ||
+      subMenuItem.menuRawatInap?.length ||
+      subMenuItem.menuOperasi?.length ||
+      subMenuItem.menuRadiologi?.length ||
+      subMenuItem.menuRehabilitasi?.length ||
+      subMenuItem.menuMCU?.length ||
+      subMenuItem.menuBayi?.length ||
+      subMenuItem.menuOptik?.length
     )
     // Tambahkan pengecekan untuk jenis menu baru di sini
     // || subMenuItem.namaMenuBaru?.length

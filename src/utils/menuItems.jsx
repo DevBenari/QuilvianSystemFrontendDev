@@ -17,14 +17,14 @@ import {
 } from "react-icons/ri";
 import { PiWheelchairFill } from "react-icons/pi";
 import { GiMicroscope } from "react-icons/gi";
-import { FaStethoscope, FaFirstAid } from "react-icons/fa";
+import { FaStethoscope, FaFirstAid, FaBaby, FaGlasses } from "react-icons/fa";
 import { MdScanner } from "react-icons/md";
 
 export const menuItems = [
   {
     label: "Pelayanan Kesehatan",
     key: "ManajemenKesehatan",
-    pathname: "/DashboardPelayanKesehatan",
+    pathname: "/PelayananKesehatan",
     subMenu: [
       {
         pathname: "/MasterData",
@@ -32,6 +32,17 @@ export const menuItems = [
         key: "masterData",
         icon: <RiDatabase2Line className="fs-4" />,
         masterDataMenu: [
+          {
+            title: "Beranda ",
+            key: "dashboardIgd",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Dahboard IGD",
+                href: "/MasterData",
+              },
+            ],
+          },
           {
             title: "User Aktif",
             key: "userAktif",
@@ -130,7 +141,7 @@ export const menuItems = [
                 href: "/MasterData/master-administrasi/administrasi/tables-administrasi",
               },
               {
-                title: "Tarif Rawat Inap",
+                title: "Tarif Rawat Jalan",
                 href: "/MasterData/master-administrasi/administrasi-rawat-inap",
               },
             ],
@@ -252,31 +263,21 @@ export const menuItems = [
         icon: <RiClipboardLine className="fs-4" />,
         pendaftaranMenu: [
           {
+            title: "Beranda",
+            key: "DashboardAdmisi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Dashboard Admisi",
+                href: "/pendaftaran",
+              },
+            ],
+          },
+          {
             title: "Pendaftaran",
             key: "pendaftaran",
             icon: <RiFolderLine className="fs-4" />,
             subItems: [
-              {
-                title: "Pasien Baru",
-                href: "/pendaftaran/pendaftaran-pasien-baru",
-              },
-              {
-                title: "Pasien Bayi",
-                href: "/pendaftaran/pendaftaran-pasien-bayi/table-pasien-bayi",
-              },
-              {
-                title: "Pendaftaran Pasien Laboratorium",
-                href: "/pendaftaran/pendaftaran-pasien-laboratorium",
-              },
-              {
-                title: "Pendaftaran Pasien Radiologi",
-                href: "/pendaftaran/pendaftaran-pasien-radiologi",
-              },
-              {
-                title: "Pendaftaran Pasien Rehabilitasi",
-                href: "/pendaftaran/pendaftaran-pasien-rehabilitasi/table-rehabilitasi-medik",
-              },
-
               {
                 title: "Pendaftaran Pasien Fasilitas",
                 href: "/pendaftaran/pendaftaran-pasien-fasilitas",
@@ -285,46 +286,10 @@ export const menuItems = [
                 title: "Pendaftaran Pasien Ambulance",
                 href: "/pendaftaran/pendaftaran-pasien-ambulance",
               },
-              {
-                title: "Pendaftaran Pasien Optik",
-                href: "/pendaftaran/pendaftaran-pasien-optik",
-              },
-              {
-                title: "Pendaftaran Pasien IGD",
-                href: "/pendaftaran/pendaftaran-pasien-igd",
-              },
+
               {
                 title: "Keanggotaan",
                 href: "/pendaftaran/anggota/table-anggota",
-              },
-            ],
-          },
-          {
-            title: "Perjanjian",
-            key: "perjanjian",
-            icon: <RiFolderLine className="fs-4" />,
-            subItems: [
-              { title: "Data Pasien Perjanjian", href: "/perjanjian" },
-              {
-                title: "Pasien Perjanjian Reguler",
-                href: "/perjanjian/perjanjian-reguler",
-              },
-              {
-                title: "Pasien Perjanjian Rawat Jalan",
-                href: "/perjanjian/rawat-jalan",
-              },
-              {
-                title: "Pasien Perjanjian Rawat Inap",
-                href: "/perjanjian/rawat-inap",
-              },
-              {
-                title: "Pasien Perjanjian Radiologi",
-                href: "/perjanjian/radiologi",
-              },
-              { title: "Pasien Perjanjian MCU", href: "/perjanjian/MCU" },
-              {
-                title: "Pasien Perjanjian Operasi",
-                href: "/perjanjian/Operasi",
               },
             ],
           },
@@ -366,6 +331,22 @@ export const menuItems = [
         icon: <RiHospitalLine className="fs-4" />,
         // Perbaikan untuk bagian menuIGD dengan menambahkan key dan icon
         menuIGD: [
+          {
+            title: "Beranda",
+            key: "BerandaIGD", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Dashboard IGD",
+                href: "/IGD",
+              },
+              {
+                title: "Data Pasien Rawat Jalan",
+                href: "/IGD/Data-Pasien-Rawat-Jalan",
+              },
+            ],
+          },
+
           {
             title: "Administrasi",
             key: "administrasiIGD", // Tambahkan key unik
@@ -494,64 +475,442 @@ export const menuItems = [
         ],
       },
       {
-        pathname: "/radiologi",
-        label: "Radiologi",
-        key: "radiologi",
-        icon: <MdScanner className="fs-4" />,
-      },
-      {
-        pathname: "/laboratorium",
-        label: "Laboratorium",
-        key: "laboratorium",
-        icon: <RiTestTubeLine className="fs-4" />,
-      },
-      {
-        pathname: "/rehabilitasi",
-        label: "Rehabilitasi",
-        key: "rehabilitasi",
-        icon: <PiWheelchairFill className="fs-4" />,
-      },
-      {
-        pathname: "/medical-check-up",
-        label: "Medical Check-Up",
-        key: "medicalCheckUp",
-        icon: <RiHealthBookLine className="fs-4" />,
-      },
-      {
-        pathname: "/pelayanan-gizi",
-        label: "Pelayanan Gizi",
-        key: "pelayananGizi",
-        icon: <RiRestaurantLine className="fs-4" />,
-      },
-      {
-        pathname: "/instalasi-rawat-jalan",
-        label: "Rawat Jalan",
-        key: "rawatJalan",
-        icon: <RiWalkLine className="fs-4" />,
-      },
-      {
-        pathname: "/instalasi-rawat-inap",
+        pathname: "/rawat-inap",
         label: "Rawat Inap",
         key: "rawatInap",
         icon: <RiHotelLine className="fs-4" />,
+        menuRawatInap: [
+          {
+            title: "Beranda",
+            key: "dashhboardRawatInap", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Dashboard Rawat Inap",
+                href: "/Rawat-Inap/Beranda/dashboard-rawat-inap",
+              },
+              {
+                title: "Table Pasien lama",
+                href: "/Rawat-Inap/Beranda/table-pasien-lama",
+              },
+              {
+                title: "Table Pasien Perjanjian",
+                href: "/Rawat-Inap/Beranda/perjanjian-rawat-inap",
+              },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranRawatInap",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/Rawat-Jalan/pendaftaran-pasien-baru/add-pasien-baru",
+              },
+            ],
+          },
+        ],
       },
       {
-        pathname: "/instalasi-bedah",
-        label: "Instalasi Bedah",
-        key: "instalasiiBedah",
-        icon: <RiSurgicalMaskLine className="fs-4" />,
+        pathname: "/rawat-jalan",
+        label: "Rawat Jalan",
+        key: "dashboardRawatJalan",
+        icon: <RiWalkLine className="fs-4" />,
+        menuRawatJalan: [
+          {
+            title: "Beranda",
+            key: "dashhboardRawatJalan", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Dashboard Rawat Jalan",
+                href: "/Rawat-Jalan/Beranda/dashboard-rawat-jalan",
+              },
+              {
+                title: "Table Pasien lama",
+                href: "/Rawat-Jalan/Beranda/table-pasien-lama",
+              },
+              {
+                title: "Table Pasien Perjanjian",
+                href: "/Rawat-Jalan/Beranda/perjanjian-rawat-jalan",
+              },
+            ],
+          },
+          {
+            title: "Antrean & Jadwal",
+            key: "antreanJadwalRawatJalan",
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Daftar Poli",
+                href: "/Rawat-Jalan/antrean-data-poli/table-poli",
+              },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranRawatJalan",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/Rawat-Jalan/pendaftaran-pasien-baru/add-pasien-baru",
+              },
+            ],
+          },
+          {
+            title: "Pemeriksaan Dokter",
+            key: "pemeriksaanDokterRawatJalan",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Data Pemeriksaan",
+                href: "/Rawat-Jalan/pemeriksaan-dokter",
+              },
+            ],
+          },
+          {
+            title: "Tindakan & Pemeriksaan Penunjang",
+            key: "tindakanPenunjangRawatJalan",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Tindakan Medis",
+                href: "/Rawat-Jalan/tindakan-medis",
+              },
+              {
+                title: "Pemeriksaan Penunjang",
+                href: "/Rawat-Jalan/pemeriksaan-penunjang",
+              },
+            ],
+          },
+          {
+            title: "Resep & Apotek",
+            key: "resepApotekRawatJalan",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Resep Dokter",
+                href: "/Rawat-Jalan/resep-dokter",
+              },
+              {
+                title: "Pengambilan Obat",
+                href: "/Rawat-Jalan/pengambilan-obat",
+              },
+            ],
+          },
+          {
+            title: "Billing & Klaim",
+            key: "billingKlaimRawatJalan",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Tagihan Pasien",
+                href: "/Rawat-Jalan/billing-pasien",
+              },
+              {
+                title: "Klaim BPJS/Asuransi",
+                href: "/Rawat-Jalan/klaim-bpjs-asuransi",
+              },
+            ],
+          },
+        ],
       },
       {
-        pathname: "/instalasi-Operasi",
+        pathname: "/Operasi",
         label: "Instalasi Operasi",
         key: "instalasiOperasi",
         icon: <GiMicroscope className="fs-4" />,
+        menuOperasi: [
+          {
+            title: "Beranda",
+            key: "dashhboardOperasi", // Tambahkan key unik
+            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+            subItems: [
+              {
+                title: "Dashboard Operasi",
+                href: "/Operasi/Beranda/dashboard-operasi",
+              },
+              {
+                title: "Table Pasien Operasi",
+                href: "/Operasi/Beranda/table-pasien-operasi",
+              },
+              {
+                title: "Table Pasien Perjanjian",
+                href: "/Operasi/Beranda/perjanjian-operasi",
+              },
+            ],
+          },
+        ],
       },
+      {
+        pathname: "/Radiologi",
+        label: "Radiologi",
+        key: "radiologi",
+        icon: <MdScanner className="fs-4" />,
+        menuRadiologi: [
+          {
+            title: "Beranda",
+            key: "dashboardRadiologi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              // {
+              //   title: "Dashboard Radiologi",
+              //   href: "/radiologi/Beranda/dashboard-radiologi",
+              // },
+
+              {
+                title: "Table Perjanjian Radiologi",
+                href: "/Radiologi/Beranda/perjanjian-radiologi",
+              },
+              {
+                title: "Table Pasien Radiologi",
+                href: "/Radiologi/Beranda/table-pasien-radiologi",
+              },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranRadiologi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/Radiologi/pendaftaran-pasien-radiologi/add-pasien-radiologi",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        pathname: "/Laboratorium",
+        label: "Laboratorium",
+        key: "Laboratorium",
+        icon: <RiTestTubeLine className="fs-4" />,
+        menuLaboratorium: [
+          {
+            title: "Beranda",
+            key: "dashboardLaboratorium",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              // {
+              //   title: "Dashboard Laboratorium",
+              //   href: "/Laboratorium/beranda/dashboard-Laboratorium",
+              // },
+              {
+                title: "Table Pasien Laboratorium",
+                href: "/Laboratorium/Beranda/table-pasien-laboratorium",
+              },
+              {
+                title: "Table Pemeriksaan Laboratorium",
+                href: "/Laboratorium/Beranda/pemeriksaan-laboratorium",
+              },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranLaboratorium",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/Laboratorium/pendaftaran-pasien-laboratorium/add-pasien-laboratorium",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        pathname: "/Rehabilitasi",
+        label: "Rehabilitasi",
+        key: "Rehabilitasi",
+        icon: <PiWheelchairFill className="fs-4" />,
+        menuRehabilitasi: [
+          {
+            title: "Beranda",
+            key: "dashboardRehabilitasi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              // {
+              //   title: "Dashboard Rehabilitasi",
+              //   href: "/Rehabilitasi/Beranda/dashboard-Rehabilitasi",
+              // },
+              {
+                title: "Table Pasien Rehabilitasi",
+                href: "/Rehabilitasi/Beranda/table-pasien-rehabilitasi",
+              },
+              // {
+              //   title: "Jadwal Terapi",
+              //   href: "/Rehabilitasi/Beranda/jadwal-terapi",
+              // },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranRehabilitasi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/Rehabilitasi/pendaftaran-pasien-rehabilitasi/add-rehabilitasi-medik",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        pathname: "/Medical-check-up",
+        label: "Medical Check-Up",
+        key: "medicalCheckUp",
+        icon: <RiHealthBookLine className="fs-4" />,
+        menuMCU: [
+          {
+            title: "Beranda",
+            key: "dashboardMCU",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              // {
+              //   title: "Dashboard MCU",
+              //   href: "/Medical-check-up/Beranda/dashboard-mcu",
+              // },
+              {
+                title: "Table Pasien MCU",
+                href: "/Medical-check-up/Beranda/table-pasien-mcu",
+              },
+              {
+                title: "Table Perjanjian MCU",
+                href: "/Medical-check-up/Beranda/perjanjian-mcu",
+              },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranMCU",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/Medical-check-up/pendaftaran-pasien-mcu",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        pathname: "/Layanan-bayi",
+        label: "Palayanan Bayi",
+        key: "pelayananBayi",
+        icon: <FaBaby className="fs-4" />, // Menggunakan ikon bayi yang lebih cocok
+        menuBayi: [
+          {
+            title: "Beranda",
+            key: "dashboardBayi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              // {
+              //   title: "Dashboard Bayi",
+              //   href: "/Layanan-bayi/Beranda/dashboard-bayi",
+              // },
+              {
+                title: "Table Pasien Bayi",
+                href: "/Layanan-bayi/Beranda/table-pasien-bayi",
+              },
+              // {
+              //   title: "Paket Diet Pasien",
+              //   href: "/Layanan-bayi/Beranda/paket-diet-pasien",
+              // },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranBayi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/Layanan-bayi/pendaftaran-pasien-bayi/add-pasien-bayi",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        pathname: "/Optik",
+        label: "Optik",
+        key: "Optik",
+        icon: <FaGlasses className="fs-4" />, // Menggunakan ikon yang sesuai untuk layanan Optik
+        menuOptik: [
+          {
+            title: "Beranda",
+            key: "dashboardOptik",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Table Pasien Optik",
+                href: "/Optik/Beranda/table-pasien-optik",
+              },
+              // {
+              //   title: "Pemeriksaan Mata",
+              //   href: "/Optik/Beranda/pemeriksaan-mata",
+              // },
+              // {
+              //   title: "Riwayat Resep Kacamata",
+              //   href: "/Optik/Beranda/riwayat-resep-kacamata",
+              // },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranOptik",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/Optik/pendaftaran-pasien-optik/add-pendaftaran-optik",
+              },
+            ],
+          },
+        ],
+      },
+
       {
         pathname: "/farmasi",
         label: "Farmasi",
         key: "farmasi",
         icon: <RiMedicineBottleLine className="fs-4" />,
+        menuFarmasi: [
+          {
+            title: "Beranda",
+            key: "dashboardFarmasi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Dashboard Farmasi",
+                href: "/farmasi/Beranda/dashboard-farmasi",
+              },
+              {
+                title: "Table Obat",
+                href: "/farmasi/Beranda/table-obat",
+              },
+              {
+                title: "Pengadaan Obat",
+                href: "/farmasi/Beranda/pengadaan-obat",
+              },
+            ],
+          },
+          {
+            title: "Pendaftaran",
+            key: "pendaftaranFarmasi",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Pendaftaran Pasien",
+                href: "/farmasi/pendaftaran-pasien",
+              },
+            ],
+          },
+        ],
       },
     ],
   },
