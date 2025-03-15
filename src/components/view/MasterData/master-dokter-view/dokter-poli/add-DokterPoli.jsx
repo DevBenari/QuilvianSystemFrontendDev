@@ -2,6 +2,7 @@
 
 import { showAlert } from "@/components/features/alert/custom-alert";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import useMedicalData from "@/lib/hooks/useDokter";
 import { createDokterPoli } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPoliSlice";
 
 import { useRouter } from "next/navigation";
@@ -12,23 +13,37 @@ const AddFormDokterPoli = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const {
+    DokterOptions,
+    loadingDokter,
+    handleLoadMoreDokter,
+    DokterPoliOptions,
+    loadingDokterPoli,
+    handleLoadMoreDokterPoli,
+    PoliKlinikOptions,
+    loadingPoliKlinik,
+    handleLoadMorePoliKlinik,
+  } = useMedicalData();
+
   const formFields = [
     {
       fields: [
         {
           type: "select",
-          label: "Poli",
+          label: "PoliKlinik",
           name: "poliId",
-          options: [], // Harus diisi dengan daftar poli yang tersedia
+          options: PoliKlinikOptions,
           colSize: 6,
+          onMenuScrollToBottom: handleLoadMorePoliKlinik,
           rules: { required: "Poli harus dipilih" },
         },
         {
           type: "select",
           label: "Dokter",
           name: "dokterId",
-          options: [], // Harus diisi dengan daftar dokter yang tersedia
+          options: DokterOptions,
           colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreDokter,
           rules: { required: "Dokter harus dipilih" },
         },
         {

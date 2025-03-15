@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
-import { getHeaders } from "@/lib/headers/headers";
+import { getHeaders, getHeadersFormData } from "@/lib/headers/headers";
+
+import Cookies from "js-cookie";
 
 // 🔹 Fetch Dokter dengan pagination untuk CustomTableComponent
 // ✅ Fetch semua data Dokter dengan pagination
@@ -18,7 +20,7 @@ export const fetchDokter = createAsyncThunk(
       }
       const response = await InstanceAxios.get(`/Dokter`, {
         params: { page, perPage },
-        headers: getHeaders(),
+        headers: getHeaders("multipart/form-data"),
       });
 
       return {
@@ -85,19 +87,24 @@ export const fetchDokterById = createAsyncThunk(
 export const createDokter = createAsyncThunk(
   "Dokter/create",
   async (data, { rejectWithValue }) => {
+    const token = Cookies.get("token");
     try {
       const response = await InstanceAxios.post(`/Dokter`, data, {
+<<<<<<< HEAD
         headers: {
           "Content-Type": "multipart/form-data",
           "Authorization": `Bearer ${localStorage.getItem("token")}`,
         }
+=======
+        headers: getHeadersFormData(),
+>>>>>>> origin/MHamzah
       });
 
       console.log("Response API (Fetch By ID):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan Dokter darah"
+        error.response?.data || "Gagal menambahkan Dokter "
       );
     }
   }
@@ -109,12 +116,13 @@ export const updateDokter = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await InstanceAxios.put(`/Dokter/${id}`, data, {
-        headers: getHeaders(),
+        headers: getHeadersFormData(),
+        body: data, // Body harus berupa FormData
       });
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui Dokter darah"
+        error.response?.data || "Gagal memperbarui Dokter "
       );
     }
   }
@@ -145,6 +153,7 @@ const DokterSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
+    selectedDokter: null,
   },
   reducers: {},
   extraReducers: (builder) => {

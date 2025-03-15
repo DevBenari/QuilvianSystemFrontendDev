@@ -9,7 +9,7 @@ export const InstanceAxios = axios.create({
 
 // Interceptor untuk menambahkan header secara dinamis sebelum setiap request
 InstanceAxios.interceptors.request.use(
-  (config) => { // Selalu perbarui headers dengan token terbaru
+  (config) => {
     return config;
   },
   (error) => {

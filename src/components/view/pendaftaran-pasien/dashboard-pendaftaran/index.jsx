@@ -319,42 +319,27 @@ const DashboardPendaftaran = () => {
 
             {/* Daftar Pasien */}
             <Row className="mb-4">
-              <Col lg="12">
-                <div className="iq-card">
-                  <div className="iq-card-header d-flex justify-content-between">
-                    <div className="d-flex align-items-center">
-                      <FaUsers className="text-primary me-2" size={20} />
-                      <h5 className="mb-0">Daftar Pendaftaran Pasien</h5>
-                    </div>
-                    <div className="d-flex align-items-center">
-                      <FaSearch className="text-muted me-2" />
-                      <Form.Control
-                        type="search"
-                        placeholder="Cari pasien..."
-                        className="w-auto"
-                        value={searchText}
-                        onChange={handleSearchChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="iq-card-body">
-                    <CustomTableComponent
-                      data={filteredPasien}
-                      columns={[
-                        { key: "id", label: "ID Pendaftaran" },
-                        { key: "nama", label: "Nama Pasien" },
-                        { key: "poli", label: "Poli Tujuan" },
-                        { key: "dokter", label: "Dokter" },
-                        { key: "status", label: "Status" },
-                        { key: "waktuDaftar", label: "Waktu Daftar" },
-                      ]}
-                      itemsPerPage={5}
-                      slugConfig={{ textField: "nama", idField: "id" }}
-                      basePath="/pendaftaran/data-pasien/detail-pasien"
-                    />
-                  </div>
-                </div>
-              </Col>
+              <CustomTableComponent
+                showHeader={false}
+                tableTitle="Data Pendaftaran"
+                searchName={true}
+                searchText={searchText}
+                TableIcon={FaUsers}
+                buttonRefresh={false}
+                handleSearchChange={handleSearchChange}
+                data={filteredPasien}
+                columns={[
+                  { key: "id", label: "ID Pendaftaran" },
+                  { key: "nama", label: "Nama Pasien" },
+                  { key: "poli", label: "Poli Tujuan" },
+                  { key: "dokter", label: "Dokter" },
+                  { key: "status", label: "Status" },
+                  { key: "waktuDaftar", label: "Waktu Daftar" },
+                ]}
+                itemsPerPage={5}
+                slugConfig={{ textField: "nama", idField: "id" }}
+                basePath="/pendaftaran/data-pasien/detail-pasien"
+              />
             </Row>
           </Row>
         </Col>

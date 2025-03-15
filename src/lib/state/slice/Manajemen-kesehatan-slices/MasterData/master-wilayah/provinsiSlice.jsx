@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
-import { getHeaders } from "@/lib/headers/headers";
+import { getHeaders, getHeadersFormData } from "@/lib/headers/headers";
 
-// 🔹 Fetch Provinsi
+// 🔹 Fetch Provinsi dengan pagination untuk CustomTableComponent
+// ✅ Fetch semua data Provinsi dengan pagination
 export const fetchProvinsi = createAsyncThunk(
   "Provinsi/fetchData",
   async (
@@ -15,9 +16,7 @@ export const fetchProvinsi = createAsyncThunk(
         console.log("Data already loaded for page:", page);
         return null;
       }
-
       const response = await InstanceAxios.get(`/Wilayah/Provinsi`, {
-        params: { page, perPage },
         params: { page, perPage },
         headers: getHeaders(),
       });
@@ -29,7 +28,7 @@ export const fetchProvinsi = createAsyncThunk(
         meta: { arg: { page, isInfiniteScroll } },
       };
     } catch (error) {
-      console.error("❌ Error API Provinsi:", error);
+      console.error("Error fetching data:", error);
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
       );
@@ -37,11 +36,12 @@ export const fetchProvinsi = createAsyncThunk(
   }
 );
 
+// 🔹 Fetch Provinsi dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
 export const fetchProvinsiWithFilters = createAsyncThunk(
   "Provinsi/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Wilayah/PagedProvinsi`, {
+      const response = await InstanceAxios.get(`/Wilayah/Provinsi/paged`, {
         params: filters,
         headers: getHeaders(),
       });
@@ -62,6 +62,7 @@ export const fetchProvinsiWithFilters = createAsyncThunk(
   }
 );
 
+// 🔹 Fetch data Provinsi berdasarkan ID
 export const fetchProvinsiById = createAsyncThunk(
   "Provinsi/fetchById",
   async (id, { rejectWithValue }) => {
@@ -69,38 +70,41 @@ export const fetchProvinsiById = createAsyncThunk(
       const response = await InstanceAxios.get(`/Wilayah/ProvinsiById/${id}`, {
         headers: getHeaders(),
       });
+
+      console.log("Response API (Fetch By ID):", response.data);
       return response.data.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        "Gagal mengambil data Provinsi berdasarkan ID";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Terjadi kesalahan saat mengambil data"
+      );
     }
   }
 );
 
+// 🔹 Tambah Provinsi Darah
 export const createProvinsi = createAsyncThunk(
   "Provinsi/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post("/Wilayah/Provinsi", data, {
+      const response = await InstanceAxios.post(`/Wilayah/Provinsi`, data, {
         headers: getHeaders(),
       });
+
+      console.log("Response API (Fetch By ID):", response.data);
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal menambahkan data Provinsi";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Gagal menambahkan Provinsi "
+      );
     }
   }
 );
 
+// 🔹 Update Provinsi Darah berdasarkan ID
 export const updateProvinsi = createAsyncThunk(
   "Provinsi/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      console.log("📢 PUT Request ke API:", `/Wilayah/Provinsi/${id}`, data);
-
       const response = await InstanceAxios.put(
         `/Wilayah/Provinsi/${id}`,
         data,
@@ -108,13 +112,10 @@ export const updateProvinsi = createAsyncThunk(
           headers: getHeaders(),
         }
       );
-
-      console.log("✅ Response API Update Provinsi:", response.data);
       return response.data;
     } catch (error) {
-      console.error("❌ Gagal Update API:", error.response?.data || error);
       return rejectWithValue(
-        error.response?.data?.message || "Gagal memperbarui data Provinsi"
+        error.response?.data || "Gagal memperbarui Provinsi "
       );
     }
   }
@@ -124,19 +125,19 @@ export const deleteProvinsi = createAsyncThunk(
   "Provinsi/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await InstanceAxios.delete(`/Wilayah/Provinsi/${id}`, {
+      const response = await InstanceAxios.delete(`/Wilayah/Provinsi/${id}`, {
         headers: getHeaders(),
       });
-      return id;
+      return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal menghapus data Provinsi";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Gagal menghapus Provinsi"
+      );
     }
   }
 );
 
-// 🔹 Redux Slice untuk Provinsi
+// 🔹 Redux Slice
 const ProvinsiSlice = createSlice({
   name: "Provinsi",
   initialState: {
@@ -147,7 +148,9 @@ const ProvinsiSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
+    selectedProvinsi: null,
   },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       // ✅ Fetch Provinsi hanya dengan pagination (CustomTableComponent)
@@ -183,8 +186,10 @@ const ProvinsiSlice = createSlice({
       })
       .addCase(fetchProvinsi.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Terjadi kesalahan";
+        state.data = []; // Set data menjadi kosong saat error 404
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
+
       // ✅ Fetch Provinsi dengan search & filter (CustomSearchFilter)
       .addCase(fetchProvinsiWithFilters.pending, (state) => {
         state.loading = true;
@@ -203,8 +208,10 @@ const ProvinsiSlice = createSlice({
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
+      // Fetch By ID
       .addCase(fetchProvinsiById.pending, (state) => {
         state.loading = true;
+        state.selectedProvinsi = null;
       })
       .addCase(fetchProvinsiById.fulfilled, (state, action) => {
         state.loading = false;
@@ -215,19 +222,25 @@ const ProvinsiSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Tambah Provinsi Darah
       .addCase(createProvinsi.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
+      // Update Provinsi Darah
       .addCase(updateProvinsi.fulfilled, (state, action) => {
         const index = state.data.findIndex(
-          (item) => item.provinsiId === action.payload.provinsiId
+          (Provinsi) => Provinsi.provinsiId === action.payload.provinsiId
         );
+        if (index !== -1) {
+          state.data[index] = action.payload;
+        }
       })
 
+      // Hapus Provinsi Darah
       .addCase(deleteProvinsi.fulfilled, (state, action) => {
         state.data = state.data.filter(
-          (item) => item.provinsiId !== action.payload
+          (Provinsi) => Provinsi.provinsiId !== action.payload
         );
       });
   },

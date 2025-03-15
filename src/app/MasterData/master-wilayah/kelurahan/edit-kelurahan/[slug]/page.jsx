@@ -86,6 +86,9 @@ const KelurahanEditForm = ({ params }) => {
       await dispatch(updateKelurahan({ id, data })).unwrap();
       showAlert.success("Data Kelurahan berhasil diperbarui!", () => {
         router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       });
     } catch (error) {
       console.error("❌ Gagal memperbarui data Kelurahan:", error);
@@ -101,6 +104,9 @@ const KelurahanEditForm = ({ params }) => {
           await dispatch(deleteKelurahan(dataKelurahan.kelurahanId)).unwrap();
           showAlert.success("Data Kelurahan berhasil dihapus!", () => {
             router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
+            setTimeout(() => {
+              window.location.reload();
+            }, 100);
           });
         } catch (error) {
           console.error("❌ Gagal menghapus data Kelurahan:", error);

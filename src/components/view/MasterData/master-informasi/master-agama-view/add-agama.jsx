@@ -20,8 +20,8 @@ const FormAddAgama = () => {
         router.push("/MasterData/master-informasi/agama/table-agama");
       });
     } catch (error) {
-      console.error("Gagal menambahkan Agama darah:", error);
-      showAlert.error("Gagal menambahkan data Agama darah");
+      console.error("Gagal menambahkan Agama :", error);
+      showAlert.error("Gagal menambahkan data Agama ");
     }
   };
 

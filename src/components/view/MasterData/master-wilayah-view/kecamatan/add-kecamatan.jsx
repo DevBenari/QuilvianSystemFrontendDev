@@ -30,7 +30,6 @@ const KecamatanAddForm = () => {
           rules: { required: "Kabupaten Kota is required" },
           colSize: 6,
           onMenuScrollToBottom: handleLoadMoreKabupatenKota,
-          isLoading: loadingKabupatenKota,
         },
         {
           type: "text",
@@ -50,6 +49,9 @@ const KecamatanAddForm = () => {
       await dispatch(createKecamatan(data)).unwrap();
       showAlert.success("Data berhasil disimpan", () => {
         router.push("/MasterData/master-wilayah/kecamatan/table-kecamatan");
+        setTimeout(() => {
+          window.location.reload(); // Full reload untuk memastikan Redux dan UI diperbarui
+        }, 100);
       });
     } catch (error) {
       console.error("Gagal menambahkan Kecamatan:", error);

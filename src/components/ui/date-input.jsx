@@ -14,7 +14,8 @@ const DateInput = memo(
     placeholder,
     options = {},
     onChange,
-    defaultValue,
+    disabled,
+    readOnly,
     ...props
   }) => {
     const {
@@ -22,38 +23,84 @@ const DateInput = memo(
       fieldState: { error },
     } = useController({ name, control, rules });
 
-    // ✅ Fungsi untuk menangani timestamp ISO 8601 dan mengonversinya ke objek Date
-    const parseTimestamp = (timestamp) => {
-      if (!timestamp) return null;
-      const date = new Date(timestamp);
-      return isNaN(date.getTime()) ? null : date; // Pastikan tanggal valid
+    // Fungsi untuk memformat tanggal menjadi "YYYY-MM-DD"
+    const formatDate = (date) => {
+      if (!date) return "";
+
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      return `${year}-${month}-${day}`;
     };
 
-    // ✅ Ambil defaultValue jika ada, lalu parsing jika dalam format timestamp ISO 8601
-    const initialValue = defaultValue ? parseTimestamp(defaultValue) : null;
+    // Fungsi untuk mendapatkan objek Date dari nilai field
+    const getSelectedDate = () => {
+      if (!field.value) return null;
+
+      // Jika field.value adalah string dalam format YYYY-MM-DD
+      if (
+        typeof field.value === "string" &&
+        field.value.match(/^\d{4}-\d{2}-\d{2}$/)
+      ) {
+        return new Date(field.value);
+      }
+
+      // Jika field.value adalah string ISO atau Date object
+      try {
+        return new Date(field.value);
+      } catch (error) {
+        return null;
+      }
+    };
+
+    // Handle date change
+    const handleDateChange = (date) => {
+      if (!date) {
+        field.onChange(null);
+        if (onChange) onChange(null);
+        return;
+      }
+
+      // Set time to midnight
+      const localDate = new Date(date);
+      localDate.setHours(0, 0, 0, 0);
+
+      // Format date as YYYY-MM-DD
+      const formattedDate = formatDate(localDate);
+
+      // Update form value with YYYY-MM-DD string format
+      field.onChange(formattedDate);
+
+      // Trigger external onChange
+      if (onChange) onChange(formattedDate);
+    };
 
     return (
-      <Form.Group className={`mb-3 ${className}`}>
+      <Form.Group className={className || "mb-3"}>
         {label && <Form.Label>{label}</Form.Label>}
         <DatePicker
-          selected={
-            initialValue || (field.value ? new Date(field.value) : null)
-          }
-          onChange={(date) => {
-            if (!date) return; // Jika tanggal kosong, tidak lakukan apa-apa
-            const timestamp = date.toISOString(); // Simpan dalam format timestamp ISO 8601
-            field.onChange(timestamp);
-            if (onChange) onChange(timestamp);
-          }}
-          className={`form-control ${error ? "is-invalid" : ""}`}
-          placeholderText={placeholder}
+          selected={getSelectedDate()}
+          onChange={handleDateChange}
+          dateFormat="yyyy-MM-dd"
           showMonthDropdown
           showYearDropdown
-          dropdownMode="select" // Dropdown untuk memilih tahun
+          dropdownMode="select"
+          disabled={disabled}
+          readOnly={readOnly}
+          placeholderText={placeholder}
+          customInput={
+            <Form.Control
+              type="text"
+              placeholder={placeholder}
+              className={error ? "is-invalid" : ""}
+              disabled={disabled}
+              readOnly={true}
+            />
+          }
           {...props}
         />
         {error && (
-          <Form.Control.Feedback type="invalid">
+          <Form.Control.Feedback type="invalid" className="d-block">
             {error.message}
           </Form.Control.Feedback>
         )}

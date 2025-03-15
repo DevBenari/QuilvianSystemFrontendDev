@@ -1,17 +1,14 @@
 "use client";
-
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import ButtonNav from "@/components/ui/button-navigation";
-import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
+import ButtonNav from "@/components/ui/button-navigation";
 import {
   fetchJabatan,
   fetchJabatanWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/jabatanSlice";
+import { FaBriefcase } from "react-icons/fa"; // Icon untuk Jabatan
 
 const TableDataJabatan = () => {
   const methods = useForm();
@@ -27,104 +24,65 @@ const TableDataJabatan = () => {
 
   // 🔹 State untuk Pagination
   const [page, setPage] = useState(1);
-  const perPage = 10; // Bisa diubah sesuai kebutuhan
+  const perPage = 5; // Bisa diubah sesuai kebutuhan
 
-  // 🔹 Data yang akan ditampilkan di tabel
-  const jabatan = useMemo(() => jabatanData || [], [jabatanData]);
+  // 🔹 Konversi data agar selalu dalam bentuk array
+  const jabatanList = useMemo(
+    () => (Array.isArray(jabatanData) ? jabatanData : []),
+    [jabatanData]
+  );
+
+  // 🔹 State untuk menyimpan hasil filter
   const [filteredJabatan, setFilteredJabatan] = useState([]);
 
-  // 🔹 Fetch data ketika komponen pertama kali di-mount atau ketika `page` berubah
   useEffect(() => {
     dispatch(fetchJabatan({ page, perPage }));
   }, [dispatch, page]);
 
-  // 🔹 Sinkronisasi filtered data dengan data dari Redux
   useEffect(() => {
-    setFilteredJabatan(jabatan);
-  }, [jabatan]);
+    setFilteredJabatan(jabatanList);
+  }, [jabatanList]);
 
   return (
     <FormProvider {...methods}>
-      <Col lg="12" className="iq-card p-4">
-        <div className="d-flex justify-content-between iq-card-header">
-          <h2 className="mb-3">
-            Master Data <br></br>{" "}
-            <span className="letter-spacing fw-bold">List Daftar Jabatan</span>
-          </h2>
-          <button
-            className="btn btn-dark my-3 mx-3"
-            onClick={() => window.location.reload()}
-          >
-            <i className="ri-refresh-line"></i>
-          </button>
-        </div>
-        <Col lg="12" className="mt-2">
-          <CustomSearchFilter
-            fetchFunction={fetchJabatanWithFilters}
-            setFilteredData={setFilteredJabatan}
+      <CustomTableComponent
+        // Header
+        headerTitle="Pencarian Data Jabatan"
+        headerSubtitle="Manajemen Daftar Jabatan dalam Master Data"
+        icon={FaBriefcase} // Icon Jabatan
+        iconBgColor="bg-warning-subtle" // Warna background ikon
+        iconColor="text-warning" // Warna ikon
+        // Custom Search Filter
+        fetchFunction={fetchJabatanWithFilters}
+        setFilteredData={setFilteredJabatan}
+        showSearch={true}
+        // Table Component
+        tableTitle="Tabel List Daftar Jabatan"
+        data={filteredJabatan}
+        columns={[
+          { key: "no", label: "No" },
+          { key: "createDateTime", label: "Tanggal Dibuat" },
+          { key: "createByName", label: "Dibuat Oleh" },
+          { key: "namaJabatan", label: "Nama Jabatan" },
+        ]}
+        slugConfig={{ textField: "namaJabatan", idField: "jabatanId" }} // Menggunakan jabatanId untuk slug
+        basePath="/MasterData/master-informasi/jabatan/edit-jabatan"
+        paginationProps={{
+          currentPage: page,
+          totalPages: totalPages,
+          itemsPerPage: perPage,
+          onPageChange: setPage,
+        }}
+        addButton={
+          <ButtonNav
+            path="/MasterData/master-informasi/jabatan/add-jabatan"
+            label="Tambah Jabatan"
+            icon="ri-add-fill"
+            size="sm"
+            className="btn btn-sm iq-bg-success"
           />
-        </Col>
-      </Col>
-      <Col sm="12" className="p-3">
-        <div className="iq-card p-3">
-          <div className="iq-card-header d-flex justify-content-between">
-            <div className="iq-header-jabatan">
-              <h4 className="card-jabatan font-widest">
-                Tabel List Daftar jabatan
-              </h4>
-            </div>
-            <ButtonNav
-              path="/MasterData/master-informasi/jabatan/add-jabatan"
-              label="Tambah jabatan"
-              icon="ri-add-fill"
-              size="sm"
-              variant=""
-              className="btn btn-sm iq-bg-success"
-            />
-          </div>
-
-          {loading ? (
-            <div className="text-center p-4">
-              <Spinner animation="border" variant="primary" />
-              <p className="mt-2">Mengambil data, harap tunggu...</p>
-            </div>
-          ) : error ? (
-            <Alert variant="warning" className="text-center">
-              {error}
-            </Alert>
-          ) : filteredJabatan.length === 0 ? (
-            <Alert variant="warning" className="text-center">
-              <i className="ri-information-line me-2"></i>
-              Tidak ada data yang tersedia.
-            </Alert>
-          ) : (
-            <CustomTableComponent
-              data={filteredJabatan}
-              columns={[
-                { key: "no", label: "No" },
-                {
-                  key: "createDateTime",
-                  label: "Tanggal Dibuat",
-                },
-                {
-                  key: "createByName",
-                  label: "Dibuat Oleh",
-                },
-                { key: "namaJabatan", label: "Nama Jabatan" },
-              ]}
-              slugConfig={{ textField: "kodeJabatan", idField: "jabatanId" }}
-              basePath="/MasterData/master-informasi/jabatan/edit-jabatan"
-              paginationProps={{
-                currentPage: page,
-                totalPages: totalPages,
-                itemsPerPage: perPage,
-                onPageChange: setPage, // Fungsi untuk mengubah halaman
-              }}
-              itemsPerPage={perPage}
-            />
-          )}
-        </div>
-      </Col>
+        }
+      />
     </FormProvider>
   );
 };

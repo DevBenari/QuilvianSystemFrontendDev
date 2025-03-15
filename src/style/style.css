@@ -29,8 +29,10 @@ NOTE: This file contains the styling for responsive Template.
 :: Sidemenu
 :: TopNav
 :: sidebar-click
-:: Sidebar
-:: Sidebar Menu
+:: Body Sidebar Main Mode 
+:: Sidebar Base
+:: HamburgerMenu
+:: menu item sidebar
 :: Top Menu
 :: Content Page
 :: Error Page
@@ -60,7 +62,7 @@ NOTE: This file contains the styling for responsive Template.
 :: User List
 :: Add User
 :: datepicker
-
+:: Sidebar Menu
 ======================================
 [ End table content ]
 ======================================*/
@@ -1099,155 +1101,14 @@ a:hover {
 }
 
 /*---------------------------------------------------------------------
-                                Sidebarbesar
------------------------------------------------------------------------*/
-.iq-sidebar {
-  position: fixed;
-  z-index: 999;
-  top: 0;
-  width: 260px;
-  height: 100%;
-  transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  -webkit-transition: all 0.3s ease-in-out;
-  -webkit-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
-  -moz-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
-  box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
-}
-
-.iq-sidebar .iq-sidebar-logo {
-  float: none;
-  width: 100%;
-}
-
-.iq-sidebar #sidebar-scrollbar {
-  margin-top: 15px;
-}
-
-/*---------------------------------------------------------------------
-                                SidebarItems
+                  Body Sidebar Main Mode Styles (Responsive)
 -----------------------------------------------------------------------*/
 
-.iq-menu-item {
-  position: relative;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  margin: 8px 0;
-  overflow: hidden;
-  padding: 1rem;
-}
+/*================================ Layout positioning when sidebar is in mini mode ======================*/
+/* ini adalah sebuah code yang digunakan untuk mengatur layout saat sidebar berada dalam mode mini */
+/* Code ini berfokus memotong menjadi lebih kecil */
 
-body.sidebar-main .iq-menu-item {
-  margin: 0;
-}
-
-.iq-menu-item::before {
-  content: "";
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 1;
-}
-
-.iq-menu-item:hover::before {
-  opacity: 1;
-}
-
-.iq-menu-item:hover {
-  transform: translateX(5px);
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.icon-sidebar {
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.iq-menu-item:hover .icon-sidebar {
-  transform: scale(1.1);
-  color: #00b4ff;
-}
-
-.label-sidebar {
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.iq-menu-item:hover .label-sidebar {
-  transform: translateX(5px);
-  color: #00b4ff;
-}
-
-/* Submenu Item Styles */
-.iq-submenu-item {
-  position: relative;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  margin: 8px 0;
-  overflow: hidden;
-  padding: 1rem;
-}
-
-body.sidebar-main .iq-submenu-item {
-  margin: 0;
-}
-
-.iq-submenu-item::before {
-  content: "";
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 100%;
-  background: linear-gradient(to right, rgba(0, 180, 255, 0.2), transparent);
-  opacity: 0;
-  transition: all 0.3s ease;
-  z-index: 1;
-}
-
-.iq-submenu-item:hover::before {
-  width: 100%;
-  opacity: 1;
-}
-
-.iq-submenu-item:hover {
-  transform: translateX(5px);
-  background-color: rgba(0, 180, 255, 0.05);
-}
-
-.iq-submenu-item:hover .icon-sidebar {
-  transform: scale(1.1) rotate(10deg);
-  color: #00b4ff;
-}
-
-.iq-submenu-item:hover .label-sidebar {
-  transform: translateX(5px);
-  color: #00b4ff;
-}
-
-/* Sliding Animation */
-.sidebar-slide-enter {
-  transform: translateX(100%);
-}
-.sidebar-slide-enter-active {
-  transform: translateX(0);
-  transition: transform 300ms ease-in;
-}
-.sidebar-slide-exit {
-  transform: translateX(0);
-}
-.sidebar-slide-exit-active {
-  transform: translateX(100%);
-  transition: transform 300ms ease-in;
-}
-
-/* end */
+/* ============================================== Start ================================================ */
 body.sidebar-main .iq-top-navbar {
   width: calc(100% - 140px);
 }
@@ -1260,24 +1121,616 @@ body.sidebar-main .content-page {
   margin-left: 80px;
 }
 
-/* edit terbaru */
-
 body.sidebar-main .iq-sidebar-logo {
   width: 80px;
 }
 
+/* END */
+
+/* ==================================================Base sidebar mini mode styles =======================================*/
+/* Ini adalah sebuah code yang digunakan untuk mengatur tampilan item item dasar saat sidebar berada dalam mode mini */
+/* ==========================================================Start ===========================================*/
+
+body.sidebar-main .iq-sidebar {
+  width: 100px;
+}
+
+body.sidebar-main .iq-sidebar .label-sidebar {
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar-menu .iq-menu li a .iq-arrow-right {
+  margin-right: 0;
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar:hover,
+body.sidebar-main .iq-sidebar:hover .iq-sidebar-logo {
+  width: 260px;
+}
+
+/* Show elements on hover in mini mode */
+body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li a span,
+body.sidebar-main .iq-sidebar:hover .iq-sidebar-logo a span,
+body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li a .badge,
+body.sidebar-main .iq-sidebar:hover .iq-menu-bt,
+body.sidebar-main .iq-sidebar:hover .label-sidebar {
+  opacity: 1;
+  display: inline-block;
+  transition: all 0.45s ease 0s;
+}
+
+/* Menu item styling for mini sidebar */
+body.sidebar-main .iq-menu-item {
+  position: relative;
+  transition: all 0.3s ease;
+  margin: auto;
+  background-color: transparent;
+  border-left: 3px solid transparent;
+}
+
+body.sidebar-main .iq-submenu-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-left: 3px solid transparent;
+  margin: 0;
+}
+
+body.sidebar-main .iq-nested-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 0;
+  padding: 0.8rem 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+/* Centering items in mini mode */
+body.sidebar-main .mini-sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.8rem 0.5rem;
+}
+
+body.sidebar-main .mini-sidebar-item .icon-sidebar,
+body.sidebar-main .mini-sidebar-item .nested-icon {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  min-width: auto;
+  padding-right: 0 !important;
+}
+
+/* Nested menu handling */
+body.sidebar-main .nested-subitem {
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar:hover .nested-subitem {
+  margin-top: 5px;
+  display: inline-block;
+  opacity: 1;
+}
+
+body.sidebar-main .ps-2.text-white.fw-bold.col {
+  display: none;
+}
+
+body.sidebar-main .iq-sidebar:hover .ps-2.text-white.fw-bold.col {
+  display: block;
+}
+
+.title-nested-menu {
+  font-weight: 700;
+  color: #ffffff;
+  padding-left: 5rem;
+}
+
+/*===================================================== END ==============================================*/
+
+/* ============================================React Virtualized ================================= */
+/* Ini adalah sebuah code yang  pembungkus sidebar yang dibungkusi oleh react React Virtualized*/
+/* React Virtualized specific fixes for mini mode */
+
+/* ================================================ Start ========================================*/
+
+body.sidebar-main .ReactVirtualized__Grid {
+  width: 100px !important;
+  max-width: 100px !important;
+}
+
+body.sidebar-main .iq-sidebar:hover .ReactVirtualized__Grid {
+  width: 260px !important;
+  max-width: 260px !important;
+}
+
+body.sidebar-main .sidebar-virtualized-container {
+  width: 100px !important;
+  overflow: hidden;
+}
+
+body.sidebar-main .iq-sidebar:hover .sidebar-virtualized-container {
+  width: 260px !important;
+  overflow: auto;
+}
+
+body.sidebar-main .ReactVirtualized__Grid__innerScrollContainer {
+  width: 100px !important;
+  max-width: 100px !important;
+  transition: width 0.3s ease-in-out, max-width 0.3s ease-in-out;
+}
+
+body.sidebar-main
+  .iq-sidebar:hover
+  .ReactVirtualized__Grid__innerScrollContainer {
+  width: 260px !important;
+  max-width: 260px !important;
+}
+
+/* Smooth transitions */
+body.sidebar-main .ReactVirtualized__Grid,
+body.sidebar-main .sidebar-virtualized-container {
+  transition: width 0.3s ease-in-out, max-width 0.3s ease-in-out;
+}
+
+body.sidebar-main .position-absolute.top-0.start-0.sidebar-slide-enter-active {
+  width: 260px !important;
+  left: 100px;
+  z-index: 1000;
+}
+
+body.sidebar-main
+  .iq-sidebar:hover
+  .position-absolute.top-0.start-0.sidebar-slide-enter-active {
+  left: 0;
+}
+
+/* Submenu slide handling */
+
+/* List scrolling behavior */
+body.sidebar-main .sidebar-virtualized-list {
+  overflow-x: hidden !important;
+}
+
+/*===================================================== END ==============================================*/
+
+/*======================================== Responsive Body-Sidebar-Main ============================================ */
+
+/* ini adalah sebuah code yang digunakan untuk mengatur responive layout saat sidebar berada dalam mode mini */
+
+/*======================================== Start ============================================ */
 @media screen and (min-width: 1300px) {
-  body.sidebar-main .sidebar-logo {
+  body.sidebar-main .logo-menu {
     content: url("/Images/logo-mmc-no-bg.png");
   }
 
-  body.sidebar-main .iq-sidebar:hover .sidebar-logo {
+  body.sidebar-main .iq-sidebar:hover .logo-menu {
     content: url("/Images/icon-dashboard.png");
   }
-  body.sidebar-main .label-sidebar {
-    display: none;
+}
+
+@media (max-width: 1299px) {
+  /* For smaller screens, always keep sidebar at full width */
+  body.sidebar-main .ReactVirtualized__Grid {
+    width: 260px !important;
+    max-width: 260px !important;
+  }
+
+  body.sidebar-main .iq-sidebar:hover .ReactVirtualized__Grid {
+    width: 260px !important;
+    max-width: 260px !important;
+  }
+
+  body.sidebar-main .sidebar-virtualized-container {
+    width: 260px !important;
+    overflow: auto;
+  }
+
+  body.sidebar-main .iq-sidebar:hover .sidebar-virtualized-container {
+    width: 260px !important;
+    overflow: auto;
+  }
+
+  body.sidebar-main .iq-sidebar {
+    width: 260px !important;
+  }
+
+  body.sidebar-main .ReactVirtualized__Grid__innerScrollContainer {
+    width: 260px !important;
+    max-width: 260px !important;
+  }
+
+  /* Force display of labels on smaller screens regardless of hover */
+  body.sidebar-main .iq-sidebar .label-sidebar {
+    display: inline-block !important;
+    opacity: 1 !important;
+  }
+
+  /* Show all text elements in nested and sub menus */
+  body.sidebar-main .ps-2.text-white.fw-bold.col {
+    display: block !important;
+  }
+
+  /* Show arrows in mini sidebar mode */
+  body.sidebar-main .iq-sidebar-menu .iq-menu li a .iq-arrow-right,
+  body.sidebar-main .arrow-container {
+    display: inline-block !important;
+    margin-right: auto !important;
+  }
+
+  /* Ensure nested items are properly displayed */
+  body.sidebar-main .nested-subitem {
+    display: block;
+  }
+
+  /* Adjust layout for full sidebar width */
+  body.sidebar-main .content-page {
+    margin-left: 260px;
+  }
+
+  body.sidebar-main .iq-top-navbar {
+    width: calc(100% - 260px);
+  }
+
+  body.sidebar-main .iq-top-navbar.fixed-header {
+    width: calc(100% - 260px);
+  }
+
+  /* Reset mini-sidebar specific styling */
+  body.sidebar-main .mini-sidebar-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 0.8rem 1rem;
+  }
+
+  body.sidebar-main .mini-sidebar-item .icon-sidebar,
+  body.sidebar-main .mini-sidebar-item .nested-icon {
+    display: flex;
+    justify-content: flex-start;
+    margin: 0;
+    min-width: 30px;
+    padding-right: 0.5rem !important;
   }
 }
+
+/*======================================== END ============================================ */
+
+/*------------------------------------------------------------------------------
+                                sidebar base Styles
+-----------------------------------------------------------------------*/
+
+/* Ini Adalah code sidebar ketika di di layar ukuran full , code ini adalah 
+sebuah item class utama untuk layout menggunakan react viertualized*/
+
+/* =============================================== Start ================================================ */
+
+/* Specific styles for virtualized sidebar */
+.sidebar-virtualized-container {
+  flex: 1;
+  width: 100%;
+}
+
+.sidebar-virtualized-list {
+  outline: none !important;
+}
+
+/* Hide default scrollbar from react-virtualized */
+.ReactVirtualized__Grid::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ReactVirtualized__Grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ReactVirtualized__Grid::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.iq-sidebar {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  width: 260px;
+  height: 100vh;
+  background-color: #089bab;
+  transition: all 0.3s ease-in-out;
+  -webkit-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
+  -moz-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
+  box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* =============================================== End ================================================ */
+
+/*--------------------------------------------------------------------------
+                                menu item sidebar 
+-----------------------------------------------------------------------*/
+/* ini adalah sebuah code yang digunakan untuk membuat item item pada sidebar items */
+
+/* =============================================== Start ================================================ */
+
+/* Sidebar Logo */
+.logo-menu {
+  padding: 15px;
+  width: 100%;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  align-items: center;
+}
+
+.sidebar-logo {
+  height: 40px;
+  width: auto;
+}
+
+/* Header for Submenus */
+.submenu-header {
+  background-color: #067f8c !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 60px; /* Fixed height for correct calculations */
+}
+
+/* Main Menu Items */
+.iq-menu-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 8px 15px;
+  padding: 0.8rem 1rem;
+  background-color: transparent;
+  border-left: 3px solid transparent;
+}
+
+.iq-menu-item:hover,
+.iq-menu-item.hovered {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+  border-left: 3px solid #ffffff;
+}
+
+.iq-menu-item.active-menu-item {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-left: 3px solid #ffffff;
+}
+
+.icon-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.iq-menu-item:hover .icon-sidebar,
+.iq-menu-item.active-menu-item .icon-sidebar {
+  transform: scale(1.1);
+  color: #e0f7ff;
+}
+
+.label-sidebar {
+  transition: transform 0.3s ease, color 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.iq-menu-item:hover .label-sidebar,
+.iq-menu-item.active-menu-item .label-sidebar {
+  transform: translateX(5px);
+  color: #ffffff;
+}
+
+/* Submenu Items Styling */
+.iq-submenu-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 6px 15px;
+  padding: 0.8rem 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-left: 3px solid transparent;
+}
+
+.iq-submenu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+  border-left: 3px solid #ffffff;
+}
+
+.iq-submenu-item.active-submenu-item {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-left: 3px solid #ffffff;
+}
+
+.iq-submenu-item:hover .icon-sidebar,
+.iq-submenu-item.active-submenu-item .icon-sidebar {
+  transform: scale(1.1);
+  color: #e0f7ff;
+}
+
+.iq-submenu-item:hover .label-sidebar,
+.iq-submenu-item.active-submenu-item .label-sidebar {
+  transform: translateX(5px);
+  color: #ffffff;
+}
+
+/* Nested Menu Styling */
+.nested-category {
+  margin-bottom: 8px;
+}
+
+.iq-nested-item {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 5px 10px;
+  padding: 0.8rem 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.iq-nested-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(3px);
+  border-left: 3px solid rgba(255, 255, 255, 0.7);
+}
+
+.iq-nested-item.active-nested-item {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-left: 3px solid #ffffff;
+}
+
+.nested-icon {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.active-nested-item .nested-icon {
+  transform: scale(1.1);
+  color: #e0f7ff;
+}
+
+/* Arrow animation */
+.arrow-icon {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.active-nested-item .arrow-icon {
+  color: #e0f7ff;
+}
+
+/* Nested Subitems */
+.nested-subitems {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  margin: 0 10px 5px 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.nested-subitem {
+  padding: 10px 15px;
+  transition: all 0.3s ease;
+  position: relative;
+  border-left: 3px solid transparent;
+}
+
+.nested-subitem:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateX(3px);
+  border-left: 3px solid rgba(255, 255, 255, 0.5);
+}
+
+.nested-subitem.active-link {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-left: 3px solid #ffffff;
+}
+
+.nested-subitem a {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+}
+
+.nested-subitem:hover a,
+.nested-subitem.active-link a {
+  color: #e0f7ff !important;
+}
+
+.nested-subitem a span {
+  position: relative;
+  display: inline-block;
+  padding-left: 5px;
+  transition: transform 0.3s ease;
+}
+
+.nested-subitem:hover a span {
+  transform: translateX(3px);
+}
+
+.nested-subitem.active-link a span {
+  font-weight: 500;
+}
+
+/* Back Button styling */
+.back-button {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.back-button:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.back-button:focus {
+  box-shadow: none;
+}
+
+/* Rotation animation for arrow */
+.rotate-90 {
+  transition: transform 0.3s ease;
+}
+
+/*---------------------------------------------------------------------
+                                Responsive Sidebar
+-----------------------------------------------------------------------*/
+/* ini tambahan fitur saja */
+
+/* re */
+/* For smaller screens */
+@media (max-width: 991.98px) {
+  .iq-sidebar {
+    left: -260px;
+    transform: translateX(0);
+  }
+
+  .iq-sidebar.show {
+    left: 0;
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+  }
+
+  .sidebar-overlay.show {
+    display: block;
+  }
+}
+
+/* =================================================End ========================== */
 
 /*---------------------------------------------------------------------
                          HamburgerMenu Styling
@@ -1452,60 +1905,14 @@ body.sidebar-main .iq-sidebar-logo {
   }
 }
 
-/*---------------------------------------------------------------------
-                             Sidemenu
------------------------------------------------------------------------*/
-
-.menu-item-sidemenu {
-  transition: all 0.2s ease;
-}
-
-.menu-item-sidemenu:hover {
-  background-color: #f5f8ff;
-  transform: translateX(2px);
-}
-
-.menu-item-sidemenu:hover a {
-  color: #0055b3 !important;
-  font-weight: 500;
-}
-
-.menu-item-sidemenu:hover svg {
-  color: #0055b3 !important;
-}
-
-.menu-item-sidemenu:active {
-  background-color: #e6f0ff;
-}
-
-/* Custom scrollbar styles */
-.ReactVirtualized__List::-webkit-scrollbar {
-  width: 6px;
-}
-
-.ReactVirtualized__List::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.ReactVirtualized__List::-webkit-scrollbar-thumb {
-  background: #c0c0c0;
-  border-radius: 3px;
-}
-
-.ReactVirtualized__List::-webkit-scrollbar-thumb:hover {
-  background: #a0a0a0;
-}
-
-/*---------------------------------------------------------------------
-                             Sidebar Menu
------------------------------------------------------------------------*/
-
-/* Form */
 #sidebar-scrollbar {
   height: 90vh;
   scrollbar-width: none;
 }
+
+/*---------------------------------------------------------------------
+                             Sidebar Menu TIDAK DI PAKAI 
+-----------------------------------------------------------------------*/
 
 .scroll-content div.p-3 {
   height: 100px;
@@ -2490,79 +2897,6 @@ body.sidebar-main .iq-menu-bt-sidebar .iq-menu-bt {
 }
 
 /* edit sampe sini */
-
-body.sidebar-main .iq-sidebar .iq-menu-item .ps-2 {
-  display: none;
-}
-
-body.sidebar-main .iq-sidebar .iq-menu-item .ms-auto {
-  display: none;
-}
-
-body.sidebar-main .iq-sidebar .iq-sidebar-menu .iq-menu li a span,
-body.sidebar-main .iq-sidebar-logo a span,
-body.sidebar-main .iq-sidebar-menu .iq-menu li a .badge {
-  opacity: 0;
-  display: none;
-  transition: all 0.45s ease 0s;
-}
-
-body.sidebar-main .iq-sidebar-menu .iq-menu .iq-menu-title span {
-  display: none;
-}
-
-body.sidebar-main .iq-sidebar-menu .iq-menu .iq-menu-title i {
-  font-size: 20px;
-  display: block;
-}
-
-body.sidebar-main .iq-menu-bt {
-  opacity: 0;
-  display: none;
-}
-
-body.sidebar-main .iq-sidebar {
-  width: 80px;
-}
-
-body.sidebar-main .iq-sidebar-menu .iq-menu li a .iq-arrow-right {
-  margin-right: 0;
-  display: none;
-}
-
-body.sidebar-main .iq-sidebar:hover,
-body.sidebar-main .iq-sidebar:hover .iq-sidebar-logo {
-  width: 260px;
-}
-
-body.sidebar-main
-  .iq-sidebar:hover
-  .iq-sidebar-menu
-  .iq-menu
-  li
-  a
-  .iq-arrow-right {
-  margin-right: 0;
-  display: inline-block;
-}
-
-body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li a span,
-body.sidebar-main .iq-sidebar:hover .iq-sidebar-logo a span,
-body.sidebar-main .iq-sidebar:hover .iq-sidebar-menu .iq-menu li a .badge,
-body.sidebar-main .iq-sidebar:hover .iq-menu-bt,
-body.sidebar-main .iq-sidebar:hover .label-sidebar {
-  opacity: 1;
-  display: inline-block;
-  transition: all 0.45s ease 0s;
-}
-
-body.sidebar-main .iq-sidebar .iq-sidebar-menu .iq-menu li ul {
-  display: none;
-}
-
-body.sidebar-main .iq-sidebar.sidebar-hover .iq-sidebar-menu .iq-menu li ul {
-  display: none;
-}
 
 /*------------------------*/
 .iq-card.iq-user-profile-block {

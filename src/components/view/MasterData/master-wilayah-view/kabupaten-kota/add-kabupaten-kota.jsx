@@ -29,7 +29,6 @@ const KabupatenKotaAddForm = () => {
           rules: { required: "Provinsi is required" },
           colSize: 6,
           onMenuScrollToBottom: handleLoadMoreProvinsi,
-          isLoading: loadingProvinsi,
         },
         {
           type: "text",
@@ -45,12 +44,14 @@ const KabupatenKotaAddForm = () => {
 
   const handleSubmit = async (data) => {
     try {
-      // Tambahkan negaraId secara default saat submit
       await dispatch(createKabupatenKota(data)).unwrap();
       showAlert.success("Data berhasil disimpan", () => {
         router.push(
           "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
         );
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       });
     } catch (error) {
       console.error("Gagal menambahkan Kabupaten Kota:", error);

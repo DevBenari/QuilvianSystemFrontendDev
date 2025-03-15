@@ -12,6 +12,8 @@ const SelectField = forwardRef(
       rules,
       placeholder,
       className,
+      disabled,
+      readOnly,
       onChange: externalOnChange,
       onMenuScrollToBottom,
       ...props
@@ -86,6 +88,7 @@ const SelectField = forwardRef(
           onMenuScrollToBottom={handleScrollToBottom}
           isClearable
           isLoading={props.isLoading}
+          isDisabled={disabled || readOnly} // Menggunakan parameter disabled dan readOnly
         />
         {error && (
           <Form.Control.Feedback type="invalid" style={{ display: "block" }}>

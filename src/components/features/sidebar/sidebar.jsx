@@ -4,9 +4,7 @@ import { Image } from "react-bootstrap";
 
 import { usePathname } from "next/navigation";
 import React, { Fragment, memo, useRef, useEffect, useState } from "react";
-import UseIsMobile from "@/lib/hooks/useIsMobile";
-import SideBarItems from "./sidebar-items";
-import SideBarLogo from "./sidebar-logo";
+import VirtualizedSideBarItems from "./sidebar-items-virtualized";
 
 // Main Sidebar Component
 const Sidebar = memo(() => {
@@ -16,7 +14,7 @@ const Sidebar = memo(() => {
   return showSidebar ? (
     <Fragment>
       <div className="iq-sidebar">
-        <div className="iq-sidebar-logo d-flex justify-content-between ">
+        <div className="logo-menu">
           <Link href="/#">
             <Image
               src="/Images/icon-dashboard.png"
@@ -25,9 +23,7 @@ const Sidebar = memo(() => {
             />
           </Link>
         </div>
-        <div id="sidebar-scrollbar">
-          <SideBarItems />
-        </div>
+        <VirtualizedSideBarItems />
       </div>
     </Fragment>
   ) : null;

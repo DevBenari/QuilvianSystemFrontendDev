@@ -5,10 +5,14 @@ import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { showAlert } from "@/components/features/alert/custom-alert";
 import { createProvinsi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
+import useWilayahData from "@/lib/hooks/useWilayahData";
 
 const ProvinsiAddForm = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const { NegaraOptions, loadingNegara, handleLoadMoreNegara } =
+    useWilayahData();
 
   const formFields = [
     {
@@ -22,9 +26,15 @@ const ProvinsiAddForm = () => {
           rules: { required: "Nama Provinsi harus diisi" },
         },
         {
-          type: "hidden", // ID negara dikirim tetapi tidak ditampilkan di UI
+          type: "select",
+          id: "negaraId",
+          label: "Negara",
           name: "negaraId",
-          defaultValue: "a7b29b3f-a944-4982-bdd0-9f0fac0beed5",
+          placeholder: "Pilih Negara",
+          options: NegaraOptions,
+          rules: { required: "Negara is required" },
+          colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreNegara,
         },
       ],
     },
@@ -32,15 +42,13 @@ const ProvinsiAddForm = () => {
 
   const handleSubmit = async (data) => {
     try {
-      // Tambahkan negaraId secara default saat submit
-      const formData = {
-        ...data,
-        negaraId: "a7b29b3f-a944-4982-bdd0-9f0fac0beed5", // Kirim ID Indonesia ke backend
-      };
-
-      await dispatch(createProvinsi(formData)).unwrap();
+      // 🔹 Buat data baru
+      await dispatch(createProvinsi(data)).unwrap();
       showAlert.success("Data berhasil disimpan", () => {
         router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       });
     } catch (error) {
       console.error("Gagal menambahkan Provinsi:", error);
@@ -54,7 +62,7 @@ const ProvinsiAddForm = () => {
         title="Tambah Data Provinsi"
         formConfig={formFields}
         onSubmit={handleSubmit}
-        backPath="/MasterData/master-informasi/Provinsi/table-Provinsi"
+        backPath="/MasterData/master-wilayah/provinsi/table-provinsi"
         isAddMode={true}
       />
     </Fragment>

@@ -6,11 +6,11 @@ import { Alert, Spinner } from "react-bootstrap";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
 import ButtonNav from "@/components/ui/button-navigation";
 
-import {
-  fetchAsuransiPasien,
-  fetchAsuransiPasienWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 import { FaShieldHeart } from "react-icons/fa6";
+import {
+  fetchAsuransi,
+  fetchAsuransiWithFilters,
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
 const TableDataAsuransi = () => {
   const methods = useForm();
@@ -33,7 +33,7 @@ const TableDataAsuransi = () => {
 
   // 🔹 Pastikan data dari Redux store selalu berupa array sebelum disimpan
   useEffect(() => {
-    dispatch(fetchAsuransiPasien({ page, perPage }));
+    dispatch(fetchAsuransi({ page, perPage }));
   }, [dispatch, page]);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const TableDataAsuransi = () => {
         iconBgColor="bg-success-subtle" // Warna background ikon (Hijau lembut)
         iconColor="text-success" // Warna ikon (Hijau)
         // Custom Search Filter
-        fetchFunction={fetchAsuransiPasienWithFilters}
+        fetchFunction={fetchAsuransiWithFilters}
         setFilteredData={setFilteredData}
         showSearch={true}
         // Table Component
@@ -58,9 +58,14 @@ const TableDataAsuransi = () => {
         data={filteredData}
         columns={[
           { key: "no", label: "No" },
-          { key: "namaPasien", label: "Nama Pasien" },
+          { key: "createDateTime", label: "Tanggal Dibuat" },
+          { key: "createByName", label: "Dibuat Oleh" },
+          { key: "kodeAsuransi", label: "Kode Asuransi" },
           { key: "namaAsuransi", label: "Nama Asuransi" },
-          { key: "noPolis", label: "No Polis" },
+          { key: "jenisAsuransi", label: "Jenis Asuransi" },
+          { key: "statusAsuransi", label: "Status Asuransi" },
+          { key: "tanggalMulaiKerjasama", label: "Tanggal Mulai Kerjasama" },
+          { key: "tanggalAkhirKerjasama", label: "Tanggal Akhir Kerjasama" },
         ]}
         itemsPerPage={10}
         slugConfig={{

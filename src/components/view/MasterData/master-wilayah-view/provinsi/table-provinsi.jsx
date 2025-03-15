@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FormProvider, useForm } from "react-hook-form";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
 import {
   fetchProvinsi,
@@ -54,7 +53,6 @@ const TableDataProvinsi = () => {
         // Table Component
         tableTitle="Tabel List Provinsi"
         data={filteredData}
-        loading={loading} // Mengirim loading ke CustomTableComponent
         columns={[
           { key: "no", label: "No" },
           { key: "createDateTime", label: "Tanggal Dibuat" },

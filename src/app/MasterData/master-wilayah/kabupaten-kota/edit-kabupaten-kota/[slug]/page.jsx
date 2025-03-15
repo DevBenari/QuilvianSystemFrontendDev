@@ -92,6 +92,9 @@ const KabupatenKotaEditForm = ({ params }) => {
         router.push(
           "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
         );
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       });
     } catch (error) {
       console.error("❌ Gagal memperbarui data Kabupaten Kota:", error);
@@ -111,6 +114,9 @@ const KabupatenKotaEditForm = ({ params }) => {
             router.push(
               "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
             );
+            setTimeout(() => {
+              window.location.reload();
+            }, 100);
           });
         } catch (error) {
           console.error("❌ Gagal menghapus data Kabupaten Kota:", error);

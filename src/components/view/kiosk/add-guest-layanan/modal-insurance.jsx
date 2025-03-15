@@ -1,13 +1,14 @@
-import React, {memo, useState, useEffect} from 'react';
+import React, { memo, useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TextField from "@/components/ui/text-field";
-import SelectField from '@/components/ui/select-field';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchAsuransi } from '@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice';
+import SelectField from "@/components/ui/select-field";
+import { FormProvider, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
 
-const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => {
+const ModalInsurance = memo(
+  ({ onOpen, onClose, onSubmit, formConfig = [] }) => {
     const dispatch = useDispatch();
     const { data:asuransiList } = useSelector((state) => state.Asuransi);
 
@@ -16,6 +17,7 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
         nomorPolis: "",
         isPKS: true
     });
+
 
     // Create defaultValues safely by checking if formConfig exists
     const defaultValues = React.useMemo(() => {
@@ -35,13 +37,16 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
         }, {});
     }, [formConfig]);
 
+
     const methods = useForm({
-        defaultValues,
-        mode: "onSubmit",
+      defaultValues,
+      mode: "onSubmit",
     });
+
 
     // Fetch insurance options from API
     const [insuranceOptions, setInsuranceOptions] = useState([]);
+
 
     // Fetch insurance providers from API
     useEffect(() => {
@@ -75,10 +80,11 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
 
     const [showCustomInput, setShowCustomInput] = useState(false);
 
+
     // Handle the form submission
     const handleFormSubmit = async () => {
-        onSubmit(insuranceData);
-        onClose(true);
+      onSubmit(insuranceData);
+      onClose(true);
     };
 
     return (
@@ -184,7 +190,8 @@ const ModalInsurance = memo(({ onOpen, onClose, onSubmit, formConfig = [] }) => 
             </Modal.Footer>
         </Modal>
     );
-});
+  }
+);
 
 ModalInsurance.displayName = "ModalInsurance";
 export default ModalInsurance; 

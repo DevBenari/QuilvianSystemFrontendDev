@@ -10,7 +10,7 @@ import {
   fetchTitle,
   fetchTitleWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
-import { FaTag } from "react-icons/fa"; // Icon untuk Title
+import { FaTag, FaUser, FaUserAlt } from "react-icons/fa"; // Icon untuk Title
 
 const TableDataTitle = () => {
   const methods = useForm();
@@ -85,6 +85,7 @@ const TableDataTitle = () => {
             className="btn btn-sm iq-bg-success"
           />
         }
+        TableIcon={FaUserAlt} // ✅ Pastikan `tableIcon` benar
       />
     </FormProvider>
   );

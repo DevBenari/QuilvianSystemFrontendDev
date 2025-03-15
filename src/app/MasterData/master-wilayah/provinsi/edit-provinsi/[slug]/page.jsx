@@ -10,6 +10,7 @@ import {
   fetchProvinsiById,
   deleteProvinsi,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
+import useWilayahData from "@/lib/hooks/useWilayahData";
 
 const ProvinsiEditForm = ({ params }) => {
   const router = useRouter();
@@ -30,44 +31,8 @@ const ProvinsiEditForm = ({ params }) => {
     }
   }, [selectedProvinsi]);
 
-  const handleSubmit = async (data) => {
-    try {
-      const id = dataProvinsi?.provinsiId; // Pastikan ID tidak undefined
-      if (!id) {
-        console.error("❌ ID Provinsi tidak ditemukan, gagal update.");
-        return;
-      }
-
-      const formData = {
-        ...data,
-        negaraId: "a7b29b3f-a944-4982-bdd0-9f0fac0beed5", // ID negara tetap Indonesia
-      };
-
-      console.log("📢 Data yang dikirim ke API (PUT):", { id, ...formData });
-
-      await dispatch(updateProvinsi({ id, data: formData })).unwrap();
-      showAlert.success("Data Provinsi berhasil diperbarui!", () => {
-        router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
-      });
-    } catch (error) {
-      console.error("❌ Gagal memperbarui data Provinsi:", error);
-      showAlert.error("Gagal memperbarui data Provinsi.");
-    }
-  };
-
-  const handleDelete = async () => {
-    showAlert.confirmDelete("Data Provinsi akan dihapus permanen", async () => {
-      try {
-        await dispatch(deleteProvinsi(dataProvinsi.provinsiId)).unwrap();
-        showAlert.success("Data Provinsi berhasil dihapus!", () => {
-          router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
-        });
-      } catch (error) {
-        console.error("❌ Gagal menghapus data Provinsi:", error);
-        showAlert.error("Gagal menghapus data Provinsi.");
-      }
-    });
-  };
+  const { NegaraOptions, loadingNegara, handleLoadMoreNegara } =
+    useWilayahData();
 
   const formFields = [
     {
@@ -79,6 +44,18 @@ const ProvinsiEditForm = ({ params }) => {
           placeholder: "Masukkan Nama Provinsi...",
           colSize: 6,
           rules: { required: "Nama Provinsi harus diisi" },
+        },
+        {
+          type: "select",
+          id: "negaraId",
+          label: "Negara",
+          name: "negaraId",
+          placeholder: "Pilih Negara",
+          options: NegaraOptions,
+          rules: { required: "Negara is required" },
+          colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreNegara,
+          isLoading: loadingNegara,
         },
       ],
     },
@@ -94,6 +71,46 @@ const ProvinsiEditForm = ({ params }) => {
       value: dataProvinsi?.[field.name] ?? "",
     })),
   }));
+
+  const handleSubmit = async (data) => {
+    try {
+      const id = dataProvinsi?.provinsiId; // Pastikan ID tidak undefined
+      if (!id) {
+        console.error("❌ ID Provinsi tidak ditemukan, gagal update.");
+        return;
+      }
+
+      console.log("📢 Data yang dikirim ke API (PUT):", { id, data });
+
+      await dispatch(updateProvinsi({ id, data })).unwrap();
+      showAlert.success("Data Provinsi berhasil diperbarui!", () => {
+        router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      });
+    } catch (error) {
+      console.error("❌ Gagal memperbarui data Provinsi:", error);
+      showAlert.error("Gagal memperbarui data Provinsi.");
+    }
+  };
+
+  const handleDelete = async () => {
+    showAlert.confirmDelete("Data Provinsi akan dihapus permanen", async () => {
+      try {
+        await dispatch(deleteProvinsi(dataProvinsi.provinsiId)).unwrap();
+        showAlert.success("Data Provinsi berhasil dihapus!", () => {
+          router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
+          setTimeout(() => {
+            window.location.reload();
+          }, 200);
+        });
+      } catch (error) {
+        console.error("❌ Gagal menghapus data Provinsi:", error);
+        showAlert.error("Gagal menghapus data Provinsi.");
+      }
+    });
+  };
 
   return (
     <Fragment>
