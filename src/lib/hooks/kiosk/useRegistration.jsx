@@ -12,10 +12,9 @@ import { fetchDoctors } from "@/lib/state/slice/Manajemen-kesehatan-slices/Maste
  * Main custom hook for handling registration functionality
  * Integrates all the smaller specific hooks and handles doctor filtering
  * 
- * @param {Object} config - Configuration options
- * @returns {Object} - Registration state and methods
- */
-const useRegistration = ({
+ *
+ * 
+ */ const useRegistration = ({
   fetchMasterDataAction,
   fetchDoctorsAction = null,
   initialDoctorsData = {},
@@ -24,7 +23,7 @@ const useRegistration = ({
 }) => {
   const formMethodsRef = useRef(null);
   const dispatch = useDispatch();
-  const { data:doctorsByPoli, loading: doctorsLoading, error: doctorsError } = useSelector(state => state.dokterPoli);
+  const { data:doctorsByPoli, loading: doctorsLoading, error: doctorsError } = useSelector(state => state.DokterPoliSlice);
   
   // Local state
   const [serviceType, setServiceType] = useState("poli"); // "poli", "lab", "radiologi"

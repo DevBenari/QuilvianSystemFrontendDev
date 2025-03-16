@@ -46,10 +46,7 @@ const PendaftaranLayananPoliPage = () => {
     { nik: "1234567890123456", id: 1, name: "John Doe", address: "Jl. Merdeka 10" },
     { nik: "9876543210987654", id: 2, name: "Jane Doe", address: "Jl. Sudirman 20" },
   ];
-
-  
-
-  // Simulasi pengambilan data pasien berdasarkan NIK
+ 
   const fetchPatientData = async (nik) => {
     try {
       setIsLoading(true);

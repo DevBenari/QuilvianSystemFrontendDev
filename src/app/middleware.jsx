@@ -15,12 +15,12 @@ export function middleware(request) {
   const isPublicPath = publicPaths.some(path => pathname === path);
   
   // Jika di path kiosk dan tidak ada token kiosk khusus, redirect ke login
-  if (pathname.startsWith('/kiosk')) {
-    const kioskToken = request.cookies.get('kiosk_token')?.value;
-    if (!kioskToken) {
-      return NextResponse.redirect(new URL('/Login', request.url));
+    if (pathname.startsWith('/kiosk')) {
+      const kioskToken = request.cookies.get('kiosk_token')?.value;
+      if (!kioskToken) {
+        return NextResponse.redirect(new URL('/Login', request.url));
+      }
     }
-  }
   // Jika tidak ada token dan bukan public path, redirect ke login
   else if (!token && !isPublicPath) {
     return NextResponse.redirect(new URL('/Login', request.url));

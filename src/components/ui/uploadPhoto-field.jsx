@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Form, Image, Button, Modal } from "react-bootstrap";
-import { Upload } from "react-bootstrap-icons";
 import { Controller } from "react-hook-form";
 
 const UploadPhotoField = ({ field, commonProps, methods }) => {
@@ -8,6 +7,7 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [showWebcam, setShowWebcam] = useState(false);
   const [hasWebcamPermission, setHasWebcamPermission] = useState(true);
+  const [isWebcamReady, setIsWebcamReady] = useState(false);
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -38,35 +38,34 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           width: { ideal: 640 },
-          height: { ideal: 480 }
+          height: { ideal: 480 },
+          facingMode: "user" // Gunakan kamera depan (selfie)
         } 
       });
       
-      // Pastikan modal webcam sudah terbuka sebelum mencoba mengakses videoRef
-      setShowWebcam(true);
+      // Simpan stream untuk digunakan nanti
+      streamRef.current = stream;
       
-      // Gunakan setTimeout untuk memastikan komponen video sudah dirender
-      setTimeout(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          streamRef.current = stream;
-          
-          // Tampilkan pesan log untuk debugging
-          console.log('Webcam started successfully');
-        } else {
-          console.error('Video element not found');
-          stopWebcam();
-        }
-      }, 300);
-
+      // Buka modal webcam
+      setShowWebcam(true);
+      setIsWebcamReady(false);
       setHasWebcamPermission(true);
+      
+      console.log('Webcam permission granted');
     } catch (err) {
       console.error("Error accessing webcam:", err);
       setHasWebcamPermission(false);
       alert("Tidak dapat mengakses kamera. Pastikan browser diizinkan untuk mengakses kamera.");
-      setShowWebcam(false);
     }
   };
+
+  // Setelah modal terbuka, pasang stream ke video element
+  useEffect(() => {
+    if (showWebcam && streamRef.current && videoRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+      console.log('Stream attached to video element');
+    }
+  }, [showWebcam]);
 
   // Fungsi untuk menutup webcam
   const stopWebcam = () => {
@@ -76,6 +75,7 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
       streamRef.current = null;
     }
     setShowWebcam(false);
+    setIsWebcamReady(false);
   };
 
   // Cleanup ketika komponen unmount
@@ -85,20 +85,29 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
     };
   }, []);
 
+  // Handler untuk event video loaded
+  const handleVideoReady = () => {
+    console.log('Video is ready to play');
+    setIsWebcamReady(true);
+  };
+
   // Fungsi untuk mengambil foto dari webcam
   const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      
-      // Pastikan video sudah siap
-      if (video.readyState !== 4) {
-        console.error('Video not ready yet');
-        return;
-      }
-      
-      const context = canvas.getContext('2d');
-      
+    if (!videoRef.current || !canvasRef.current) {
+      console.error('Video or canvas ref not available');
+      return;
+    }
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    
+    // Pastikan video sudah siap
+    if (video.readyState !== 4) {
+      console.error('Video not ready yet, readyState:', video.readyState);
+      return;
+    }
+    
+    try {
       // Mengatur ukuran canvas sesuai dengan video
       canvas.width = video.videoWidth || 640;
       canvas.height = video.videoHeight || 480;
@@ -108,38 +117,38 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
         return;
       }
       
-      try {
-        // Menggambar frame video ke canvas
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const context = canvas.getContext('2d');
+      
+      // Menggambar frame video ke canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Mengkonversi canvas ke blob
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          console.error('Failed to create blob from canvas');
+          return;
+        }
         
-        // Mengkonversi canvas ke blob
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            console.error('Failed to create blob from canvas');
-            return;
-          }
-          
-          // Membuat file dari blob
-          const file = new File([blob], "webcam-photo.png", { type: "image/png" });
-          
-          // Set value pada react-hook-form
-          setValue(field.name, file, { shouldValidate: true });
-          
-          // Tampilkan preview gambar
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setImagePreview(reader.result);
-          };
-          reader.readAsDataURL(blob);
-          
-          // Tutup webcam
-          stopWebcam();
-        }, 'image/png');
-      } catch (err) {
-        console.error('Error capturing photo:', err);
-      }
-    } else {
-      console.error('Video or canvas ref not available');
+        // Membuat file dari blob
+        const file = new File([blob], "webcam-photo.png", { type: "image/png" });
+        
+        // Set value pada react-hook-form
+        setValue(field.name, file, { shouldValidate: true });
+        
+        // Tampilkan preview gambar
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(blob);
+        
+        // Tutup webcam
+        stopWebcam();
+        
+        console.log('Photo captured successfully');
+      }, 'image/png', 0.9); // Kualitas 90%
+    } catch (err) {
+      console.error('Error capturing photo:', err);
     }
   };
 
@@ -174,6 +183,44 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
     setImagePreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = ''; // Reset input file
+    }
+  };
+
+  // Fungsi untuk switch kamera (jika perangkat memiliki kamera depan dan belakang)
+  const switchCamera = async () => {
+    // Cek apakah ada stream yang berjalan
+    if (!streamRef.current) return;
+    
+    // Hentikan stream saat ini
+    const tracks = streamRef.current.getTracks();
+    tracks.forEach(track => track.stop());
+    
+    try {
+      // Dapatkan facingMode saat ini
+      const currentFacingMode = streamRef.current.getVideoTracks()[0].getSettings().facingMode;
+      const newFacingMode = currentFacingMode === "user" ? "environment" : "user";
+      
+      // Minta akses ke kamera dengan facingMode baru
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+          facingMode: newFacingMode
+        }
+      });
+      
+      // Update stream reference
+      streamRef.current = newStream;
+      
+      // Update video element
+      if (videoRef.current) {
+        videoRef.current.srcObject = newStream;
+      }
+      
+      console.log(`Switched to ${newFacingMode} camera`);
+    } catch (err) {
+      console.error("Error switching camera:", err);
+      alert("Tidak dapat mengganti kamera. Perangkat mungkin hanya memiliki satu kamera.");
     }
   };
 
@@ -232,9 +279,7 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
               show={showWebcam} 
               onHide={stopWebcam} 
               centered
-              onEntered={() => {
-                console.log('Modal fully entered DOM');
-              }}
+              size="lg"
             >
               <Modal.Header closeButton>
                 <Modal.Title>Ambil Foto dengan Kamera</Modal.Title>
@@ -242,16 +287,36 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
               <Modal.Body className="d-flex flex-column align-items-center">
                 {hasWebcamPermission ? (
                   <>
-                    <video 
-                      ref={videoRef} 
-                      autoPlay 
-                      playsInline 
-                      style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }}
-                      onLoadedMetadata={() => console.log('Video metadata loaded')}
-                      onCanPlay={() => console.log('Video can play')}
-                      onError={(e) => console.error('Video error:', e)}
-                    />
+                    <div className="position-relative w-100">
+                      <video 
+                        ref={videoRef} 
+                        autoPlay 
+                        playsInline 
+                        style={{ width: '100%', maxHeight: '400px', objectFit: 'contain', backgroundColor: '#000' }}
+                        onLoadedMetadata={() => console.log('Video metadata loaded')}
+                        onCanPlay={handleVideoReady}
+                        onError={(e) => console.error('Video error:', e)}
+                      />
+                      
+                      {/* Indikator status kamera */} 
+                      {!isWebcamReady && (
+                        <div className="position-absolute top-50 start-50 translate-middle">
+                          <div className="spinner-border text-light" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                     <canvas ref={canvasRef} style={{ display: 'none' }} />
+                    
+                    {/* Tombol Switch Kamera (jika tersedia) */}
+                    <Button 
+                      variant="outline-secondary" 
+                      onClick={switchCamera}
+                      className="mt-2"
+                    >
+                      Switch Kamera
+                    </Button>
                   </>
                 ) : (
                   <div className="text-center p-4">
@@ -265,7 +330,11 @@ const UploadPhotoField = ({ field, commonProps, methods }) => {
                   Batal
                 </Button>
                 {hasWebcamPermission && (
-                  <Button variant="primary" onClick={capturePhoto}>
+                  <Button 
+                    variant="primary" 
+                    onClick={capturePhoto}
+                    disabled={!isWebcamReady}
+                  >
                     Ambil Foto
                   </Button>
                 )}

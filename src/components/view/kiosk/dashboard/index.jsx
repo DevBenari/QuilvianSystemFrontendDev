@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from "react"
-import { Container, Row, Col, Card, Image, Button } from 'react-bootstrap';
+import React, {useState } from "react"
+import {Card, Image, Button } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
 import CarouselImage from "./carousel-image";
 import KioskPasienLamaPage from "../pasien-lama";

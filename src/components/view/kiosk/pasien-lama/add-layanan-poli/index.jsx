@@ -1,281 +1,395 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import DynamicStepCardForm from "@/components/features/dynamic-form/dynamicForm/DynamicStepCardForm";
-import ModalInsurance from "@/components/view/kiosk/add-guest-layanan/modal-insurance";
-import { fetchPoliKlinik } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
-import useRegistration from "@/lib/hooks/kiosk/useRegistration";
+  "use client";
+  import React, { useState, useEffect } from "react";
+  import { useSelector, useDispatch } from "react-redux";
+  import { Card, Button, Alert } from "react-bootstrap";
+  import DynamicStepCardForm from "@/components/features/dynamic-form/dynamicForm/DynamicStepCardForm";
+  import ModalInsurance from "@/components/view/kiosk/add-guest-layanan/modal-insurance";
+  import KioskScreeningCard from "@/components/features/screeningCardKiosk/ScreeningCard";
+  import PatientInfoCard from "@/components/features/screeningCardKiosk/InformationScreening";
+  import { fetchPoliKlinik } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-poliklinik-slice/PoliKlinikSlice";
+  import useRegistration from "@/lib/hooks/kiosk/useRegistration";
+  import { useRouter } from "next/navigation";
 
-// Mock doctor API fetching function (replace with your actual API call)
-const fetchDoctors = async () => {
-  // This would be replaced with your actual API call
-  console.log("Fetching doctors data from API...");
-  
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // Return the mock data in the format your API would return
-  return {
-    success: true,
-    data: [
-      { 
-        doctorId: 'dr-budi', 
-        doctorName: 'dr. Budi Santoso', 
-        poliId: 'umum', 
-        schedule: 'Senin-Jumat, 08.00-14.00', 
-        acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz'] 
-      },
-      { 
-        doctorId: 'dr-ani', 
-        doctorName: 'dr. Ani Wijaya', 
-        poliId: 'umum', 
-        schedule: 'Senin-Sabtu, 14.00-20.00', 
-        acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] 
-      },
-      { 
-        doctorId: 'drg-maya', 
-        doctorName: 'drg. Maya Putri', 
-        poliId: 'gigi', 
-        schedule: 'Senin, Rabu, Jumat, 09.00-15.00', 
-        acceptedInsurances: ['Prudential', 'Allianz', 'AXA Mandiri'] 
-      },
-      { 
-        doctorId: 'drg-rudi', 
-        doctorName: 'drg. Rudi Hermawan', 
-        poliId: 'gigi', 
-        schedule: 'Selasa, Kamis, Sabtu, 10.00-16.00', 
-        acceptedInsurances: ['BPJS Kesehatan'] 
-      },
-      { 
-        doctorId: 'dr-dina', 
-        doctorName: 'dr. Dina Setiawan, Sp.M', 
-        poliId: 'mata', 
-        schedule: 'Senin, Kamis, 08.00-12.00', 
-        acceptedInsurances: ['BPJS Kesehatan', 'Prudential'] 
-      },
-      { 
-        doctorId: 'dr-hadi', 
-        doctorName: 'dr. Hadi Pratama, Sp.M', 
-        poliId: 'mata', 
-        schedule: 'Selasa, Jumat, 13.00-17.00', 
-        acceptedInsurances: ['Allianz', 'AXA Mandiri'] 
-      },
-      { 
-        doctorId: 'dr-ratna', 
-        doctorName: 'dr. Ratna Dewi, Sp.OG', 
-        poliId: 'kandungan', 
-        schedule: 'Senin, Rabu, Jumat, 09.00-15.00', 
-        acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'AXA Mandiri'] 
-      },
-      { 
-        doctorId: 'dr-sinta', 
-        doctorName: 'dr. Sinta Permata, Sp.OG', 
-        poliId: 'kandungan', 
-        schedule: 'Selasa, Kamis, Sabtu, 10.00-16.00', 
-        acceptedInsurances: ['Allianz'] 
-      },
-      { 
-        doctorId: 'dr-ahmad', 
-        doctorName: 'dr. Ahmad Ridwan, Sp.A', 
-        poliId: 'anak', 
-        schedule: 'Senin-Rabu, 08.00-14.00', 
-        acceptedInsurances: ['BPJS Kesehatan', 'Prudential', 'Allianz', 'AXA Mandiri'] 
-      },
-      { 
-        doctorId: 'dr-lisa', 
-        doctorName: 'dr. Lisa Kusuma, Sp.A', 
-        poliId: 'anak', 
-        schedule: 'Kamis-Sabtu, 09.00-15.00', 
-        acceptedInsurances: ['BPJS Kesehatan'] 
-      },
-      { 
-        doctorId: 'dr-hartono', 
-        doctorName: 'dr. Hartono, Sp.JP', 
-        poliId: 'jantung', 
-        schedule: 'Senin, Rabu, Jumat, 08.00-12.00', 
-        acceptedInsurances: ['Prudential', 'Allianz'] 
-      },
-      { 
-        doctorId: 'dr-mira', 
-        doctorName: 'dr. Mira Susanti, Sp.JP', 
-        poliId: 'jantung', 
-        schedule: 'Selasa, Kamis, 13.00-17.00', 
-        acceptedInsurances: ['BPJS Kesehatan', 'AXA Mandiri'] 
+  const PatientRegistrationPage = () => {
+    const dispatch = useDispatch();
+    const poliNameMap = {
+      'umum': 'Poli Umum', 
+      'gigi': 'Poli Gigi', 
+      'mata': 'Poli Mata',
+      'kandungan': 'Poli Kandungan',
+      'anak': 'Poli Anak',
+      'jantung': 'Poli Jantung',
+      'saraf': 'Poli Saraf',
+      'kulit': 'Poli Kulit'
+    };
+    const [currentView, setCurrentView] = useState('screening'); // 'screening', 'info', 'registration'
+    const [screeningError, setScreeningError] = useState(null);
+    const [patientData, setPatientData] = useState(null);
+    const [registrationCompleted, setRegistrationCompleted] = useState(false);
+
+    const { data: lisPoli, page, totalPages, loading: poliLoading } = useSelector((state) => state.PoliKlinik);
+
+    const fetchDoctors = async (poliId) => {
+      console.log("Fetching doctors for poli:", poliId);
+      // Simulasi delay API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      // Return mock data
+      return {
+        data: [
+          { id: "doc1", nama: "dr. Ahmad Suherman, Sp.A", poli: poliId, jadwal: "Senin-Jumat, 08:00-14:00" },
+          { id: "doc2", nama: "dr. Budi Santoso, Sp.A", poli: poliId, jadwal: "Senin-Rabu, 14:00-20:00" },
+          { id: "doc3", nama: "dr. Citra Dewi, Sp.A", poli: poliId, jadwal: "Kamis-Sabtu, 08:00-14:00" }
+        ]
+      };
+    };
+
+    const registration = useRegistration({
+      fetchMasterDataAction: () => fetchPoliKlinik({page, totalPages}),
+      fetchDoctorsAction: fetchDoctors,
+      initialDoctorsData: {}
+    });
+
+    useEffect(() => {
+      dispatch(fetchPoliKlinik({page: 1, perPage: 100}));
+    }, [dispatch]);
+
+    const handlePatientFound = (data) => {
+      console.log("Patient data found:", data);
+      setPatientData(data);
+      setCurrentView('info');
+      setScreeningError(null);
+    };
+
+    // Handle screening error
+    const handleScreeningError = (error) => {
+      console.error("Screening error:", error);
+      setScreeningError(error.message || "Pasien tidak ditemukan. Silakan periksa data yang dimasukkan atau daftar sebagai pasien baru.");
+    };
+
+    // Kembali ke screening
+    const handleBackToScreening = () => {
+      setCurrentView('screening');
+      setPatientData(null);
+      setScreeningError(null);
+    };
+    const handleContinueToRegistration = () => {
+      setCurrentView('registration');
+      
+      // Isi form dengan data pasien yang sudah ada
+      if (registration.formMethodsRef && registration.formMethodsRef.current) {
+        const form = registration.formMethodsRef.current;
+        
+        // Log untuk debugging
+        console.log("Setting form values with patient data:", patientData);
+        
+        // Mapping field dari data pasien ke form fields
+        form.setValue("namaLengkap", patientData.namaLengkap || "");
+        form.setValue("noIdentitas", patientData.noIdentitas || "");
+        form.setValue("tanggalLahir", patientData.tanggalLahir ? new Date(patientData.tanggalLahir).toISOString().split('T')[0] : "");
+        form.setValue("jenisKelamin", patientData.jenisKelamin ? patientData.jenisKelamin.toLowerCase() : "");
+        form.setValue("noTelepon1", patientData.noTelepon1 || "");
+        form.setValue("email", patientData.email || "");
+        form.setValue("alamatIndetitas", patientData.alamatIdentitas || "");
+        
+        // Trigger validasi
+        form.trigger(["namaLengkap", "noIdentitas", "tanggalLahir", "jenisKelamin", "noTelepon1", "email", "alamatIndetitas"]);
+      } else {
+        console.warn("Form methods ref is not available yet");
       }
-    ]
+    };
+
+    const router = useRouter();
+    // Handle daftar sebagai pasien baru
+    const handleRegisterAsNewPatient = () => {
+      router.push("/kiosk/kiosk-pendaftaran-pasien")
+      setPatientData(null);
+    };
+
+    // Handle form submission
+    const onSubmitSuccess = (data) => {
+      console.log("Form Submitted Successfully:", data);
+      setRegistrationCompleted(true);
+      // You could add an API call here to register the appointment
+      
+      // Show success message to user
+      alert("Pendaftaran berhasil! Silakan cek email Anda untuk konfirmasi.");
+      
+      // Option to reset the flow after a short delay
+      setTimeout(() => {
+        setCurrentView('screening');
+        setPatientData(null);
+        setRegistrationCompleted(false);
+      }, 5000);
+    };
+    
+    // Wrap handleSubmit untuk tambahkan data pasien dan callback sukses
+    const handleSubmit = (data) => {
+      // Add patient ID if patient data exists
+      const submissionData = { ...data };
+      if (patientData && patientData.pasienId) {
+        submissionData.pasienId = patientData.pasienId;
+        submissionData.isExistingPatient = true;
+      } else {
+        submissionData.isExistingPatient = false;
+      }
+      
+      console.log("Submitting registration with data:", submissionData);
+      registration.handleSubmit(submissionData, onSubmitSuccess);
+    };
+
+    const formConfig = [
+      {
+        section: "Data Diri",
+        icon: "👤",
+        description: patientData ? "Data diri Anda telah terisi otomatis" : "Isi informasi pribadi Anda",
+        fields: [
+          {
+            name: "namaLengkap",
+            label: "Nama Lengkap",
+            type: "text",
+            value: patientData ? patientData.namaLengkap : "",
+            placeholder: "Masukkan nama lengkap sesuai KTP",
+            colSize: 6,
+            
+            readOnly: !!patientData // Set readonly jika ada data pasien
+          },
+          {
+            name: "noIdentitas",
+            label: "NIK",
+            type: "text",
+            value: patientData ? patientData.noIdentitas : "",
+            placeholder: "Masukkan 16 digit NIK",
+            colSize: 6,
+            
+            readOnly: !!patientData
+          },
+          {
+            name: "tanggalLahir",
+            label: "Tanggal Lahir",
+            value: patientData ? patientData.tanggalLahir : "",
+            type: "date",
+            colSize: 6,
+            
+            readOnly: !!patientData
+          },
+          {
+            name: "jenisKelamin",
+            label: "Jenis Kelamin",
+            type: "select",
+            value: patientData ? patientData.jenisKelamin : "",
+            colSize: 6,
+            options: [
+              { value: "laki-laki", label: "Laki-laki" },
+              { value: "perempuan", label: "Perempuan" }
+            ],
+            
+            readOnly: !!patientData
+          },
+          {
+            name: "noTelepon1",
+            label: "No. Telepon",
+            type: "text",
+            value: patientData ? patientData.noTelepon1 : "",
+            placeholder: "Contoh: 08123456789",
+            colSize: 6,
+            
+            readOnly: !!patientData
+          },
+          {
+            name: "email",
+            label: "Email",
+            type: "email",
+            value: patientData ? patientData.email : "",
+            placeholder: "Contoh: email@domain.com",
+            colSize: 6,
+            
+            readOnly: !!patientData
+          },
+          {
+            name: "alamatIndetitas",
+            label: "Alamat",
+            type: "textarea",
+            placeholder: "Masukkan alamat lengkap",
+            value: patientData ? patientData.alamatIdentitas : "",
+            colSize: 12,
+            
+            readOnly: !!patientData
+          }
+        ]
+      },
+      // Section 2: Asuransi dan Metode Pembayaran
+      {
+        section: "Asuransi",
+        icon: "📋",
+        description: "Pilih metode pembayaran Anda",
+        cards: registration.getPaymentMethodCards(),
+        fields: registration.getInsuranceFields()
+      },
+      // Section 3: Pilih Poli
+      {
+        section: "Pilih Poli",
+        icon: "🏥",
+        description: "Pilih layanan kesehatan yang Anda butuhkan",
+        cards: [
+          {
+            name: "selectedPoli",
+            title: "Pilih Layanan Poli",
+            description: "Silakan pilih poli yang sesuai dengan kebutuhan Anda:",
+            colSize: 3,
+            required: true,
+            rules: { required: "Silakan pilih poli" },
+            options: lisPoli.map((item) => ({ 
+              label: item.namaPoliklinik, 
+              value: item.poliklinikId,
+              description: item.deskripsi
+            })),
+          }
+        ]
+      },
+      // Section 4: Pilih Dokter
+      {
+        section: "Pilih Dokter",
+        icon: "👨‍⚕️",
+        description: "Pilih dokter yang tersedia pada poliklinik",
+        fields: [],
+        cards: [
+          registration.getDoctorSelectionCard()
+        ]
+      },
+      // Section 5: Konfirmasi
+      {
+        section: "Konfirmasi",
+        icon: "✅",
+        description: "Periksa dan konfirmasi data pendaftaran Anda",
+        fields: [],
+        customRender: ({ methods }) => registration.renderConfirmationSection(
+          methods, 
+          registration.filteredDoctorsByInsurance, 
+          poliNameMap,
+          patientData // Pass patientData to highlight that this is an existing patient
+        )
+      }
+    ];
+
+    // Render tampilan berdasarkan current view
+    const renderCurrentView = () => {
+      switch (currentView) {
+        case 'screening':
+          return (
+            <div className="row justify-content-center " style={{marginTop: '100px'}}>
+              <div className="col-md-8">
+                <KioskScreeningCard 
+                  onPatientFound={handlePatientFound}
+                  onError={handleScreeningError}  
+                />
+                
+                {screeningError && (
+                  <Alert variant="info" className="mb-4">
+                    {/* <Alert.Heading>Pasien tidak ditemukan</Alert.Heading> */}
+                    {/* <p>{screeningError}</p> */}
+                    <hr />
+                    <p className="mb-0 text-center">
+                      <Button 
+                        variant="primary"
+                        onClick={handleRegisterAsNewPatient}
+                      >
+                        Daftar sebagai pasien baru
+                      </Button>
+                    </p>
+                  </Alert>
+                )}
+              </div>
+            </div>
+          );
+          
+        case 'info':
+          return (
+            <div className="row justify-content-center" style={{marginTop: '100px'}}>
+              <div className="col-md-10">
+                <PatientInfoCard 
+                  patientData={patientData}
+                  onContinue={handleContinueToRegistration}
+                  onBack={handleBackToScreening}
+                />
+              </div>
+            </div>
+          );
+          
+        case 'registration':
+          return (
+            <div className="patient-registration-page">
+              {patientData && (
+                <Card className="mb-4 bg-light">
+                  <Card.Body>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        <h5 className="mb-0">Data pasien ditemukan</h5>
+                        <p className="text-muted mb-0">
+                          Melanjutkan pendaftaran untuk: <strong>{patientData.namaLengkap}</strong> 
+                          (No. RM: {patientData.noRekamMedis || 'N/A'})
+                        </p>
+                      </div>
+                      <Button 
+                        variant="outline-secondary" 
+                        size="sm"
+                        onClick={handleBackToScreening}
+                      >
+                        Kembali ke Screening
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              )}
+              
+              {registrationCompleted ? (
+                <Card className="shadow border-0 mb-4">
+                  <Card.Body className="text-center p-5">
+                    <div className="mb-4">
+                      <i className="bi bi-check-circle-fill text-success" style={{ fontSize: '4rem' }}></i>
+                    </div>
+                    <h3>Pendaftaran Berhasil!</h3>
+                    <p className="lead">Terima kasih telah mendaftar di layanan poliklinik kami.</p>
+                    <p>Detail konfirmasi telah dikirim ke email Anda.</p>
+                    <Button 
+                      variant="primary" 
+                      className="mt-3"
+                      onClick={handleBackToScreening}
+                    >
+                      Kembali ke Screening
+                    </Button>
+                  </Card.Body>
+                </Card>
+              ) : (
+                <DynamicStepCardForm
+                  key={`${registration.currentStep}-${patientData ? 'existing' : 'new'}`}
+                  title={patientData ? "Lanjutkan Pendaftaran Pasien" : ""}
+                  formConfig={formConfig}
+                  onSubmit={handleSubmit}
+                  isAddMode={true}
+                  backPath="/kiosk"
+                  onFormMethodsReady={registration.handleFormMethodReady}
+                />
+              )}
+
+              <ModalInsurance
+                onOpen={registration.showInsuranceModal}
+                onClose={registration.handleCloseModal}
+                onSubmit={registration.handleInsuranceSubmit}
+                pasienId={patientData?.pendaftaranPasienBaruId}
+              />
+            </div>
+          );
+          
+        default:
+          return null;
+      }   
+    };
+
+    return (
+      <div className="container py-4 ">
+        {renderCurrentView()}
+      </div>
+    );
   };
-};
 
-const PatientRegistrationPage = () => {
-  // Mapping for more readable poli names
-  const poliNameMap = {
-    'umum': 'Poli Umum', 
-    'gigi': 'Poli Gigi', 
-    'mata': 'Poli Mata',
-    'kandungan': 'Poli Kandungan',
-    'anak': 'Poli Anak',
-    'jantung': 'Poli Jantung',
-    'saraf': 'Poli Saraf',
-    'kulit': 'Poli Kulit'
-  };
-
-  // Fetch poli data from Redux store
-  const {data: lisPoli, page, totalPages } = useSelector((state) => state.PoliKlinik);
-  
-  // Use the registration hook with doctor API fetching
-  const registration = useRegistration({
-    fetchMasterDataAction: () => fetchPoliKlinik({page, totalPages}),
-    fetchDoctorsAction: fetchDoctors, // Pass the doctor API fetching function
-    initialDoctorsData: {} // Start with empty data and let the API populate it
-  });
-  
-  // Handle form submission
-  const onSubmitSuccess = (data) => {
-    console.log("Form Submitted Successfully:", data);
-    alert("Pendaftaran berhasil! Silakan cek email Anda untuk konfirmasi.");
-    // Redirect to success page or dashboard
-    // window.location.href = "/registration-success";
-  };
-  
-  // Wrap the handleSubmit function to include success callback
-  const handleSubmit = (data) => {
-    registration.handleSubmit(data, onSubmitSuccess);
-  };
-
-  // Build form configuration with sections and fields
-  const formConfig = [
-    // Section 1: Personal Information
-    {
-      section: "Data Diri",
-      icon: "👤",
-      description: "Isi informasi pribadi Anda",
-      fields: [
-        {
-          name: "name",
-          label: "Nama Lengkap",
-          type: "text",
-          placeholder: "Masukkan nama lengkap sesuai KTP",
-          colSize: 6,
-        },
-        {
-          name: "nik",
-          label: "NIK",
-          type: "text",
-          placeholder: "Masukkan 16 digit NIK",
-          colSize: 6,
-        },
-        {
-          name: "dob",
-          label: "Tanggal Lahir",
-          type: "date",
-          colSize: 6,
-        },
-        {
-          name: "gender",
-          label: "Jenis Kelamin",
-          type: "select",
-          colSize: 6,
-          options: [
-            { value: "laki-laki", label: "Laki-laki" },
-            { value: "perempuan", label: "Perempuan" }
-          ],
-        },
-        {
-          name: "phone",
-          label: "No. Telepon",
-          type: "text",
-          placeholder: "Contoh: 08123456789",
-          colSize: 6,
-        },
-        {
-          name: "email",
-          label: "Email",
-          type: "email",
-          placeholder: "Contoh: email@domain.com",
-          colSize: 6,
-        },
-        {
-          name: "address",
-          label: "Alamat",
-          type: "textarea",
-          placeholder: "Masukkan alamat lengkap",
-          colSize: 12,
-        }
-      ]
-    },
-    // Section 2: Insurance and Payment Method
-    {
-      section: "Asuransi",
-      icon: "📋",
-      description: "Pilih metode pembayaran Anda",
-      cards: registration.getPaymentMethodCards(),
-      fields: registration.getInsuranceFields()
-    },
-    // Section 3: Select Clinic
-    {
-      section: "Pilih Poli",
-      icon: "🏥",
-      description: "Pilih layanan kesehatan yang Anda butuhkan",
-      cards: [
-        {
-          name: "selectedPoli",
-          title: "Pilih Layanan Poli",
-          description: "Silakan pilih poli yang sesuai dengan kebutuhan Anda:",
-          colSize: 3,
-          required: true,
-          rules: { required: "Silakan pilih poli" },
-          options: lisPoli.map((item) => ({ 
-            label: item.namaPoliklinik, 
-            value: item.poliklinikId,
-            description: item.deskripsi
-          })),
-        }
-      ]
-    },
-    // Section 4: Select Doctor
-    {
-      section: "Pilih Dokter",
-      icon: "👨‍⚕️",
-      description: "Pilih dokter yang tersedia pada poliklinik ",
-      fields: [],
-      cards: [
-        registration.getDoctorSelectionCard()
-      ]
-    },
-    // Section 5: Confirmation
-    {
-      section: "Konfirmasi",
-      icon: "✅",
-      description: "Periksa dan konfirmasi data pendaftaran Anda",
-      fields: [],
-      customRender: ({ methods }) => registration.renderConfirmationSection(
-        methods, 
-        registration.filteredDoctorsByInsurance, 
-        poliNameMap
-      )
-    }
-  ];
-
-  return (
-    <div className="patient-registration-page">
-      <DynamicStepCardForm
-        key={registration.currentStep}
-        title="Pendaftaran Pasien"
-        formConfig={formConfig}
-        onSubmit={handleSubmit}
-        isAddMode={true}
-        backPath="/kiosk"
-        onFormMethodsReady={registration.handleFormMethodReady} 
-      />
-
-      <ModalInsurance
-        onOpen={registration.showInsuranceModal}
-        onClose={registration.handleCloseModal}
-        onSubmit={registration.handleInsuranceSubmit}
-        formConfig={formConfig}
-      />
-    </div>
-  );
-};
-
-export default PatientRegistrationPage;
+  export default PatientRegistrationPage;

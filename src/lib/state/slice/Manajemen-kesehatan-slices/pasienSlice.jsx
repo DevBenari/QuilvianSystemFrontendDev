@@ -67,15 +67,13 @@ export const AddPasienSlice = createAsyncThunk(
     try {
       // Check if formData is an actual FormData object or a plain JS object
       let dataToSend;
-      let headers = getHeaders();
+      let headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": `Bearer ${Cookies.get("token")}`,
+      };
 
       if (formData instanceof FormData) {
-        // If it's already FormData, use it directly
-        // Remove Content-Type header so browser can set the boundary
-        headers = {
-          ...headers,
-          "Content-Type": undefined,
-        };
+        
         dataToSend = formData;
       } else {
         // If it's a regular object with a foto property that's a File

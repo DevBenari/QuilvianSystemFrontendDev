@@ -18,7 +18,7 @@ export default function AuthWrapper({ children }) {
     // Cek token
     const token = Cookies.get('token');
 
-    if (!token && !isPublicPage && !isKioskPage) {
+    if (!token && !isPublicPage) {
       router.replace('/Login');
     } else if (token && isPublicPage) {
       router.replace('/');
@@ -29,7 +29,7 @@ export default function AuthWrapper({ children }) {
   }, [pathname, router, isPublicPage, isKioskPage]);
 
   // Tahan render sampai pengecekan auth selesai
-  if (loading && !isPublicPage && !isKioskPage) {
+  if (loading && !isPublicPage) {
     return null; // Tidak menampilkan apa-apa saat proses pengecekan
   }
 

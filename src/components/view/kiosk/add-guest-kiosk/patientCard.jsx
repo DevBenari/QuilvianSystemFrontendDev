@@ -4,9 +4,9 @@ import { Card, Image } from 'react-bootstrap';
 const PrintPatientCard = ({ patientData }) => {
   // Destructure data yang diperlukan dari patientData
   const { 
-    noRekamMedis, 
-    noIdentitas,  // NIK dari form
-    namaLengkap   // Nama dari form
+    NoRekamMedis, 
+    NoIdentitas,  // NIK dari form
+    NamaLengkap   // Nama dari form
   } = patientData || {};
 
   return (
@@ -68,7 +68,7 @@ const PrintPatientCard = ({ patientData }) => {
             letterSpacing: '0.05em',
             color: 'rgba(255,255,255,0.7)'
           }}>
-            {noRekamMedis || 'RM-XXXXXXXX'}
+            {NoRekamMedis || 'RM-XXXXXXXX'}
           </h5>
         </div>
         <div className='mb-1'>
@@ -81,7 +81,7 @@ const PrintPatientCard = ({ patientData }) => {
             letterSpacing: '0.05em',
             color: 'rgba(255,255,255,0.7)'
           }}>
-            {noIdentitas || '00000000'}
+            {NoIdentitas || '00000000'}
           </h5>
         </div>
         
@@ -94,7 +94,7 @@ const PrintPatientCard = ({ patientData }) => {
             fontWeight: 'bold',
             color: 'rgba(255,255,255,0.7)'
           }}>
-            {namaLengkap || 'NAMA PASIEN'}
+            {NamaLengkap || 'NAMA PASIEN'}
           </h5>
         </div>
       </div>
