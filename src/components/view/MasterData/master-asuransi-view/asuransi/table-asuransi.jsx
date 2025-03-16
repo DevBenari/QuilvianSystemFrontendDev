@@ -10,7 +10,7 @@ import { FaShieldHeart } from "react-icons/fa6";
 import {
   fetchAsuransi,
   fetchAsuransiWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
 const TableDataAsuransi = () => {
   const methods = useForm();

@@ -60,34 +60,15 @@ const DynamicStepForm = ({
     searchSelect: SearchableSelectField,
   };
 
-  // Initialize form with userData or default values
   const methods = useForm({
-    defaultValues: formConfig.reduce((defaults, section) => {
-      section.fields.forEach((field) => {
-        // Try direct property access first
-        if (userData && userData[field.name] !== undefined) {
-          defaults[field.name] = userData[field.name];
-        }
-        // If not found directly, try case-insensitive matching
-        else if (userData) {
-          const userDataKeys = Object.keys(userData);
-          const matchingKey = userDataKeys.find(
-            (key) => key.toLowerCase() === field.name.toLowerCase()
-          );
-
-          if (matchingKey) {
-            defaults[field.name] = userData[matchingKey];
-          } else {
-            // Ensure the value is never undefined
-            defaults[field.name] = field.value !== undefined ? field.value : "";
-          }
-        } else {
-          // Ensure the value is never undefined
-          defaults[field.name] = field.value !== undefined ? field.value : "";
-        }
-      });
-      return defaults;
-    }, {}),
+    defaultValues: {
+      ...formConfig.reduce((defaults, section) => {
+        section.fields.forEach((field) => {
+          defaults[field.name] = field.value || "";
+        });
+        return defaults;
+      }, {}),
+    },
     mode: "onChange",
   });
 
@@ -251,28 +232,12 @@ const DynamicStepForm = ({
       ...(onClick ? { onClick } : {}),
     };
 
-    if (type === "email") {
-      return <TextField key={id} {...commonProps} type="email" />;
-    }
-
-    // For custom fields, ensure we have a non-undefined value
     if (type === "custom" && typeof customRender === "function") {
-      // Special handling for custom components
-      const fieldValue = watch(name);
-      console.log(`Custom field ${name} current value:`, fieldValue);
-
-      return customRender({
-        key: id,
-        field: {
-          ...field,
-          value: fieldValue !== undefined ? fieldValue : "",
-        },
-        commonProps: {
-          ...commonProps,
-          value: fieldValue !== undefined ? fieldValue : "",
-        },
-        methods,
-      });
+      return (
+        <Col md={colSize || 12} key={id || name} className={className}>
+          {customRender({ field, commonProps, methods })}
+        </Col>
+      );
     }
 
     const Component = fieldComponents[field.type];
@@ -285,11 +250,12 @@ const DynamicStepForm = ({
       <Component
         key={id}
         {...commonProps}
-        {...restProps}
         options={options}
         rows={rows}
-        // Ensure we never pass undefined as value
-        value={watch(name) !== undefined ? watch(name) : ""}
+        control={methods.control}
+        value={value}
+        disabled={!isEditing || disabled}
+        {...otherProps}
       />
     );
   };
