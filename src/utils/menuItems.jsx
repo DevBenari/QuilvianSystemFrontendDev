@@ -38,7 +38,7 @@ export const menuItems = [
             icon: <RiFolderLine className="fs-4" />,
             subItems: [
               {
-                title: "Dahboard IGD",
+                title: "Dashboard Master Data",
                 href: "/MasterData",
               },
             ],

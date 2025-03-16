@@ -2,13 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-// 🔹 Fetch Asuransi dengan pagination untuk CustomTableComponent
-// ✅ Fetch semua data Asuransi dengan pagination
 export const fetchAsuransi = createAsyncThunk(
   "Asuransi/fetchData",
   async ({ rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Asuransi`, {
       const response = await InstanceAxios.get(`/Asuransi`, {
         headers: getHeaders(),
       });
@@ -26,12 +23,8 @@ export const fetchAsuransi = createAsyncThunk(
 // 🔹 Fetch Asuransi dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
 export const fetchAsuransiWithFilters = createAsyncThunk(
   "Asuransi/fetchWithFilters",
-// 🔹 Fetch Asuransi dengan filter untuk CustomSearchFilter (BISA DIGUNAKAN SECARA DINAMIS)
-export const fetchAsuransiWithFilters = createAsyncThunk(
-  "Asuransi/fetchWithFilters",
   async (filters, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Asuransi/paged`, {
       const response = await InstanceAxios.get(`/Asuransi/paged`, {
         params: filters,
         headers: getHeaders(),
@@ -54,14 +47,12 @@ export const fetchAsuransiWithFilters = createAsyncThunk(
 );
 
 // 🔹 Fetch data Asuransi berdasarkan ID
-export const fetchAsuransiById = createAsyncThunk(
-  "Asuransi/fetchById",
+
 // 🔹 Fetch data Asuransi berdasarkan ID
 export const fetchAsuransiById = createAsyncThunk(
   "Asuransi/fetchById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.get(`/Asuransi/${id}`, {
       const response = await InstanceAxios.get(`/Asuransi/${id}`, {
         headers: getHeaders(),
       });
@@ -79,12 +70,8 @@ export const fetchAsuransiById = createAsyncThunk(
 // 🔹 Tambah Asuransi Darah
 export const createAsuransi = createAsyncThunk(
   "Asuransi/create",
-// 🔹 Tambah Asuransi Darah
-export const createAsuransi = createAsyncThunk(
-  "Asuransi/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Asuransi`, data, {
       const response = await InstanceAxios.post(`/Asuransi`, data, {
         headers: getHeaders(),
       });
@@ -94,7 +81,6 @@ export const createAsuransi = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Gagal menambahkan Asuransi darah"
-        error.response?.data || "Gagal menambahkan Asuransi darah"
       );
     }
   }
@@ -103,12 +89,8 @@ export const createAsuransi = createAsyncThunk(
 // 🔹 Update Asuransi Darah berdasarkan ID
 export const updateAsuransi = createAsyncThunk(
   "Asuransi/update",
-// 🔹 Update Asuransi Darah berdasarkan ID
-export const updateAsuransi = createAsyncThunk(
-  "Asuransi/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Asuransi`, data, {
       const response = await InstanceAxios.post(`/Asuransi`, data, {
         headers: getHeaders(),
       });
@@ -118,7 +100,6 @@ export const updateAsuransi = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Gagal memperbarui Asuransi "
-        error.response?.data || "Gagal memperbarui Asuransi "
       );
     }
   }
@@ -126,11 +107,8 @@ export const updateAsuransi = createAsyncThunk(
 
 export const deleteAsuransi = createAsyncThunk(
   "Asuransi/delete",
-export const deleteAsuransi = createAsyncThunk(
-  "Asuransi/delete",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.delete(`/Asuransi/${id}`, {
       const response = await InstanceAxios.delete(`/Asuransi/${id}`, {
         headers: getHeaders(),
       });
@@ -138,15 +116,13 @@ export const deleteAsuransi = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Gagal menghapus Asuransi"
-        error.response?.data || "Gagal menghapus Asuransi"
       );
     }
   }
 );
 
 // 🔹 Redux Slice
-const AsuransiSlice = createSlice({
-  name: "Asuransi",
+
 const AsuransiSlice = createSlice({
   name: "Asuransi",
   initialState: {
@@ -163,14 +139,13 @@ const AsuransiSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch Asuransi hanya dengan pagination (CustomTableComponent)
-      .addCase(fetchAsuransi.pending, (state) => {
+
       // ✅ Fetch Asuransi hanya dengan pagination (CustomTableComponent)
       .addCase(fetchAsuransi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAsuransi.fulfilled, (state, action) => {
+
       .addCase(fetchAsuransi.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
 
@@ -197,7 +172,7 @@ const AsuransiSlice = createSlice({
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
       })
-      .addCase(fetchAsuransi.rejected, (state, action) => {
+
       .addCase(fetchAsuransi.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
@@ -209,7 +184,7 @@ const AsuransiSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAsuransiWithFilters.fulfilled, (state, action) => {
+
       .addCase(fetchAsuransiWithFilters.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data?.rows || [];
@@ -217,7 +192,7 @@ const AsuransiSlice = createSlice({
         state.totalPages = action.payload.data?.totalPages || 1;
         state.currentPage = action.payload.data?.currentPage || 1;
       })
-      .addCase(fetchAsuransiWithFilters.rejected, (state, action) => {
+
       .addCase(fetchAsuransiWithFilters.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404
@@ -225,19 +200,19 @@ const AsuransiSlice = createSlice({
       })
 
       // Fetch By ID
-      .addCase(fetchAsuransiById.pending, (state) => {
+
       .addCase(fetchAsuransiById.pending, (state) => {
         state.loading = true;
         state.selectedAsuransi = null;
         state.selectedAsuransi = null;
       })
-      .addCase(fetchAsuransiById.fulfilled, (state, action) => {
+
       .addCase(fetchAsuransiById.fulfilled, (state, action) => {
         state.loading = false;
         state.selectedAsuransi = action.payload;
         state.selectedAsuransi = action.payload;
       })
-      .addCase(fetchAsuransiById.rejected, (state, action) => {
+
       .addCase(fetchAsuransiById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -262,11 +237,9 @@ const AsuransiSlice = createSlice({
       .addCase(deleteAsuransi.fulfilled, (state, action) => {
         state.data = state.data.filter(
           (Asuransi) => Asuransi.asuransiId !== action.payload
-          (Asuransi) => Asuransi.asuransiId !== action.payload
         );
       });
   },
 });
 
-export default AsuransiSlice.reducer;
 export default AsuransiSlice.reducer;
