@@ -2,13 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
 
-<<<<<<< HEAD
-// 🔹 Fetch AsuransiPasien dengan pagination untuk CustomTableComponent
-// ✅ Fetch semua data AsuransiPasien dengan pagination
-=======
 // 🔹 Fetch Asuransi dengan pagination untuk CustomTableComponent
 // ✅ Fetch semua data Asuransi dengan pagination
->>>>>>> origin/MHamzah
 export const fetchAsuransi = createAsyncThunk(
   "Asuransi/fetchData",
   async ({ rejectWithValue }) => {
@@ -179,11 +174,7 @@ const AsuransiSlice = createSlice({
         state.error = action.payload?.message || "Gagal mengambil data";
       })
 
-<<<<<<< HEAD
       // ✅ Fetch AsuransiPasien dengan search & filter (CustomSearchFilter)
-=======
-      // ✅ Fetch Asuransi dengan search & filter (CustomSearchFilter)
->>>>>>> origin/MHamzah
       .addCase(fetchAsuransiWithFilters.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -215,38 +206,22 @@ const AsuransiSlice = createSlice({
         state.error = action.payload;
       })
 
-<<<<<<< HEAD
-      // Tambah AsuransiPasien Darah
-=======
       // Tambah Asuransi Darah
->>>>>>> origin/MHamzah
       .addCase(createAsuransi.fulfilled, (state, action) => {
         state.data.push(action.payload);
       })
 
-<<<<<<< HEAD
-      // Update AsuransiPasien Darah
-      .addCase(updateAsuransi.fulfilled, (state, action) => {
-        const index = state.data.findIndex(
-          (Asuransi) =>
-            Asuransi.asuransiId === action.payload.asuransiId
-=======
       // Update Asuransi Darah
       .addCase(updateAsuransi.fulfilled, (state, action) => {
         const index = state.data.findIndex(
           (Asuransi) => Asuransi.asuransiId === action.payload.asuransiId
->>>>>>> origin/MHamzah
         );
         if (index !== -1) {
           state.data[index] = action.payload;
         }
       })
 
-<<<<<<< HEAD
-      // Hapus AsuransiPasien Darah
-=======
       // Hapus Asuransi Darah
->>>>>>> origin/MHamzah
       .addCase(deleteAsuransi.fulfilled, (state, action) => {
         state.data = state.data.filter(
           (Asuransi) => Asuransi.asuransiId !== action.payload

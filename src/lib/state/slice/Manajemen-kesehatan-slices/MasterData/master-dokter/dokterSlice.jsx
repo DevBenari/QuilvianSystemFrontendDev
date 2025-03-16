@@ -90,14 +90,7 @@ export const createDokter = createAsyncThunk(
     const token = Cookies.get("token");
     try {
       const response = await InstanceAxios.post(`/Dokter`, data, {
-<<<<<<< HEAD
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        }
-=======
         headers: getHeadersFormData(),
->>>>>>> origin/MHamzah
       });
 
       console.log("Response API (Fetch By ID):", response.data);

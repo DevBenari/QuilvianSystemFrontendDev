@@ -37,6 +37,7 @@ const PendaftaranPasienRadiologi = memo(() => {
   const [showScannerModal, setShowScannerModal] = useState(false);
   const [scanSuccess, setScanSuccess] = useState(false);
   const [scanMessage, setScanMessage] = useState("");
+  const [PatientData, setPatientData] = useState(null);
 
   // Function to handle opening the scanner modal
   const handleOpenScanner = () => {
@@ -128,6 +129,8 @@ const PendaftaranPasienRadiologi = memo(() => {
     }
   }, [selectedNegara, setValue, negaraOptions]);
 
+
+
   const {
     agamaOptions,
     loading: agamaLoading,
@@ -205,6 +208,7 @@ const PendaftaranPasienRadiologi = memo(() => {
           id: "noRekamMedis",
           label: "No Rekam Medis",
           name: "noRekamMedis",
+          value: PatientData ? PatientData.noRekamMedis : "",
           placeholder: "No Rekam Medis",
           colSize: 6,
         },
