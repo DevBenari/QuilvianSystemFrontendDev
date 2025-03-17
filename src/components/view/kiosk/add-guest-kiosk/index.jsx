@@ -15,7 +15,7 @@
     import UploadPhotoField from '@/components/ui/uploadPhoto-field';
     import { showAlert } from '@/components/features/alert/custom-alert';
     // Import komponen pendaftaran layanan
-    import ServiceRegistration from './ServiceRegistration';
+    import ServiceRegistration from '@/components/view/kiosk/add-guest-kiosk/serviceRegistration';
 
     const KioskPendaftaranPasien = memo(() => {
         const { setValue } = useForm();
