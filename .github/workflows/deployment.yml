@@ -25,43 +25,28 @@ jobs:
         ssh ${{ secrets.SSH_USER_FRONTEND }}@${{ secrets.SSH_IP_FRONTEND }} << 'EOF'
 
           echo "Navigating to project directory..."
-          cd ~/QuilvianSystemFrontendDevHamzah || exit 1
+          cd ~/QuilvianSystemFrontendDevHamzah
 
           echo "Resetting local changes..."
           sudo git reset --hard origin/MHamzah
           sudo git clean -fd
 
           echo "Pulling latest changes..."
-          sudo git pull origin MHamzah || exit 1
-
-          echo "🚀 Debugging: Cek Status Docker"
-          sudo systemctl status docker || true
-
-          echo "🚀 Debugging: Cek Container yang Berjalan"
-          sudo docker ps -a || true
-
-          echo "🚀 Debugging: Cek Image yang Ada"
-          sudo docker images || true
-
-          echo "🚀 Debugging: Cek Direktori Proyek"
-          ls -la ~/QuilvianSystemFrontendDevHamzah || true
+          sudo git pull origin MHamzah
 
           IMAGE_NAME="quilvian-frontend-hamzah"
           CONTAINER_NAME="quilvian-frontend-container-hamzah"
 
           echo "Building new Docker image..."
-          sudo docker build --build-arg NEXT_PUBLIC_API_QUILVIAN=http://160.20.104.98/api -t $IMAGE_NAME . || exit 1
+          sudo docker build --build-arg NEXT_PUBLIC_API_QUILVIAN=http://160.20.104.98/api -t $IMAGE_NAME .
 
           echo "Stopping and removing old container..."
           sudo docker stop $CONTAINER_NAME || true
           sudo docker rm $CONTAINER_NAME || true
 
           echo "Running new container with correct port..."
-          sudo docker run -d --name $CONTAINER_NAME -p 3710:3710 --env-file .env $IMAGE_NAME || exit 1
+          sudo docker run -d --name $CONTAINER_NAME -p 8080:3710 --env-file .env $IMAGE_NAME
           
-          echo "🚀 Debugging: Cek Log Container"
-          sudo docker logs $CONTAINER_NAME || true
-
           echo "Cleaning up unused Docker images..."
           sudo docker system prune -af
 
