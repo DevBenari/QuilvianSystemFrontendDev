@@ -57,7 +57,7 @@ jobs:
             sudo docker rm $CONTAINER_NAME || true
 
             echo "Running new container with correct port..."
-            sudo docker run -d --name $CONTAINER_NAME -p 3710:3710 --env-file .env $IMAGE_NAME || exit 1
+            sudo docker run -d --name $CONTAINER_NAME -p 8084:3000 --env-file .env $IMAGE_NAME || exit 1
             
             echo "🚀 Debugging: Cek Log Container"
             sudo docker logs $CONTAINER_NAME || true
