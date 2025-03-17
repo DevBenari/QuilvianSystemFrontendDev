@@ -126,14 +126,14 @@ const DashboardPendaftaranAdmisi = () => {
 
   // Konfigurasi header dashboard
   const headerConfig = {
-    hospitalName: "RS MMC",
+    hospitalName: "RS METROPOLITAN MEDICAL CENTRE",
     badgeText: "ADMISI",
     divisionText: "Pendaftaran & Administrasi Pasien",
     icon: FaUserMd,
-    bgColor: "#6a1b9a",
-    bgGradient: "linear-gradient(135deg, #6a1b9a 0%, #9c27b0 100%)",
-    badgeColor: "#e1bee7",
-    badgeTextColor: "#4a148c",
+    bgColor: "#005A9C", // Biru tua elegan
+    bgGradient: "linear-gradient(135deg, #005A9C 0%, #0084C9 100%)", // Gradasi biru profesional
+    badgeColor: "#E3F2FD", // Biru pastel yang lembut
+    badgeTextColor: "#0D47A1", // Biru gelap untuk kontras yang baik
   };
 
   // Konfigurasi grafik batang

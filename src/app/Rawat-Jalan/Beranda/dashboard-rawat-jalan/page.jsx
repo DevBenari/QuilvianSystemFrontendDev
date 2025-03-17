@@ -12,8 +12,8 @@ import {
 } from "react-icons/fa";
 import { Badge, Row, Col, Card } from "react-bootstrap";
 import BaseDashboard from "@/components/features/baseDashboard/base-dashboard";
-import BaseStatusComponent from "@/components/features/baseDashboard/status-poli";
-import StatusPoliComponent from "@/components/features/baseDashboard/status-poli";
+import BaseStatusComponent from "@/components/features/status/status-poli";
+import StatusPoliComponent from "@/components/features/status/status-poli";
 
 // Data dummy untuk daftar pasien rawat jalan
 const pasienRawatJalanData = [

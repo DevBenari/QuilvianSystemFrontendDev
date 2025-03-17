@@ -39,7 +39,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Master Data",
-                href: "/MasterData",
+                href: "/MasterData/dashboard-masterData",
               },
             ],
           },
@@ -269,7 +269,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Admisi",
-                href: "/pendaftaran",
+                href: "/pendaftaran/dashboard-admisi",
               },
             ],
           },
@@ -655,11 +655,10 @@ export const menuItems = [
             key: "dashboardRadiologi",
             icon: <RiFolderLine className="fs-4" />,
             subItems: [
-              // {
-              //   title: "Dashboard Radiologi",
-              //   href: "/radiologi/Beranda/dashboard-radiologi",
-              // },
-
+              {
+                title: "Dashboard Radiologi",
+                href: "/Radiologi/Beranda/dashboard-radiologi",
+              },
               {
                 title: "Table Perjanjian Radiologi",
                 href: "/Radiologi/Beranda/perjanjian-radiologi",
@@ -694,10 +693,10 @@ export const menuItems = [
             key: "dashboardLaboratorium",
             icon: <RiFolderLine className="fs-4" />,
             subItems: [
-              // {
-              //   title: "Dashboard Laboratorium",
-              //   href: "/Laboratorium/beranda/dashboard-Laboratorium",
-              // },
+              {
+                title: "Dashboard Laboratorium",
+                href: "/Laboratorium/Beranda/dashboard-laboratorium",
+              },
               {
                 title: "Table Pasien Laboratorium",
                 href: "/Laboratorium/Beranda/table-pasien-laboratorium",
@@ -732,10 +731,10 @@ export const menuItems = [
             key: "dashboardRehabilitasi",
             icon: <RiFolderLine className="fs-4" />,
             subItems: [
-              // {
-              //   title: "Dashboard Rehabilitasi",
-              //   href: "/Rehabilitasi/Beranda/dashboard-Rehabilitasi",
-              // },
+              {
+                title: "Dashboard Rehabilitasi",
+                href: "/Rehabilitasi/Beranda/dashboard-rehabilitasi",
+              },
               {
                 title: "Table Pasien Rehabilitasi",
                 href: "/Rehabilitasi/Beranda/table-pasien-rehabilitasi",
@@ -770,10 +769,10 @@ export const menuItems = [
             key: "dashboardMCU",
             icon: <RiFolderLine className="fs-4" />,
             subItems: [
-              // {
-              //   title: "Dashboard MCU",
-              //   href: "/Medical-check-up/Beranda/dashboard-mcu",
-              // },
+              {
+                title: "Dashboard MCU",
+                href: "/Medical-check-up/Beranda/dashboard-mcu",
+              },
               {
                 title: "Table Pasien MCU",
                 href: "/Medical-check-up/Beranda/table-pasien-mcu",
@@ -850,10 +849,10 @@ export const menuItems = [
                 title: "Table Pasien Optik",
                 href: "/Optik/Beranda/table-pasien-optik",
               },
-              // {
-              //   title: "Pemeriksaan Mata",
-              //   href: "/Optik/Beranda/pemeriksaan-mata",
-              // },
+              {
+                title: "Dashboard Optik",
+                href: "/Optik/Beranda/dashboard-optik",
+              },
               // {
               //   title: "Riwayat Resep Kacamata",
               //   href: "/Optik/Beranda/riwayat-resep-kacamata",

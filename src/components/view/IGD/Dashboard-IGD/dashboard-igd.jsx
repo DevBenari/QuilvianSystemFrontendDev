@@ -12,11 +12,8 @@ import {
 } from "react-icons/fa";
 import { Badge, Row, Col } from "react-bootstrap";
 
-import { useForm } from "react-hook-form";
 import BaseDashboard from "@/components/features/baseDashboard/base-dashboard";
-import BaseStatusComponent from "@/components/features/baseDashboard/status-poli";
-import StatusBaseComponent from "@/components/features/baseDashboard/status-poli";
-import StatusIGDBaseComponent from "@/components/features/baseDashboard/statusIGD";
+import StatusIGDBaseComponent from "@/components/features/status/statusIGD";
 
 // Data dummy untuk daftar pasien IGD
 const pasienIGDData = [
@@ -127,10 +124,10 @@ const DashboardIGD = () => {
     badgeText: "EMERGENCY",
     divisionText: "Instalasi Gawat Darurat",
     icon: FaAmbulance,
-    bgColor: "#1a237e",
-    bgGradient: "linear-gradient(135deg, #1a237e 0%, #283593 100%)",
-    badgeColor: "#ff3d00",
-    badgeTextColor: "white",
+    bgColor: "#B71C1C", // Merah tua yang kuat, melambangkan urgensi
+    bgGradient: "linear-gradient(135deg, #B71C1C 0%, #D32F2F 100%)", // Gradasi merah mencolok untuk situasi darurat
+    badgeColor: "#FFEBEE", // Merah pastel yang lembut agar tidak terlalu tajam di mata
+    badgeTextColor: "#B71C1C", // Merah tua untuk kontras maksimal
   };
 
   // Konfigurasi statistik

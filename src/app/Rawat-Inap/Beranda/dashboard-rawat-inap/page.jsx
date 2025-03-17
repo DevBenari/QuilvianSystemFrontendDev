@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Row, Col, Badge } from "react-bootstrap";
+import { Row, Col, Badge, Modal, Button } from "react-bootstrap";
 import {
   FaUserClock,
   FaBed,
@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 
 import { aktivitasPasien, PasienRawatInap } from "@/utils/dataPasien";
 import BaseDashboard from "@/components/features/baseDashboard/base-dashboard";
+import StatusRuangRawatInapComponent from "@/components/features/status/status-ruangan";
 
 const DashboardRawatInap = () => {
   // State untuk data pasien rawat inap
@@ -26,14 +27,14 @@ const DashboardRawatInap = () => {
 
   // Konfigurasi header untuk Rawat Inap
   const headerConfig = {
-    hospitalName: "RS MMC",
+    hospitalName: "RS METROPOLITAN MEDICAL CENTRE",
     badgeText: "RAWAT INAP",
     divisionText: "Instalasi Pelayanan Rawat Inap",
     icon: FaHospital,
-    bgColor: "#4a148c",
-    bgGradient: "linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%)",
-    badgeColor: "#ce93d8",
-    badgeTextColor: "#4a148c",
+    bgColor: "#2E7D32", // Hijau gelap yang memberikan kesan tenang dan aman
+    bgGradient: "linear-gradient(135deg, #2E7D32 0%, #66BB6A 100%)", // Gradasi hijau yang fresh dan profesional
+    badgeColor: "#A5D6A7", // Hijau pastel yang lembut dan nyaman dipandang
+    badgeTextColor: "#1B5E20", // Hijau lebih gelap untuk kontras yang baik
   };
 
   // Konfigurasi statistik cards
@@ -201,43 +202,6 @@ const DashboardRawatInap = () => {
   );
 
   // Komponen custom untuk aktivitas terkini
-  const AktivitasTerkini = () => (
-    <div className="iq-card">
-      <div className="iq-card-header d-flex justify-content-between align-items-center">
-        <h4 className="card-title mb-0">Aktivitas Terkini</h4>
-        <span className="badge bg-primary">Hari Ini</span>
-      </div>
-      <div className="iq-card-body">
-        <div className="activity-list">
-          {aktivitasPasien.map((item, index) => (
-            <div key={index} className="activity-item mb-3 p-3 border-bottom">
-              <div className="d-flex">
-                <div className="me-3">{item.icon}</div>
-                <div className="flex-grow-1">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <h6 className="mb-0 fw-medium">{item.title}</h6>
-                    <div className="text-muted small">
-                      <i className="ri-time-line me-1"></i>
-                      {item.time}
-                    </div>
-                  </div>
-                  <span className="text-muted small d-block">
-                    {item.patient}
-                  </span>
-                  <span className="text-primary small">{item.info}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="text-center">
-          <button className="btn btn-outline-primary btn-sm">
-            Lihat Semua Aktivitas
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 
   // Fungsi simulasi untuk refresh data
   const handleRefresh = () => {
@@ -248,32 +212,162 @@ const DashboardRawatInap = () => {
     }, 1000);
   };
 
+  const ruangRawatInapData = [
+    {
+      id: "RR001",
+      namaRuangan: "Melati",
+      kelas: "Kelas 1",
+      jenisRuangan: "Ruang Umum",
+      kapasitas: 20,
+      terisi: 18,
+    },
+    {
+      id: "RR002",
+      namaRuangan: "Anggrek",
+      kelas: "Kelas 2",
+      jenisRuangan: "Ruang Khusus",
+      kapasitas: 15,
+      terisi: 11,
+    },
+    {
+      id: "RR003",
+      namaRuangan: "Mawar",
+      kelas: "Kelas 3",
+      jenisRuangan: "Ruang Isolasi",
+      kapasitas: 25,
+      terisi: 23,
+    },
+    {
+      id: "RR004",
+      namaRuangan: "Tulip",
+      kelas: "Kelas 1",
+      jenisRuangan: "Ruang VIP",
+      kapasitas: 10,
+      terisi: 6,
+    },
+  ];
+
+  // State untuk modal detail ruangan
+  const [selectedRuangan, setSelectedRuangan] = useState(null);
+
+  // Handler untuk klik item ruangan
+  const handleItemClick = (ruangan) => {
+    setSelectedRuangan(ruangan);
+  };
+
+  // Handler untuk menutup modal
+  const handleCloseModal = () => {
+    setSelectedRuangan(null);
+  };
+
   // Kustomisasi konten untuk layout
-  const customContent = (
+  const content = (
     <>
-      <StatusPasienPerKamar />
-      <Row>
-        <Col lg="8">
-          <div className="iq-card">
-            <div className="iq-card-header d-flex justify-content-between">
-              <h4 className="card-title">Grafik Kunjungan Pasien Rawat Inap</h4>
+      <StatusRuangRawatInapComponent
+        data={ruangRawatInapData}
+        title="Status Ruang Rawat Inap"
+        headerBadgeText="Ruangan"
+        onItemClick={handleItemClick}
+        customLabels={{
+          kelas: "Tipe Ruangan",
+          jenisRuangan: "Kategori",
+          kapasitas: "Ketersediaan",
+          terisi: "Terpakai",
+        }}
+      />
+
+      {/* Modal Detail Ruangan */}
+      {selectedRuangan && (
+        <Modal show={!!selectedRuangan} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Detail Ruangan {selectedRuangan.namaRuangan}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="row">
+              <div className="col-6">
+                <strong>ID Ruangan:</strong> {selectedRuangan.id}
+              </div>
+              <div className="col-6">
+                <strong>Nama Ruangan:</strong> {selectedRuangan.namaRuangan}
+              </div>
+              <div className="col-6 mt-2">
+                <strong>Kelas:</strong> {selectedRuangan.kelas}
+              </div>
+              <div className="col-6 mt-2">
+                <strong>Jenis Ruangan:</strong> {selectedRuangan.jenisRuangan}
+              </div>
+              <div className="col-6 mt-2">
+                <strong>Kapasitas Total:</strong> {selectedRuangan.kapasitas}{" "}
+                pasien
+              </div>
+              <div className="col-6 mt-2">
+                <strong>Terisi:</strong> {selectedRuangan.terisi} pasien
+              </div>
+              <div className="col-12 mt-2">
+                <strong>Sisa Ruangan:</strong>{" "}
+                {selectedRuangan.kapasitas - selectedRuangan.terisi} pasien
+              </div>
+              <div className="col-12 mt-3">
+                <div className="progress">
+                  <div
+                    className={`progress-bar ${
+                      (selectedRuangan.terisi / selectedRuangan.kapasitas) *
+                        100 >=
+                      90
+                        ? "bg-danger"
+                        : (selectedRuangan.terisi / selectedRuangan.kapasitas) *
+                            100 >=
+                          70
+                        ? "bg-warning"
+                        : "bg-success"
+                    }`}
+                    role="progressbar"
+                    style={{
+                      width: `${
+                        (selectedRuangan.terisi / selectedRuangan.kapasitas) *
+                        100
+                      }%`,
+                    }}
+                    aria-valuenow={
+                      (selectedRuangan.terisi / selectedRuangan.kapasitas) * 100
+                    }
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+                    {Math.round(
+                      (selectedRuangan.terisi / selectedRuangan.kapasitas) * 100
+                    )}
+                    % Terisi
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="iq-card-body">
-              <Chart
-                options={barChartConfig.options}
-                series={barChartConfig.series}
-                type="bar"
-                height={350}
-              />
-            </div>
-          </div>
-        </Col>
-        <Col lg="4">
-          <AktivitasTerkini />
-        </Col>
-      </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Tutup
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </>
   );
+
+  const RightChart = {
+    title: "Sebaran Kasus Rawat Inap",
+    type: "pie",
+    data: [
+      { category: "Bedah", value: 320 },
+      { category: "Penyakit Dalam", value: 280 },
+      { category: "Anak", value: 250 },
+      { category: "Obstetri & Ginekologi", value: 260 },
+      { category: "Lainnya", value: 150 },
+    ],
+    height: 350,
+    id: "igd-chart-01",
+  };
 
   return (
     <BaseDashboard
@@ -282,7 +376,7 @@ const DashboardRawatInap = () => {
       // Statistik cards
       statCards={statCards}
       // Custom content (ganti grafik bawaan)
-      customContent={customContent}
+      customContent={content}
       // Data dan state
       data={PasienRawatInap}
       filteredData={filteredPatients}
@@ -300,8 +394,8 @@ const DashboardRawatInap = () => {
       // Tabel config (opsional, dalam contoh asli di-comment)
       tableConfig={tableConfig}
       // Set ke null agar tidak menampilkan chart bawaan dari BaseDashboard
-      leftChart={null}
-      rightChart={null}
+      leftChart={barChartConfig}
+      rightChart={RightChart}
     />
   );
 };

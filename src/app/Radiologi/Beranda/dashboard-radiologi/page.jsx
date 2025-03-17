@@ -1,340 +1,610 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Row,
-  Col,
-  Badge,
-  Form,
-  Button,
-} from "react-bootstrap";
-import {
-
-  FaUserClock,
+  FaXRay,
+  FaUserInjured,
+  FaCalendarCheck,
+  FaClock,
+  FaExclamationTriangle,
+  FaUserMd,
+  FaHospital,
+  FaBriefcaseMedical,
+  FaCheckCircle,
+  FaHourglass,
+  FaChartLine,
+  FaClipboardList,
+  FaSync,
 } from "react-icons/fa";
+import { Badge, Row, Col, Card, Button } from "react-bootstrap";
 
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import { aktivitasPasien, PasienRawatInap } from "@/utils/dataPasien";
-import dynamic from "next/dynamic";
+import BaseDashboard from "@/components/features/baseDashboard/base-dashboard";
 
+// Sample data for radiology examinations
+const radiologyExamsData = [
+  {
+    id: "RAD001",
+    patientName: "Joko Widodo",
+    patientId: "P-2023-112",
+    examType: "Chest X-Ray",
+    modalityType: "X-Ray",
+    requestedBy: "dr. Bambang Sutrisno",
+    priority: "Normal",
+    status: "Completed",
+    requestDate: "2023-11-15 08:30",
+    scheduledDate: "2023-11-15 10:00",
+    completionDate: "2023-11-15 10:15",
+    reportStatus: "Reported",
+  },
+  {
+    id: "RAD002",
+    patientName: "Megawati Soekarno",
+    patientId: "P-2023-089",
+    examType: "Brain MRI",
+    modalityType: "MRI",
+    requestedBy: "dr. Nina Dewi",
+    priority: "Urgent",
+    status: "In Progress",
+    requestDate: "2023-11-15 09:00",
+    scheduledDate: "2023-11-15 11:30",
+    completionDate: "-",
+    reportStatus: "Pending",
+  },
+  {
+    id: "RAD003",
+    patientName: "Susilo Yudhoyono",
+    patientId: "P-2023-056",
+    examType: "Abdominal CT Scan",
+    modalityType: "CT Scan",
+    requestedBy: "dr. Eko Purnomo",
+    priority: "STAT",
+    status: "Waiting",
+    requestDate: "2023-11-15 09:45",
+    scheduledDate: "2023-11-15 10:30",
+    completionDate: "-",
+    reportStatus: "Pending",
+  },
+  {
+    id: "RAD004",
+    patientName: "Prabowo Subianto",
+    patientId: "P-2023-124",
+    examType: "Lumbar Spine MRI",
+    modalityType: "MRI",
+    requestedBy: "dr. Siti Rahayu",
+    priority: "Normal",
+    status: "Scheduled",
+    requestDate: "2023-11-15 10:15",
+    scheduledDate: "2023-11-16 09:00",
+    completionDate: "-",
+    reportStatus: "Pending",
+  },
+  {
+    id: "RAD005",
+    patientName: "Jusuf Kalla",
+    patientId: "P-2023-078",
+    examType: "Knee X-Ray",
+    modalityType: "X-Ray",
+    requestedBy: "dr. Bambang Sutrisno",
+    priority: "Normal",
+    status: "Completed",
+    requestDate: "2023-11-15 08:15",
+    scheduledDate: "2023-11-15 09:00",
+    completionDate: "2023-11-15 09:10",
+    reportStatus: "Reported",
+  },
+  {
+    id: "RAD006",
+    patientName: "Ani Yudhoyono",
+    patientId: "P-2023-103",
+    examType: "Mammography",
+    modalityType: "Mammography",
+    requestedBy: "dr. Siti Rahayu",
+    priority: "Normal",
+    status: "Completed",
+    requestDate: "2023-11-14 15:30",
+    scheduledDate: "2023-11-15 08:30",
+    completionDate: "2023-11-15 08:45",
+    reportStatus: "Awaiting Review",
+  },
+  {
+    id: "RAD007",
+    patientName: "B.J. Habibie",
+    patientId: "P-2023-115",
+    examType: "Coronary CT Angiography",
+    modalityType: "CT Scan",
+    requestedBy: "dr. Nina Dewi",
+    priority: "Urgent",
+    status: "In Progress",
+    requestDate: "2023-11-15 09:30",
+    scheduledDate: "2023-11-15 12:00",
+    completionDate: "-",
+    reportStatus: "Pending",
+  },
+  {
+    id: "RAD008",
+    patientName: "Sri Mulyani",
+    patientId: "P-2023-098",
+    examType: "Thyroid Ultrasound",
+    modalityType: "Ultrasound",
+    requestedBy: "dr. Eko Purnomo",
+    priority: "Normal",
+    status: "Scheduled",
+    requestDate: "2023-11-15 10:30",
+    scheduledDate: "2023-11-15 14:00",
+    completionDate: "-",
+    reportStatus: "Pending",
+  },
+];
 
-const DashboardRawatInap = () => {
-  // State untuk teks pencarian dan data pasien rawat inap
-  // const [searchText, setSearchText] = useState("");
-  // const [filteredPatients, setFilteredPatients] = useState(PasienRawatInap);
+// Sample data for modality distribution
+const modalityData = [
+  { category: "X-Ray", value: 42 },
+  { category: "CT Scan", value: 28 },
+  { category: "MRI", value: 15 },
+  { category: "Ultrasound", value: 35 },
+  { category: "Mammography", value: 12 },
+];
 
-  // Fungsi untuk menangani perubahan input pencarian
-  const handleSearchChange = (e) => {
-    const text = e.target.value.toLowerCase();
-    setSearchText(text);
+const DashboardRadiology = () => {
+  const [filteredExams, setFilteredExams] = useState(radiologyExamsData);
+  const [loading, setLoading] = useState(false);
 
-    // Filter data berdasarkan teks pencarian
-    const filtered = PasienRawatInap.filter((patient) =>
-      patient.nama.toLowerCase().includes(text)
-    );
-    setFilteredPatients(filtered);
+  // Function to get status badge
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Completed":
+        return <Badge bg="success">{status}</Badge>;
+      case "In Progress":
+        return <Badge bg="info">{status}</Badge>;
+      case "Waiting":
+        return (
+          <Badge bg="warning" text="dark">
+            {status}
+          </Badge>
+        );
+      case "Scheduled":
+        return <Badge bg="primary">{status}</Badge>;
+      default:
+        return <Badge bg="secondary">{status}</Badge>;
+    }
   };
 
-  const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+  // Function to get priority badge
+  const getPriorityBadge = (priority) => {
+    switch (priority) {
+      case "STAT":
+        return <Badge bg="danger">{priority}</Badge>;
+      case "Urgent":
+        return (
+          <Badge bg="warning" text="dark">
+            {priority}
+          </Badge>
+        );
+      case "Normal":
+        return <Badge bg="info">{priority}</Badge>;
+      default:
+        return <Badge bg="secondary">{priority}</Badge>;
+    }
+  };
 
-  const chartOptions = {
+  // Function to get report status badge
+  const getReportStatusBadge = (status) => {
+    switch (status) {
+      case "Reported":
+        return <Badge bg="success">{status}</Badge>;
+      case "Awaiting Review":
+        return (
+          <Badge bg="warning" text="dark">
+            {status}
+          </Badge>
+        );
+      case "Pending":
+        return <Badge bg="secondary">{status}</Badge>;
+      default:
+        return <Badge bg="secondary">{status}</Badge>;
+    }
+  };
+
+  // Refresh data function
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setFilteredExams([...radiologyExamsData]);
+    }, 1000);
+  };
+
+  // Header configuration for Radiology
+  const headerConfig = {
+    hospitalName: "RS METROPOLITAN MEDICAL CENTRE",
+    badgeText: "RADIOLOGY",
+    divisionText: "Departemen Radiologi & Pencitraan",
+    icon: FaXRay,
+    bgColor: "#4A148C", // Deep purple for radiology
+    bgGradient: "linear-gradient(135deg, #4A148C 0%, #7B1FA2 100%)", // Purple gradient
+    badgeColor: "#F3E5F5", // Light purple for the badge
+    badgeTextColor: "#4A148C", // Purple for the text
+  };
+
+  // Statistics cards
+  const statCards = [
+    { title: "Today's Exams", value: 32, icon: FaXRay, color: "primary" },
+    {
+      title: "Waiting Patients",
+      value: 8,
+      icon: FaUserInjured,
+      color: "warning",
+    },
+    {
+      title: "Completed Today",
+      value: 24,
+      icon: FaCheckCircle,
+      color: "success",
+    },
+    {
+      title: "Urgent Cases",
+      value: 5,
+      icon: FaExclamationTriangle,
+      color: "danger",
+    },
+    { title: "Avg. Wait Time", value: "32m", icon: FaClock, color: "info" },
+    {
+      title: "Radiologists on Duty",
+      value: 4,
+      icon: FaUserMd,
+      color: "secondary",
+    },
+  ];
+
+  // Line chart for exam counts by hour
+  const lineChartConfig = {
+    title: "Radiology Exams by Hour",
+    type: "line",
+    height: 350,
     options: {
       chart: {
-        type: "bar",
+        type: "line",
         height: 350,
-        stacked: true,
         toolbar: {
           show: true,
         },
-        zoom: {
-          enabled: true,
-        },
       },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            legend: {
-              position: "bottom",
-              offsetX: -10,
-              offsetY: 0,
-            },
-          },
-        },
-      ],
-      plotOptions: {
-        bar: {
-          horizontal: false,
-        },
+      stroke: {
+        curve: "smooth",
+        width: 3,
       },
       xaxis: {
-        type: "datetime",
         categories: [
-          "01/01/2023 GMT",
-          "01/02/2023 GMT",
-          "01/03/2023 GMT",
-          "01/04/2023 GMT",
-          "01/05/2023 GMT",
-          "01/06/2023 GMT",
+          "6AM",
+          "7AM",
+          "8AM",
+          "9AM",
+          "10AM",
+          "11AM",
+          "12PM",
+          "1PM",
+          "2PM",
+          "3PM",
+          "4PM",
+          "5PM",
         ],
       },
+      yaxis: {
+        title: {
+          text: "Number of Exams",
+        },
+      },
+      colors: ["#673AB7", "#2196F3", "#4CAF50"],
       legend: {
-        position: "right",
-        offsetY: 40,
+        position: "top",
       },
-      fill: {
-        opacity: 1,
-      },
-      colors: ["#6a9fca", "#f8b94c", "#d67ab1"],
     },
     series: [
       {
-        name: "Kamar A",
-        data: [24, 35, 41, 57, 32, 43],
+        name: "Scheduled",
+        data: [2, 5, 8, 12, 10, 8, 6, 9, 11, 7, 5, 3],
       },
       {
-        name: "Kamar B",
-        data: [13, 20, 25, 30, 18, 27],
+        name: "In Progress",
+        data: [1, 3, 6, 10, 8, 7, 5, 7, 9, 5, 4, 2],
       },
       {
-        name: "Kamar C",
-        data: [17, 14, 19, 23, 21, 14],
+        name: "Completed",
+        data: [0, 2, 5, 8, 10, 9, 7, 6, 8, 10, 6, 4],
       },
     ],
   };
 
+  // Pie chart for modality types
+  const pieChartConfig = {
+    title: "Exams by Modality",
+    type: "pie",
+    data: modalityData,
+    height: 350,
+    id: "radiology-chart-01",
+  };
+
+  // Table configuration for radiology exams
+  const tableConfig = {
+    title: "Radiology Examination Requests",
+    columns: [
+      { key: "id", label: "Exam ID" },
+      { key: "patientName", label: "Patient Name" },
+      { key: "examType", label: "Examination" },
+      { key: "modalityType", label: "Modality" },
+      { key: "requestedBy", label: "Requested By" },
+      {
+        key: "priority",
+        label: "Priority",
+        render: (item) => getPriorityBadge(item.priority),
+      },
+      {
+        key: "status",
+        label: "Status",
+        render: (item) => getStatusBadge(item.status),
+      },
+      {
+        key: "reportStatus",
+        label: "Report",
+        render: (item) => getReportStatusBadge(item.reportStatus),
+      },
+      { key: "scheduledDate", label: "Scheduled" },
+    ],
+    showHeader: false,
+    searchName: true,
+    icon: FaClipboardList,
+    buttonRefresh: true,
+    basePath: "/radiology/exam-details",
+    slugConfig: {
+      textField: "patientName",
+      idField: "id",
+    },
+    showActions: true,
+    actions: [
+      {
+        label: "View Images",
+        icon: "eye",
+        onClick: (item) => console.log(`View images for ${item.id}`),
+      },
+      {
+        label: "Update Status",
+        icon: "edit",
+        onClick: (item) => console.log(`Update status for ${item.id}`),
+      },
+      {
+        label: "Report",
+        icon: "file-text",
+        onClick: (item) => console.log(`Create/view report for ${item.id}`),
+      },
+    ],
+  };
+
+  // Custom component for modality status
+  const ModalityStatusComponent = () => {
+    return (
+      <Card className="iq-card mb-4">
+        <Card.Body>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h4 className="card-title">Modality Status & Workload</h4>
+            <Button
+              variant="outline-primary"
+              size="sm"
+              onClick={handleRefresh}
+              className="d-flex align-items-center"
+            >
+              <FaSync className="me-2" /> Refresh
+            </Button>
+          </div>
+
+          <Row>
+            <Col md={6} xl={3} className="mb-3">
+              <Card className="border rounded h-100">
+                <Card.Body className="p-3">
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <h6 className="text-primary mb-1">X-Ray Room 1</h6>
+                      <Badge bg="success" className="mb-2">
+                        Operational
+                      </Badge>
+                    </div>
+                    <FaXRay size={24} className="text-primary" />
+                  </div>
+                  <div className="mt-2">
+                    <div className="d-flex justify-content-between mb-1">
+                      <small className="text-muted">Todays exams:</small>
+                      <small className="fw-bold">18</small>
+                    </div>
+                    <div className="d-flex justify-content-between mb-1">
+                      <small className="text-muted">Waiting:</small>
+                      <small className="fw-bold">2</small>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <small className="text-muted">Next available:</small>
+                      <small className="fw-bold text-success">Now</small>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            <Col md={6} xl={3} className="mb-3">
+              <Card className="border rounded h-100">
+                <Card.Body className="p-3">
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <h6 className="text-primary mb-1">CT Scanner</h6>
+                      <Badge bg="success" className="mb-2">
+                        Operational
+                      </Badge>
+                    </div>
+                    <FaXRay size={24} className="text-primary" />
+                  </div>
+                  <div className="mt-2">
+                    <div className="d-flex justify-content-between mb-1">
+                      <small className="text-muted">Todays exams:</small>
+                      <small className="fw-bold">12</small>
+                    </div>
+                    <div className="d-flex justify-content-between mb-1">
+                      <small className="text-muted">Waiting:</small>
+                      <small className="fw-bold">3</small>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <small className="text-muted">Next available:</small>
+                      <small className="fw-bold text-warning">30 min</small>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            <Col md={6} xl={3} className="mb-3">
+              <Card className="border rounded h-100">
+                <Card.Body className="p-3">
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <h6 className="text-primary mb-1">MRI Scanner</h6>
+                      <Badge bg="warning" text="dark" className="mb-2">
+                        Maintenance
+                      </Badge>
+                    </div>
+                    <FaXRay size={24} className="text-primary" />
+                  </div>
+                  <div className="mt-2">
+                    <div className="d-flex justify-content-between mb-1">
+                      <small className="text-muted">Todays exams:</small>
+                      <small className="fw-bold">7</small>
+                    </div>
+                    <div className="d-flex justify-content-between mb-1">
+                      <small className="text-muted">Rescheduled:</small>
+                      <small className="fw-bold text-danger">3</small>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <small className="text-muted">Available at:</small>
+                      <small className="fw-bold text-danger">14:00</small>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            <Col md={6} xl={3} className="mb-3">
+              <Card className="border rounded h-100">
+                <Card.Body className="p-3">
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      <h6 className="text-primary mb-1">Ultrasound</h6>
+                      <Badge bg="success" className="mb-2">
+                        Operational
+                      </Badge>
+                    </div>
+                    <FaXRay size={24} className="text-primary" />
+                  </div>
+                  <div className="mt-2">
+                    <div className="d-flex justify-content-between mb-1">
+                      <small className="text-muted">Todays exams:</small>
+                      <small className="fw-bold">15</small>
+                    </div>
+                    <div className="d-flex justify-content-between mb-1">
+                      <small className="text-muted">Waiting:</small>
+                      <small className="fw-bold">1</small>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                      <small className="text-muted">Next available:</small>
+                      <small className="fw-bold text-success">15 min</small>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          <Row className="mt-2">
+            <Col md={6}>
+              <div className="p-3 border rounded bg-light">
+                <h6 className="text-primary">Radiologist Assignments</h6>
+                <ul className="list-unstyled mb-0">
+                  <li className="d-flex justify-content-between mb-2">
+                    <span>dr. Ahmad Radiologi, Sp.Rad</span>
+                    <Badge bg="primary">On Duty</Badge>
+                  </li>
+                  <li className="d-flex justify-content-between mb-2">
+                    <span>dr. Budi Pencitraan, Sp.Rad</span>
+                    <Badge bg="primary">On Duty</Badge>
+                  </li>
+                  <li className="d-flex justify-content-between mb-2">
+                    <span>dr. Citra Imaging, Sp.Rad</span>
+                    <Badge bg="primary">On Duty</Badge>
+                  </li>
+                  <li className="d-flex justify-content-between">
+                    <span>dr. Diana Xray, Sp.Rad</span>
+                    <Badge bg="primary">On Duty</Badge>
+                  </li>
+                </ul>
+              </div>
+            </Col>
+            <Col md={6}>
+              <div className="p-3 border rounded bg-light">
+                <h6 className="text-primary">Today s Priorities</h6>
+                <ul className="list-unstyled mb-0">
+                  <li className="d-flex justify-content-between mb-2">
+                    <span>STAT Requests</span>
+                    <Badge bg="danger">3 pending</Badge>
+                  </li>
+                  <li className="d-flex justify-content-between mb-2">
+                    <span>Urgent Requests</span>
+                    <Badge bg="warning" text="dark">
+                      5 pending
+                    </Badge>
+                  </li>
+                  <li className="d-flex justify-content-between mb-2">
+                    <span>Reports Awaiting Review</span>
+                    <Badge bg="info">8 pending</Badge>
+                  </li>
+                  <li className="d-flex justify-content-between">
+                    <span>Contrast Studies</span>
+                    <Badge bg="primary">4 scheduled</Badge>
+                  </li>
+                </ul>
+              </div>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+    );
+  };
+
   return (
-    <>
-      <Col md="12">
-        {/* Header */}
-        <Row>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-primary rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-primary">
-                    <i className="ri-group-fill"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">75</span>
-                    </h2>
-                    <h5 className=""> Pasien Rawat Inap</h5>
-                    <small className="text-success">↑ 8% dari kemarin</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-warning rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-warning">
-                    <i className="ri-hotel-line"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">30</span>
-                    </h2>
-                    <h5 className=""> Kamar Terisi</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-danger rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-danger">
-                    <i className="ri-door-open-fill"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">20</span>
-                    </h2>
-                    <h5 className="">Kamar Kosong</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-info rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-info">
-                    <i className="ri-time-line"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h5 className="mb-0">rata rata</h5>
-                    <h2 className="mb-0 mt-0">
-                      <span className="counter">48</span>
-                    </h2>
-                    <small className="text-success">Jam</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Status Rawat Inap per Kamar */}
-        <Row className="mb-4">
-          <Col lg="12">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <FaUserClock className="text-primary me-2" size={20} />
-                  <h5 className="mb-0">Status Pasien per Kamar</h5>
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <Row>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Kamar 101</h6>
-                    <Badge bg="primary" className="px-3 py-2">
-                      Pasien: 2
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Kamar 102</h6>
-                    <Badge bg="success" className="px-3 py-2">
-                      Pasien: 3
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Kamar 103</h6>
-                    <Badge bg="warning" className="px-3 py-2">
-                      Pasien: 1
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Kamar 104</h6>
-                    <Badge bg="info" className="px-3 py-2">
-                      Pasien: 0
-                    </Badge>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Grafik Kunjungan */}
-        <Row className="mb-4">
-          <Col lg="8">
-            <div className="iq-card ">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="card-title">
-                  Grafik Kunjungan Pasien Rawat Inap
-                </h4>
-              </div>
-              <div className="iq-card-body">
-                <Chart
-                  options={chartOptions.options}
-                  series={chartOptions.series}
-                  type="bar"
-                  height={350}
-                />
-              </div>
-            </div>
-          </Col>
-
-          <Col lg="4">
-            <div className="iq-card ">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="text-lg font-semibold">Aktivitas Terkini</h4>
-                <span className="px-2 py-1 text-xs font-semibold bg-blue-500 rounded">
-                  Hari Ini
-                </span>
-              </div>
-              <div className="iq-card-body">
-                <div>
-                  <Row>
-                    {aktivitasPasien.map((aktivitasPasien, index) => (
-                      <div key={index} >
-                        <Col lg="6" className="p-3">
-                          <div>
-                            <div>
-                              <div className="mr-3">{aktivitasPasien.icon}</div>
-                              <div className="flex-1">
-                                <div className="flex justify-between items-center">
-                                  <h6 className="font-medium">
-                                    {aktivitasPasien.title}
-                                  </h6>
-                                  <div className="flex items-center text-gray-500 text-sm">
-                                    <i className="ri-time-line mr-1"></i>
-                                    {aktivitasPasien.time}
-                                  </div>
-                                </div>
-                                <span className="text-sm text-gray-500 block">
-                                  {aktivitasPasien.patient}
-                                </span>
-                                <span className="text-sm text-blue-500">
-                                  {aktivitasPasien.info}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </Col>
-                      </div>
-                    ))}
-                  </Row>
-                </div>
-                <div className="text-center mb-3">
-                  <Button className="text-blue-500 hover:text-blue-600 text-sm font-medium">
-                    Lihat Semua Aktivitas
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Daftar Pasien */}
-        {/* <Row className="mb-4">
-          <Col lg="12">
-            <div className="iq-card ">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <FaUsers className="text-primary me-2" size={20} />
-                  <h5 className="mb-0">Daftar Pasien Rawat Inap</h5>
-                </div>
-                <div className="d-flex align-items-center">
-                  <FaSearch className="text-muted me-2" />
-                  <Form.Control
-                    type="search"
-                    placeholder="Cari pasien..."
-                    className="w-auto"
-                    value={searchText}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <CustomTableComponent
-                  data={filteredPatients}
-                  columns={[
-                    { key: "id", label: "ID Pasien" },
-                    { key: "nama", label: "Nama Pasien" },
-                    { key: "kamar", label: "Kamar" },
-                    { key: "jenisKelamin", label: "Jenis Kelamin" },
-                    { key: "status", label: "Status Perawatan" },
-                    { key: "waktuMasuk", label: "Waktu Masuk" },
-                  ]}
-                  itemsPerPage={5}
-                  slugConfig={{ textField: "nama", idField: "id" }}
-                  basePath="/instalasi-rawat-inap/data-pasien/detail-pasien"
-                />
-              </div>
-            </div>
-          </Col>
-        </Row> */}
-      </Col>
-    </>
+    <BaseDashboard
+      // Header configuration
+      headerConfig={headerConfig}
+      // Statistics cards
+      statCards={statCards}
+      // Left chart - line chart of exam volume
+      leftChart={lineChartConfig}
+      // Right chart - pie chart of modality types
+      rightChart={pieChartConfig}
+      // Custom content - Modality status component
+      customContent={<ModalityStatusComponent />}
+      // Table configuration
+      tableConfig={tableConfig}
+      // Data and state
+      data={radiologyExamsData}
+      filteredData={filteredExams}
+      setFilteredData={setFilteredExams}
+      loading={loading}
+      // Pagination
+      pagination={{
+        currentPage: 1,
+        totalPages: 1,
+        itemPerPage: 10,
+        onPageChange: () => {},
+      }}
+      // Refresh function
+      onRefresh={handleRefresh}
+      // Show title
+      showTitle={false}
+    />
   );
 };
 
-export default DashboardRawatInap;
+export default DashboardRadiology;

@@ -1,38 +1,269 @@
 "use client";
 
-import React, { useState } from "react";
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import { Row, Col } from "react-bootstrap";
-import { FaStethoscope } from "react-icons/fa";
-import { RiSurgicalMaskFill } from "react-icons/ri";
-import { FaHeartPulse } from "react-icons/fa6";
-import { AiOutlineTeam } from "react-icons/ai";
-import dynamic from "next/dynamic";
+import React, { useState, useEffect } from "react";
+import {
+  FaUserMd,
+  FaUsers,
+  FaCalendarAlt,
+  FaClock,
+  FaHospital,
+  FaBed,
+  FaProcedures,
+  FaSyringe,
+  FaHeartbeat,
+  FaUserCog,
+  FaCalendarCheck,
+} from "react-icons/fa";
+import { Badge } from "react-bootstrap";
+
+import BaseDashboard from "@/components/features/baseDashboard/base-dashboard";
+import { StatusOperasiBaseComponent } from "@/components/features/status/status-operasi";
+
+// Data dummy untuk daftar operasi
+const operasiData = [
+  {
+    id: "OP-2023-001",
+    pasien: "Ahmad Rizal",
+    usia: 45,
+    jenisTindakan: "Appendektomi",
+    ruangOperasi: "OK 01",
+    status: "Dalam Persiapan",
+    prioritas: "Normal",
+    jadwalMulai: "10:30",
+    estimasiDurasi: "1.5 jam",
+    dokterBedah: "dr. Surya Dharma, Sp.B",
+  },
+  {
+    id: "OP-2023-002",
+    pasien: "Siti Aminah",
+    usia: 32,
+    jenisTindakan: "Sectio Caesarea",
+    ruangOperasi: "OK 03",
+    status: "Dalam Operasi",
+    prioritas: "Segera",
+    jadwalMulai: "09:00",
+    estimasiDurasi: "2 jam",
+    dokterBedah: "dr. Ratna Wulan, Sp.OG",
+  },
+  {
+    id: "OP-2023-003",
+    pasien: "Budi Santoso",
+    usia: 58,
+    jenisTindakan: "Total Hip Replacement",
+    ruangOperasi: "OK 02",
+    status: "Terjadwal",
+    prioritas: "Elektif",
+    jadwalMulai: "13:00",
+    estimasiDurasi: "3 jam",
+    dokterBedah: "dr. Hendra Wijaya, Sp.OT",
+  },
+  {
+    id: "OP-2023-004",
+    pasien: "Dewi Putri",
+    usia: 29,
+    jenisTindakan: "Laparoskopi Kolesistektomi",
+    ruangOperasi: "OK 04",
+    status: "Selesai",
+    prioritas: "Normal",
+    jadwalMulai: "08:00",
+    estimasiDurasi: "1 jam",
+    dokterBedah: "dr. Surya Dharma, Sp.B",
+  },
+  {
+    id: "OP-2023-005",
+    pasien: "Rudi Hermawan",
+    usia: 62,
+    jenisTindakan: "Coronary Artery Bypass Grafting",
+    ruangOperasi: "OK 05",
+    status: "Dalam Operasi",
+    prioritas: "Segera",
+    jadwalMulai: "07:30",
+    estimasiDurasi: "4 jam",
+    dokterBedah: "dr. Indra Kusuma, Sp.BTKV",
+  },
+];
+
+// Data untuk ruangan operasi
+const ruanganOperasiData = [
+  {
+    id: "OK01",
+    nama: "Ruang Operasi 1",
+    status: "Terpakai",
+    pasien: "Ahmad Rizal",
+    tindakan: "Appendektomi",
+  },
+  {
+    id: "OK02",
+    nama: "Ruang Operasi 2",
+    status: "Terpakai",
+    pasien: "Budi Santoso",
+    tindakan: "Total Hip Replacement",
+  },
+  {
+    id: "OK03",
+    nama: "Ruang Operasi 3",
+    status: "Terpakai",
+    pasien: "Siti Aminah",
+    tindakan: "Sectio Caesarea",
+  },
+  {
+    id: "OK04",
+    nama: "Ruang Operasi 4",
+    status: "Kosong",
+    pasien: "-",
+    tindakan: "-",
+  },
+  {
+    id: "OK05",
+    nama: "Ruang Operasi 5",
+    status: "Terpakai",
+    pasien: "Rudi Hermawan",
+    tindakan: "CABG",
+  },
+  {
+    id: "OK06",
+    nama: "Ruang Operasi 6",
+    status: "Dibersihkan",
+    pasien: "-",
+    tindakan: "-",
+  },
+  {
+    id: "OK07",
+    nama: "Ruang Operasi Khusus Kardiovaskular",
+    status: "Dalam Persiapan",
+    pasien: "Hasan Sadikin",
+    tindakan: "Valve Replacement",
+  },
+  {
+    id: "OK08",
+    nama: "Ruang Operasi Mini",
+    status: "Kosong",
+    pasien: "-",
+    tindakan: "-",
+  },
+];
 
 const DashboardOperasi = () => {
-  const [searchText, setSearchText] = useState("");
-  const [filteredOperations, setFilteredOperations] = useState(jadwalOperasi);
+  const [filteredOperasi, setFilteredOperasi] = useState(operasiData);
+  const [loading, setLoading] = useState(false);
 
-  const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+  // Fungsi untuk mendapatkan warna badge berdasarkan prioritas
+  const getPrioritasBadge = (prioritas) => {
+    switch (prioritas) {
+      case "Segera":
+        return <Badge bg="danger">{prioritas}</Badge>;
+      case "Normal":
+        return (
+          <Badge bg="warning" text="dark">
+            {prioritas}
+          </Badge>
+        );
+      case "Elektif":
+        return <Badge bg="success">{prioritas}</Badge>;
+      default:
+        return <Badge bg="secondary">{prioritas}</Badge>;
+    }
+  };
 
-  // Data untuk grafik operasi
-  const chartOptions = {
+  // Fungsi untuk mendapatkan warna badge berdasarkan status
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Dalam Operasi":
+        return <Badge bg="danger">{status}</Badge>;
+      case "Dalam Persiapan":
+        return (
+          <Badge bg="warning" text="dark">
+            {status}
+          </Badge>
+        );
+      case "Terjadwal":
+        return <Badge bg="info">{status}</Badge>;
+      case "Selesai":
+        return <Badge bg="success">{status}</Badge>;
+      default:
+        return <Badge bg="secondary">{status}</Badge>;
+    }
+  };
+
+  // Konfigurasi header untuk Operasi
+  const headerConfig = {
+    hospitalName: "RS METROPOLITAN MEDICAL CENTRE",
+    badgeText: "SURGERY",
+    divisionText: "Departemen Bedah & Operasi",
+    icon: FaProcedures,
+    bgColor: "#00695C", // Hijau tua, melambangkan ruang operasi
+    bgGradient: "linear-gradient(135deg, #00695C 0%, #00897B 100%)", // Gradasi hijau untuk area steril
+    badgeColor: "#E0F2F1", // Hijau pastel yang lembut
+    badgeTextColor: "#00695C", // Hijau tua untuk kontras
+  };
+
+  // Konfigurasi statistik
+  const statCards = [
+    {
+      title: "Operasi Terjadwal",
+      value: 8,
+      icon: FaCalendarAlt,
+      color: "primary",
+    },
+    { title: "Dalam Operasi", value: 3, icon: FaProcedures, color: "danger" },
+    {
+      title: "Ruang Operasi Tersedia",
+      value: 2,
+      icon: FaBed,
+      color: "success",
+    },
+    {
+      title: "Operasi Selesai Hari Ini",
+      value: 5,
+      icon: FaCalendarCheck,
+      color: "info",
+    },
+    {
+      title: "Rata-rata Durasi (jam)",
+      value: 2.1,
+      icon: FaClock,
+      color: "warning",
+    },
+    {
+      title: "Tim Bedah Bertugas",
+      value: 12,
+      icon: FaUserMd,
+      color: "primary",
+    },
+  ];
+
+  // Konfigurasi line chart
+  const lineChartConfig = {
+    title: "Tren Operasi Bulanan",
+    type: "line",
+    height: 350,
     options: {
       chart: {
-        type: "bar",
+        type: "line",
         height: 350,
-        stacked: true,
         toolbar: {
           show: true,
         },
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
+        zoom: {
+          enabled: true,
         },
       },
+      stroke: {
+        curve: "smooth",
+        width: 3,
+      },
       xaxis: {
-        categories: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"],
+        categories: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "Mei",
+          "Jun",
+          "Jul",
+          "Agu",
+          "Sep",
+        ],
       },
       legend: {
         position: "right",
@@ -41,296 +272,130 @@ const DashboardOperasi = () => {
       fill: {
         opacity: 1,
       },
-      colors: ["#6a9fca", "#f8b94c", "#d67ab1"],
+      colors: ["#9C27B0", "#2196F3", "#4CAF50"],
     },
     series: [
       {
-        name: "Operasi Mayor",
-        data: [4, 3, 5, 4, 3, 2],
+        name: "Operasi Kardiovaskular",
+        data: [12, 15, 13, 18, 16, 20, 22, 19, 21],
       },
       {
-        name: "Operasi Minor",
-        data: [3, 4, 2, 3, 4, 3],
+        name: "Operasi Digestif",
+        data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
       },
       {
-        name: "Operasi Darurat",
-        data: [1, 2, 1, 2, 1, 1],
+        name: "Operasi Ortopedi",
+        data: [30, 25, 36, 30, 45, 35, 64, 52, 59],
       },
     ],
   };
 
-  const handleSearchChange = (e) => {
-    const text = e.target.value.toLowerCase();
-    setSearchText(text);
-    const filtered = jadwalOperasi.filter((operation) =>
-      operation.pasien.toLowerCase().includes(text)
-    );
-    setFilteredOperations(filtered);
+  // Konfigurasi tabel operasi
+  const tableConfig = {
+    title: "Jadwal Operasi",
+    columns: [
+      { key: "id", label: "ID" },
+      { key: "pasien", label: "Pasien" },
+      { key: "usia", label: "Usia" },
+      { key: "jenisTindakan", label: "Tindakan" },
+      { key: "ruangOperasi", label: "Ruang" },
+      {
+        key: "status",
+        label: "Status",
+        render: (item) => getStatusBadge(item.status),
+      },
+      {
+        key: "prioritas",
+        label: "Prioritas",
+        render: (item) => getPrioritasBadge(item.prioritas),
+      },
+      { key: "jadwalMulai", label: "Jadwal" },
+      { key: "estimasiDurasi", label: "Durasi" },
+      { key: "dokterBedah", label: "Dokter Bedah" },
+    ],
+    showHeader: false,
+    searchName: true,
+    icon: FaUsers,
+    buttonRefresh: true,
+    basePath: "/operasi/jadwal-operasi/detail-operasi",
+    slugConfig: {
+      textField: "pasien",
+      idField: "id",
+    },
   };
 
+  // Fungsi simulasi untuk refresh data
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setFilteredOperasi([...operasiData]);
+    }, 1000);
+  };
+
+  const handleOperasiClick = () => {
+    console.log("operasi clicked");
+  };
+
+  // Komponen custom untuk status operasi, diasumsikan sudah ada
+
   return (
-    <>
-      <Col md="12">
-        {/* Header Stats */}
-        <Row>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-primary rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-primary">
-                    <FaStethoscope />
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">12</span>
-                    </h2>
-                    <h5 className="">Operasi Hari Ini</h5>
-                    <small className="text-success">↑ 2 dari kemarin</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-warning rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-warning">
-                    <RiSurgicalMaskFill />
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">4</span>
-                    </h2>
-                    <h5 className="">Ruang Operasi Aktif</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-danger rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-danger">
-                    <FaHeartPulse />
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">2</span>
-                    </h2>
-                    <h5 className="">Operasi Darurat</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-info rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-info">
-                    <AiOutlineTeam />
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">8</span>
-                    </h2>
-                    <h5 className="">Tim Operasi Aktif</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Status Ruang Operasi */}
-        <Row className="mb-4">
-          <Col lg="12">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <i className="ri-hospital-line text-primary me-2 fs-5"></i>
-                  <h5 className="mb-0">Status Ruang Operasi</h5>
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <Row>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>OK 1 - Mayor</h6>
-                    <span className="badge bg-success px-3 py-2">
-                      Operasi Berlangsung
-                    </span>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>OK 2 - Minor</h6>
-                    <span className="badge bg-warning px-3 py-2">
-                      Persiapan
-                    </span>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>OK 3 - Mayor</h6>
-                    <span className="badge bg-danger px-3 py-2">
-                      Sterilisasi
-                    </span>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>OK 4 - Darurat</h6>
-                    <span className="badge bg-info px-3 py-2">
-                      Siap Digunakan
-                    </span>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Grafik dan Jadwal */}
-        <Row className="mb-4">
-          <Col lg="8">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="card-title">Statistik Operasi Minggu Ini</h4>
-              </div>
-              <div className="iq-card-body">
-                <Chart
-                  options={chartOptions.options}
-                  series={chartOptions.series}
-                  type="bar"
-                  height={350}
-                />
-              </div>
-            </div>
-          </Col>
-
-          <Col lg="4">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="card-title">Tim Operasi Aktif</h4>
-              </div>
-              <div className="iq-card-body">
-                <div className="timeline-list">
-                  {timOperasi.map((tim, index) => (
-                    <div key={index} className="d-flex mb-3">
-                      <div className="flex-grow-1">
-                        <h6 className="mb-1">{tim.ruang}</h6>
-                        <p className="mb-0 text-muted">{tim.dokter}</p>
-                        <small className="text-muted">
-                          <i className="ri-time-line me-1"></i>
-                          {tim.waktu}
-                        </small>
-                      </div>
-                      <span
-                        className={`badge bg-${
-                          tim.status === "Berlangsung" ? "success" : "warning"
-                        }`}
-                      >
-                        {tim.status}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Daftar Jadwal Operasi
-        <Row className="mb-4">
-          <Col lg="12">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <i className="ri-calendar-check-line text-primary me-2 fs-5"></i>
-                  <h5 className="mb-0">Jadwal Operasi Hari Ini</h5>
-                </div>
-                <div className="d-flex align-items-center">
-                  <i className="ri-search-line text-muted me-2"></i>
-                  <input
-                    type="search"
-                    placeholder="Cari pasien..."
-                    className="form-control w-auto"
-                    value={searchText}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <CustomTableComponent
-                  data={filteredOperations}
-                  columns={[
-                    { key: "waktu", label: "Waktu" },
-                    { key: "ruang", label: "Ruang Operasi" },
-                    { key: "pasien", label: "Nama Pasien" },
-                    { key: "dokter", label: "Dokter Bedah" },
-                    { key: "jenis", label: "Jenis Operasi" },
-                    { key: "status", label: "Status" },
-                  ]}
-                  paginationProps={{
-                    currentPage: page,
-                    totalPages: totalPages,
-                    itemsPerPage: perPage,
-                    onPageChange: setPage,
-                  }}
-                />
-              </div>
-            </div>
-          </Col>
-        </Row> */}
-      </Col>
-    </>
+    <BaseDashboard
+      // Header konfigurasi
+      headerConfig={headerConfig}
+      // Statistik cards
+      statCards={statCards}
+      // Left chart - line chart operasi
+      leftChart={lineChartConfig}
+      // Right chart - pie chart sebaran jenis operasi
+      rightChart={{
+        title: "Sebaran Jenis Operasi",
+        type: "pie",
+        data: [
+          { category: "Operasi Digestif", value: 156 },
+          { category: "Operasi Ortopedi", value: 132 },
+          { category: "Operasi Obstetri & Ginekologi", value: 124 },
+          { category: "Operasi Kardiovaskular", value: 89 },
+          { category: "Operasi Urologi", value: 75 },
+          { category: "Lainnya", value: 98 },
+        ],
+        height: 350,
+        id: "operasi-chart-01",
+      }}
+      // Tabel konfigurasi
+      tableConfig={tableConfig}
+      // Data dan state
+      data={operasiData}
+      filteredData={filteredOperasi}
+      setFilteredData={setFilteredOperasi}
+      loading={loading}
+      // Pagination dummy (tidak digunakan dalam contoh ini)
+      pagination={{
+        currentPage: 1,
+        totalPages: 1,
+        itemPerPage: 10,
+        onPageChange: () => {},
+      }}
+      // Fungsi refresh
+      onRefresh={handleRefresh}
+      // Custom content - ditambahkan setelah charts dan sebelum tabel
+      customContent={
+        <StatusOperasiBaseComponent
+          data={operasiData}
+          title="Status Operasi"
+          headerBadgeText="Operasi Sedang Berlangsung"
+          headerBadgeColor="danger"
+          onItemClick={handleOperasiClick}
+          customLabels={{
+            usia: "Usia",
+            jenisTindakan: "Jenis Tindakan",
+            ruangOperasi: "Ruang Operasi",
+            dokterBedah: "Dokter Bedah",
+          }}
+        />
+      }
+    />
   );
 };
-
-// Data dummy untuk tim operasi
-const timOperasi = [
-  {
-    ruang: "OK 1 - Operasi Jantung",
-    dokter: "dr. Ahmad Specialist",
-    waktu: "09:00 - 13:00",
-    status: "Berlangsung",
-  },
-  {
-    ruang: "OK 2 - Operasi Minor",
-    dokter: "dr. Sarah Bedah",
-    waktu: "10:30 - 11:30",
-    status: "Persiapan",
-  },
-  {
-    ruang: "OK 4 - Operasi Darurat",
-    dokter: "dr. Budi Trauma",
-    waktu: "11:00 - 14:00",
-    status: "Berlangsung",
-  },
-];
-
-// Data dummy untuk jadwal operasi
-const jadwalOperasi = [
-  {
-    waktu: "09:00",
-    ruang: "OK 1",
-    pasien: "Tn. Agus",
-    dokter: "dr. Ahmad",
-    jenis: "Operasi Jantung",
-    status: "Berlangsung",
-  },
-  {
-    waktu: "10:30",
-    ruang: "OK 2",
-    pasien: "Ny. Siti",
-    dokter: "dr. Sarah",
-    jenis: "Operasi Minor",
-    status: "Persiapan",
-  },
-  {
-    waktu: "13:00",
-    ruang: "OK 3",
-    pasien: "Tn. Budi",
-    dokter: "dr. Rudi",
-    jenis: "Operasi Mayor",
-    status: "Terjadwal",
-  },
-];
 
 export default DashboardOperasi;
