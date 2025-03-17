@@ -1,4 +1,4 @@
-name: Deploy Next.js to Server
+name: Deploy Next.js to Server rizkiG
 
 on:
   push:
@@ -25,28 +25,43 @@ jobs:
           ssh ${{ secrets.SSH_USER_FRONTEND }}@${{ secrets.SSH_IP_FRONTEND }} << 'EOF'
 
             echo "Navigating to project directory..."
-            cd ~/QuilvianSystemFrontendDevRizki
+            cd ~/QuilvianSystemFrontendDevRizki || exit 1
 
             echo "Resetting local changes..."
             sudo git reset --hard origin/rizkiG
             sudo git clean -fd
 
             echo "Pulling latest changes..."
-            sudo git pull origin rizkiG
+            sudo git pull origin rizkiG || exit 1
 
-            IMAGE_NAME="quilvian-frontend-hamzah"
-            CONTAINER_NAME="quilvian-frontend-container-rizki"
+            echo "🚀 Debugging: Cek Status Docker"
+            sudo systemctl status docker || true
+
+            echo "🚀 Debugging: Cek Container yang Berjalan"
+            sudo docker ps -a || true
+
+            echo "🚀 Debugging: Cek Image yang Ada"
+            sudo docker images || true
+
+            echo "🚀 Debugging: Cek Direktori Proyek"
+            ls -la ~/QuilvianSystemFrontendDevRizki || true
+
+            IMAGE_NAME="quilvian-frontend-Rizki"
+            CONTAINER_NAME="quilvian-frontend-container-Rizki"
 
             echo "Building new Docker image..."
-            sudo docker build --build-arg NEXT_PUBLIC_API_QUILVIAN=http://160.20.104.98/api -t $IMAGE_NAME .
+            sudo docker build --build-arg NEXT_PUBLIC_API_QUILVIAN=http://160.20.104.98/api -t $IMAGE_NAME . || exit 1
 
             echo "Stopping and removing old container..."
             sudo docker stop $CONTAINER_NAME || true
             sudo docker rm $CONTAINER_NAME || true
 
             echo "Running new container with correct port..."
-            sudo docker run -d --name $CONTAINER_NAME -p 8084:8084 --env-file .env $IMAGE_NAME
+            sudo docker run -d --name $CONTAINER_NAME -p 3710:3710 --env-file .env $IMAGE_NAME || exit 1
             
+            echo "🚀 Debugging: Cek Log Container"
+            sudo docker logs $CONTAINER_NAME || true
+
             echo "Cleaning up unused Docker images..."
             sudo docker system prune -af
 

@@ -2,7 +2,6 @@
 import React, { useEffect, useState, Fragment, useMemo, memo } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { extractIdFromSlug } from "@/utils/slug";
 

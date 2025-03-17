@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAsuransi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/suransiSlice";
+import { fetchAsuransi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 import { fetchAsuransiPasien } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 import { fetchCoveranAsuransi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/CoveranAsuransiSlice";
 
