@@ -26,7 +26,7 @@ import DokterPoli from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/
 import DokterPoliSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPoliSlice";
 import JadwalPraktekSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/JadwalPraktekSlice";
 import PersalinanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-operasi/PersalinanSlice";
-import AsuransiPasienSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
+import AsuransiPasienSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 import AsuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
 const store = configureStore({

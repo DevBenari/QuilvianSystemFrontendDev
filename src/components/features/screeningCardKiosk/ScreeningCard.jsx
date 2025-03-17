@@ -225,7 +225,7 @@ const KioskScreeningCard = ({ onPatientFound, onError }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (screeningMethod === 'noRm' && !formData.noRm) {
+    if (screeningMethod === 'noRekamMedis' && !formData.noRekamMedis) {
       setError("Silakan masukkan Nomor RM pasien");
       return;
     }

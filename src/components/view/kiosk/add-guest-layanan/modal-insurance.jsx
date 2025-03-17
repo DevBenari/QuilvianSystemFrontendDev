@@ -5,7 +5,7 @@ import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import { FormProvider, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
+import { fetchAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
 const ModalInsurance = memo(
   ({ onOpen, onClose, onSubmit, formConfig = [] }) => {

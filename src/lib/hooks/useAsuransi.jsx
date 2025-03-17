@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAsuransi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/suransiSlice";
-import { fetchAsuransiPasien } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
+import { fetchAsuransiPasien } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 import { fetchCoveranAsuransi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/CoveranAsuransiSlice";
 
 // Custom hook untuk fetching data
@@ -18,7 +18,7 @@ const useFetchAsuransi = (sliceName, fetchAction) => {
     if (!loadedPages.includes(1)) {
       dispatch(fetchAction({ page: 1, perPage: 10, isInfiniteScroll: true }));
     }
-  }, [dispatch, loadedPages]);
+  }, [dispatch, loadedPages, sliceName, fetchAction]);
 
   const handleLoadMore = () => {
     if (page < totalPages && !loading && !loadedPages.includes(page + 1)) {
