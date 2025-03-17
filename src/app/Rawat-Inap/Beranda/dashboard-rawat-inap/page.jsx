@@ -1,43 +1,76 @@
 "use client";
 
 import React, { useState } from "react";
+import { Row, Col, Badge } from "react-bootstrap";
 import {
-  Row,
-  Col,
-  Badge,
-  Form,
-  Button,
-} from "react-bootstrap";
-import {
-
   FaUserClock,
+  FaBed,
+  FaHospital,
+  FaUserInjured,
+  FaClock,
+  FaDoorOpen,
+  FaCalendarCheck,
 } from "react-icons/fa";
-
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import { aktivitasPasien, PasienRawatInap } from "@/utils/dataPasien";
 import dynamic from "next/dynamic";
 
+import { aktivitasPasien, PasienRawatInap } from "@/utils/dataPasien";
+import BaseDashboard from "@/components/features/baseDashboard/base-dashboard";
 
 const DashboardRawatInap = () => {
-  // State untuk teks pencarian dan data pasien rawat inap
-  // const [searchText, setSearchText] = useState("");
-  // const [filteredPatients, setFilteredPatients] = useState(PasienRawatInap);
+  // State untuk data pasien rawat inap
+  const [filteredPatients, setFilteredPatients] = useState(PasienRawatInap);
+  const [loading, setLoading] = useState(false);
 
-  // Fungsi untuk menangani perubahan input pencarian
-  const handleSearchChange = (e) => {
-    const text = e.target.value.toLowerCase();
-    setSearchText(text);
-
-    // Filter data berdasarkan teks pencarian
-    const filtered = PasienRawatInap.filter((patient) =>
-      patient.nama.toLowerCase().includes(text)
-    );
-    setFilteredPatients(filtered);
-  };
-
+  // Dynamically import Chart component (untuk Client-side Rendering)
   const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-  const chartOptions = {
+  // Konfigurasi header untuk Rawat Inap
+  const headerConfig = {
+    hospitalName: "RS MMC",
+    badgeText: "RAWAT INAP",
+    divisionText: "Instalasi Pelayanan Rawat Inap",
+    icon: FaHospital,
+    bgColor: "#4a148c",
+    bgGradient: "linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%)",
+    badgeColor: "#ce93d8",
+    badgeTextColor: "#4a148c",
+  };
+
+  // Konfigurasi statistik cards
+  const statCards = [
+    {
+      title: "Pasien Rawat Inap",
+      value: 75,
+      icon: FaUserInjured,
+      color: "primary",
+      subtitle: "↑ 8% dari kemarin",
+    },
+    {
+      title: "Kamar Terisi",
+      value: 30,
+      icon: FaBed,
+      color: "warning",
+    },
+    {
+      title: "Kamar Kosong",
+      value: 20,
+      icon: FaDoorOpen,
+      color: "danger",
+    },
+    {
+      title: "Rata-rata (Jam)",
+      value: 48,
+      icon: FaClock,
+      color: "info",
+      subtitle: "Lama rawat inap",
+    },
+  ];
+
+  // Konfigurasi bar chart
+  const barChartConfig = {
+    title: "Grafik Kunjungan Pasien Rawat Inap",
+    type: "bar",
+    height: 350,
     options: {
       chart: {
         type: "bar",
@@ -65,6 +98,8 @@ const DashboardRawatInap = () => {
       plotOptions: {
         bar: {
           horizontal: false,
+          borderRadius: 5,
+          columnWidth: "55%",
         },
       },
       xaxis: {
@@ -103,237 +138,171 @@ const DashboardRawatInap = () => {
     ],
   };
 
-  return (
-    <>
-      <Col md="12">
-        {/* Header */}
+  // Konfigurasi tabel
+  const tableConfig = {
+    title: "Daftar Pasien Rawat Inap",
+    columns: [
+      { key: "id", label: "ID Pasien" },
+      { key: "nama", label: "Nama Pasien" },
+      { key: "kamar", label: "Kamar" },
+      { key: "jenisKelamin", label: "Jenis Kelamin" },
+      { key: "status", label: "Status Perawatan" },
+      { key: "waktuMasuk", label: "Waktu Masuk" },
+    ],
+    showHeader: false,
+    searchName: true,
+    icon: FaUserInjured,
+    buttonRefresh: true,
+    basePath: "/instalasi-rawat-inap/data-pasien/detail-pasien",
+    slugConfig: {
+      textField: "nama",
+      idField: "id",
+    },
+  };
+
+  // Komponen custom untuk status pasien per kamar
+  const StatusPasienPerKamar = () => (
+    <div className="iq-card mb-4">
+      <div className="iq-card-header d-flex justify-content-between">
+        <div className="d-flex align-items-center">
+          <FaUserClock className="text-primary me-2" size={20} />
+          <h5 className="mb-0">Status Pasien per Kamar</h5>
+        </div>
+      </div>
+      <div className="iq-card-body">
         <Row>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-primary rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-primary">
-                    <i className="ri-group-fill"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">75</span>
-                    </h2>
-                    <h5 className=""> Pasien Rawat Inap</h5>
-                    <small className="text-success">↑ 8% dari kemarin</small>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Col md={3} className="text-center mb-3">
+            <h6>Kamar 101</h6>
+            <Badge bg="primary" className="px-3 py-2">
+              Pasien: 2
+            </Badge>
           </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-warning rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-warning">
-                    <i className="ri-hotel-line"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">30</span>
-                    </h2>
-                    <h5 className=""> Kamar Terisi</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Col md={3} className="text-center mb-3">
+            <h6>Kamar 102</h6>
+            <Badge bg="success" className="px-3 py-2">
+              Pasien: 3
+            </Badge>
           </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-danger rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-danger">
-                    <i className="ri-door-open-fill"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">20</span>
-                    </h2>
-                    <h5 className="">Kamar Kosong</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Col md={3} className="text-center mb-3">
+            <h6>Kamar 103</h6>
+            <Badge bg="warning" className="px-3 py-2">
+              Pasien: 1
+            </Badge>
           </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-info rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-info">
-                    <i className="ri-time-line"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h5 className="mb-0">rata rata</h5>
-                    <h2 className="mb-0 mt-0">
-                      <span className="counter">48</span>
-                    </h2>
-                    <small className="text-success">Jam</small>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Col md={3} className="text-center mb-3">
+            <h6>Kamar 104</h6>
+            <Badge bg="info" className="px-3 py-2">
+              Pasien: 0
+            </Badge>
           </Col>
         </Row>
+      </div>
+    </div>
+  );
 
-        {/* Status Rawat Inap per Kamar */}
-        <Row className="mb-4">
-          <Col lg="12">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <FaUserClock className="text-primary me-2" size={20} />
-                  <h5 className="mb-0">Status Pasien per Kamar</h5>
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <Row>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Kamar 101</h6>
-                    <Badge bg="primary" className="px-3 py-2">
-                      Pasien: 2
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Kamar 102</h6>
-                    <Badge bg="success" className="px-3 py-2">
-                      Pasien: 3
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Kamar 103</h6>
-                    <Badge bg="warning" className="px-3 py-2">
-                      Pasien: 1
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Kamar 104</h6>
-                    <Badge bg="info" className="px-3 py-2">
-                      Pasien: 0
-                    </Badge>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Grafik Kunjungan */}
-        <Row className="mb-4">
-          <Col lg="8">
-            <div className="iq-card ">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="card-title">
-                  Grafik Kunjungan Pasien Rawat Inap
-                </h4>
-              </div>
-              <div className="iq-card-body">
-                <Chart
-                  options={chartOptions.options}
-                  series={chartOptions.series}
-                  type="bar"
-                  height={350}
-                />
-              </div>
-            </div>
-          </Col>
-
-          <Col lg="4">
-            <div className="iq-card ">
-              <div className="iq-card-header d-flex justify-content-between">
-                <h4 className="text-lg font-semibold">Aktivitas Terkini</h4>
-                <span className="px-2 py-1 text-xs font-semibold bg-blue-500 rounded">
-                  Hari Ini
-                </span>
-              </div>
-              <div className="iq-card-body">
-                <div>
-                  <Row>
-                    {aktivitasPasien.map((aktivitasPasien, index) => (
-                      <div key={index} >
-                        <Col lg="6" className="p-3">
-                          <div>
-                            <div>
-                              <div className="mr-3">{aktivitasPasien.icon}</div>
-                              <div className="flex-1">
-                                <div className="flex justify-between items-center">
-                                  <h6 className="font-medium">
-                                    {aktivitasPasien.title}
-                                  </h6>
-                                  <div className="flex items-center text-gray-500 text-sm">
-                                    <i className="ri-time-line mr-1"></i>
-                                    {aktivitasPasien.time}
-                                  </div>
-                                </div>
-                                <span className="text-sm text-gray-500 block">
-                                  {aktivitasPasien.patient}
-                                </span>
-                                <span className="text-sm text-blue-500">
-                                  {aktivitasPasien.info}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </Col>
-                      </div>
-                    ))}
-                  </Row>
-                </div>
-                <div className="text-center mb-3">
-                  <Button className="text-blue-500 hover:text-blue-600 text-sm font-medium">
-                    Lihat Semua Aktivitas
-                  </Button>
+  // Komponen custom untuk aktivitas terkini
+  const AktivitasTerkini = () => (
+    <div className="iq-card">
+      <div className="iq-card-header d-flex justify-content-between align-items-center">
+        <h4 className="card-title mb-0">Aktivitas Terkini</h4>
+        <span className="badge bg-primary">Hari Ini</span>
+      </div>
+      <div className="iq-card-body">
+        <div className="activity-list">
+          {aktivitasPasien.map((item, index) => (
+            <div key={index} className="activity-item mb-3 p-3 border-bottom">
+              <div className="d-flex">
+                <div className="me-3">{item.icon}</div>
+                <div className="flex-grow-1">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h6 className="mb-0 fw-medium">{item.title}</h6>
+                    <div className="text-muted small">
+                      <i className="ri-time-line me-1"></i>
+                      {item.time}
+                    </div>
+                  </div>
+                  <span className="text-muted small d-block">
+                    {item.patient}
+                  </span>
+                  <span className="text-primary small">{item.info}</span>
                 </div>
               </div>
             </div>
-          </Col>
-        </Row>
+          ))}
+        </div>
+        <div className="text-center">
+          <button className="btn btn-outline-primary btn-sm">
+            Lihat Semua Aktivitas
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
-        {/* Daftar Pasien */}
-        {/* <Row className="mb-4">
-          <Col lg="12">
-            <div className="iq-card ">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="d-flex align-items-center">
-                  <FaUsers className="text-primary me-2" size={20} />
-                  <h5 className="mb-0">Daftar Pasien Rawat Inap</h5>
-                </div>
-                <div className="d-flex align-items-center">
-                  <FaSearch className="text-muted me-2" />
-                  <Form.Control
-                    type="search"
-                    placeholder="Cari pasien..."
-                    className="w-auto"
-                    value={searchText}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <CustomTableComponent
-                  data={filteredPatients}
-                  columns={[
-                    { key: "id", label: "ID Pasien" },
-                    { key: "nama", label: "Nama Pasien" },
-                    { key: "kamar", label: "Kamar" },
-                    { key: "jenisKelamin", label: "Jenis Kelamin" },
-                    { key: "status", label: "Status Perawatan" },
-                    { key: "waktuMasuk", label: "Waktu Masuk" },
-                  ]}
-                  itemsPerPage={5}
-                  slugConfig={{ textField: "nama", idField: "id" }}
-                  basePath="/instalasi-rawat-inap/data-pasien/detail-pasien"
-                />
-              </div>
+  // Fungsi simulasi untuk refresh data
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setFilteredPatients([...PasienRawatInap]);
+    }, 1000);
+  };
+
+  // Kustomisasi konten untuk layout
+  const customContent = (
+    <>
+      <StatusPasienPerKamar />
+      <Row>
+        <Col lg="8">
+          <div className="iq-card">
+            <div className="iq-card-header d-flex justify-content-between">
+              <h4 className="card-title">Grafik Kunjungan Pasien Rawat Inap</h4>
             </div>
-          </Col>
-        </Row> */}
-      </Col>
+            <div className="iq-card-body">
+              <Chart
+                options={barChartConfig.options}
+                series={barChartConfig.series}
+                type="bar"
+                height={350}
+              />
+            </div>
+          </div>
+        </Col>
+        <Col lg="4">
+          <AktivitasTerkini />
+        </Col>
+      </Row>
     </>
+  );
+
+  return (
+    <BaseDashboard
+      // Header konfigurasi
+      headerConfig={headerConfig}
+      // Statistik cards
+      statCards={statCards}
+      // Custom content (ganti grafik bawaan)
+      customContent={customContent}
+      // Data dan state
+      data={PasienRawatInap}
+      filteredData={filteredPatients}
+      setFilteredData={setFilteredPatients}
+      loading={loading}
+      // Pagination (dummy untuk contoh)
+      pagination={{
+        currentPage: 1,
+        totalPages: 1,
+        itemPerPage: 5,
+        onPageChange: () => {},
+      }}
+      // Fungsi refresh
+      onRefresh={handleRefresh}
+      // Tabel config (opsional, dalam contoh asli di-comment)
+      tableConfig={tableConfig}
+      // Set ke null agar tidak menampilkan chart bawaan dari BaseDashboard
+      leftChart={null}
+      rightChart={null}
+    />
   );
 };
 

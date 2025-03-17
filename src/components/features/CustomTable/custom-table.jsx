@@ -1,5 +1,5 @@
 "use client";
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Table, Button, Spinner, Form } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { parseISO, format } from "date-fns";
@@ -7,6 +7,9 @@ import CustomSearchFilter from "../custom-search/CustomSearchComponen/custom-sea
 import { generateSlug, generateSlugDummy } from "@/utils/slug";
 import { FaUsers } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
+import TextField from "@/components/ui/text-field";
+import { showAlert } from "../alert/custom-alert";
+import { useDispatch } from "react-redux";
 
 const CustomTableComponent = memo(
   ({
@@ -34,14 +37,42 @@ const CustomTableComponent = memo(
     showSearch = true,
     iconBgColor = "bg-primary-subtle", // Warna background ikon
     iconColor = "text-primary", // Warna ikon
-    searchText,
-    handleSearchChange,
+
     searchName = false,
     buttonRefresh,
     showHeader = true, // Menggunakan nama yang lebih intuitif
     TableIcon,
   }) => {
     const router = useRouter();
+    const dispatch = useDispatch();
+
+    const handleSearch = () => {
+      const { search } = filtersByName;
+
+      if (!search) {
+        showAlert.warning("Harap isi Nama sebelum melakukan pencarian.");
+
+        return;
+      }
+
+      dispatch(fetchFunction(filtersByName)).then((result) => {
+        if (fetchFunction.fulfilled.match(result)) {
+          setFilteredData(result.payload?.data?.rows || []);
+        }
+      });
+    };
+
+    const [filtersByName, setFiltersByName] = useState({
+      search: "",
+    });
+
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setFiltersByName((prevFilters) => ({
+        ...prevFilters,
+        [name]: value,
+      }));
+    };
 
     const dateKeys = [
       "createdDate",
@@ -162,16 +193,36 @@ const CustomTableComponent = memo(
               </div>
 
               <div className="d-flex align-items-center">
-                {searchName && handleSearchChange && (
-                  <div className="d-flex align-items-center me-3">
-                    <FaSearch className="text-muted me-2" />
-                    <Form.Control
-                      type="search"
-                      placeholder="Cari pasien..."
-                      className="w-auto"
-                      value={searchText || ""}
-                      onChange={handleSearchChange}
+                {searchName && (
+                  <div className="d-flex justify-content-end align-items-center gap-2">
+                    <TextField
+                      label="Cari Data:"
+                      name="search"
+                      type="text"
+                      placeholder="Masukkan kata kunci..."
+                      className="form-control"
+                      value={filtersByName.search}
+                      onChange={handleInputChange}
                     />
+                    <Button
+                      variant="primary"
+                      onClick={handleSearch}
+                      className="d-flex align-items-center"
+                      style={{
+                        background: "linear-gradient(135deg, #007bff, #0056b3)",
+                        border: "none",
+                        borderRadius: "8px",
+                        padding: "5px 10px",
+                        fontSize: "16px",
+                        transition: "0.3s ease",
+                        boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.2)",
+                        marginTop: "10px",
+                      }}
+                      onMouseOver={(e) => (e.target.style.opacity = "0.9")}
+                      onMouseOut={(e) => (e.target.style.opacity = "1")}
+                    >
+                      <FaSearch className="me-1" /> Cari
+                    </Button>
                   </div>
                 )}
 

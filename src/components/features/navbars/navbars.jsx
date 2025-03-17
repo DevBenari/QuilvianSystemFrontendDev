@@ -28,21 +28,21 @@ const Navbars = memo(({ module, iconJudul: IconJudul }) => {
   };
 
   // Event untuk menutup sidebar ketika klik di luar sidebar
-  useEffect(() => {
-    if (!mobileOutside) return;
+  // useEffect(() => {
+  //   if (!mobileOutside) return;
 
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setIsClicked(false);
-        document.body.classList.remove("sidebar-main");
-      }
-    };
+  //   const handleClickOutside = (event) => {
+  //     if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+  //       setIsClicked(false);
+  //       document.body.classList.remove("sidebar-main");
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [mobileOutside]);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, [mobileOutside]);
 
   return (
     <Fragment>

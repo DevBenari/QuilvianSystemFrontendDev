@@ -1,43 +1,176 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { Row, Col, Card, Badge } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
 import {
+  FaUserMd,
+  FaUsers,
   FaCalendarCheck,
-  FaUserClock,
+  FaHospital,
+  FaClock,
+  FaStethoscope,
+  FaClipboardCheck,
 } from "react-icons/fa";
+import { Badge, Row, Col, Card } from "react-bootstrap";
+import BaseDashboard from "@/components/features/baseDashboard/base-dashboard";
+import BaseStatusComponent from "@/components/features/baseDashboard/status-poli";
+import StatusPoliComponent from "@/components/features/baseDashboard/status-poli";
 
-// import Chart from "react-apexcharts";
-import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import { poliAnak } from "@/utils/instalasi-poli";
-import dynamic from "next/dynamic";
+// Data dummy untuk daftar pasien rawat jalan
+const pasienRawatJalanData = [
+  {
+    id: "RJ-2023-001",
+    nama: "Ahmad Rizal",
+    umur: 45,
+    jenisKelamin: "Laki-laki",
+    poli: "Poli Umum",
+    dokter: "dr. John Doe",
+    antrian: 1,
+    status: "Selesai",
+    waktuDaftar: "08:15",
+  },
+  {
+    id: "RJ-2023-002",
+    nama: "Siti Aminah",
+    umur: 32,
+    jenisKelamin: "Perempuan",
+    poli: "Poli Anak",
+    dokter: "dr. Jane Smith",
+    antrian: 2,
+    status: "Menunggu Dokter",
+    waktuDaftar: "08:30",
+  },
+  {
+    id: "RJ-2023-003",
+    nama: "Budi Santoso",
+    umur: 28,
+    jenisKelamin: "Laki-laki",
+    poli: "Poli Gigi",
+    dokter: "drg. Mike Johnson",
+    antrian: 3,
+    status: "Dalam Pemeriksaan",
+    waktuDaftar: "08:45",
+  },
+  {
+    id: "RJ-2023-004",
+    nama: "Dewi Putri",
+    umur: 56,
+    jenisKelamin: "Perempuan",
+    poli: "Poli Mata",
+    dokter: "dr. Sarah Wilson",
+    antrian: 1,
+    status: "Menunggu Obat",
+    waktuDaftar: "09:00",
+  },
+  {
+    id: "RJ-2023-005",
+    nama: "Rudi Hermawan",
+    umur: 22,
+    jenisKelamin: "Laki-laki",
+    poli: "Poli Umum",
+    dokter: "dr. John Doe",
+    antrian: 2,
+    status: "Menunggu Dokter",
+    waktuDaftar: "09:15",
+  },
+];
 
 const DashboardRawatJalan = () => {
-   const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-  // State untuk teks pencarian dan data pasien
-  // const [searchText, setSearchText] = useState("");
-  // const [filteredPatients, setFilteredPatients] = useState(poliAnak);
+  const [filteredPasien, setFilteredPasien] = useState(pasienRawatJalanData);
+  const [loading, setLoading] = useState(false);
 
-  // Fungsi untuk menangani perubahan input pencarian
-  // const handleSearchChange = (e) => {
-  //   const text = e.target.value.toLowerCase();
-  //   setSearchText(text);
+  // Fungsi untuk mendapatkan warna badge berdasarkan status pasien
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Selesai":
+        return <Badge bg="success">{status}</Badge>;
+      case "Menunggu Dokter":
+        return (
+          <Badge bg="warning" text="dark">
+            {status}
+          </Badge>
+        );
+      case "Dalam Pemeriksaan":
+        return <Badge bg="primary">{status}</Badge>;
+      case "Menunggu Obat":
+        return <Badge bg="info">{status}</Badge>;
+      default:
+        return <Badge bg="secondary">{status}</Badge>;
+    }
+  };
 
-  //   // Filter data berdasarkan teks pencarian
-  //   const filtered = poliAnak.filter((patient) =>
-  //     patient.nama.toLowerCase().includes(text)
-  //   );
-  //   setFilteredPatients(filtered);
-  // };
+  // Konfigurasi header untuk Rawat Jalan
+  const headerConfig = {
+    hospitalName: "RS METROPOLITAN MEDICAL CENTRE",
+    badgeText: "RAWAT JALAN",
+    divisionText: "Instalasi Rawat Jalan",
+    icon: FaStethoscope,
+    bgColor: "#1a237e",
+    bgGradient: "linear-gradient(135deg, #1a237e 0%, #283593 100%)",
+    badgeColor: "#00c853",
+    badgeTextColor: "white",
+  };
 
+  // Konfigurasi statistik
+  const statCards = [
+    {
+      title: "Total Antrian",
+      value: 120,
+      icon: FaUsers,
+      color: "primary",
+      subtitle: "↑ 12% dari kemarin",
+      subtitleColor: "success",
+    },
+    {
+      title: "Dokter Bertugas",
+      value: 15,
+      icon: FaUserMd,
+      color: "warning",
+      subtitle: "Dari 20 Dokter",
+      subtitleColor: "muted",
+    },
+    {
+      title: "Poli Aktif",
+      value: 8,
+      icon: FaHospital,
+      color: "danger",
+      subtitle: "Dari 10 Poli",
+      subtitleColor: "muted",
+    },
+    {
+      title: "Rata-rata Waktu Tunggu",
+      value: 25,
+      icon: FaClock,
+      color: "info",
+      subtitle: "menit",
+      subtitleColor: "muted",
+    },
+    {
+      title: "Total Kunjungan Hari Ini",
+      value: 85,
+      icon: FaClipboardCheck,
+      color: "success",
+      subtitle: "Sudah dilayani",
+      subtitleColor: "muted",
+    },
+    {
+      title: "Jadwal Hari Ini",
+      value: 12,
+      icon: FaCalendarCheck,
+      color: "primary",
+      subtitle: "jadwal dokter",
+      subtitleColor: "muted",
+    },
+  ];
 
-
-  const chart1 = {
+  // Konfigurasi line chart
+  const lineChartConfig = {
+    title: "Tren Kunjungan Rawat Jalan",
+    type: "line",
+    height: 350,
     options: {
       chart: {
-        type: "bar",
+        type: "line",
         height: 350,
-        stacked: true,
         toolbar: {
           show: true,
         },
@@ -45,32 +178,21 @@ const DashboardRawatJalan = () => {
           enabled: true,
         },
       },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            legend: {
-              position: "bottom",
-              offsetX: -10,
-              offsetY: 0,
-            },
-          },
-        },
-      ],
-      plotOptions: {
-        bar: {
-          horizontal: false,
-        },
+      stroke: {
+        curve: "smooth",
+        width: 3,
       },
       xaxis: {
-        type: "datetime",
         categories: [
-          "01/01/2011 GMT",
-          "01/02/2011 GMT",
-          "01/03/2011 GMT",
-          "01/04/2011 GMT",
-          "01/05/2011 GMT",
-          "01/06/2011 GMT",
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "Mei",
+          "Jun",
+          "Jul",
+          "Agu",
+          "Sep",
         ],
       },
       legend: {
@@ -84,306 +206,227 @@ const DashboardRawatJalan = () => {
     },
     series: [
       {
-        name: "PRODUCT A",
-        data: [44, 55, 41, 67, 22, 43],
+        name: "Poli Umum",
+        data: [120, 130, 125, 140, 145, 150, 155, 160, 170],
       },
       {
-        name: "PRODUCT B",
-        data: [13, 23, 20, 8, 13, 27],
+        name: "Poli Anak",
+        data: [90, 100, 95, 105, 110, 115, 120, 125, 130],
       },
       {
-        name: "PRODUCT C",
-        data: [11, 17, 15, 15, 21, 14],
+        name: "Poli Gigi",
+        data: [60, 65, 70, 75, 80, 85, 90, 95, 100],
       },
     ],
   };
 
-  useEffect(() => {
-    if (document.querySelectorAll("#home-chart-03").length) {
-      am4core.ready(function () {
-        // Themes begin
-        am4core.useTheme(am4themes_animated);
-        // Themes end
+  // Konfigurasi tabel pasien
+  const tableConfig = {
+    title: "Daftar Antrian Aktif",
+    columns: [
+      { key: "id", label: "ID" },
+      { key: "nama", label: "Nama" },
+      { key: "umur", label: "Umur" },
+      { key: "jenisKelamin", label: "Jenis Kelamin" },
+      { key: "poli", label: "Poli" },
+      { key: "dokter", label: "Dokter" },
+      { key: "antrian", label: "No. Antrian" },
+      {
+        key: "status",
+        label: "Status",
+        render: (item) => getStatusBadge(item.status),
+      },
+      { key: "waktuDaftar", label: "Waktu Daftar" },
+    ],
+    showHeader: false,
+    searchName: true,
+    icon: FaUsers,
+    buttonRefresh: true,
+    basePath: "/instalasi-rawat-jalan/data-poli/detail-poli",
+    slugConfig: {
+      textField: "nama",
+      idField: "id",
+    },
+  };
 
-        const chart = am4core.create("home-chart-03", am4charts.PieChart);
-        chart.hiddenState.properties.opacity = 0;
+  // Fungsi simulasi untuk refresh data
+  const handleRefresh = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setFilteredPasien([...pasienRawatJalanData]);
+    }, 1000);
+  };
 
-        chart.data = [
-          {
-            country: "USA",
-            value: 401,
-          },
-          {
-            country: "India",
-            value: 300,
-          },
-          {
-            country: "Australia",
-            value: 200,
-          },
-          {
-            country: "Brazil",
-            value: 100,
-          },
-        ];
-        chart.rtl = true;
-        chart.radius = am4core.percent(70);
-        chart.innerRadius = am4core.percent(40);
-        chart.startAngle = 180;
-        chart.endAngle = 360;
+  const dataPoli = [
+    {
+      id: "P001",
+      nama: "Poli Jantung",
+      dokter: "dr. Hendra Wijaya, Sp.JP",
+      antrianSaatIni: 12,
+      totalAntrian: 25,
+      status: "Aktif",
+      waktuBuka: "08:00 - 14:00",
+      estimasiWaktu: 15,
+      borderColor: "#dc3545", // Merah untuk jantung
+    },
+    {
+      id: "P002",
+      nama: "Poli Mata",
+      dokter: "dr. Ratna Dewi, Sp.M",
+      antrianSaatIni: 8,
+      totalAntrian: 20,
+      status: "Aktif",
+      waktuBuka: "08:00 - 15:00",
+      estimasiWaktu: 12,
+      borderColor: "#5bc0de", // Biru muda untuk mata
+    },
+    {
+      id: "P003",
+      nama: "Poli Bedah Umum",
+      dokter: "dr. Budi Santoso, Sp.B",
+      antrianSaatIni: 5,
+      totalAntrian: 15,
+      status: "Aktif",
+      waktuBuka: "09:00 - 13:00",
+      estimasiWaktu: 30,
+      borderColor: "#f0ad4e", // Oranye untuk bedah
+    },
+    {
+      id: "P004",
+      nama: "Poli Paru",
+      dokter: "dr. Siti Aminah, Sp.P",
+      antrianSaatIni: 14,
+      totalAntrian: 28,
+      status: "Aktif",
+      waktuBuka: "08:00 - 16:00",
+      estimasiWaktu: 10,
+      borderColor: "#5cb85c", // Hijau untuk paru
+    },
+    {
+      id: "P005",
+      nama: "Poli Gigi",
+      dokter: "drg. Rudi Hartono",
+      antrianSaatIni: 3,
+      totalAntrian: 18,
+      status: "Aktif",
+      waktuBuka: "08:30 - 15:30",
+      estimasiWaktu: 20,
+      borderColor: "#33b5e5", // Biru untuk gigi
+    },
+    {
+      id: "P006",
+      nama: "Poli Umum",
+      dokter: "dr. Diana Putri",
+      antrianSaatIni: 10,
+      totalAntrian: 40,
+      status: "Aktif",
+      waktuBuka: "07:30 - 16:00",
+      estimasiWaktu: 8,
+      borderColor: "#007bff", // Biru default
+    },
+    {
+      id: "P007",
+      nama: "Poli Anak",
+      dokter: "dr. Surya Aditya, Sp.A",
+      antrianSaatIni: 7,
+      totalAntrian: 22,
+      status: "Aktif",
+      waktuBuka: "08:00 - 14:30",
+      estimasiWaktu: 10,
+      borderColor: "#ff69b4", // Pink untuk anak
+    },
+    {
+      id: "P008",
+      nama: "Poli Kandungan",
+      dokter: "dr. Maya Lestari, Sp.OG",
+      antrianSaatIni: 6,
+      totalAntrian: 19,
+      status: "Aktif",
+      waktuBuka: "08:00 - 14:00",
+      estimasiWaktu: 25,
+      borderColor: "#8e44ad", // Ungu untuk kandungan
+    },
+    {
+      id: "P009",
+      nama: "Poli Saraf",
+      dokter: "dr. Agus Setiawan, Sp.S",
+      antrianSaatIni: 9,
+      totalAntrian: 17,
+      status: "Aktif",
+      waktuBuka: "09:00 - 15:00",
+      estimasiWaktu: 18,
+      borderColor: "#ff9800", // Jingga untuk saraf
+    },
+    {
+      id: "P010",
+      nama: "Poli THT",
+      dokter: "dr. Lina Rahmawati, Sp.THT",
+      antrianSaatIni: 4,
+      totalAntrian: 14,
+      status: "Aktif",
+      waktuBuka: "08:00 - 13:30",
+      estimasiWaktu: 15,
+      borderColor: "#795548", // Coklat untuk THT
+    },
+  ];
 
-        var series = chart.series.push(new am4charts.PieSeries());
-        series.dataFields.value = "value";
-        series.dataFields.category = "country";
-        series.colors.list = [
-          am4core.color("#089bab"),
-          am4core.color("#2ca5b2"),
-          am4core.color("#faa264"),
-          am4core.color("#fcb07a"),
-        ];
-
-        series.slices.template.cornerRadius = 0;
-        series.slices.template.innerCornerRadius = 0;
-        series.slices.template.draggable = true;
-        series.slices.template.inert = true;
-        series.alignLabels = false;
-
-        series.hiddenState.properties.startAngle = 90;
-        series.hiddenState.properties.endAngle = 90;
-
-        chart.legend = new am4charts.Legend();
-      });
-    }
-    return () => {};
-  }, []);
+  const handlePoliClick = (poli) => {
+    console.log("Detail poli:", poli);
+    // Implementasi navigasi ke halaman detail atau tampilkan modal
+  };
 
   return (
-    <>
-      <Col md="12">
-        {/* Header */}
-
-        <Row>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-primary rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-primary">
-                    <i className="ri-group-fill"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">120</span>
-                    </h2>
-                    <h5 className="">Total Antrian</h5>
-                    <small className="text-success">↑ 12% dari kemarin</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-warning rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-warning">
-                    <i className="ri-women-fill"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">15</span>
-                    </h2>
-                    <small className="text-muted">Dari 20 Dokter</small>
-                    <h5 className="">Dokter Bertugas</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-danger rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-danger">
-                    <i className="ri-hospital-line"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">8</span>
-                    </h2>
-                    <small className="text-muted">Dari 10 Poli</small>
-                    <h5 className="">Poli Aktif</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col md="6" lg="3">
-            <div className="iq-card">
-              <div className="iq-card-body iq-bg-info rounded-4">
-                <div className="d-flex align-items-center justify-content-between">
-                  <div className="rounded-circle iq-card-icon bg-info">
-                    <i className="ri-time-line"></i>
-                  </div>
-                  <div className="text-end mx-2">
-                    <h2 className="mb-0">
-                      <span className="counter">25</span>
-                    </h2>
-                    <h5 className=""> Rata-rata Waktu Tunggu</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Statistik Cards */}
-
-        {/* Status Antrian per Poli */}
-        <Row className="mb-4">
-          <Col lg="12">
-            <Card>
-              <Card.Header className="">
-                <div className="d-flex align-items-center ">
-                  <FaUserClock className="text-primary me-2" size={20} />
-                  <h5 className="mb-0">Status Antrian per Poli</h5>
-                </div>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Poli Umum</h6>
-                    <Badge bg="primary" className="px-3 py-2">
-                      Antri: 15
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Poli Gigi</h6>
-                    <Badge bg="success" className="px-3 py-2">
-                      Antri: 8
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Poli Anak</h6>
-                    <Badge bg="warning" className="px-3 py-2">
-                      Antri: 12
-                    </Badge>
-                  </Col>
-                  <Col md={3} className="text-center mb-3">
-                    <h6>Poli Mata</h6>
-                    <Badge bg="info" className="px-3 py-2">
-                      Antri: 6
-                    </Badge>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col lg="8">
-            <div className="iq-card">
-              <div className="iq-card-header d-flex justify-content-between">
-                <div className="iq-header-title">
-                  <h4 className="card-title">Grafik Kunjungan Pasien</h4>
-                </div>
-              </div>
-              <div className="iq-card-body">
-                <Chart
-                  options={chart1.options}
-                  series={chart1.series}
-                  type="bar"
-                  height={350}
-                />
-              </div>
-            </div>
-          </Col>
-          <Col lg="4">
-            {/* Grafik dan Jadwal */}
-            <Row>
-              <div className="iq-card">
-                <Card className="h-100 p-2">
-                  <Card.Header>
-                    <div className="d-flex align-items-center">
-                      <FaCalendarCheck
-                        className="text-primary me-2"
-                        size={20}
-                      />
-                      <h5 className="mb-0">Jadwal Dokter Hari Ini</h5>
-                    </div>
-                  </Card.Header>
-                  <Card.Body>
-                    <div className="jadwal-list">
-                      <div className="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
-                        <div>
-                          <h6 className="mb-1">dr. John Doe</h6>
-                          <small className="text-muted">Poli Umum</small>
-                        </div>
-                        <Badge bg="success">08:00 - 12:00</Badge>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
-                        <div>
-                          <h6 className="mb-1">dr. Jane Smith</h6>
-                          <small className="text-muted">Poli Anak</small>
-                        </div>
-                        <Badge bg="success">09:00 - 14:00</Badge>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
-                        <div>
-                          <h6 className="mb-1">dr. Mike Johnson</h6>
-                          <small className="text-muted">Poli Gigi</small>
-                        </div>
-                        <Badge bg="warning">13:00 - 17:00</Badge>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </div>
-            </Row>
-          </Col>
-        </Row>
-        {/* <Row className="mb-4">
-          <Col lg="12">
-            <Card>
-              <Card.Header>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <FaUsers className="text-primary me-2" size={20} />
-                    <h5 className="mb-0">Daftar Antrian Aktif</h5>
-                  </div>
-                  <div className="d-flex align-items-center">
-                    <FaSearch className="text-muted me-2" />
-                    <Form.Control
-                      type="search"
-                      placeholder="Cari pasien..."
-                      className="w-auto"
-                      value={searchText}
-                      onChange={handleSearchChange} // Panggil handler saat input berubah
-                    />
-                  </div>
-                </div>
-              </Card.Header>
-              <Card.Body>
-                <CustomTableComponent
-                  data={filteredPatients}
-                  columns={[
-                    { key: "id", label: "ID" },
-                    { key: "nama", label: "Nama" },
-                    { key: "jenisKelamin", label: "Jenis Kelamin" },
-                    { key: "umur", label: "Kelompok Usia" },
-                    { key: "noHp", label: "No Hp" },
-                    { key: "antrian", label: "Antrian" },
-                  ]}
-                  itemsPerPage={3}
-                  slugConfig={{ textField: "nama", idField: "id" }}
-                  basePath="/instalasi-rawat-jalan/data-poli/detail-poli"
-                />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row> */}
-      </Col>
-    </>
+    <BaseDashboard
+      // Header konfigurasi
+      headerConfig={headerConfig}
+      // Statistik cards
+      statCards={statCards}
+      // Left chart - line chart kunjungan
+      leftChart={lineChartConfig}
+      // Right chart - pie chart sebaran pasien
+      rightChart={{
+        title: "Distribusi Pasien per Poli",
+        type: "pie",
+        data: [
+          { category: "Poli Umum", value: 320 },
+          { category: "Poli Anak", value: 280 },
+          { category: "Poli Gigi", value: 200 },
+          { category: "Poli Mata", value: 160 },
+          { category: "Poli Lainnya", value: 240 },
+        ],
+        height: 350,
+        id: "rawat-jalan-chart-01",
+      }}
+      // Tabel konfigurasi
+      tableConfig={tableConfig}
+      // Data dan state
+      data={pasienRawatJalanData}
+      filteredData={filteredPasien}
+      setFilteredData={setFilteredPasien}
+      loading={loading}
+      // Pagination
+      pagination={{
+        currentPage: 1,
+        totalPages: 1,
+        itemPerPage: 10,
+        onPageChange: () => {},
+      }}
+      // Fungsi refresh
+      onRefresh={handleRefresh}
+      // Custom content - status poli dan jadwal dokter
+      customContent={
+        <StatusPoliComponent
+          data={dataPoli}
+          title="Status Antrian Poliklinik"
+          showEstimasiWaktu={true}
+          onItemClick={handlePoliClick}
+          headerBadgeText="Poli Aktif"
+        />
+      }
+      // Title
+      showTitle={false}
+    />
   );
 };
 
