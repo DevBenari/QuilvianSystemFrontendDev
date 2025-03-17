@@ -45,7 +45,7 @@ jobs:
           sudo docker rm $CONTAINER_NAME || true
 
           echo "Running new container with correct port..."
-          sudo docker run -d --name $CONTAINER_NAME -p 8080:3710 --env-file .env $IMAGE_NAME
+          sudo docker run -d --name $CONTAINER_NAME -p 80:3710 --env-file .env $IMAGE_NAME
 
           echo "Cleaning up unused Docker images..."
           sudo docker system prune -af
