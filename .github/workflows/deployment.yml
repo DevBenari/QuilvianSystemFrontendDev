@@ -46,8 +46,8 @@ jobs:
             echo "🚀 Debugging: Cek Direktori Proyek"
             ls -la ~/QuilvianSystemFrontendDevRizki || true
 
-            IMAGE_NAME="quilvian-frontend-Rizki"
-            CONTAINER_NAME="quilvian-frontend-container-Rizki"
+            IMAGE_NAME="quilvian-frontend-rizki"
+            CONTAINER_NAME="quilvian-frontend-container-rizki"
 
             echo "Building new Docker image..."
             sudo docker build --build-arg NEXT_PUBLIC_API_QUILVIAN=http://160.20.104.98/api -t $IMAGE_NAME . || exit 1
