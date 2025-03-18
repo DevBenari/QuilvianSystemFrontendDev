@@ -91,7 +91,7 @@ export const updateAsuransiPasien = createAsyncThunk(
   "AsuransiPasien/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/AsuransiPasien`, data, {
+      const response = await InstanceAxios.post(`/AsuransiPasien${id}`, data, {
         headers: getHeaders(),
       });
 

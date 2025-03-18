@@ -26,40 +26,58 @@ import DokterPoli from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/
 import DokterPoliSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPoliSlice";
 import JadwalPraktekSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/JadwalPraktekSlice";
 import PersalinanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-operasi/PersalinanSlice";
-import AsuransiPasienSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
 import AsuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
+import AsuransiPasienSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
 
 const store = configureStore({
   reducer: {
+    // Auth
     auth: authSlice,
     UserActive: UserActiveSlice,
-    titles: titleReducer,
+
+    // Pendaftaran
     pasien: pasien,
+    anggota: anggotaSlice,
+
+    // Master Informasi
+
+    identitas: indetitasSlice,
+    jabatan: jabatanSlice,
+    titles: titleReducer,
     agama: agamaSlice,
     pekerjaan: pekerjaanReducer,
     golongan: golonganSlice,
     pendidikan: pendidikanSlice,
     negara: NegaraSlice,
-    Dokter: DokterSlice,
-    identitas: indetitasSlice,
-    jabatan: jabatanSlice,
-    anggota: anggotaSlice,
+
+    // Master Wilayah
     Provinsi: ProvinsiSlice,
-    Asuransi: AsuransiSlice,
     KabupatenKota: KabupatenKotaSlice,
     Kecamatan: KecamatanSlice,
     Kelurahan: KelurahanSlice,
-    Departement: DepartementSlice,
+
+    // Peralatan
     KategoriPeralatan: KategoriPeralatanSlice,
     Peralatan: PeralatanSlice,
+
+    // Operasi
+    Persalinan: PersalinanSlice,
+
+    //  Poliklinik dan departemen
     Position: PositionSlice,
     PoliKlinik: PoliKlinikSlice,
-    CoveranAsuransi: CoveranAsuransiSlice,
+    Departement: DepartementSlice,
+
+    // Dokter
+    Dokter: DokterSlice,
     DokterPoli: DokterPoli,
     DokterPoliSlice: DokterPoliSlice,
     JadwalPraktek: JadwalPraktekSlice,
-    Persalinan: PersalinanSlice,
+
+    // Asuransi
+    Asuransi: AsuransiSlice,
     AsuransiPasien: AsuransiPasienSlice,
+    CoveranAsuransi: CoveranAsuransiSlice,
   },
 });
 

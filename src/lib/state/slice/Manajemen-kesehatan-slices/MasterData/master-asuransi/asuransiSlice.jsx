@@ -4,13 +4,27 @@ import { getHeaders } from "@/lib/headers/headers";
 
 export const fetchAsuransi = createAsyncThunk(
   "Asuransi/fetchData",
-  async ({ rejectWithValue }) => {
+  async (
+    { page = 1, perPage = 10, isInfiniteScroll = false },
+    { rejectWithValue, getState }
+  ) => {
     try {
+      const currentState = getState().Asuransi;
+      if (currentState.loadedPages.includes(page)) {
+        console.log("Data already loaded for page:", page);
+        return null;
+      }
       const response = await InstanceAxios.get(`/Asuransi`, {
+        params: { page, perPage },
         headers: getHeaders(),
       });
 
-      return response.data;
+      return {
+        data: response.data.data,
+        pagination: response.data.pagination,
+        page,
+        meta: { arg: { page, isInfiniteScroll } },
+      };
     } catch (error) {
       console.error("Error fetching data:", error);
       return rejectWithValue(
@@ -91,7 +105,7 @@ export const updateAsuransi = createAsyncThunk(
   "Asuransi/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post(`/Asuransi`, data, {
+      const response = await InstanceAxios.post(`/Asuransi${id}`, data, {
         headers: getHeaders(),
       });
 
@@ -134,18 +148,15 @@ const AsuransiSlice = createSlice({
     loading: false,
     error: null,
     selectedAsuransi: null,
-    selectedAsuransi: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-
       // ✅ Fetch Asuransi hanya dengan pagination (CustomTableComponent)
       .addCase(fetchAsuransi.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
       .addCase(fetchAsuransi.fulfilled, (state, action) => {
         if (!action.payload) return; // Skip if we already had the data
 
@@ -155,7 +166,7 @@ const AsuransiSlice = createSlice({
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
-              (existingItem) => existingItem.asuransiId === newItem.asuransiId
+              (existingItem) => existingItem.dokterId === newItem.dokterId
             )
         );
 
@@ -172,7 +183,6 @@ const AsuransiSlice = createSlice({
         state.totalPages = action.payload.pagination?.totalPages || 1;
         state.currentPage = action.meta.arg.page;
       })
-
       .addCase(fetchAsuransi.rejected, (state, action) => {
         state.loading = false;
         state.data = []; // Set data menjadi kosong saat error 404

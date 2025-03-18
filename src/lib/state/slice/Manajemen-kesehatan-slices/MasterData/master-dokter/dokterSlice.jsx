@@ -20,7 +20,7 @@ export const fetchDokter = createAsyncThunk(
       }
       const response = await InstanceAxios.get(`/Dokter`, {
         params: { page, perPage },
-        headers: getHeaders("multipart/form-data"),
+        headers: getHeaders(),
       });
 
       return {

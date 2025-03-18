@@ -14,6 +14,8 @@ import {
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
 import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
 import { options } from "@amcharts/amcharts4/core";
+import useAsuransiData from "@/lib/hooks/useAsuransi";
+import usePasienData from "@/lib/hooks/usePasien";
 
 const AsuransiPasienEditForm = ({ params }) => {
   const router = useRouter();
@@ -40,6 +42,53 @@ const AsuransiPasienEditForm = ({ params }) => {
   }, [selectedAsuransiPasien]);
 
   console.log("data AsuransiPasien : ", dataAsuransiPasien);
+
+  const { AsuransiOptions, handleLoadMoreAsuransi } = useAsuransiData();
+  const { PasienOptions, handleLoadMorePasien } = usePasienData();
+
+  const formFields = [
+    {
+      fields: [
+        {
+          type: "select",
+          label: " Asuransi Pasien",
+          name: "asuransiPasienId",
+          options: AsuransiOptions,
+          placeholder: "Masukkan  Asuransi Pasien...",
+          colSize: 6,
+          rules: { required: " Asuransi Pasien harus diisi" },
+          onMenuScrollToBottom: handleLoadMoreAsuransi,
+        },
+        {
+          type: "select",
+          label: "Nama Pasien",
+          name: "pasienId",
+          placeholder: "Masukkan Nama Pasien...",
+          colSize: 6,
+          options: PasienOptions,
+          rules: { required: "Nama Pasien harus diisi" },
+          onMenuScrollToBottom: handleLoadMorePasien,
+        },
+
+        {
+          type: "text",
+          label: "Nomor Polis",
+          name: "noPolis",
+          placeholder: "Masukkan Nomor Polis...",
+          colSize: 6,
+          rules: { required: "Nomor Polis harus diisi" },
+        },
+      ],
+    },
+  ];
+
+  const formFieldsWithData = formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map((field) => ({
+      ...field,
+      value: dataAsuransiPasien?.[field.name] ?? "",
+    })),
+  }));
 
   const handleSubmit = async (formData) => {
     try {
@@ -75,56 +124,6 @@ const AsuransiPasienEditForm = ({ params }) => {
       }
     });
   };
-  // Konfigurasi Form Fields
-  const formFields = [
-    {
-      fields: [
-        {
-          type: "select",
-          label: "ID Asuransi Pasien",
-          name: "asuransiPasienId",
-          options: [],
-          placeholder: "Masukkan ID Asuransi Pasien...",
-          colSize: 6,
-          rules: { required: "ID Asuransi Pasien harus diisi" },
-        },
-        {
-          type: "select",
-          label: "ID Pasien",
-          name: "pasienId",
-          placeholder: "Masukkan ID Pasien...",
-          colSize: 6,
-          options: [],
-          rules: { required: "ID Pasien harus diisi" },
-        },
-        {
-          type: "text",
-          label: "Nomor Polis",
-          name: "noPolis",
-          placeholder: "Masukkan Nomor Polis...",
-          colSize: 6,
-          rules: { required: "Nomor Polis harus diisi" },
-        },
-        {
-          type: "select",
-          label: "ID Asuransi",
-          name: "asuransiId",
-          options: [],
-          placeholder: "Masukkan ID Asuransi...",
-          colSize: 6,
-          rules: { required: "ID Asuransi harus diisi" },
-        },
-      ],
-    },
-  ];
-
-  const formFieldsWithData = formFields.map((section) => ({
-    ...section,
-    fields: section.fields.map((field) => ({
-      ...field,
-      value: dataAsuransiPasien?.[field.name] ?? "",
-    })),
-  }));
 
   return (
     <Fragment>

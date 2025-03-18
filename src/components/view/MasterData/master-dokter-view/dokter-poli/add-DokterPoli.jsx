@@ -15,13 +15,8 @@ const AddFormDokterPoli = () => {
 
   const {
     DokterOptions,
-    loadingDokter,
     handleLoadMoreDokter,
-    DokterPoliOptions,
-    loadingDokterPoli,
-    handleLoadMoreDokterPoli,
     PoliKlinikOptions,
-    loadingPoliKlinik,
     handleLoadMorePoliKlinik,
   } = useMedicalData();
 
@@ -45,22 +40,6 @@ const AddFormDokterPoli = () => {
           colSize: 6,
           onMenuScrollToBottom: handleLoadMoreDokter,
           rules: { required: "Dokter harus dipilih" },
-        },
-        {
-          type: "text",
-          label: "Nama Dokter",
-          name: "namaDokter",
-          placeholder: "Masukkan Nama Dokter...",
-          colSize: 6,
-          rules: { required: "Nama Dokter harus diisi" },
-        },
-        {
-          type: "text",
-          label: "Nama Poli Klinik",
-          name: "namaPoliKlinik",
-          placeholder: "Masukkan Nama Poli Klinik...",
-          colSize: 6,
-          rules: { required: "Nama Poli Klinik harus diisi" },
         },
       ],
     },

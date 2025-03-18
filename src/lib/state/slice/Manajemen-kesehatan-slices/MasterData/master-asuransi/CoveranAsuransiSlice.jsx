@@ -94,7 +94,7 @@ export const createCoveranAsuransi = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan CoveranAsuransi darah"
+        error.response?.data || "Gagal menambahkan Coveran Asuransi "
       );
     }
   }
@@ -117,7 +117,7 @@ export const updateCoveranAsuransi = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal memperbarui CoveranAsuransi "
+        error.response?.data || "Gagal memperbarui Coveran Asuransi "
       );
     }
   }

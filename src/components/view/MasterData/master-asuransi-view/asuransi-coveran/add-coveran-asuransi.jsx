@@ -1,22 +1,18 @@
 "use client";
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, memo } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 import { showAlert } from "@/components/features/alert/custom-alert";
-import useAsuransiData from "@/lib/hooks/useAsuransi";
 import { createCoveranAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/CoveranAsuransiSlice";
+import useAsuransiData from "@/lib/hooks/useAsuransi";
 
-const CoveranAsuransiAddForm = () => {
+const CoveranAsuransiAddForm = memo(() => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const {
-    AsuransiOptions,
-    loading: AsuransiLoading,
-    handleLoadMore: handleLoadMoreAsuransi,
-  } = useAsuransiData();
+  const { AsuransiOptions, handleLoadMoreAsuransi } = useAsuransiData();
 
   const formFields = [
     {
@@ -96,6 +92,15 @@ const CoveranAsuransiAddForm = () => {
         },
         {
           type: "select",
+          label: "Jenis Asuransi",
+          name: "asuransiId",
+          colSize: 6,
+          rules: { required: "Asuransi harus dipilih" },
+          options: AsuransiOptions,
+          onMenuScrollToBottom: handleLoadMoreAsuransi,
+        },
+        {
+          type: "select",
           label: "Apakah PKS?",
           name: "isPKS",
           options: [
@@ -104,16 +109,6 @@ const CoveranAsuransiAddForm = () => {
           ],
           colSize: 6,
           rules: { required: "Pilih apakah ini PKS atau bukan" },
-        },
-        {
-          type: "select",
-          label: "Jenis Asuransi",
-          name: "asuransiId",
-          colSize: 6,
-          rules: { required: "Asuransi harus dipilih" },
-          options: AsuransiOptions,
-          handleLoadMore: handleLoadMoreAsuransi,
-          isLoading: AsuransiLoading,
         },
       ],
     },
@@ -145,6 +140,8 @@ const CoveranAsuransiAddForm = () => {
       />
     </Fragment>
   );
-};
+});
+
+CoveranAsuransiAddForm.displayName = "CoveranAsuransiAddForm";
 
 export default CoveranAsuransiAddForm;

@@ -15,7 +15,7 @@ const DateInput = memo(
     options = {},
     onChange,
     disabled,
-    readOnly,
+
     ...props
   }) => {
     const {
@@ -86,7 +86,7 @@ const DateInput = memo(
           showYearDropdown
           dropdownMode="select"
           disabled={disabled}
-          readOnly={readOnly}
+          readOnly={true}
           placeholderText={placeholder}
           customInput={
             <Form.Control

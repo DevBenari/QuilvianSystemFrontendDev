@@ -1,11 +1,11 @@
 "use client";
 import React, { Fragment, memo, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 
-import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
 import { useDispatch, useSelector } from "react-redux";
 import { showAlert } from "@/components/features/alert/custom-alert";
-import { createAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiSlice";
+
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import { createAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
 const PendaftaranAsuransi = memo(() => {
   const dispatch = useDispatch();
@@ -64,7 +64,6 @@ const PendaftaranAsuransi = memo(() => {
           label: "Tanggal Mulai Kerjasama",
           name: "tanggalMulaiKerjasama",
           placeholder: "Masukkan RS Rekanan...",
-
           colSize: 6,
           rules: { required: "Tanggal Mulai Kerjasama harus diisi" },
         },
@@ -73,7 +72,6 @@ const PendaftaranAsuransi = memo(() => {
           label: "Tanggal Akhir Kerjasama",
           name: "tanggalAkhirKerjasama",
           placeholder: "Masukkan RS Rekanan...",
-
           colSize: 6,
           rules: { required: "Tanggal Akhir Kerjasama harus diisi" },
         },
@@ -84,6 +82,12 @@ const PendaftaranAsuransi = memo(() => {
           colSize: 6,
           placeholder: "Masukkan RS Rekanan...",
           rules: { required: "Rekanan harus diisi" },
+        },
+        {
+          type: "cekbox",
+          label: "PKS (Perjanjian Kerja Sama)",
+          name: "isPKS",
+          colSize: 6,
         },
         {
           type: "text",
@@ -107,8 +111,7 @@ const PendaftaranAsuransi = memo(() => {
           name: "dokumenKlaim",
           placeholder: "Masukkan Dokumen Klaim...",
           colSize: 6,
-          rules: { required: "Batas maksimal klaim per tahun harus diisi" },
-          placeholder: "Masukkan Batas maksimal klaim per tahun harus diisi...",
+          rules: { required: "Dokumen Klaim harus diisi" },
         },
         {
           type: "number",
@@ -123,10 +126,9 @@ const PendaftaranAsuransi = memo(() => {
           label: "Batas Maksimal Klaim Per Kunjungan",
           name: "batasMaxKlaimPerKunjungan",
           colSize: 6,
-          rules: { required: "Batas maksimal klaim per tahun harus diisi" },
+          rules: { required: "Batas maksimal klaim per kunjungan harus diisi" },
           placeholder: "Masukkan Batas Maksimal Klaim Per Kunjungan...",
         },
-
         {
           type: "text",
           label: "Layanan",
@@ -307,7 +309,7 @@ const PendaftaranAsuransi = memo(() => {
 
   return (
     <Fragment>
-      <DynamicStepForm
+      <DynamicForm
         title="Pendaftaran Pasien Asuransi"
         formConfig={formFields}
         onSubmit={handleSubmitWithApi}

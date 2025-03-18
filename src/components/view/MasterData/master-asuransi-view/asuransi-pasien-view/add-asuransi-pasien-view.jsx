@@ -7,42 +7,38 @@ import { useDispatch, useSelector } from "react-redux";
 import { showAlert } from "@/components/features/alert/custom-alert";
 import { createAsuransiPasien } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
 import useAsuransiData from "@/lib/hooks/useAsuransi";
+import usePasienData from "@/lib/hooks/usePasien";
 
 const PendaftaranAsuransiPasien = memo(() => {
   const dispatch = useDispatch();
 
-  const {
-    AsuransiPasienOptions,
-    loadingAsuransiPasien,
-    handleLoadMoreAsuransiPasien,
-    AsuransiOptions,
-    loadingAsuransi,
-    handleLoadMoreAsuransi,
-  } = useAsuransiData();
+  const { AsuransiOptions, handleLoadMoreAsuransi } = useAsuransiData();
+  const { PasienOptions, handleLoadMorePasien } = usePasienData();
 
   const formFields = [
     {
       fields: [
         {
           type: "select",
-          label: "ID Asuransi Pasien",
+          label: " Asuransi Pasien",
           name: "asuransiPasienId",
-          options: AsuransiPasienOptions,
-          placeholder: "Masukkan ID Asuransi Pasien...",
+          options: AsuransiOptions,
+          placeholder: "Masukkan  Asuransi Pasien...",
           colSize: 6,
-          rules: { required: "ID Asuransi Pasien harus diisi" },
-          onMenuScrollToBottom: handleLoadMoreAsuransiPasien,
-          isLoading: loadingAsuransiPasien,
+          rules: { required: " Asuransi Pasien harus diisi" },
+          onMenuScrollToBottom: handleLoadMoreAsuransi,
         },
         {
           type: "select",
-          label: "ID Pasien",
+          label: "Nama Pasien",
           name: "pasienId",
-          placeholder: "Masukkan ID Pasien...",
+          placeholder: "Masukkan Nama Pasien...",
           colSize: 6,
-          options: [],
-          rules: { required: "ID Pasien harus diisi" },
+          options: PasienOptions,
+          rules: { required: "Nama Pasien harus diisi" },
+          onMenuScrollToBottom: handleLoadMorePasien,
         },
+
         {
           type: "text",
           label: "Nomor Polis",
@@ -50,17 +46,6 @@ const PendaftaranAsuransiPasien = memo(() => {
           placeholder: "Masukkan Nomor Polis...",
           colSize: 6,
           rules: { required: "Nomor Polis harus diisi" },
-        },
-        {
-          type: "select",
-          label: "ID Asuransi",
-          name: "asuransiId",
-          options: AsuransiOptions,
-          placeholder: "Masukkan ID Asuransi...",
-          colSize: 6,
-          rules: { required: "ID Asuransi harus diisi" },
-          onMenuScrollToBottom: handleLoadMoreAsuransi,
-          isLoading: loadingAsuransi,
         },
       ],
     },
@@ -71,7 +56,9 @@ const PendaftaranAsuransiPasien = memo(() => {
       console.log("Form Data:", data);
       await dispatch(createAsuransiPasien(data)).unwrap();
       showAlert.success("Data berhasil disimpan", () => {
-        // router.push("/MasterData/master-asuransi/daftar-asuransi");
+        router.push(
+          "/MasterData/master-asuransi/asuransi-pasien/daftar-asuransi-pasien"
+        );
       });
     } catch (error) {
       console.error("Gagal menambahkan asuransi:", error);
@@ -85,7 +72,7 @@ const PendaftaranAsuransiPasien = memo(() => {
         title="Pendaftaran Pasien AsuransiPasien"
         formConfig={formFields}
         onSubmit={handleSubmitWithApi}
-        backPath="/MasterData/master-asuransi/asuransi/table-asuransi"
+        backPath="/MasterData/master-asuransi/asuransi-pasien/daftar-asuransi-pasien"
         isAddMode={true}
       />
     </Fragment>
