@@ -1669,7 +1669,7 @@ sebuah item class utama untuk layout menggunakan react viertualized*/
 }
 
 .nested-subitem.active-link {
-  background-color: rgba(0, 179, 152, 0.15);
+  background-color: rgba(0, 179, 152, 0.849);
   border-left: 3px solid #b9f6ca;
 }
 

@@ -28,21 +28,53 @@ const Navbars = memo(({ module, iconJudul: IconJudul }) => {
   };
 
   // Event untuk menutup sidebar ketika klik di luar sidebar
-  // useEffect(() => {
-  //   if (!mobileOutside) return;
+  // Updated useEffect to prevent sidebar from disappearing when clicked
+  useEffect(() => {
+    if (!mobileOutside) return;
 
-  //   const handleClickOutside = (event) => {
-  //     if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-  //       setIsClicked(false);
-  //       document.body.classList.remove("sidebar-main");
-  //     }
-  //   };
+    // Create a flag to track if the sidebar toggle button was clicked
+    let sidebarToggleClicked = false;
 
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [mobileOutside]);
+    // Add event listener for the sidebar toggle button
+    const sidebarToggleButton =
+      document.querySelector(".sidebar-click") ||
+      document.querySelector(".hover-circle i");
+    if (sidebarToggleButton) {
+      sidebarToggleButton.addEventListener("click", () => {
+        sidebarToggleClicked = true;
+        // Reset the flag after a short delay to allow the click event to propagate
+        setTimeout(() => {
+          sidebarToggleClicked = false;
+        }, 100);
+      });
+    }
+
+    const handleClickOutside = (event) => {
+      // Only close the sidebar if:
+      // 1. Click is outside the sidebar
+      // 2. The sidebar toggle button wasn't clicked
+      // 3. The click target is not inside any element with class 'iq-sidebar'
+      const isClickInsideSidebar = event.target.closest(".iq-sidebar");
+
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        !sidebarToggleClicked &&
+        !isClickInsideSidebar
+      ) {
+        setIsClicked(false);
+        document.body.classList.remove("sidebar-main");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      if (sidebarToggleButton) {
+        sidebarToggleButton.removeEventListener("click", () => {});
+      }
+    };
+  }, [mobileOutside]);
 
   return (
     <Fragment>
@@ -72,7 +104,7 @@ const Navbars = memo(({ module, iconJudul: IconJudul }) => {
                 aria-label="Toggle navigation"
               >
                 {/* SideMenu hanya muncul di mobile dan tidak tampil di halaman login dan dahsboard*/}
-                <HamburgerMenu module={module} iconJudul={IconJudul} />
+                {/* <HamburgerMenu module={module} iconJudul={IconJudul} /> */}
               </button>
             )}
             <div className="iq-menu-bt align-self-center">

@@ -109,13 +109,14 @@ export const menuItems = [
                 title: "Operasi",
                 href: "/MasterData/master-operasi/operasi/table-operasi",
               },
-              {
-                title: "Persalinan",
-                href: "/MasterData/master-operasi/persalinan/table-persalinan",
-              },
+
               {
                 title: "Daftar Manajemen Operasi",
                 href: "/MasterData/master-operasi/daftar-manajemen-operasi",
+              },
+              {
+                title: "Persalinan",
+                href: "/MasterData/master-operasi/persalinan/table-persalinan",
               },
               {
                 title: "Daftar Tindakan Operasi",
