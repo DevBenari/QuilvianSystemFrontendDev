@@ -1415,262 +1415,292 @@ sebuah item class utama untuk layout menggunakan react viertualized*/
 
 /* =============================================== Start ================================================ */
 
-/* Specific styles for virtualized sidebar */
-.sidebar-virtualized-container {
-  flex: 1;
-  width: 100%;
-}
+/* Green-Themed Modern Sidebar Styling */
 
-.sidebar-virtualized-list {
-  outline: none !important;
-}
-
-/* Hide default scrollbar from react-virtualized */
-.ReactVirtualized__Grid::-webkit-scrollbar {
-  width: 5px;
-}
-
-.ReactVirtualized__Grid::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.ReactVirtualized__Grid::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-}
-
+/* Base Sidebar Styling with Green Gradient Background */
 .iq-sidebar {
   position: fixed;
   z-index: 999;
   top: 0;
   width: 260px;
   height: 100vh;
-  background-color: #089bab;
-  transition: all 0.3s ease-in-out;
-  -webkit-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
-  -moz-box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
-  box-shadow: 0px 0px 25px 0px rgba(45, 69, 95, 0.1);
+  background: linear-gradient(135deg, #089bab 0%, #05717e 100%);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* =============================================== End ================================================ */
-
-/*--------------------------------------------------------------------------
-                                menu item sidebar 
------------------------------------------------------------------------*/
-/* ini adalah sebuah code yang digunakan untuk membuat item item pada sidebar items */
-
-/* =============================================== Start ================================================ */
-
-/* Sidebar Logo */
+/* Sidebar Logo Area */
 .logo-menu {
   padding: 15px;
   width: 100%;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   align-items: center;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-logo {
   height: 40px;
   width: auto;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s ease;
 }
 
-/* Header for Submenus */
-.submenu-header {
-  background-color: #067f8c !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  margin-bottom: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  height: 60px; /* Fixed height for correct calculations */
+.logo-menu:hover .sidebar-logo {
+  transform: scale(1.05);
 }
 
-/* Main Menu Items */
+/* Enhanced Menu Items with Nature-Inspired Effects */
 .iq-menu-item {
   position: relative;
-  transition: all 0.3s ease;
-  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
+  border-radius: 12px;
   margin: 8px 15px;
   padding: 0.8rem 1rem;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.08);
   border-left: 3px solid transparent;
+  overflow: hidden;
+}
+
+.iq-menu-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
 }
 
 .iq-menu-item:hover,
 .iq-menu-item.hovered {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 179, 152, 0.2);
   transform: translateX(5px);
-  border-left: 3px solid #ffffff;
+  border-left: 3px solid #00e676;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.iq-menu-item:hover::before,
+.iq-menu-item.hovered::before {
+  opacity: 1;
 }
 
 .iq-menu-item.active-menu-item {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-left: 3px solid #ffffff;
+  background: linear-gradient(
+    to right,
+    rgba(0, 179, 152, 0.25),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-left: 3px solid #00e676;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Icon and Label Effects */
 .icon-sidebar {
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 30px;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .iq-menu-item:hover .icon-sidebar,
 .iq-menu-item.active-menu-item .icon-sidebar {
-  transform: scale(1.1);
-  color: #e0f7ff;
+  transform: scale(1.15);
+  color: #00e676;
+  filter: drop-shadow(0 0 5px rgba(0, 230, 118, 0.5));
 }
 
 .label-sidebar {
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
   font-weight: 500;
   font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .iq-menu-item:hover .label-sidebar,
 .iq-menu-item.active-menu-item .label-sidebar {
   transform: translateX(5px);
   color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-/* Submenu Items Styling */
+/* Submenu Header Styling */
+.submenu-header {
+  background: linear-gradient(to right, #067f8c, #05616d) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  height: 60px;
+}
+
+/* Submenu Items with Nature-Inspired Effects */
 .iq-submenu-item {
   position: relative;
-  transition: all 0.3s ease;
-  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
+  border-radius: 12px;
   margin: 6px 15px;
   padding: 0.8rem 1rem;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
   border-left: 3px solid transparent;
+  overflow: hidden;
+}
+
+.iq-submenu-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
 }
 
 .iq-submenu-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 179, 152, 0.15);
   transform: translateX(5px);
-  border-left: 3px solid #ffffff;
+  border-left: 3px solid #69f0ae;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.iq-submenu-item:hover::before {
+  opacity: 1;
 }
 
 .iq-submenu-item.active-submenu-item {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-left: 3px solid #ffffff;
+  background: linear-gradient(
+    to right,
+    rgba(0, 179, 152, 0.2),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-left: 3px solid #69f0ae;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.iq-submenu-item:hover .icon-sidebar,
-.iq-submenu-item.active-submenu-item .icon-sidebar {
-  transform: scale(1.1);
-  color: #e0f7ff;
-}
-
-.iq-submenu-item:hover .label-sidebar,
-.iq-submenu-item.active-submenu-item .label-sidebar {
-  transform: translateX(5px);
-  color: #ffffff;
-}
-
-/* Nested Menu Styling */
-.nested-category {
-  margin-bottom: 8px;
-}
-
+/* Nested Menu Items Styling */
 .iq-nested-item {
   position: relative;
-  transition: all 0.3s ease;
-  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
+  border-radius: 10px;
   margin: 5px 10px;
   padding: 0.8rem 1rem;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.03);
   cursor: pointer;
   border-left: 3px solid transparent;
+  overflow: hidden;
+}
+
+.iq-nested-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
 }
 
 .iq-nested-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 179, 152, 0.1);
   transform: translateX(3px);
-  border-left: 3px solid rgba(255, 255, 255, 0.7);
+  border-left: 3px solid #b9f6ca;
+}
+
+.iq-nested-item:hover::before {
+  opacity: 1;
 }
 
 .iq-nested-item.active-nested-item {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-left: 3px solid #ffffff;
+  background: linear-gradient(
+    to right,
+    rgba(0, 179, 152, 0.15),
+    rgba(255, 255, 255, 0.02)
+  );
+  border-left: 3px solid #b9f6ca;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.nested-icon {
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.active-nested-item .nested-icon {
-  transform: scale(1.1);
-  color: #e0f7ff;
-}
-
-/* Arrow animation */
-.arrow-icon {
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.active-nested-item .arrow-icon {
-  color: #e0f7ff;
-}
-
-/* Nested Subitems */
+/* Nested Sub Items Styling */
 .nested-subitems {
   background-color: rgba(0, 0, 0, 0.15);
-  border-radius: 6px;
+  border-radius: 8px;
   margin: 0 10px 5px 10px;
   overflow: hidden;
   transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .nested-subitem {
   padding: 10px 15px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
   position: relative;
   border-left: 3px solid transparent;
 }
 
 .nested-subitem:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(0, 179, 152, 0.1);
   transform: translateX(3px);
-  border-left: 3px solid rgba(255, 255, 255, 0.5);
+  border-left: 3px solid rgba(185, 246, 202, 0.7);
 }
 
 .nested-subitem.active-link {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-left: 3px solid #ffffff;
+  background-color: rgba(0, 179, 152, 0.15);
+  border-left: 3px solid #b9f6ca;
 }
 
 .nested-subitem a {
   display: flex;
   align-items: center;
   font-size: 0.875rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .nested-subitem:hover a,
 .nested-subitem.active-link a {
-  color: #e0f7ff !important;
+  color: #ffffff !important;
 }
 
 .nested-subitem a span {
   position: relative;
   display: inline-block;
   padding-left: 5px;
-  transition: transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
 }
 
 .nested-subitem:hover a span {
   transform: translateX(3px);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
-.nested-subitem.active-link a span {
-  font-weight: 500;
-}
-
-/* Back Button styling */
+/* Back Button Enhancement */
 .back-button {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   height: 35px;
   width: 35px;
@@ -1678,56 +1708,284 @@ sebuah item class utama untuk layout menggunakan react viertualized*/
   align-items: center;
   justify-content: center;
   padding: 0;
-  transition: all 0.2s ease;
-  border: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .back-button:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
-.back-button:focus {
-  box-shadow: none;
+/* Scrollbar Styling */
+.ReactVirtualized__Grid::-webkit-scrollbar {
+  width: 5px;
 }
 
-/* Rotation animation for arrow */
-.rotate-90 {
-  transition: transform 0.3s ease;
+.ReactVirtualized__Grid::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
-/*---------------------------------------------------------------------
-                                Responsive Sidebar
------------------------------------------------------------------------*/
-/* ini tambahan fitur saja */
+.ReactVirtualized__Grid::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 230, 118, 0.3);
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
 
-/* re */
-/* For smaller screens */
+.ReactVirtualized__Grid::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 230, 118, 0.5);
+}
+
+/* Mini Sidebar Mode Modifications */
+body.sidebar-main .iq-sidebar {
+  width: 100px;
+  background: linear-gradient(135deg, #067f8c 0%, #056974 100%);
+}
+
+body.sidebar-main .iq-sidebar:hover {
+  background: linear-gradient(135deg, #089bab 0%, #05717e 100%);
+}
+
+/* Pulse Animation for Active Items */
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(0, 230, 118, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 230, 118, 0);
+  }
+}
+
+.iq-menu-item.active-menu-item,
+.iq-submenu-item.active-submenu-item,
+.iq-nested-item.active-nested-item {
+  animation: pulse-border 2s infinite;
+}
+
+/* Arrow Icon Animations */
+.arrow-icon {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    color 0.3s ease;
+}
+
+.iq-menu-item:hover .arrow-icon,
+.iq-submenu-item:hover .arrow-icon {
+  transform: translateX(3px);
+  color: #00e676;
+}
+
+.active-nested-item .arrow-icon {
+  color: #00e676;
+}
+
+/* Hover Shine Effect */
+@keyframes shine {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.iq-menu-item:hover,
+.iq-submenu-item:hover,
+.iq-nested-item:hover {
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(0, 230, 118, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shine 1.5s infinite;
+}
+
+/* Title Nested Menu Enhancement */
+.title-nested-menu {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  padding-left: 0.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Sidebar Enhancement */
 @media (max-width: 991.98px) {
   .iq-sidebar {
-    left: -260px;
-    transform: translateX(0);
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
   }
 
   .iq-sidebar.show {
-    left: 0;
-    transform: translateX(0);
+    animation: slide-in 0.3s forwards;
   }
 
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 998;
+  @keyframes slide-in {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
   }
 
   .sidebar-overlay.show {
-    display: block;
+    backdrop-filter: blur(3px);
   }
+}
+
+/* Folder Icons Enhancement */
+.iq-nested-item .RiFolderLine,
+.iq-nested-item .RiFolderOpenLine {
+  color: #b9f6ca;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+  transition: all 0.3s ease;
+}
+
+.iq-nested-item:hover .RiFolderLine,
+.iq-nested-item:hover .RiFolderOpenLine {
+  color: #00e676;
+  transform: scale(1.1);
+}
+
+/* Add leafy pattern overlay to sidebar */
+.iq-sidebar::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,0.03)' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  background-position: center;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+/* Enhanced hover state transitions */
+.iq-menu-item,
+.iq-submenu-item,
+.iq-nested-item {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    background-color 0.3s ease, border-left 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Water ripple effect on click */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.iq-menu-item:active::after,
+.iq-submenu-item:active::after,
+.iq-nested-item:active::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 230, 118, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.6s linear;
+}
+
+/* Gradient text effect for active items */
+.iq-menu-item.active-menu-item .label-sidebar,
+.iq-submenu-item.active-submenu-item .label-sidebar {
+  background: linear-gradient(to right, #ffffff, #b9f6ca);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+
+/* Improve submenu header title styling */
+.submenu-header h2 {
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+/* Make icons pop more */
+.icon-sidebar {
+  font-size: 1.2rem;
+}
+
+/* Add top and bottom shadow to create depth in scrollable areas */
+.sidebar-virtualized-container::before,
+.sidebar-virtualized-container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.sidebar-virtualized-container::before {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 113, 126, 0.7),
+    rgba(5, 113, 126, 0)
+  );
+}
+
+.sidebar-virtualized-container::after {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(5, 113, 126, 0.7),
+    rgba(5, 113, 126, 0)
+  );
+}
+
+/* untuk folder */
+
+/* CSS untuk Styling Icon Folder */
+/* Ukuran dan efek dasar untuk icon folder */
+
+.nested-icon .FcFolder,
+.nested-icon .FcOpenedFolder {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.075);
+}
+
+/* Efek hover untuk icon folder */
+.iq-nested-item:hover .nested-icon .FcFolder,
+.iq-nested-item:hover .nested-icon .FcOpenedFolder {
+  transform: scale(1.15);
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
+/* Efek bounce saat hover */
+@keyframes folder-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.iq-nested-item:hover .nested-icon {
+  animation: folder-bounce 0.3s ease;
 }
 
 /* =================================================End ========================== */

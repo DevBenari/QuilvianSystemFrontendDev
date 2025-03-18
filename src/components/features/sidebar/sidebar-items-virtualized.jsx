@@ -16,6 +16,7 @@ import {
   RiFolderLine,
   RiFolderOpenLine,
 } from "react-icons/ri";
+import { FcFolder, FcOpenedFolder } from "react-icons/fc";
 import { Row, Col, Button } from "react-bootstrap";
 import {
   getNestedMenuFromSubItem,
@@ -422,9 +423,9 @@ const VirtualizedSideBarItems = memo(() => {
             <div className="d-flex align-items-center text-white w-100">
               <Col xs="auto" className="pe-2 nested-icon">
                 {activeNestedMenu === category.key ? (
-                  <RiFolderOpenLine className="fs-4" />
+                  <FcOpenedFolder className="fs-4" />
                 ) : (
-                  category.icon || <RiFolderLine className="fs-4" />
+                  <FcFolder className="fs-4" />
                 )}
               </Col>
               <Col className="ps-2 text-white fw-bold title-nested-menu">
