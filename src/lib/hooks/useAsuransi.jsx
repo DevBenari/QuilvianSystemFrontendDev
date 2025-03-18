@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
-import { fetchAsuransi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiSlice";
+
 import { fetchAsuransiPasien } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
 import { fetchCoveranAsuransi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/CoveranAsuransiSlice";
+import { fetchAsuransi } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
 // Custom hook untuk fetching data
 const useFetchAsuransi = (sliceName, fetchAction) => {
