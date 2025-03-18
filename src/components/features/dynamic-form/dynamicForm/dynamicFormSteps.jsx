@@ -21,8 +21,7 @@ import NumberField from "@/components/ui/distance-filed";
 const DynamicStepForm = ({ 
   title, 
   formConfig, 
-  onSubmit,
-  onFormSubmited, 
+  onSubmit, 
   backPath, 
   onStepChange,
   onNextStep,
@@ -354,7 +353,7 @@ const DynamicStepForm = ({
 
   return (
     <FormProvider {...methods}>
-      <Row className="iq-card p-2 mx-3 mt-5 rounded">
+      <Row className="iq-card p-2 mx-3 mt-5 rounded rounded-lg">
         <div className="iq-card p-2 mt-5">
           <div className="iq-card-header gap-1 d-flex justify-content-between">
             <div className="iq-header-title">
