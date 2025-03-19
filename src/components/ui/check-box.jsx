@@ -2,7 +2,7 @@ import React from "react";
 import { Form } from "react-bootstrap";
 import { useFormContext, Controller } from "react-hook-form";
 
-const Checkbox = ({
+const BaseCheckBox = ({
   label,
   name,
   className,
@@ -47,4 +47,4 @@ const Checkbox = ({
   );
 };
 
-export default Checkbox;
+export default BaseCheckBox;

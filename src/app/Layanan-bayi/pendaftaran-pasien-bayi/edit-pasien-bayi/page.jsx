@@ -7,7 +7,6 @@ import { Button, Card, Col, Image, Row } from "react-bootstrap";
 import ButtonNav from "@/components/ui/button-navigation";
 
 import { useDispatch, useSelector } from "react-redux";
-import { EditPasienSlice } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 import { fetchPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 import { fetchTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 import { fetchPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
@@ -129,7 +128,6 @@ const EditPasienBayi = memo(() => {
     dispatch(fetchTitle({ page, totalPage }));
     dispatch(fetchPekerjaan({ page, totalPage }));
     dispatch(fetchGolongan({ page, totalPage }));
-    dispatch(EditPasienSlice());
     dispatch(fetchIdentitas({ page, totalPage }));
   }, [dispatch, page, totalPage]);
 

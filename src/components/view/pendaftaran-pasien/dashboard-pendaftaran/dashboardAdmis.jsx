@@ -16,15 +16,6 @@ import {
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 import BaseDashboard from "@/components/features/baseDashboard/base-dashboard";
 
-/**
- * Contoh Cara Menggunakan BaseDashboard dengan Header Kustom
- *
- * 1. Import BaseDashboard dan komponen lain yang diperlukan
- * 2. Buat state untuk mengelola data, filter, dsb
- * 3. Setup objek konfigurasi (header, stat cards, charts, table)
- * 4. Render BaseDashboard dengan konfigurasi tersebut
- */
-
 const DashboardPendaftaranAdmisi = () => {
   const dispatch = useDispatch();
 

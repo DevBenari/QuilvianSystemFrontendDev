@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Row, Col, Form, Button,} from "react-bootstrap";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -17,8 +17,16 @@ import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
 import ReusableTabs from "@/components/ui/tabs-ui";
+import BaseCheckBox from "@/components/ui/check-box";
 
-const DyanamicFormWithTabs = ({title,mainFields, formConfig, onSubmit, backPath, isAddMode = false }) => {
+const DyanamicFormWithTabs = ({
+  title,
+  mainFields,
+  formConfig,
+  onSubmit,
+  backPath,
+  isAddMode = false,
+}) => {
   const fieldComponents = {
     text: TextField,
     email: TextField,
@@ -34,6 +42,7 @@ const DyanamicFormWithTabs = ({title,mainFields, formConfig, onSubmit, backPath,
     time: TimeField,
     number: NumberField,
     searchSelect: SearchableSelectField,
+    cekbox: BaseCheckBox,
   };
 
   // TypeScript types for form configuration
@@ -63,7 +72,7 @@ const DyanamicFormWithTabs = ({title,mainFields, formConfig, onSubmit, backPath,
       name,
       label,
       placeholder,
-      type, 
+      type,
       rules,
       className = "mb-3",
       readOnly = false,
@@ -147,24 +156,23 @@ const DyanamicFormWithTabs = ({title,mainFields, formConfig, onSubmit, backPath,
   const [isEditing, setIsEditing] = useState(isAddMode); // Mulai editable jika add mode
 
   const methods = useForm({
-      defaultValues: {
-        ...mainFields.reduce((defaults, field) => {
+    defaultValues: {
+      ...mainFields.reduce((defaults, field) => {
+        defaults[field.name] = field.value || "";
+        return defaults;
+      }, {}),
+      ...formConfig.reduce((defaults, section) => {
+        section.fields.forEach((field) => {
           defaults[field.name] = field.value || "";
-          return defaults;
-        }, {}),
-        ...formConfig.reduce((defaults, section) => {
-          section.fields.forEach((field) => {
-            defaults[field.name] = field.value || "";
-          });
-          return defaults;
-        }, {}),
-      },
-      mode: "onChange",
-    });
+        });
+        return defaults;
+      }, {}),
+    },
+    mode: "onChange",
+  });
 
   const handleEdit = () => setIsEditing(true);
   const handleCancel = () => setIsEditing(false);
-
 
   const {
     setValue,
@@ -177,35 +185,38 @@ const DyanamicFormWithTabs = ({title,mainFields, formConfig, onSubmit, backPath,
   const statusKewarganegaraan = watch("statusKewarganegaraan");
   const kewarganegaraan = watch("kewarganegaraan");
 
-    useEffect(() => {
-        if (titles === "Mr" || titles === "Tn" || titles === "Ms") {
-        setValue("jenisKelamin", "Laki-Laki");
-        } else if (
-        titles === "Mrs" ||
-        titles === "Miss" ||
-        titles === "Ny" ||
-        titles === "Nn"
-        ) {
-        setValue("jenisKelamin", "Perempuan");
-        } else {
-        setValue("jenisKelamin", "");
-        }
-    }, [titles, setValue]);
+  useEffect(() => {
+    if (titles === "Mr" || titles === "Tn" || titles === "Ms") {
+      setValue("jenisKelamin", "Laki-Laki");
+    } else if (
+      titles === "Mrs" ||
+      titles === "Miss" ||
+      titles === "Ny" ||
+      titles === "Nn"
+    ) {
+      setValue("jenisKelamin", "Perempuan");
+    } else {
+      setValue("jenisKelamin", "");
+    }
+  }, [titles, setValue]);
 
   useEffect(() => {
-      if (statusKewarganegaraan === "WNI") {
-        setValue("kewarganegaraan", "Indonesia");
-      } else if (statusKewarganegaraan === "WNA" && kewarganegaraan !== kewarganegaraan) {
-        setValue("kewarganegaraan", kewarganegaraan);
-      }
-    }, [statusKewarganegaraan, kewarganegaraan  , setValue]);
+    if (statusKewarganegaraan === "WNI") {
+      setValue("kewarganegaraan", "Indonesia");
+    } else if (
+      statusKewarganegaraan === "WNA" &&
+      kewarganegaraan !== kewarganegaraan
+    ) {
+      setValue("kewarganegaraan", kewarganegaraan);
+    }
+  }, [statusKewarganegaraan, kewarganegaraan, setValue]);
 
-    const shouldHideField = (field) => {
-      if (typeof field.hide === "function") {
-        return field.hide(watch());
-      }
-      return field.hide;
-    };
+  const shouldHideField = (field) => {
+    if (typeof field.hide === "function") {
+      return field.hide(watch());
+    }
+    return field.hide;
+  };
 
   return (
     <FormProvider {...methods}>
@@ -222,63 +233,63 @@ const DyanamicFormWithTabs = ({title,mainFields, formConfig, onSubmit, backPath,
                 path={backPath}
                 icon="ri-arrow-left-line"
               />
-              {!isAddMode && !isEditing && ( // Hanya tampil jika bukan add mode dan belum edit
-                <Button className="btn btn-primary" onClick={handleEdit}>
-                  <i className="ri-edit-2-line"></i>
-                  Edit
-                </Button>
-              )}
-              {!isAddMode && isEditing && ( // Tombol cancel hanya tampil di mode edit
-                <Button className="btn btn-danger" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              )}
+              {!isAddMode &&
+                !isEditing && ( // Hanya tampil jika bukan add mode dan belum edit
+                  <Button className="btn btn-primary" onClick={handleEdit}>
+                    <i className="ri-edit-2-line"></i>
+                    Edit
+                  </Button>
+                )}
+              {!isAddMode &&
+                isEditing && ( // Tombol cancel hanya tampil di mode edit
+                  <Button className="btn btn-danger" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                )}
             </div>
           </div>
           <div className="card-body py-3">
             <Form onSubmit={formSubmit(onSubmit)}>
-                <div className="mb-4">
+              <div className="mb-4">
                 <Row>
-                    {mainFields.map((field, index) =>  (
-                            <Col key={`section-${index}`} lg={field.colSize || 6}>
-                                {renderField(field)}
-                            </Col>
-                        )
-                    )}
+                  {mainFields.map((field, index) => (
+                    <Col key={`section-${index}`} lg={field.colSize || 6}>
+                      {renderField(field)}
+                    </Col>
+                  ))}
                 </Row>
-                </div>
-                <ReusableTabs>
-                    {formConfig.map((section, index) => (
-                        <ReusableTabs.TabItem 
-                            key={`section-${index}`}
-                            eventKey={`tab-${index}`}
-                            title={section.section}
-                        >
-                            <Row 
-                                className=
-                                {
-                                    section.layout === "inline"
-                                    ? "d-flex align-items-center"
-                                    : ""
-                                }
-                            >
-                                {section.fields
-                                .filter((field) => !shouldHideField(field))
-                                .map(({ colSize, ...field }, fieldIndex) => (
-                                    <Col key={field.id || fieldIndex} lg={colSize || 6}>
-                                    {renderField(field)}
-                                    </Col>
-                                ))}
-                            </Row>
-                        </ReusableTabs.TabItem>
-                    ))}
-                </ReusableTabs>
-                {(isAddMode || isEditing) && ( // Tombol simpan hanya tampil di add mode atau mode edit
-                    <Button type="submit" className="btn btn-primary m-3">
-                    <i className="ri-save-line"></i>
-                    Simpan
-                    </Button>
-                )}
+              </div>
+              <ReusableTabs>
+                {formConfig.map((section, index) => (
+                  <ReusableTabs.TabItem
+                    key={`section-${index}`}
+                    eventKey={`tab-${index}`}
+                    title={section.section}
+                  >
+                    <Row
+                      className={
+                        section.layout === "inline"
+                          ? "d-flex align-items-center"
+                          : ""
+                      }
+                    >
+                      {section.fields
+                        .filter((field) => !shouldHideField(field))
+                        .map(({ colSize, ...field }, fieldIndex) => (
+                          <Col key={field.id || fieldIndex} lg={colSize || 6}>
+                            {renderField(field)}
+                          </Col>
+                        ))}
+                    </Row>
+                  </ReusableTabs.TabItem>
+                ))}
+              </ReusableTabs>
+              {(isAddMode || isEditing) && ( // Tombol simpan hanya tampil di add mode atau mode edit
+                <Button type="submit" className="btn btn-primary m-3">
+                  <i className="ri-save-line"></i>
+                  Simpan
+                </Button>
+              )}
             </Form>
           </div>
         </div>

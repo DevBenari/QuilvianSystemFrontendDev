@@ -12,8 +12,6 @@ export const getNestedMenuFromSubItem = (subMenuItem) => {
   // Tambahkan jenis menu baru di sini saat diperlukan
   if (subMenuItem.masterDataMenu) {
     return subMenuItem.masterDataMenu;
-  } else if (subMenuItem.pendaftaranMenu) {
-    return subMenuItem.pendaftaranMenu;
   } else if (subMenuItem.menuIGD) {
     return subMenuItem.menuIGD;
   } else if (subMenuItem.menuLaboratorium) {
@@ -36,6 +34,8 @@ export const getNestedMenuFromSubItem = (subMenuItem) => {
     return subMenuItem.menuOptik;
   } else if (subMenuItem.menuFarmasi) {
     return subMenuItem.menuFarmasi;
+  } else if (subMenuItem.pendaftaranMenu) {
+    return subMenuItem.pendaftaranMenu;
   }
   // Tambahkan pengecekan untuk jenis menu baru di sini
   // else if (subMenuItem.namaMenuBaru) {
@@ -57,7 +57,6 @@ export const hasNestedMenu = (subMenuItem) => {
   return !!(
     (
       subMenuItem.masterDataMenu?.length ||
-      subMenuItem.pendaftaranMenu?.length ||
       subMenuItem.menuIGD?.length ||
       subMenuItem.menuRadiologi?.length ||
       subMenuItem.menuLaboratorium?.length ||
@@ -70,7 +69,8 @@ export const hasNestedMenu = (subMenuItem) => {
       subMenuItem.menuMCU?.length ||
       subMenuItem.menuBayi?.length ||
       subMenuItem.menuOptik?.length ||
-      subMenuItem.menuFarmasi?.length
+      subMenuItem.menuFarmasi?.length ||
+      subMenuItem.pendaftaranMenu?.length
     )
     // Tambahkan pengecekan untuk jenis menu baru di sini
     // || subMenuItem.namaMenuBaru?.length

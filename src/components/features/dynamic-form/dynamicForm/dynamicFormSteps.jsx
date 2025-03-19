@@ -25,11 +25,7 @@ const DynamicStepForm = ({
   onSubmit,
   onFormSubmited,
   backPath,
-const DynamicStepForm = ({ 
-  title, 
-  formConfig, 
-  onSubmit, 
-  backPath, 
+
   onStepChange,
   onNextStep,
   onPreviousStep,

@@ -4,7 +4,7 @@ import {
   fetchAsuransiPasien,
   createAsuransiPasien,
   deleteAsuransiPasien,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 
 /**
  * Custom hook for managing insurance-related functionality

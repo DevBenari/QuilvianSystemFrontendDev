@@ -26,6 +26,7 @@ export const menuItems = [
     key: "ManajemenKesehatan",
     pathname: "/PelayananKesehatan",
     subMenu: [
+      // Master Data
       {
         pathname: "/MasterData",
         label: "Master Data",
@@ -257,8 +258,8 @@ export const menuItems = [
           },
         ],
       },
+      // admisi
       {
-        pathname: "/pendaftaran",
         label: "Admisi",
         key: "admisi",
         icon: <RiClipboardLine className="fs-4" />,
@@ -270,7 +271,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Admisi",
-                href: "/pendaftaran/dashboard-admisi",
+                href: "/pendaftaran",
               },
             ],
           },
@@ -319,12 +320,14 @@ export const menuItems = [
           },
         ],
       },
+      // Dokter
       {
         pathname: "/dokter",
         label: "Dokter",
         key: "dokter",
         icon: <FaStethoscope className="fs-4" />,
       },
+      // IGD
       {
         pathname: "/IGD",
         label: "IGD",
@@ -475,8 +478,8 @@ export const menuItems = [
           // },
         ],
       },
+      // Rawat Inap
       {
-        pathname: "/rawat-inap",
         label: "Rawat Inap",
         key: "rawatInap",
         icon: <RiHotelLine className="fs-4" />,
@@ -488,7 +491,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Rawat Inap",
-                href: "/Rawat-Inap/Beranda/dashboard-rawat-inap",
+                href: "/Rawat-Inap",
               },
               {
                 title: "Table Pasien lama",
@@ -513,8 +516,8 @@ export const menuItems = [
           },
         ],
       },
+      // Rawat Inap
       {
-        pathname: "/rawat-jalan",
         label: "Rawat Jalan",
         key: "dashboardRawatJalan",
         icon: <RiWalkLine className="fs-4" />,
@@ -526,7 +529,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Rawat Jalan",
-                href: "/Rawat-Jalan/Beranda/dashboard-rawat-jalan",
+                href: "/Rawat-Jalan",
               },
               {
                 title: "Table Pasien lama",
@@ -618,8 +621,8 @@ export const menuItems = [
           // },
         ],
       },
+      // Operasi
       {
-        pathname: "/Operasi",
         label: "Instalasi Operasi",
         key: "instalasiOperasi",
         icon: <GiMicroscope className="fs-4" />,
@@ -631,7 +634,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Operasi",
-                href: "/Operasi/Beranda/dashboard-operasi",
+                href: "/Operasi",
               },
               {
                 title: "Table Pasien Operasi",
@@ -645,8 +648,8 @@ export const menuItems = [
           },
         ],
       },
+      // Radiologi
       {
-        pathname: "/Radiologi",
         label: "Radiologi",
         key: "radiologi",
         icon: <MdScanner className="fs-4" />,
@@ -658,7 +661,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Radiologi",
-                href: "/Radiologi/Beranda/dashboard-radiologi",
+                href: "/Radiologi",
               },
               {
                 title: "Table Perjanjian Radiologi",
@@ -683,8 +686,8 @@ export const menuItems = [
           },
         ],
       },
+      // Laboratorium
       {
-        pathname: "/Laboratorium",
         label: "Laboratorium",
         key: "Laboratorium",
         icon: <RiTestTubeLine className="fs-4" />,
@@ -696,16 +699,16 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Laboratorium",
-                href: "/Laboratorium/Beranda/dashboard-laboratorium",
+                href: "/Laboratorium",
               },
               {
                 title: "Table Pasien Laboratorium",
                 href: "/Laboratorium/Beranda/table-pasien-laboratorium",
               },
-              {
-                title: "Table Pemeriksaan Laboratorium",
-                href: "/Laboratorium/Beranda/pemeriksaan-laboratorium",
-              },
+              // {
+              //   title: "Table Pemeriksaan Laboratorium",
+              //   href: "/Laboratorium/Beranda/pemeriksaan-laboratorium",
+              // },
             ],
           },
           {
@@ -721,8 +724,8 @@ export const menuItems = [
           },
         ],
       },
+      // Rehabilitas
       {
-        pathname: "/Rehabilitasi",
         label: "Rehabilitasi",
         key: "Rehabilitasi",
         icon: <PiWheelchairFill className="fs-4" />,
@@ -734,7 +737,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Rehabilitasi",
-                href: "/Rehabilitasi/Beranda/dashboard-rehabilitasi",
+                href: "/Rehabilitasi",
               },
               {
                 title: "Table Pasien Rehabilitasi",
@@ -759,8 +762,8 @@ export const menuItems = [
           },
         ],
       },
+      // Medical Check-Up
       {
-        pathname: "/Medical-check-up",
         label: "Medical Check-Up",
         key: "medicalCheckUp",
         icon: <RiHealthBookLine className="fs-4" />,
@@ -772,7 +775,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard MCU",
-                href: "/Medical-check-up/Beranda/dashboard-mcu",
+                href: "/Medical-check-up",
               },
               {
                 title: "Table Pasien MCU",
@@ -797,8 +800,8 @@ export const menuItems = [
           },
         ],
       },
+      // PELAYANAN bAYI
       {
-        pathname: "/Layanan-bayi",
         label: "Palayanan Bayi",
         key: "pelayananBayi",
         icon: <FaBaby className="fs-4" />, // Menggunakan ikon bayi yang lebih cocok
@@ -808,18 +811,14 @@ export const menuItems = [
             key: "dashboardBayi",
             icon: <RiFolderLine className="fs-4" />,
             subItems: [
-              // {
-              //   title: "Dashboard Bayi",
-              //   href: "/Layanan-bayi/Beranda/dashboard-bayi",
-              // },
+              {
+                title: "Dashboard Bayi",
+                href: "/Layanan-bayi",
+              },
               {
                 title: "Table Pasien Bayi",
                 href: "/Layanan-bayi/Beranda/table-pasien-bayi",
               },
-              // {
-              //   title: "Paket Diet Pasien",
-              //   href: "/Layanan-bayi/Beranda/paket-diet-pasien",
-              // },
             ],
           },
           {
@@ -835,6 +834,7 @@ export const menuItems = [
           },
         ],
       },
+      // Optik
       {
         pathname: "/Optik",
         label: "Optik",
@@ -852,7 +852,7 @@ export const menuItems = [
               },
               {
                 title: "Dashboard Optik",
-                href: "/Optik/Beranda/dashboard-optik",
+                href: "/Optik",
               },
               // {
               //   title: "Riwayat Resep Kacamata",
@@ -873,9 +873,8 @@ export const menuItems = [
           },
         ],
       },
-
+      // Farmasi
       {
-        pathname: "/farmasi",
         label: "Farmasi",
         key: "farmasi",
         icon: <RiMedicineBottleLine className="fs-4" />,
@@ -887,7 +886,7 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Farmasi",
-                href: "/Farmasi/Beranda/dashboard-farmasi",
+                href: "/Farmasi",
               },
               // {
               //   title: "Table Obat",
@@ -914,26 +913,7 @@ export const menuItems = [
       },
     ],
   },
-  {
-    label: "Pelayanan Medis",
-    key: "pelayananMedis",
-    pathname: "/pendaftaran",
-    icon: <RiHospitalLine className="fs-4" />,
-    subMenu: [
-      {
-        pathname: "/pelayanan-medik/instalasi-medik",
-        label: "Instalasi Medik",
-        key: "instalasiMedik",
-        icon: <RiHospitalLine className="fs-4" />,
-      },
-      {
-        pathname: "/app/List Pasien",
-        label: "List Pasien",
-        key: "listPasien",
-        icon: <RiUserLine className="fs-4" />,
-      },
-    ],
-  },
+
   {
     label: "Kiosk",
     key: "kioskPendaftaran",
