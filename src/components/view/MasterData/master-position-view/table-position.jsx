@@ -4,12 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { FormProvider, useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
 import CustomTableComponent from "@/components/features/CustomTable/custom-table";
-import CustomSearchFilter from "@/components/features/custom-search/CustomSearchComponen/custom-search-filter";
 import ButtonNav from "@/components/ui/button-navigation";
 import {
   fetchPosition,
   fetchPositionWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-slice/PositionSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-position-slice/positionSlice";
 import { FaUserTie } from "react-icons/fa"; // Icon untuk Position
 import LoadingScreen from "@/components/features/loading/loadingScreen";
 

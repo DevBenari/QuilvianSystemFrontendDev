@@ -140,9 +140,9 @@ const DynamicStepCardForm = ({
 
   // Form content that will be rendered with or without container
   const formContent = (
-    <Row className="justify-content-center ">
+    <Row className="justify-content-center mt-5">
       <Col xs={12}>
-        <Card className={`main-card py-3 ${className || ""}`}>
+        <Card className={`main-card  ${className || ""}`}>
           <Card.Header className="d-flex justify-content-between align-items-center">
             <h4 className="m-0">{title}</h4>
             <ButtonNav

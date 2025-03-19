@@ -334,7 +334,7 @@ const LaboratoryRegistrationPage = () => {
             label: "Asuransi yang digunakan pasien",
             type: "select",
             options: insuranceList.map((item) => ({ 
-              label: `${item.namaAsuransi} - ${nomorPolis}`, 
+              label: `${item.namaAsuransi} - ${item.nomorPolis}`, 
               value: item.asuransiId,
               isPKS: item.isPKS
             })),

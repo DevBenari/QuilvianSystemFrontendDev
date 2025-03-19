@@ -10,7 +10,7 @@ import { FaShieldHeart } from "react-icons/fa6";
 import {
   fetchAsuransiPasien,
   fetchAsuransiPasienWithFilters,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 import { FaIdCard } from "react-icons/fa";
 
 const TableDataAsuransiPasien = () => {

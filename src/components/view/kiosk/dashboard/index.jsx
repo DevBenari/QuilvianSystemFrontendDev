@@ -48,7 +48,7 @@ const DashboardKiosk = () => {
                         <div className="kiosk-logo">
                             <Image src="/Images/logo_mmc.png" className="img-fluid" alt="logo" />
                         </div>
-                        <h1 className="dashboard-title mt-2">SELAMAT DATANG DI LAYANAN KIOSK RUMAH SAKIT</h1>
+                        <h1 className="dashboard-title">SELAMAT DATANG DI LAYANAN KIOSK RUMAH SAKIT</h1>
                     </div>
                 </div>
                 <div className="kiosk-middle px-2 mx-4 pb-5">

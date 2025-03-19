@@ -4,17 +4,17 @@ import { useForm } from "react-hook-form";
 import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
 import { Button, Card, Col, Image, Row, Alert } from "react-bootstrap";
 import ButtonNav from "@/components/ui/button-navigation";
-// import { CreditCard } from "react-feather"; // Import CreditCard icon
 
 // Import the CardScannerModal component
 import CardScannerModal from "@/components/ui/modal-scanCard";
+// Import the usePatientData hook
+import usePatientData from "@/lib/hooks/usePartientData";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AddPasienSlice } from "@/lib/state/slice/Manajemen-kesehatan-slices/pasienSlice";
 import { fetchPendidikan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pendidikanSlice";
 import { fetchTitle } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/TitleSlice";
 import { fetchPekerjaan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/pekerjaanSlice";
-import { fetchNegara } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 import { fetchGolongan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/golonganSlice";
 import { fetchIdentitas } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/identitasSlice";
 import { useRouter } from "next/navigation";
@@ -26,60 +26,22 @@ import PrintableQueueNumber from "../../kiosk/add-guest-kiosk/patientAntrian";
 import { pemeriksaRadiologi } from "@/utils/dataTindakan";
 
 const PendaftaranPasienRadiologi = memo(() => {
-  const { setValue, reset } = useForm();
+  const { setValue, reset, getValues } = useForm();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
   const [selectedPrintType, setSelectedPrintType] = useState(null);
-  const router = useRouter();
-  const [selectImage, setSelectImage] = useState(null);
   
-  // Scanner modal state
-  const [showScannerModal, setShowScannerModal] = useState(false);
-  const [scanSuccess, setScanSuccess] = useState(false);
-  const [scanMessage, setScanMessage] = useState("");
-  const [PatientData, setPatientData] = useState(null);
-
-  // Function to handle opening the scanner modal
-  const handleOpenScanner = () => {
-    setShowScannerModal(true);
-  };
-
-  // Function to handle scanner modal close
-  const handleCloseScanner = () => {
-    setShowScannerModal(false);
-  };
-
-  // Function to handle scan completion and populate form
-  const handleScanComplete = (patientData) => {
-    // Update form fields with scanned data
-    Object.entries(patientData).forEach(([field, value]) => {
-      setValue(field, value);
-    });
-    
-    // If we have a province ID, update the selected province state
-    if (patientData.ProvinsiId) {
-      setSelectedProvinsi(patientData.ProvinsiId);
-    }
-    
-    // If we have a country ID, update the selected country state
-    if (patientData.NegaraId) {
-      setSelectedNegara(patientData.NegaraId);
-    }
-    
-    // If we have a kabupaten ID, update the selected kabupaten state
-    if (patientData.kabupatenKotaId) {
-      setSelectedKabupaten(patientData.kabupatenKotaId);
-    }
-    
-    // Show success message
-    setScanSuccess(true);
-    setScanMessage(`Data pasien berhasil dipindai untuk ${patientData.namaPasien || 'NIK: ' + patientData.noIdentitas}`);
-    
-    // Hide success message after 5 seconds
-    setTimeout(() => {
-      setScanSuccess(false);
-    }, 5000);
-  };
+  // Use the patient data hook for managing card scanner functionality
+  const {
+    patientData,
+    showScannerModal,
+    scanSuccess,
+    scanMessage,
+    handleOpenScanner,
+    handleCloseScanner,
+    handleScanComplete,
+    handleScanError
+  } = usePatientData({ setValue });
 
   // Function to handle printing
   const handlePrint = (type) => {
@@ -116,6 +78,36 @@ const PendaftaranPasienRadiologi = memo(() => {
     handleLoadMoreKelurahan,
   } = useSelectWilayah();
 
+  // Update selected values based on patient data
+  useEffect(() => {
+    if (patientData) {
+      // If we have a province ID, update the selected province state
+      if (patientData.ProvinsiId) {
+        setSelectedProvinsi(patientData.ProvinsiId);
+      }
+      
+      // If we have a country ID, update the selected country state
+      if (patientData.NegaraId) {
+        setSelectedNegara(patientData.NegaraId);
+      }
+      
+      // If we have a kabupaten ID, update the selected kabupaten state
+      if (patientData.kabupatenKotaId) {
+        setSelectedKabupaten(patientData.kabupatenKotaId);
+      }
+      
+      // If we have a kecamatan ID, update the selected kecamatan state
+      if (patientData.kecamatanId) {
+        setSelectedKecamatan(patientData.kecamatanId);
+      }
+      
+      // If we have a kelurahan ID, update the selected kelurahan state
+      if (patientData.kelurahanId) {
+        setSelectedKelurahan(patientData.kelurahanId);
+      }
+    }
+  }, [patientData, setSelectedProvinsi, setSelectedNegara, setSelectedKabupaten, setSelectedKecamatan, setSelectedKelurahan]);
+
   useEffect(() => {
     if (selectedNegara) {
       const isIndonesia =
@@ -129,22 +121,8 @@ const PendaftaranPasienRadiologi = memo(() => {
     }
   }, [selectedNegara, setValue, negaraOptions]);
 
-
-
-  const {
-    agamaOptions,
-    loading: agamaLoading,
-    handleLoadMore: handleLoadMoreAgama,
-  } = useAgamaData();
   const dispatch = useDispatch();
-
-  const {
-    data: pendidikanData,
-    error,
-    loading,
-    totalPage,
-  } = useSelector((state) => state.pendidikan);
-  const { data: titles } = useSelector((state) => state.titles);
+  const { data: titles, totalPage } = useSelector((state) => state.titles);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -162,10 +140,6 @@ const PendaftaranPasienRadiologi = memo(() => {
       value: item.titleId, // ID untuk value
     })) || [];
 
-  if (loading) {
-    return <div>Loading data pasien...</div>;
-  }
-
   const formFields = [
     {
       section: "Informasi Pasien",
@@ -180,7 +154,6 @@ const PendaftaranPasienRadiologi = memo(() => {
                 onClick={handleOpenScanner}
                 className="d-flex align-items-center gap-2 w-100"
               >
-                {/* <CreditCard size={18} /> */}
                 <span>Scan Kartu Pasien / E-KTP</span>
               </Button>
               
@@ -199,16 +172,13 @@ const PendaftaranPasienRadiologi = memo(() => {
           label: "No Registrasi",
           name: "noRegistrasi",
           placeholder: "No Registrasi",
- 
           colSize: 6,
         },
-
         {
           type: "text",
           id: "noRekamMedis",
           label: "No Rekam Medis",
           name: "noRekamMedis",
-          value: PatientData ? PatientData.noRekamMedis : "",
           placeholder: "No Rekam Medis",
           colSize: 6,
         },
@@ -264,7 +234,6 @@ const PendaftaranPasienRadiologi = memo(() => {
           name: "tglLahir",
           colSize: 6,
         },
-
         {
           type: "email",
           id: "email",
@@ -317,7 +286,6 @@ const PendaftaranPasienRadiologi = memo(() => {
               "Indonesia",
           colSize: 6,
         },
-        // Rest of demographic fields remain the same
         {
           type: "select",
           id: "kabupatenKotaId",
@@ -392,7 +360,6 @@ const PendaftaranPasienRadiologi = memo(() => {
         },
       ],
     },
-    // Include the rest of your form sections here
     {
       section: "Detail Konsultasi",
       fields: [
@@ -414,14 +381,12 @@ const PendaftaranPasienRadiologi = memo(() => {
           id: "tipepenjamin",
           name: "tipePenjamin",
           hide: (watchValues) => watchValues.penjamin !== "penjamin",
-
           label: "Tipe penjamin",
           placeholder: "Penjamin",
           options: [
             { label: "BPJS", value: "bpjs" },
             { label: "Non BPJS", value: "non-bpjs" },
           ],
-
           rules: { required: "Penjamin is required" },
           colSize: 8,
         },
@@ -470,7 +435,6 @@ const PendaftaranPasienRadiologi = memo(() => {
           ],
           hide: (watchValues) => watchValues.dirujuk !== "konsul", // Tampilkan hanya untuk "konsul"
           colSize: 6,
-
           className: "mb-3",
         },
         {
@@ -526,7 +490,6 @@ const PendaftaranPasienRadiologi = memo(() => {
           rules: { required: "Pilih Promo is required" },
           colSize: 6,
         },
-
         {
           type: "select",
           id: "suratRujukan",
@@ -540,7 +503,6 @@ const PendaftaranPasienRadiologi = memo(() => {
           rules: { required: "Surat Rujukan is required" },
           colSize: 6,
         },
-
         {
           type: "textarea",
           id: "diagnosaAwal",
@@ -706,7 +668,7 @@ const PendaftaranPasienRadiologi = memo(() => {
               onClick={() => handlePrint("card")}
               className="text-center mt-3 ml-5"
             >
-              {/* <Printer className="me-2" size={20} /> */}
+              <i className="ri-printer-line me-2"></i>
               Cetak Kartu Pasien
             </Button>
           </div>
@@ -748,4 +710,3 @@ const PendaftaranPasienRadiologi = memo(() => {
 
 PendaftaranPasienRadiologi.displayName = "PendaftaranPasienRadiologi";
 export default PendaftaranPasienRadiologi;
-

@@ -11,7 +11,7 @@ import {
   deleteAsuransiPasien,
   fetchAsuransiPasienById,
   updateAsuransiPasien,
-} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/AsuransiPasienSlice";
+} from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
 import { options } from "@amcharts/amcharts4/core";
 import useAsuransiData from "@/lib/hooks/useAsuransi";

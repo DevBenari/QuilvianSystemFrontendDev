@@ -25,6 +25,11 @@ const DynamicStepForm = ({
   onSubmit,
   onFormSubmited,
   backPath,
+const DynamicStepForm = ({ 
+  title, 
+  formConfig, 
+  onSubmit, 
+  backPath, 
   onStepChange,
   onNextStep,
   onPreviousStep,
@@ -377,7 +382,7 @@ const DynamicStepForm = ({
 
   return (
     <FormProvider {...methods}>
-      <Row className="iq-card p-2 mx-3 rounded">
+      <Row className="iq-card p-2 mx-3 mt-5 rounded rounded-lg">
         <div className="iq-card p-2 mt-5">
           <div className="iq-card-header gap-1 d-flex justify-content-between">
             <div className="iq-header-title">

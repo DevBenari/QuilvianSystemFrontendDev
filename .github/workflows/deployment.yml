@@ -1,64 +1,79 @@
-name: Deploy Next.js to Server MHamzah
+# name: Deploy Next.js to Server rizkiG
 
-on:
-  push:
-    branches:
-      - MHamzah
+# on:
+#   push:
+#     branches:
+#       - rizkiG
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
 
-    - name: Setup SSH Connection
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY_FRONTEND }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SSH_IP_FRONTEND }} >> ~/.ssh/known_hosts
+#       - name: Setup SSH Connection
+#         run: |
+#           mkdir -p ~/.ssh
+#           echo "${{ secrets.SSH_PRIVATE_KEY_FRONTEND }}" > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa
+#           ssh-keyscan -H ${{ secrets.SSH_IP_FRONTEND }} >> ~/.ssh/known_hosts
 
-    - name: Deploy to Server
-      run: |
-        ssh ${{ secrets.SSH_USER_FRONTEND }}@${{ secrets.SSH_IP_FRONTEND }} << 'EOF'
+#       - name: Deploy to Server
+#         run: |
+#           ssh ${{ secrets.SSH_USER_FRONTEND }}@${{ secrets.SSH_IP_FRONTEND }} << 'EOF'
 
-          echo "Navigating to project directory..."
-          cd ~/QuilvianSystemFrontendDevHamzah
+#             echo "Navigating to project directory..."
+#             cd ~/QuilvianSystemFrontendDevRizki || exit 1
 
-          echo "Resetting local changes..."
-          sudo git reset --hard origin/MHamzah
-          sudo git clean -fd
+#             echo "Resetting local changes..."
+#             sudo git reset --hard origin/rizkiG
+#             sudo git clean -fd
 
-          echo "Pulling latest changes..."
-          sudo git pull origin MHamzah
+#             echo "Pulling latest changes..."
+#             sudo git pull origin rizkiG || exit 1
 
-          IMAGE_NAME="quilvian-frontend-hamzah"
-          CONTAINER_NAME="quilvian-frontend-container-hamzah"
+#             echo "🚀 Debugging: Cek Status Docker"
+#             sudo systemctl status docker || true
 
-          echo "Building new Docker image..."
-          sudo docker build --build-arg NEXT_PUBLIC_API_QUILVIAN=http://160.20.104.98/api -t $IMAGE_NAME .
+#             echo "🚀 Debugging: Cek Container yang Berjalan"
+#             sudo docker ps -a || true
 
-          echo "Stopping and removing old container..."
-          sudo docker stop $CONTAINER_NAME || true
-          sudo docker rm $CONTAINER_NAME || true
+#             echo "🚀 Debugging: Cek Image yang Ada"
+#             sudo docker images || true
 
-          echo "Running new container with correct port..."
-          sudo docker run -d --name $CONTAINER_NAME -p 8080:3710 --env-file .env $IMAGE_NAME
-          
-          echo "Cleaning up unused Docker images..."
-          sudo docker system prune -af
+#             echo "🚀 Debugging: Cek Direktori Proyek"
+#             ls -la ~/QuilvianSystemFrontendDevRizki || true
 
-          echo "Deployment completed!"
+#             IMAGE_NAME="quilvian-frontend-rizki"
+#             CONTAINER_NAME="quilvian-frontend-container-rizki"
 
-          # Kirim notifikasi ke Telegram
-          curl -X POST "https://api.telegram.org/bot7630899059:AAFqAUGUB7I5V9VGKXbcmoWmbYWvrdmnje8/sendMessage" \
-              -d chat_id=-1002437306112 \
-              -d text="✅ Deployment Sukses! 🚀
-              *Docker Image:* $IMAGE_NAME
-              *Container:* $CONTAINER_NAME
-              *Tanggal:* $(date +'%Y-%m-%d %H:%M:%S')
-              Deployment dilakukan Frontend *Hamzah*
-              🔄 Container telah diperbarui. 🎉"
-        EOF
+#             echo "Building new Docker image..."
+#             sudo docker build --build-arg NEXT_PUBLIC_API_QUILVIAN=http://160.20.104.98/api -t $IMAGE_NAME . || exit 1
+
+#             echo "Stopping and removing old container..."
+#             sudo docker stop $CONTAINER_NAME || true
+#             sudo docker rm $CONTAINER_NAME || true
+
+#             echo "Running new container with correct port..."
+#             sudo docker run -d --name $CONTAINER_NAME -p 8084:3710 --env-file .env $IMAGE_NAME || exit 1
+
+#             echo "🚀 Debugging: Cek Log Container"
+#             sudo docker logs $CONTAINER_NAME || true
+
+#             echo "Cleaning up unused Docker images..."
+#             sudo docker system prune -af
+
+#             echo "Deployment completed!"
+
+#             # Kirim notifikasi ke Telegram
+#             curl -X POST "https://api.telegram.org/bot7630899059:AAFqAUGUB7I5V9VGKXbcmoWmbYWvrdmnje8/sendMessage" \
+#                 -d chat_id=-1002437306112 \
+#                 -d text="✅ Deployment Sukses! 🚀
+#                 *Docker Image:* $IMAGE_NAME
+#                 *Container:* $CONTAINER_NAME
+#                 *Tanggal:* $(date +'%Y-%m-%d %H:%M:%S')
+#                 Deployment dilakukan Frontend *Rizki*
+#                 🔄 Container telah diperbarui. 🎉"
+#           EOF
