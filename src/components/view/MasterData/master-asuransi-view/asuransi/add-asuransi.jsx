@@ -6,20 +6,14 @@ import { showAlert } from "@/components/features/alert/custom-alert";
 
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 import { createAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
+import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
 
 const PendaftaranAsuransi = memo(() => {
   const dispatch = useDispatch();
   const formFields = [
     {
+      section: "Data Asuransi",
       fields: [
-        {
-          type: "text",
-          label: "Kode Asuransi",
-          name: "kodeAsuransi",
-          placeholder: "Masukkan Kode Asuransi...",
-          colSize: 6,
-          rules: { required: "Kode Asuransi harus diisi" },
-        },
         {
           type: "date",
           label: "Tanggal Dibuat",
@@ -59,11 +53,15 @@ const PendaftaranAsuransi = memo(() => {
           colSize: 6,
           rules: { required: "Status Asuransi harus diisi" },
         },
+      ],
+    },
+    {
+      section: "Informasi Kerja Sama",
+      fields: [
         {
           type: "date",
           label: "Tanggal Mulai Kerjasama",
           name: "tanggalMulaiKerjasama",
-          placeholder: "Masukkan RS Rekanan...",
           colSize: 6,
           rules: { required: "Tanggal Mulai Kerjasama harus diisi" },
         },
@@ -71,7 +69,6 @@ const PendaftaranAsuransi = memo(() => {
           type: "date",
           label: "Tanggal Akhir Kerjasama",
           name: "tanggalAkhirKerjasama",
-          placeholder: "Masukkan RS Rekanan...",
           colSize: 6,
           rules: { required: "Tanggal Akhir Kerjasama harus diisi" },
         },
@@ -102,16 +99,7 @@ const PendaftaranAsuransi = memo(() => {
           label: "Waktu Klaim",
           name: "waktuKlaim",
           colSize: 6,
-          placeholder: "Masukkan Metode Klaim...",
           rules: { required: "Waktu Klaim harus diisi" },
-        },
-        {
-          type: "text",
-          label: "Dokumen Klaim",
-          name: "dokumenKlaim",
-          placeholder: "Masukkan Dokumen Klaim...",
-          colSize: 6,
-          rules: { required: "Dokumen Klaim harus diisi" },
         },
         {
           type: "number",
@@ -126,29 +114,21 @@ const PendaftaranAsuransi = memo(() => {
           label: "Batas Maksimal Klaim Per Kunjungan",
           name: "batasMaxKlaimPerKunjungan",
           colSize: 6,
-          rules: { required: "Batas maksimal klaim per kunjungan harus diisi" },
+          rules: {
+            required: "Batas maksimal klaim per kunjungan harus diisi",
+          },
           placeholder: "Masukkan Batas Maksimal Klaim Per Kunjungan...",
         },
-        {
-          type: "text",
-          label: "Layanan",
-          name: "layanan",
-          placeholder: "Masukkan Layanan...",
-          colSize: 6,
-          rules: { required: "Layanan harus diisi" },
-        },
+      ],
+    },
+    {
+      section: "Informasi Biaya Pertanggungan",
+      fields: [
         {
           type: "number",
           label: "Persentase Biaya Pertanggungan",
           name: "persentasiBiayaPertanggungan",
           placeholder: "Masukkan Persentase Biaya Pertanggungan...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Obat Ditanggung",
-          name: "obatDitanggung",
-          placeholder: "Masukkan Obat Ditanggung...",
           colSize: 6,
         },
         {
@@ -158,27 +138,11 @@ const PendaftaranAsuransi = memo(() => {
           placeholder: "Masukkan Tambahan Tanggungan...",
           colSize: 6,
         },
-        {
-          type: "number",
-          label: "Biaya Tidak Ditanggung",
-          name: "biayaTidakDitanggung",
-          placeholder: "Masukkan Biaya Tidak Ditanggung...",
-          colSize: 6,
-        },
-        {
-          type: "number",
-          label: "Masa Tunggu",
-          name: "masaTunggu",
-          placeholder: "Masukkan Masa Tunggu...",
-          colSize: 6,
-        },
-        {
-          type: "number",
-          label: "Maksimal Usia Pasien",
-          name: "maxUsiaPasien",
-          placeholder: "Masukkan Maksimal Usia Pasien...",
-          colSize: 6,
-        },
+      ],
+    },
+    {
+      section: "Informasi Pembayaran",
+      fields: [
         {
           type: "text",
           label: "No Rekening Rumah Sakit",
@@ -195,50 +159,21 @@ const PendaftaranAsuransi = memo(() => {
         },
         {
           type: "text",
-          label: "Nama Bank Cabang",
-          name: "namaBankCabang",
-          placeholder: "Masukkan Nama Bank Cabang...",
-          colSize: 6,
-        },
-        {
-          type: "text",
           label: "Term Of Payment",
           name: "termOfPayment",
           placeholder: "Masukkan Term Of Payment...",
           colSize: 6,
         },
-        {
-          type: "date",
-          label: "Batas Waktu Pembayaran",
-          name: "batasWaktuPembayaran",
-          colSize: 6,
-        },
-        {
-          type: "number",
-          label: "Penalti Terlambat Bayar",
-          name: "penaltiTerlambatBayar",
-          placeholder: "Masukkan Penalti Terlambat Bayar...",
-          colSize: 6,
-        },
+      ],
+    },
+    {
+      section: "Informasi Perusahaan Asuransi",
+      fields: [
         {
           type: "text",
           label: "Nama Perusahaan Asuransi",
           name: "namaPerusahaanAsuransi",
           placeholder: "Masukkan Nama Perusahaan Asuransi...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Alamat Pusat",
-          name: "alamatPusat",
-          placeholder: "Masukkan Alamat Pusat...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Alamat Cabang",
-          name: "alamatCabang",
-          placeholder: "Masukkan Alamat Cabang...",
           colSize: 6,
         },
         {
@@ -253,41 +188,6 @@ const PendaftaranAsuransi = memo(() => {
           label: "Email Pusat",
           name: "emailPusat",
           placeholder: "Masukkan Email Pusat...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "No Hotline Darurat",
-          name: "noHotlineDarurat",
-          placeholder: "Masukkan No Hotline Darurat...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Nama Perwakilan",
-          name: "namaPerwakilan",
-          placeholder: "Masukkan Nama Perwakilan...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "No Telepon Perwakilan",
-          name: "noTeleponPerwakilan",
-          placeholder: "Masukkan No Telepon Perwakilan...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Email Perwakilan",
-          name: "emailPerwakilan",
-          placeholder: "Masukkan Email Perwakilan...",
-          colSize: 6,
-        },
-        {
-          type: "text",
-          label: "Jabatan Perwakilan",
-          name: "jabatanPerwakilan",
-          placeholder: "Masukkan Jabatan Perwakilan...",
           colSize: 6,
         },
       ],
@@ -309,7 +209,7 @@ const PendaftaranAsuransi = memo(() => {
 
   return (
     <Fragment>
-      <DynamicForm
+      <DynamicStepForm
         title="Pendaftaran Pasien Asuransi"
         formConfig={formFields}
         onSubmit={handleSubmitWithApi}

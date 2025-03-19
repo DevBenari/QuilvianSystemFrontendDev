@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useController } from "react-hook-form";
@@ -15,13 +15,14 @@ const DateInput = memo(
     options = {},
     onChange,
     disabled,
-
     ...props
   }) => {
     const {
       field,
       fieldState: { error },
     } = useController({ name, control, rules });
+
+    const [errorMessage, setErrorMessage] = useState("");
 
     // Fungsi untuk memformat tanggal menjadi "YYYY-MM-DD"
     const formatDate = (date) => {
@@ -37,7 +38,6 @@ const DateInput = memo(
     const getSelectedDate = () => {
       if (!field.value) return null;
 
-      // Jika field.value adalah string dalam format YYYY-MM-DD
       if (
         typeof field.value === "string" &&
         field.value.match(/^\d{4}-\d{2}-\d{2}$/)
@@ -45,7 +45,6 @@ const DateInput = memo(
         return new Date(field.value);
       }
 
-      // Jika field.value adalah string ISO atau Date object
       try {
         return new Date(field.value);
       } catch (error) {
@@ -53,26 +52,38 @@ const DateInput = memo(
       }
     };
 
-    // Handle date change
+    // Handle date change (dari DatePicker)
     const handleDateChange = (date) => {
       if (!date) {
         field.onChange(null);
+        setErrorMessage("");
         if (onChange) onChange(null);
         return;
       }
 
-      // Set time to midnight
       const localDate = new Date(date);
       localDate.setHours(0, 0, 0, 0);
-
-      // Format date as YYYY-MM-DD
       const formattedDate = formatDate(localDate);
 
-      // Update form value with YYYY-MM-DD string format
       field.onChange(formattedDate);
+      setErrorMessage(""); // Hapus pesan error jika format benar
 
-      // Trigger external onChange
       if (onChange) onChange(formattedDate);
+    };
+
+    // Handle manual input (dari keyboard)
+    const handleInputChange = (e) => {
+      const value = e.target.value;
+
+      // Validasi format input
+      if (value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        setErrorMessage("Format salah! Gunakan format YYYY-MM-DD.");
+      } else {
+        setErrorMessage("");
+      }
+
+      // Update nilai input ke form
+      field.onChange(value);
     };
 
     return (
@@ -86,22 +97,23 @@ const DateInput = memo(
           showYearDropdown
           dropdownMode="select"
           disabled={disabled}
-          readOnly={true}
           placeholderText={placeholder}
           customInput={
             <Form.Control
               type="text"
               placeholder={placeholder}
-              className={error ? "is-invalid" : ""}
+              className={error || errorMessage ? "is-invalid" : ""}
               disabled={disabled}
-              readOnly={true}
+              value={field.value || ""}
+              onChange={handleInputChange} // Validasi input manual
             />
           }
           {...props}
         />
-        {error && (
+        {/* Tampilkan pesan error jika format salah */}
+        {(errorMessage || error) && (
           <Form.Control.Feedback type="invalid" className="d-block">
-            {error.message}
+            {errorMessage || error.message}
           </Form.Control.Feedback>
         )}
       </Form.Group>

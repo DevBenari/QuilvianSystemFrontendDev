@@ -24,6 +24,7 @@ const DashboardAdmisiLab = () => {
         iconBgColor="bg-danger-subtle" // Warna background ikon (Merah lembut)
         iconColor="text-danger" // Warna ikon (Merah)
         // 🔹 Custom Search Filter
+
         setFilteredData={setFilteredPatients}
         showSearch={true}
         // 🔹 Table Component

@@ -341,10 +341,10 @@ export const menuItems = [
                 title: "Dashboard IGD",
                 href: "/IGD",
               },
-              {
-                title: "Data Pasien Rawat Jalan",
-                href: "/IGD/Data-Pasien-Rawat-Jalan",
-              },
+              // {
+              //   title: "Data Pasien Rawat Jalan",
+              //   href: "/IGD/Data-Pasien-Rawat-Jalan",
+              // },
             ],
           },
 
@@ -357,122 +357,122 @@ export const menuItems = [
                 title: "Pendaftaran Pasien IGD",
                 href: "/IGD/administrasi/pendaftaran-pasien-igd",
               },
-              {
-                title: "Status Pasien IGD",
-                href: "/IGD/administrasi/status-pasien-igd",
-              },
+              // {
+              //   title: "Status Pasien IGD",
+              //   href: "/IGD/administrasi/status-pasien-igd",
+              // },
               {
                 title: "Daftar Pasien",
                 href: "/IGD/administrasi/table-pasien-igd",
               },
             ],
           },
-          {
-            title: "Triase",
-            key: "triaseIGD", // Tambahkan key unik
-            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
-            subItems: [
-              {
-                title: "Daftar Antrian Triase",
-                href: "/IGD/Antrean-Triase/table-poli",
-              },
-              {
-                title: "Penilaian Triase",
-                href: "/IGD/Antrean-Triase/penilaian",
-              },
-            ],
-          },
-          {
-            title: "Penanganan Pasien",
-            key: "penangananPasienIGD", // Tambahkan key unik
-            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
-            subItems: [
-              {
-                title: "Pemeriksaan Awal",
-                href: "/IGD/pemeriksaan-awal",
-              },
-              {
-                title: "Tindakan Medis",
-                href: "/IGD/tindakan-medis",
-              },
-              {
-                title: "Monitoring Pasien",
-                href: "/IGD/monitoring-pasien",
-              },
-            ],
-          },
-          {
-            title: "Diagnostik & Terapi",
-            key: "diagnostikTerapiIGD", // Tambahkan key unik
-            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
-            subItems: [
-              {
-                title: "Permintaan Laboratorium",
-                href: "/IGD/permintaan-lab",
-              },
-              {
-                title: "Permintaan Radiologi",
-                href: "/IGD/permintaan-radiologi",
-              },
-              {
-                title: "Farmasi IGD",
-                href: "/IGD/farmasi-igd",
-              },
-            ],
-          },
-          {
-            title: "Manajemen Ruangan",
-            key: "manajemenRuanganIGD", // Tambahkan key unik
-            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
-            subItems: [
-              {
-                title: "Status Ruangan",
-                href: "/IGD/status-ruangan",
-              },
-              {
-                title: "Permintaan Transfer",
-                href: "/IGD/permintaan-transfer",
-              },
-            ],
-          },
-          {
-            title: "Disposisi Pasien",
-            key: "disposisiPasienIGD", // Tambahkan key unik
-            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
-            subItems: [
-              {
-                title: "Rawat Inap",
-                href: "/IGD/rawat-inap",
-              },
-              {
-                title: "Pemulangan Pasien",
-                href: "/IGD/pemulangan-pasien",
-              },
-              {
-                title: "Rujukan Pasien",
-                href: "/IGD/rujukan-pasien",
-              },
-            ],
-          },
-          {
-            title: "Laporan & Analitik",
-            key: "laporanAnalitikIGD", // Tambahkan key unik
-            icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
-            subItems: [
-              {
-                title: "Dashboard IGD",
-                href: "/IGD/dashboard",
-              },
-              {
-                title: "Laporan Harian",
-                href: "/IGD/laporan-harian",
-              },
-              {
-                title: "Statistik & Kinerja",
-                href: "/IGD/statistik-kinerja",
-              },
-            ],
-          },
+          // {
+          //   title: "Triase",
+          //   key: "triaseIGD", // Tambahkan key unik
+          //   icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+          //   subItems: [
+          //     {
+          //       title: "Daftar Antrian Triase",
+          //       href: "/IGD/Antrean-Triase/table-poli",
+          //     },
+          //     {
+          //       title: "Penilaian Triase",
+          //       href: "/IGD/Antrean-Triase/penilaian",
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: "Penanganan Pasien",
+          //   key: "penangananPasienIGD", // Tambahkan key unik
+          //   icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+          //   subItems: [
+          //     {
+          //       title: "Pemeriksaan Awal",
+          //       href: "/IGD/pemeriksaan-awal",
+          //     },
+          //     {
+          //       title: "Tindakan Medis",
+          //       href: "/IGD/tindakan-medis",
+          //     },
+          //     {
+          //       title: "Monitoring Pasien",
+          //       href: "/IGD/monitoring-pasien",
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: "Diagnostik & Terapi",
+          //   key: "diagnostikTerapiIGD", // Tambahkan key unik
+          //   icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+          //   subItems: [
+          //     {
+          //       title: "Permintaan Laboratorium",
+          //       href: "/IGD/permintaan-lab",
+          //     },
+          //     {
+          //       title: "Permintaan Radiologi",
+          //       href: "/IGD/permintaan-radiologi",
+          //     },
+          //     {
+          //       title: "Farmasi IGD",
+          //       href: "/IGD/farmasi-igd",
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: "Manajemen Ruangan",
+          //   key: "manajemenRuanganIGD", // Tambahkan key unik
+          //   icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+          //   subItems: [
+          //     {
+          //       title: "Status Ruangan",
+          //       href: "/IGD/status-ruangan",
+          //     },
+          //     {
+          //       title: "Permintaan Transfer",
+          //       href: "/IGD/permintaan-transfer",
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: "Disposisi Pasien",
+          //   key: "disposisiPasienIGD", // Tambahkan key unik
+          //   icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+          //   subItems: [
+          //     {
+          //       title: "Rawat Inap",
+          //       href: "/IGD/rawat-inap",
+          //     },
+          //     {
+          //       title: "Pemulangan Pasien",
+          //       href: "/IGD/pemulangan-pasien",
+          //     },
+          //     {
+          //       title: "Rujukan Pasien",
+          //       href: "/IGD/rujukan-pasien",
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: "Laporan & Analitik",
+          //   key: "laporanAnalitikIGD", // Tambahkan key unik
+          //   icon: <RiFolderLine className="fs-4" />, // Pastikan ada icon
+          //   subItems: [
+          //     {
+          //       title: "Dashboard IGD",
+          //       href: "/IGD/dashboard",
+          //     },
+          //     {
+          //       title: "Laporan Harian",
+          //       href: "/IGD/laporan-harian",
+          //     },
+          //     {
+          //       title: "Statistik & Kinerja",
+          //       href: "/IGD/statistik-kinerja",
+          //     },
+          //   ],
+          // },
         ],
       },
       {
@@ -560,62 +560,62 @@ export const menuItems = [
               },
             ],
           },
-          {
-            title: "Pemeriksaan Dokter",
-            key: "pemeriksaanDokterRawatJalan",
-            icon: <RiFolderLine className="fs-4" />,
-            subItems: [
-              {
-                title: "Data Pemeriksaan",
-                href: "/Rawat-Jalan/pemeriksaan-dokter",
-              },
-            ],
-          },
-          {
-            title: "Tindakan & Pemeriksaan Penunjang",
-            key: "tindakanPenunjangRawatJalan",
-            icon: <RiFolderLine className="fs-4" />,
-            subItems: [
-              {
-                title: "Tindakan Medis",
-                href: "/Rawat-Jalan/tindakan-medis",
-              },
-              {
-                title: "Pemeriksaan Penunjang",
-                href: "/Rawat-Jalan/pemeriksaan-penunjang",
-              },
-            ],
-          },
-          {
-            title: "Resep & Apotek",
-            key: "resepApotekRawatJalan",
-            icon: <RiFolderLine className="fs-4" />,
-            subItems: [
-              {
-                title: "Resep Dokter",
-                href: "/Rawat-Jalan/resep-dokter",
-              },
-              {
-                title: "Pengambilan Obat",
-                href: "/Rawat-Jalan/pengambilan-obat",
-              },
-            ],
-          },
-          {
-            title: "Billing & Klaim",
-            key: "billingKlaimRawatJalan",
-            icon: <RiFolderLine className="fs-4" />,
-            subItems: [
-              {
-                title: "Tagihan Pasien",
-                href: "/Rawat-Jalan/billing-pasien",
-              },
-              {
-                title: "Klaim BPJS/Asuransi",
-                href: "/Rawat-Jalan/klaim-bpjs-asuransi",
-              },
-            ],
-          },
+          // {
+          //   title: "Pemeriksaan Dokter",
+          //   key: "pemeriksaanDokterRawatJalan",
+          //   icon: <RiFolderLine className="fs-4" />,
+          //   subItems: [
+          //     {
+          //       title: "Data Pemeriksaan",
+          //       href: "/Rawat-Jalan/pemeriksaan-dokter",
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: "Tindakan & Pemeriksaan Penunjang",
+          //   key: "tindakanPenunjangRawatJalan",
+          //   icon: <RiFolderLine className="fs-4" />,
+          //   subItems: [
+          //     {
+          //       title: "Tindakan Medis",
+          //       href: "/Rawat-Jalan/tindakan-medis",
+          //     },
+          //     {
+          //       title: "Pemeriksaan Penunjang",
+          //       href: "/Rawat-Jalan/pemeriksaan-penunjang",
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: "Resep & Apotek",
+          //   key: "resepApotekRawatJalan",
+          //   icon: <RiFolderLine className="fs-4" />,
+          //   subItems: [
+          //     {
+          //       title: "Resep Dokter",
+          //       href: "/Rawat-Jalan/resep-dokter",
+          //     },
+          //     {
+          //       title: "Pengambilan Obat",
+          //       href: "/Rawat-Jalan/pengambilan-obat",
+          //     },
+          //   ],
+          // },
+          // {
+          //   title: "Billing & Klaim",
+          //   key: "billingKlaimRawatJalan",
+          //   icon: <RiFolderLine className="fs-4" />,
+          //   subItems: [
+          //     {
+          //       title: "Tagihan Pasien",
+          //       href: "/Rawat-Jalan/billing-pasien",
+          //     },
+          //     {
+          //       title: "Klaim BPJS/Asuransi",
+          //       href: "/Rawat-Jalan/klaim-bpjs-asuransi",
+          //     },
+          //   ],
+          // },
         ],
       },
       {
@@ -887,29 +887,29 @@ export const menuItems = [
             subItems: [
               {
                 title: "Dashboard Farmasi",
-                href: "/farmasi/Beranda/dashboard-farmasi",
+                href: "/Farmasi/Beranda/dashboard-farmasi",
               },
-              {
-                title: "Table Obat",
-                href: "/farmasi/Beranda/table-obat",
-              },
-              {
-                title: "Pengadaan Obat",
-                href: "/farmasi/Beranda/pengadaan-obat",
-              },
+              // {
+              //   title: "Table Obat",
+              //   href: "/farmasi/Beranda/table-obat",
+              // },
+              // {
+              //   title: "Pengadaan Obat",
+              //   href: "/farmasi/Beranda/pengadaan-obat",
+              // },
             ],
           },
-          {
-            title: "Pendaftaran",
-            key: "pendaftaranFarmasi",
-            icon: <RiFolderLine className="fs-4" />,
-            subItems: [
-              {
-                title: "Pendaftaran Pasien",
-                href: "/farmasi/pendaftaran-pasien",
-              },
-            ],
-          },
+          // {
+          //   title: "Pendaftaran",
+          //   key: "pendaftaranFarmasi",
+          //   icon: <RiFolderLine className="fs-4" />,
+          //   subItems: [
+          //     {
+          //       title: "Pendaftaran Pasien",
+          //       href: "/farmasi/pendaftaran-pasien",
+          //     },
+          //   ],
+          // },
         ],
       },
     ],

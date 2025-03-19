@@ -17,6 +17,7 @@ import TimeField from "@/components/ui/time-input";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
 import NumberField from "@/components/ui/distance-filed";
+import Checkbox from "@/components/ui/check-box";
 
 const DynamicStepForm = ({
   title,
@@ -58,6 +59,7 @@ const DynamicStepForm = ({
     time: TimeField,
     number: NumberField,
     searchSelect: SearchableSelectField,
+    cekbox: Checkbox,
   };
 
   const methods = useForm({

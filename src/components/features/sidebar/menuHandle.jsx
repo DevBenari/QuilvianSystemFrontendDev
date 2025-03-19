@@ -34,6 +34,8 @@ export const getNestedMenuFromSubItem = (subMenuItem) => {
     return subMenuItem.menuBayi;
   } else if (subMenuItem.menuOptik) {
     return subMenuItem.menuOptik;
+  } else if (subMenuItem.menuFarmasi) {
+    return subMenuItem.menuFarmasi;
   }
   // Tambahkan pengecekan untuk jenis menu baru di sini
   // else if (subMenuItem.namaMenuBaru) {
@@ -67,7 +69,8 @@ export const hasNestedMenu = (subMenuItem) => {
       subMenuItem.menuRehabilitasi?.length ||
       subMenuItem.menuMCU?.length ||
       subMenuItem.menuBayi?.length ||
-      subMenuItem.menuOptik?.length
+      subMenuItem.menuOptik?.length ||
+      subMenuItem.menuFarmasi?.length
     )
     // Tambahkan pengecekan untuk jenis menu baru di sini
     // || subMenuItem.namaMenuBaru?.length
