@@ -33,7 +33,7 @@ const DynamicStepForm = ({
   navigationConfig = {} 
 }) => {
   const [isEditing, setIsEditing] = useState(isAddMode);
-  const [submittedData, setSubmittedData] = useState(null);
+  // const [submittedData, setSubmittedData] = useState(null);
   const [internalStep, setInternalStep] = useState(0);
   const [formData, setFormData] = useState({});
   

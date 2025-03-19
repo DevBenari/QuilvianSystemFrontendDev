@@ -142,7 +142,7 @@ const DynamicStepCardForm = ({
   const formContent = (
     <Row className="justify-content-center mt-5">
       <Col xs={12}>
-        <Card className={`main-card  ${className || ""}`}>
+        <Card className={`main-card ${className || ""}`}>
           <Card.Header className="d-flex justify-content-between align-items-center">
             <h4 className="m-0">{title}</h4>
             <ButtonNav

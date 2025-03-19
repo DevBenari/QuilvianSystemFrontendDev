@@ -2656,8 +2656,8 @@ body.sidebar-main .iq-menu-bt-sidebar .iq-menu-bt {
   transform: rotate(-90deg) translateX(-3px);
 }
 
-.main-circle {
-}
+/* .main-circle {
+} */
 
 .hover-circle {
   opacity: 0;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { 
-  fetchAsuransiPasien,
+  fetchAsuransiPasienWithFilters,
   createAsuransiPasien,
   deleteAsuransiPasien
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
@@ -27,7 +27,7 @@ export const useInsuranceManagement = ({
   // Fetch asuransi pasien data when pasienId is available
   useEffect(() => {
     if (pasienId) {
-      dispatch(fetchAsuransiPasien(pasienId));
+      dispatch(fetchAsuransiPasienWithFilters(pasienId));
     }
   }, [dispatch, pasienId]);
 
@@ -36,15 +36,23 @@ export const useInsuranceManagement = ({
     if (asuransiPasienList && asuransiPasienList.length > 0) {
       const formattedList = asuransiPasienList.map(item => ({
         namaAsuransi: item.namaAsuransi,
-        nomorPolis: item.noPolis,
+        noPolis: item.noPolis,
         isPKS: true, // Assume all fetched insurances are PKS by default
         asuransiId: item.asuransiId,
-        asuransiPasienId: item.asuransiPasienId // Save the asuransiPasienId for deletion
+        asuransiPasienId: item.id || item.pasienId // Make sure we're getting the correct ID
       }));
       
       setInsuranceList(formattedList);
+      
+      // Auto-select the first insurance if available and form is provided
+      if (formattedList.length > 0 && formMethodsRef && formMethodsRef.current) {
+        const firstInsurance = formattedList[0];
+        formMethodsRef.current.setValue("nomorAsuransi", firstInsurance.noPolis);
+        formMethodsRef.current.setValue("asuransiPasien", firstInsurance.namaAsuransi);
+        formMethodsRef.current.trigger(["nomorAsuransi", "asuransiPasien"]);
+      }
     }
-  }, [asuransiPasienList]);
+  }, [asuransiPasienList, formMethodsRef]);
 
   // Modal handlers
   const handleOpenModal = (e) => {
@@ -62,8 +70,8 @@ export const useInsuranceManagement = ({
   const handleInsuranceSubmit = (insuranceData) => {
     // Map API response format to component format
     const formattedInsurance = {
-      namaAsuransi: insuranceData.NamaAsuransi || insuranceData.namaAsuransi,
-      nomorPolis: insuranceData.NomorPolis || insuranceData.nomorPolis,
+      namaAsuransi: insuranceData.namaAsuransi || insuranceData.namaAsuransi,
+      noPolis: insuranceData.noPolis || insuranceData.noPolis,
       isPKS: insuranceData.IsPKS || insuranceData.isPKS,
       asuransiId: insuranceData.asuransiId
     };
@@ -80,7 +88,7 @@ export const useInsuranceManagement = ({
 
     // Update form values jika form reference tersedia
     if (formMethodsRef && formMethodsRef.current) {
-      formMethodsRef.current.setValue("nomorAsuransi", formattedInsurance.nomorPolis);
+      formMethodsRef.current.setValue("nomorAsuransi", formattedInsurance.noPolis);
       formMethodsRef.current.setValue("asuransiPasien", formattedInsurance.namaAsuransi);
       formMethodsRef.current.trigger(["nomorAsuransi", "asuransiPasien"]);
     }
@@ -119,7 +127,7 @@ export const useInsuranceManagement = ({
     try {
       const formattedData = {
         pasienId,
-        noPolis: data.nomorPolis,
+        noPolis: data.noPolis,
         asuransiId: data.asuransiId || "00000000-0000-0000-0000-000000000000",
         userId: "system" // Bisa diganti dengan user ID aktif
       };
@@ -134,18 +142,20 @@ export const useInsuranceManagement = ({
 
   // Generate insurance form fields based on payment method
   const getInsuranceFields = (selectedPaymentMethod) => {
+    // Transform asuransi data for dropdown options
+    const insuranceOptions = asuransiPasienList.map((item) => ({
+      label: `${item.namaAsuransi} - ${item.noPolis}`,
+      value: item.namaAsuransi,
+      isPKS: item.isPKS,
+    }));
+    
     return [
       {
         id: "asuransiPasien",
         name: "asuransiPasien",
         label: "Asuransi yang digunakan pasien",
         type: "select",
-        options: insuranceList.map((item) => ({
-          label: `${item.namaAsuransi} - ${item.nomorPolis}`,
-          value: item.namaAsuransi,
-          isPKS: item.isPKS,
-          asuransiId: item.asuransiId
-        })),
+        options: insuranceOptions, // Use transformed insurance list data
         colSize: 6,
         hide: (watchValues) => selectedPaymentMethod !== "asuransi"
       },
@@ -200,7 +210,7 @@ export const useInsuranceManagement = ({
                     <div>
                       <strong>{insurance.namaAsuransi}</strong>
                       <br />
-                      <small>Nomor Polis: {insurance.nomorPolis}</small>
+                      <small>Nomor Polis: {insurance.noPolis}</small>
                       {!insurance.isPKS && (
                         <span className="badge bg-warning ms-2">Non-PKS</span>
                       )}

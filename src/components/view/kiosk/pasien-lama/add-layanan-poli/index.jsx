@@ -189,7 +189,7 @@
             name: "noTelepon1",
             label: "No. Telepon",
             type: "text",
-            value: patientData ? patientData.noTelepon1 : "",
+            value: patientData ? patientData.noTelepon : "",
             placeholder: "Contoh: 08123456789",
             colSize: 6,
             
@@ -386,7 +386,7 @@
     };
 
     return (
-      <div className="container py-4 mt-5 ">
+      <div className="container py-4">
         {renderCurrentView()}
       </div>
     );

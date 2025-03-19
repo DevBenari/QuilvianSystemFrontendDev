@@ -126,7 +126,6 @@
                         name: "TitlesId",
                         placeholder: "Title",
                         options: titlesOptions,
-                        
                         colSize: 6,
                     },
                     {
@@ -258,7 +257,6 @@
                                     methods.setValue("AlamatDomisili", alamatIdentitas);
                                 }
                                 }}
-                                className="mb-2"
                             />
                             <Form.Control
                                 as="textarea"
