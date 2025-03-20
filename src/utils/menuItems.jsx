@@ -254,6 +254,10 @@ export const menuItems = [
                 title: "Data Kelurahan",
                 href: "/MasterData/master-wilayah/kelurahan/table-kelurahan",
               },
+              {
+                title: "Data Kode Pos",
+                href: "/MasterData/master-wilayah/kode-pos/table-kode-pos",
+              },
             ],
           },
         ],

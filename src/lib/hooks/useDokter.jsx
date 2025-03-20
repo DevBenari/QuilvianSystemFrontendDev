@@ -73,14 +73,14 @@ const useMedicalData = () => {
     value: item.dokterId,
   }));
 
-  const DokterPoliOptions = DokterPoliData.map((item) => ({
-    label: item.nmDokterPoli,
-    value: item.dokterPoliId,
-  }));
-
   const PoliKlinikOptions = PoliKlinikData.map((item) => ({
     label: item.namaPoliklinik,
     value: item.poliklinikId,
+  }));
+
+  const DokterPoliOptions = DokterPoliData.map((item) => ({
+    label: ` ${item.nmDokter} - ${item.namaPoliklinik}`,
+    value: item.dokterPoliId,
   }));
 
   return {

@@ -5,6 +5,7 @@ import { fetchKabupatenKota } from "../state/slice/Manajemen-kesehatan-slices/Ma
 import { fetchKecamatan } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
 import { fetchKelurahan } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
 import { fetchNegara } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
+import { fetchKodePos } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kodePosSlice";
 
 // Custom hook untuk fetching data wilayah
 const useFetchWilayah = (sliceName, fetchAction) => {
@@ -82,6 +83,13 @@ const useWilayahData = () => {
     handleLoadMore: handleLoadMoreKelurahan,
   } = useFetchWilayah("Kelurahan", fetchKelurahan);
 
+  // Fetch KodePos
+  const {
+    data: KodePosData,
+    loading: loadingKodePos,
+    handleLoadMore: handleLoadMoreKodePos,
+  } = useFetchWilayah("KodePos", fetchKodePos);
+
   // Format data menjadi options
   const ProvinsiOptions = ProvinsiData.map((item) => ({
     label: item.namaProvinsi,
@@ -103,6 +111,11 @@ const useWilayahData = () => {
     value: item.kelurahanId,
   }));
 
+  const KodePosOptions = KodePosData.map((item) => ({
+    label: item.namaKelurahan,
+    value: item.kodePosId,
+  }));
+
   const NegaraOptions = NegaraData.map((item) => ({
     label: item.namaNegara,
     value: item.negaraId,
@@ -114,16 +127,19 @@ const useWilayahData = () => {
     KecamatanOptions,
     KelurahanOptions,
     NegaraOptions,
+    KodePosOptions,
     loadingNegara,
     loadingProvinsi,
     loadingKabupatenKota,
     loadingKecamatan,
     loadingKelurahan,
+    loadingKodePos,
     handleLoadMoreNegara,
     handleLoadMoreProvinsi,
     handleLoadMoreKabupatenKota,
     handleLoadMoreKecamatan,
     handleLoadMoreKelurahan,
+    handleLoadMoreKodePos,
   };
 };
 

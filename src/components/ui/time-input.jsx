@@ -1,52 +1,52 @@
-import React, { memo } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { useController, useFormContext } from "react-hook-form";
+import React from "react";
 import { Form } from "react-bootstrap";
+import { useFormContext, Controller } from "react-hook-form";
 
-const TimeField = memo(
-  ({ name, label, rules, className, placeholder, defaultValue, ...props }) => {
-    const { control } = useFormContext();
-    const {
-      field,
-      fieldState: { error },
-    } = useController({ name, control, rules });
+const TimeField = ({
+  label,
+  name,
+  className,
+  placeholder,
+  rules,
+  disabled = false,
+  ...props
+}) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
-    // ✅ Fungsi untuk menangani input timestamp ISO 8601
-    const parseTimestamp = (timestamp) => {
-      if (!timestamp) return null;
-      const date = new Date(timestamp); // Konversi ke objek Date
-      return isNaN(date.getTime()) ? null : date; // Pastikan tanggal valid
-    };
+  return (
+    <Form.Group className="mb-3">
+      {/* Label Input */}
+      {label && <Form.Label>{label}</Form.Label>}
 
-    // ✅ Ambil defaultValue jika ada, lalu parsing jika dalam format timestamp ISO 8601
-    const initialValue = defaultValue ? parseTimestamp(defaultValue) : null;
-
-    return (
-      <Form.Group className={className}>
-        {label && <Form.Label>{label}</Form.Label>}
-        <DatePicker
-          {...field}
-          {...props}
-          selected={initialValue || field.value} // Gunakan default atau nilai dari state
-          onChange={(time) => field.onChange(time)} // Simpan objek Date langsung
-          showTimeSelect
-          showTimeSelectOnly
-          timeIntervals={15} // Setiap 15 menit
-          timeFormat="HH:mm"
-          dateFormat="HH:mm"
-          className={`form-control ${error ? "is-invalid" : ""}`}
-          placeholderText={placeholder}
-        />
-        {error && (
-          <Form.Control.Feedback type="invalid">
-            {error.message}
-          </Form.Control.Feedback>
+      {/* Time Input Field */}
+      <Controller
+        name={name}
+        control={control}
+        rules={rules}
+        render={({ field }) => (
+          <Form.Control
+            {...field}
+            type="time"
+            className={className}
+            placeholder={placeholder}
+            isInvalid={!!errors[name]}
+            {...props}
+            disabled={disabled}
+          />
         )}
-      </Form.Group>
-    );
-  }
-);
+      />
 
-TimeField.displayName = "TimeField";
+      {/* Pesan Error */}
+      {errors[name] && (
+        <Form.Control.Feedback type="invalid">
+          {errors[name]?.message || "Format waktu tidak valid"}
+        </Form.Control.Feedback>
+      )}
+    </Form.Group>
+  );
+};
+
 export default TimeField;

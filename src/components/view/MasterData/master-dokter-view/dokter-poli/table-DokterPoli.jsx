@@ -65,8 +65,7 @@ const TableDataDokterPoli = () => {
           { key: "no", label: "No" }, // Nomor urut
           { key: "createDateTime", label: "Tanggal Dibuat" },
           { key: "createByName", label: "Dibuat Oleh" },
-          { key: "kodeDokterPoli", label: "Kode Dokter Poli" },
-          { key: "namaDokter", label: "Nama Dokter Poli" },
+          { key: "nmDokter", label: "Nama Dokter Poli" },
           { key: "namaPoliklinik", label: "Nama Poliklinik" },
         ]}
         slugConfig={{ textField: "createByName", idField: "dokterPoliId" }} // ID Dokter Poli untuk Slug

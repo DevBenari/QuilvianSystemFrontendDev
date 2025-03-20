@@ -28,6 +28,7 @@ import JadwalPraktekSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/Mas
 import PersalinanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-operasi/PersalinanSlice";
 import AsuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 import AsuransiPasienSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
+import kodePosSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kodePosSlice";
 
 const store = configureStore({
   reducer: {
@@ -55,6 +56,7 @@ const store = configureStore({
     KabupatenKota: KabupatenKotaSlice,
     Kecamatan: KecamatanSlice,
     Kelurahan: KelurahanSlice,
+    KodePos: kodePosSlice,
 
     // Peralatan
     KategoriPeralatan: KategoriPeralatanSlice,
