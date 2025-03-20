@@ -12,8 +12,7 @@ import {
   fetchAsuransiPasienById,
   updateAsuransiPasien,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
-import DynamicStepForm from "@/components/features/dynamic-form/dynamicForm/dynamicFormSteps";
-import { options } from "@amcharts/amcharts4/core";
+
 import useAsuransiData from "@/lib/hooks/useAsuransi";
 import usePasienData from "@/lib/hooks/usePasien";
 
@@ -127,7 +126,7 @@ const AsuransiPasienEditForm = ({ params }) => {
 
   return (
     <Fragment>
-      <DynamicStepForm
+      <DynamicForm
         title="Edit Data AsuransiPasien"
         formConfig={formFieldsWithData}
         onSubmit={handleSubmit}

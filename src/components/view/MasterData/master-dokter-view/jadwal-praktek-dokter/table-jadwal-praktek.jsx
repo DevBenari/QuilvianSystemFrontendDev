@@ -66,14 +66,11 @@ const TableDataJadwalPraktek = () => {
           { key: "no", label: "No" }, // Nomor urut
           { key: "createdDate", label: "Tanggal Dibuat" },
           { key: "createByName", label: "Dibuat Oleh" },
-          { key: "kdJadwalPraktek", label: "Kode Jadwal Praktek" },
-          { key: "nmJadwalPraktek", label: "Nama Jadwal Praktek" },
-          { key: "sip", label: "SIP" },
-          { key: "str", label: "STR" },
-          { key: "tglSip", label: "Tanggal SIP" },
-          { key: "tglStr", label: "Tanggal STR" },
-          { key: "panggilJadwalPraktek", label: "Panggilan" },
-          { key: "nik", label: "NIK" },
+          { key: "waktuPraktek", label: "Waktu Praktek" },
+          { key: "hariPraktek", label: "hari Praktek" },
+          { key: "jamMulai", label: "Jam Mulai" },
+          { key: "jamBerakhir", label: "Jam Berakhir" },
+          { key: "kodeJadwalPraktek", label: "Kode Jadwal Praktek" },
         ]}
         slugConfig={{
           textField: "nmJadwalPraktek",

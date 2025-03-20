@@ -75,56 +75,142 @@ const VirtualizedSideBarItems = memo(() => {
       observer.disconnect();
       window.removeEventListener("resize", checkSidebarMode);
     };
-  }, [isMiniSidebar]);
+  }, [isMiniSidebar, cache]);
 
-  // Effect 2: Load active menu states from localStorage
-  useEffect(() => {
-    const savedMenu = localStorage.getItem("activeMenu");
-    const savedSubMenu = localStorage.getItem("activeSubMenu");
-    const savedNestedMenu = localStorage.getItem("activeNestedMenu");
-
-    if (savedMenu) setActiveMenu(savedMenu);
-    if (savedSubMenu) setActiveSubMenu(savedSubMenu);
-    if (savedNestedMenu) setActiveNestedMenu(savedNestedMenu);
-  }, []);
-
-  // Effect 3: Set active states based on current URL path
+  // Effect 2: Set active states based on current URL path - runs ONCE on initial load
   useEffect(() => {
     if (!pathname) return;
 
-    menuItems.forEach((item) => {
-      // Check for main menu match
-      if (item.pathname === pathname) {
-        setActiveMenu(item.key);
-        return;
-      }
+    // Try to find the path match in the menu structure
+    const findMenuMatch = () => {
+      let foundMainMenu = null;
+      let foundSubMenu = null;
+      let foundNestedMenu = null;
+      let foundNestedItem = null;
 
-      // Check submenu paths
-      if (item.subMenu) {
-        item.subMenu.forEach((subItem) => {
-          if (subItem.pathname === pathname) {
-            setActiveMenu(item.key);
-            setActiveSubMenu(subItem.key);
-            return;
-          }
+      // Search through all menu items
+      for (const mainItem of menuItems) {
+        // Check main menu direct match
+        if (mainItem.pathname === pathname) {
+          foundMainMenu = mainItem.key;
+          break;
+        }
 
-          // Check nested menu paths
-          const nestedMenu = getNestedMenuFromSubItem(subItem);
-          if (nestedMenu?.length) {
-            const found = findPathInNestedMenu(nestedMenu, pathname);
-            if (found) {
-              setActiveMenu(item.key);
-              setActiveSubMenu(subItem.key);
-              setActiveNestedMenu(found.key);
-              return;
+        // Check submenu items if available
+        if (mainItem.subMenu) {
+          for (const subItem of mainItem.subMenu) {
+            // Check for direct submenu match
+            if (subItem.pathname === pathname) {
+              foundMainMenu = mainItem.key;
+              foundSubMenu = subItem.key;
+              break;
+            }
+
+            // Check for nested menu match
+            const nestedMenu = getNestedMenuFromSubItem(subItem);
+            if (nestedMenu?.length) {
+              const found = findPathInNestedMenu(nestedMenu, pathname);
+              if (found) {
+                foundMainMenu = mainItem.key;
+                foundSubMenu = subItem.key;
+                foundNestedMenu = found.key;
+                foundNestedItem = found;
+                break;
+              }
             }
           }
-        });
+          // If found in submenu, no need to check further
+          if (foundSubMenu) break;
+        }
       }
-    });
+
+      return {
+        mainMenu: foundMainMenu,
+        subMenu: foundSubMenu,
+        nestedMenu: foundNestedMenu,
+        nestedItem: foundNestedItem,
+      };
+    };
+
+    // First try to restore from localStorage
+    const savedMenu = localStorage.getItem("activeMenu");
+    const savedSubMenu = localStorage.getItem("activeSubMenu");
+    const savedNestedMenu = localStorage.getItem("activeNestedMenu");
+    const savedMenuView = localStorage.getItem("currentMenuView");
+    const currentPath = localStorage.getItem("currentPath");
+
+    // If the saved path matches the current path, restore the saved state
+    if (currentPath === pathname && savedMenu) {
+      setActiveMenu(savedMenu);
+      if (savedSubMenu) setActiveSubMenu(savedSubMenu);
+      if (savedNestedMenu) setActiveNestedMenu(savedNestedMenu);
+
+      // Set the appropriate menu view from saved state
+      if (savedMenuView) {
+        setMenuView(savedMenuView);
+      } else if (savedNestedMenu) {
+        setMenuView("nested");
+      } else if (savedSubMenu) {
+        setMenuView("sub");
+      } else {
+        setMenuView("main");
+      }
+    } else {
+      // If path doesn't match or there's no saved state, find the matching menu items
+      const match = findMenuMatch();
+
+      if (match.mainMenu) {
+        localStorage.setItem("activeMenu", match.mainMenu);
+
+        if (match.subMenu) {
+          localStorage.setItem("activeSubMenu", match.subMenu);
+
+          if (match.nestedMenu) {
+            localStorage.setItem("activeNestedMenu", match.nestedMenu);
+            localStorage.setItem("currentMenuView", "nested");
+          } else {
+            localStorage.setItem("currentMenuView", "sub");
+          }
+        } else {
+          // Check if this main menu has a submenu
+          const mainMenuItem = menuItems.find(
+            (item) => item.key === match.mainMenu
+          );
+          if (mainMenuItem?.subMenu?.length) {
+            localStorage.setItem("currentMenuView", "sub");
+          } else {
+            localStorage.setItem("currentMenuView", "main");
+          }
+        }
+
+        // Update state after localStorage to prevent race conditions
+        setActiveMenu(match.mainMenu);
+        if (match.subMenu) {
+          setActiveSubMenu(match.subMenu);
+          if (match.nestedMenu) {
+            setActiveNestedMenu(match.nestedMenu);
+            setMenuView("nested");
+          } else {
+            setMenuView("sub");
+          }
+        } else {
+          const mainMenuItem = menuItems.find(
+            (item) => item.key === match.mainMenu
+          );
+          if (mainMenuItem?.subMenu?.length) {
+            setMenuView("sub");
+          } else {
+            setMenuView("main");
+          }
+        }
+      }
+
+      // Save the current path
+      localStorage.setItem("currentPath", pathname);
+    }
   }, [pathname]);
 
-  // Effect 4: Update currentItems based on active menu state
+  // Effect 3: Update currentItems based on active menu state
   useEffect(() => {
     try {
       if (menuView === "main") {
@@ -145,7 +231,7 @@ const VirtualizedSideBarItems = memo(() => {
           (item) => item.key === activeSubMenu
         );
 
-        // Dapatkan nested menu items dengan helper function
+        // Get nested menu items with helper function
         const nestedItems = getNestedMenuFromSubItem(activeSubMenuItem);
         setCurrentItems(nestedItems || []);
       } else {
@@ -159,13 +245,32 @@ const VirtualizedSideBarItems = memo(() => {
 
     // Reset cache when items change
     cache.clearAll();
-  }, [menuView, activeMenu, activeSubMenu, activeNestedMenu]);
+  }, [menuView, activeMenu, activeSubMenu, activeNestedMenu, cache]);
 
   // ---------- HANDLERS ----------
 
   // Toggle main menu
   const toggleMenu = (key) => {
     const newMenu = activeMenu === key ? null : key;
+
+    // Update localStorage first
+    if (newMenu) {
+      localStorage.setItem("activeMenu", newMenu);
+      const menuItem = menuItems.find((item) => item.key === key);
+      if (menuItem?.subMenu?.length) {
+        localStorage.setItem("currentMenuView", "sub");
+      } else {
+        localStorage.setItem("currentMenuView", "main");
+      }
+    } else {
+      localStorage.setItem("activeMenu", "");
+      localStorage.setItem("currentMenuView", "main");
+    }
+    localStorage.removeItem("activeSubMenu");
+    localStorage.removeItem("activeNestedMenu");
+    localStorage.setItem("currentPath", pathname);
+
+    // Then update state
     setActiveMenu(newMenu);
     setActiveSubMenu(null);
     setActiveNestedMenu(null);
@@ -175,20 +280,38 @@ const VirtualizedSideBarItems = memo(() => {
       const menuItem = menuItems.find((item) => item.key === key);
       if (menuItem?.subMenu?.length) {
         setMenuView("sub");
+      } else {
+        setMenuView("main");
       }
     } else {
       setMenuView("main");
     }
-
-    // Update localStorage
-    localStorage.setItem("activeMenu", newMenu || "");
-    localStorage.removeItem("activeSubMenu");
-    localStorage.removeItem("activeNestedMenu");
   };
 
   // Toggle submenu
   const toggleSubMenu = (key) => {
     const newSubMenu = activeSubMenu === key ? null : key;
+
+    // Update localStorage first
+    if (newSubMenu) {
+      localStorage.setItem("activeSubMenu", newSubMenu);
+
+      const menuItem = menuItems.find((item) => item.key === activeMenu);
+      const subMenuItem = menuItem?.subMenu?.find((item) => item.key === key);
+
+      if (hasNestedMenu(subMenuItem)) {
+        localStorage.setItem("currentMenuView", "nested");
+      } else {
+        localStorage.setItem("currentMenuView", "sub");
+      }
+    } else {
+      localStorage.setItem("activeSubMenu", "");
+      localStorage.setItem("currentMenuView", "sub");
+    }
+    localStorage.removeItem("activeNestedMenu");
+    localStorage.setItem("currentPath", pathname);
+
+    // Then update state
     setActiveSubMenu(newSubMenu);
     setActiveNestedMenu(null);
 
@@ -199,21 +322,24 @@ const VirtualizedSideBarItems = memo(() => {
 
       if (hasNestedMenu(subMenuItem)) {
         setMenuView("nested");
+      } else {
+        setMenuView("sub");
       }
     } else {
       setMenuView("sub");
     }
-
-    // Update localStorage
-    localStorage.setItem("activeSubMenu", newSubMenu || "");
-    localStorage.removeItem("activeNestedMenu");
   };
 
   // Toggle nested menu
   const toggleNestedMenu = (key) => {
     const newNestedMenu = activeNestedMenu === key ? null : key;
-    setActiveNestedMenu(newNestedMenu);
+
+    // Update localStorage first
     localStorage.setItem("activeNestedMenu", newNestedMenu || "");
+    localStorage.setItem("currentPath", pathname);
+
+    // Then update state
+    setActiveNestedMenu(newNestedMenu);
   };
 
   // Check if a link is active
@@ -221,23 +347,31 @@ const VirtualizedSideBarItems = memo(() => {
 
   // Handle back navigation
   const handleBackToMain = () => {
+    // Update state
     setActiveMenu(null);
     setActiveSubMenu(null);
     setActiveNestedMenu(null);
     setMenuView("main");
 
+    // Update localStorage
     localStorage.removeItem("activeMenu");
     localStorage.removeItem("activeSubMenu");
     localStorage.removeItem("activeNestedMenu");
+    localStorage.setItem("currentMenuView", "main");
+    localStorage.setItem("currentPath", pathname || "/");
   };
 
   const handleBackToSub = () => {
+    // Update state
     setActiveSubMenu(null);
     setActiveNestedMenu(null);
     setMenuView("sub");
 
+    // Update localStorage
     localStorage.removeItem("activeSubMenu");
     localStorage.removeItem("activeNestedMenu");
+    localStorage.setItem("currentMenuView", "sub");
+    localStorage.setItem("currentPath", pathname || "/");
   };
 
   // ---------- RENDERERS ----------
@@ -251,6 +385,8 @@ const VirtualizedSideBarItems = memo(() => {
     measure,
     registerChild
   ) => {
+    const itemPathname = item.pathname || "#"; // Add default to prevent undefined href
+
     return (
       <div ref={registerChild} style={style} onLoad={measure}>
         <Row
@@ -260,12 +396,12 @@ const VirtualizedSideBarItems = memo(() => {
           onMouseLeave={() => setHoveredItem(null)}
           className={`align-items-center iq-menu-item cursor-pointer 
             ${hoveredItem === item.key ? "hovered" : ""} 
-            ${item.pathname === pathname ? "active-menu-item" : ""} 
+            ${itemPathname === pathname ? "active-menu-item" : ""} 
             ${activeMenu === item.key ? "active-menu-item" : ""} 
             ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
         >
           <Link
-            href={item.pathname}
+            href={itemPathname}
             className="d-flex align-items-center text-white text-decoration-none w-100"
             onClick={(e) => {
               if (item.subMenu) e.preventDefault();
@@ -398,6 +534,34 @@ const VirtualizedSideBarItems = memo(() => {
     );
   };
 
+  // Effect 4: Auto-expand nested categories that contain the active path
+  useEffect(() => {
+    if (!currentItems || menuView !== "nested") return;
+
+    // Check each category to see if it contains the active path
+    for (const category of currentItems) {
+      if (!category || !category.subItems || !Array.isArray(category.subItems))
+        continue;
+
+      // Check if any subitems match the current path
+      const hasActiveLink = category.subItems.some(
+        (item) => item.href === pathname
+      );
+
+      // Auto-expand if needed and only on initial load (not during normal interaction)
+      if (hasActiveLink && activeNestedMenu !== category.key) {
+        // Use a timeout to avoid state conflicts
+        setTimeout(() => {
+          setActiveNestedMenu(category.key);
+          localStorage.setItem("activeNestedMenu", category.key);
+        }, 0);
+
+        // Only expand one category to avoid conflicts
+        break;
+      }
+    }
+  }, [pathname, menuView]); // Reduced dependencies to prevent re-triggering
+
   // Render nested menu category
   const renderNestedMenuCategory = (
     category,
@@ -411,6 +575,12 @@ const VirtualizedSideBarItems = memo(() => {
 
     const isExpanded = activeNestedMenu === category.key;
 
+    // Find if any subitems in this category match the current path
+    const hasActiveLink =
+      category.subItems &&
+      Array.isArray(category.subItems) &&
+      category.subItems.some((item) => item.href === pathname);
+
     return (
       <div ref={registerChild} style={style} onLoad={measure}>
         <div className="nested-category">
@@ -418,11 +588,12 @@ const VirtualizedSideBarItems = memo(() => {
             onClick={() => category.key && toggleNestedMenu(category.key)}
             className={`align-items-center iq-nested-item 
               ${activeNestedMenu === category.key ? "active-nested-item" : ""} 
+              ${hasActiveLink ? "active-nested-item" : ""}
               ${isMiniSidebar ? "mini-sidebar-item" : ""}`}
           >
             <div className="d-flex align-items-center text-white w-100">
               <Col xs="auto" className="pe-2 nested-icon">
-                {activeNestedMenu === category.key ? (
+                {isExpanded || hasActiveLink ? (
                   <FcOpenedFolder className="fs-4" />
                 ) : (
                   <FcFolder className="fs-4" />
@@ -456,6 +627,13 @@ const VirtualizedSideBarItems = memo(() => {
                     <Link
                       href={subItem.href || "#"}
                       className="text-white text-decoration-none d-block w-100"
+                      onClick={() => {
+                        // Save the current state when clicking a link
+                        localStorage.setItem(
+                          "currentPath",
+                          subItem.href || "/"
+                        );
+                      }}
                     >
                       <span className="ps-3">
                         {subItem.title || `Item ${idx + 1}`}

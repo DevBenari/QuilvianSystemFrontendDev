@@ -2,6 +2,7 @@
 
 import { showAlert } from "@/components/features/alert/custom-alert";
 import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
+import useMedicalData from "@/lib/hooks/useDokter";
 import { createJadwalPraktek } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/JadwalPraktekSlice";
 
 import { useRouter } from "next/navigation";
@@ -12,6 +13,15 @@ const AddFormJadwalPraktek = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const {
+    DokterOptions,
+    handleLoadMoreDokter,
+    DokterPoliOptions,
+    handleLoadMoreDokterPoli,
+    PoliKlinikOptions,
+    handleLoadMorePoliKlinik,
+  } = useMedicalData();
+
   const formFields = [
     {
       fields: [
@@ -19,39 +29,40 @@ const AddFormJadwalPraktek = () => {
           type: "select",
           label: "Dokter",
           name: "dokterId",
-          options: [], // Harus diisi dengan daftar dokter yang tersedia
+          options: DokterOptions,
           colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreDokter,
           rules: { required: "Dokter harus dipilih" },
         },
         {
           type: "select",
           label: "Dokter Poli",
           name: "dokterPoliId",
-          options: [], // Harus diisi dengan daftar dokter poli yang tersedia
+          options: DokterPoliOptions, // Harus diisi dengan daftar dokter poli yang tersedia
           colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreDokterPoli,
           rules: { required: "Dokter Poli harus dipilih" },
         },
-        {
-          type: "text",
-          label: "Nama Dokter",
-          name: "namaDokter",
-          placeholder: "Masukkan Nama Dokter...",
-          colSize: 6,
-          rules: { required: "Nama Dokter harus diisi" },
-        },
+
         {
           type: "select",
-          label: "Poli",
+          label: "PoliKlinik",
           name: "poliId",
-          options: [], // Harus diisi dengan daftar poli yang tersedia
+          options: PoliKlinikOptions,
           colSize: 6,
+          onMenuScrollToBottom: handleLoadMorePoliKlinik,
           rules: { required: "Poli harus dipilih" },
         },
         {
           type: "select",
           label: "Sub Poli",
           name: "subPoliId",
-          options: [], // Harus diisi dengan daftar sub poli yang tersedia
+          options: [
+            {
+              value: null,
+              label: "tidak ada",
+            },
+          ], // Harus diisi dengan daftar sub poli yang tersedia
           colSize: 6,
           rules: { required: "Sub Poli harus dipilih" },
         },
@@ -84,14 +95,6 @@ const AddFormJadwalPraktek = () => {
           name: "jamBerakhir",
           colSize: 6,
           rules: { required: "Jam Berakhir harus diisi" },
-        },
-        {
-          type: "text",
-          label: "Maksimal Pasien",
-          name: "maxPasien",
-          placeholder: "Masukkan Maksimal Pasien...",
-          colSize: 6,
-          rules: { required: "Maksimal Pasien harus diisi" },
         },
       ],
     },

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import TextField from "@/components/ui/text-field";
 import SelectField from "@/components/ui/select-field";
 import RadioInput from "@/components/ui/radio-input";
@@ -10,7 +10,7 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui/signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
-import NumberField from "@/components/ui/distance-filed";
+import NumberField from "@/components/ui/number-field";
 import SearchableSelectField from "@/components/ui/select-field-search";
 
 // Fungsi untuk mendapatkan pemetaan komponen field
@@ -67,7 +67,7 @@ export const getDefaultErrorMessage = (type) => {
     number: "Harap masukkan angka yang valid",
     date: "Tanggal tidak valid",
     select: "Harap pilih salah satu opsi",
-    required: "Field ini wajib diisi"
+    required: "Field ini wajib diisi",
   };
 
   return errorMessages[type] || "Terjadi kesalahan";

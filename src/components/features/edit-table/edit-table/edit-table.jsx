@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Col, Form, Button } from "react-bootstrap";
 import { FormProvider, useForm } from "react-hook-form";
-import NumberField from "@/components/ui/distance-filed";
+import NumberField from "@/components/ui/number-field";
 
 const EditableTable = ({
   id, // ID unik untuk tabel

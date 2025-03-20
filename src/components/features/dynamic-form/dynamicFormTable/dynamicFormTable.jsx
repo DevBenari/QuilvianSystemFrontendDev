@@ -13,7 +13,7 @@ import SliderInput from "@/components/ui/slider-input";
 import RichTextEditor from "@/components/ui/rich-text-editor";
 import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
-import DistanceField from "@/components/ui/distance-filed";
+import DistanceField from "@/components/ui/number-field";
 
 const DynamicFormTable = ({ title, formConfig, onSubmit }) => {
   const fieldComponents = {

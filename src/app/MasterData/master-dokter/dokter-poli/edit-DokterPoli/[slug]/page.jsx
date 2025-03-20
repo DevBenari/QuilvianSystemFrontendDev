@@ -11,6 +11,7 @@ import {
   fetchDokterPoliById,
   updateDokterPoli,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPoliSlice";
+import useMedicalData from "@/lib/hooks/useDokter";
 
 const EditDokterPoliForm = ({ params }) => {
   const router = useRouter();
@@ -20,6 +21,13 @@ const EditDokterPoliForm = ({ params }) => {
   );
 
   const [dataDokterPoli, setDataDokterPoli] = useState(null);
+
+  const {
+    DokterOptions,
+    handleLoadMoreDokter,
+    PoliKlinikOptions,
+    handleLoadMorePoliKlinik,
+  } = useMedicalData();
 
   // Fetch data DokterPoli berdasarkan ID
   useEffect(() => {
@@ -43,62 +51,36 @@ const EditDokterPoliForm = ({ params }) => {
       fields: [
         {
           type: "select",
-          label: "Poli",
+          label: "PoliKlinik",
           name: "poliId",
-          options: [], // Harus diisi dengan daftar poli yang tersedia
+          options: PoliKlinikOptions,
           colSize: 6,
+          onMenuScrollToBottom: handleLoadMorePoliKlinik,
           rules: { required: "Poli harus dipilih" },
         },
         {
           type: "select",
           label: "Dokter",
           name: "dokterId",
-          options: [], // Harus diisi dengan daftar dokter yang tersedia
+          options: DokterOptions,
           colSize: 6,
+          onMenuScrollToBottom: handleLoadMoreDokter,
           rules: { required: "Dokter harus dipilih" },
-        },
-        {
-          type: "text",
-          label: "Nama Dokter",
-          name: "namaDokter",
-          placeholder: "Masukkan Nama Dokter...",
-          colSize: 6,
-          rules: { required: "Nama Dokter harus diisi" },
-        },
-        {
-          type: "text",
-          label: "Nama Poli Klinik",
-          name: "namaPoliKlinik",
-          placeholder: "Masukkan Nama Poli Klinik...",
-          colSize: 6,
-          rules: { required: "Nama Poli Klinik harus diisi" },
         },
       ],
     },
   ];
 
-  // Submit form untuk update data
   const handleSubmit = async (data) => {
     try {
-      if (!dataDokterPoli.dokterPoliId) {
-        showAlert.error(
-          "Gagal memperbarui data: ID DokterPoli tidak ditemukan."
-        );
-        return;
-      }
-
-      console.log("Data yang dikirim ke backend:", data);
-
       await dispatch(
         updateDokterPoli({ id: dataDokterPoli.dokterPoliId, data })
       ).unwrap();
-
       showAlert.success("Data DokterPoli berhasil diperbarui!", () => {
         router.push("/MasterData/master-dokter/dokter-poli/table-DokterPoli");
       });
     } catch (error) {
-      console.error("Gagal memperbarui data DokterPoli", error);
-      showAlert.error("Gagal memperbarui data DokterPoli.");
+      showAlert.error("Gagal memperbarui data Dokter Poli.");
     }
   };
 
@@ -122,7 +104,7 @@ const EditDokterPoliForm = ({ params }) => {
             );
           });
         } catch (error) {
-          showAlert.error("Gagal menghapus data DokterPoli.");
+          showAlert.error("Gagal menghapus data Dokter Poli.");
         }
       }
     );
@@ -140,7 +122,7 @@ const EditDokterPoliForm = ({ params }) => {
   return (
     <Fragment>
       <DynamicForm
-        title="Edit Data DokterPoli"
+        title="Edit Data Dokter Poli"
         formConfig={formFieldsWithData}
         onSubmit={handleSubmit}
         handleDelete={handleDelete}

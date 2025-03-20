@@ -195,7 +195,7 @@ const EditDokter = ({ params }) => {
   return (
     <FormProvider {...methods}>
       <Fragment>
-        <DynamicStepForm
+        <DynamicForm
           title="Edit Data Dokter"
           formConfig={formFieldsWithData}
           onSubmit={handleSubmit}

@@ -69,7 +69,7 @@ const TableDataDokterPoli = () => {
           { key: "namaDokter", label: "Nama Dokter Poli" },
           { key: "namaPoliklinik", label: "Nama Poliklinik" },
         ]}
-        slugConfig={{ textField: "namaDokter", idField: "dokterPoliId" }} // ID Dokter Poli untuk Slug
+        slugConfig={{ textField: "createByName", idField: "dokterPoliId" }} // ID Dokter Poli untuk Slug
         basePath="/MasterData/master-dokter/dokter-poli/edit-DokterPoli"
         paginationProps={{
           currentPage: page,

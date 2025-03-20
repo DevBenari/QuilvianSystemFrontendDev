@@ -64,7 +64,7 @@ const TableDataAsuransiPasien = () => {
         tableTitle="Tabel Daftar Polis Asuransi"
         data={filteredData}
         columns={columns}
-        slugConfig={{ textField: "namaPasien", idField: "pasienId" }}
+        slugConfig={{ textField: "namaAsuransi", idField: "asuransiPasienId" }}
         basePath="/MasterData/master-asuransi/asuransi-pasien/edit-asuransi-pasien"
         paginationProps={{
           currentPage: page,

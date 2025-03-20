@@ -84,21 +84,6 @@ const TableDataUserActive = () => {
           />
         }
       />
-      {/* Loading Animation */}
-      {loading && (
-        <div className="text-center p-4">
-          <Spinner animation="border" variant="primary" />
-          <p className="mt-2">Mengambil data, harap tunggu...</p>
-        </div>
-      )}
-
-      {/* Error or No Data */}
-      {!loading && (error || filteredData.length === 0) && (
-        <Alert variant="warning" className="text-center mt-3">
-          <i className="ri-information-line me-2"></i>
-          Tidak ada data yang tersedia.
-        </Alert>
-      )}
     </FormProvider>
   );
 };

@@ -8,10 +8,12 @@ import { showAlert } from "@/components/features/alert/custom-alert";
 import { createAsuransiPasien } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 import useAsuransiData from "@/lib/hooks/useAsuransi";
 import usePasienData from "@/lib/hooks/usePasien";
+import { useRouter } from "next/navigation";
+import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicForm";
 
 const PendaftaranAsuransiPasien = memo(() => {
   const dispatch = useDispatch();
-
+  const router = useRouter();
   const { AsuransiOptions, handleLoadMoreAsuransi } = useAsuransiData();
   const { PasienOptions, handleLoadMorePasien } = usePasienData();
 
@@ -21,7 +23,7 @@ const PendaftaranAsuransiPasien = memo(() => {
         {
           type: "select",
           label: " Asuransi Pasien",
-          name: "asuransiPasienId",
+          name: "asuransiId",
           options: AsuransiOptions,
           placeholder: "Masukkan  Asuransi Pasien...",
           colSize: 6,
@@ -68,8 +70,8 @@ const PendaftaranAsuransiPasien = memo(() => {
 
   return (
     <Fragment>
-      <DynamicStepForm
-        title="Pendaftaran Pasien AsuransiPasien"
+      <DynamicForm
+        title="Pendaftaran Pasien Asuransi Pasien"
         formConfig={formFields}
         onSubmit={handleSubmitWithApi}
         backPath="/MasterData/master-asuransi/asuransi-pasien/daftar-asuransi-pasien"

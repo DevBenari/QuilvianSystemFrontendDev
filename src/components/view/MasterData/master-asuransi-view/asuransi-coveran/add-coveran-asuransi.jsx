@@ -69,13 +69,14 @@ const CoveranAsuransiAddForm = memo(() => {
           rules: { required: "Pilih apakah ini operasi atau bukan" },
         },
         {
-          type: "text",
+          type: "number",
           label: "Tarif",
           name: "tarif",
           placeholder: "Masukkan Tarif...",
           colSize: 6,
           rules: { required: "Tarif harus diisi" },
         },
+
         {
           type: "date",
           label: "Tanggal Berlaku",

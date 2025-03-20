@@ -15,8 +15,8 @@ import SignaturePad from "@/components/ui//signature-canvas-input";
 import TimeField from "@/components/ui/time-input";
 import SearchableSelectField from "@/components/ui/select-field-search";
 import ButtonNav from "@/components/ui/button-navigation";
-import NumberField from "@/components/ui/distance-filed";
 import Checkbox from "@/components/ui/check-box";
+import NumberField from "@/components/ui/number-field";
 
 const DynamicForm = memo(
   ({
@@ -89,6 +89,7 @@ const DynamicForm = memo(
         customRender,
         colSize,
         hide,
+
         ...otherProps
       } = field;
 
@@ -123,13 +124,29 @@ const DynamicForm = memo(
         return null;
       }
 
+      const sanitizedProps = { ...commonProps, ...otherProps };
+      delete sanitizedProps.hide;
+
+      if (customRender) {
+        return customRender({ key: id, ...sanitizedProps });
+      }
+
       return (
         <Component
           key={id}
-          {...commonProps}
-          {...restProps}
+          {...sanitizedProps}
           options={options}
           rows={rows}
+          control={methods.control}
+          value={value}
+          id={id}
+          name={name}
+          label={label}
+          placeholder={placeholder}
+          rules={rules}
+          disabled={!isEditing || disabled} // Disabled jika bukan mode edit
+          methods={methods} // Pastikan methods dikirimkan
+          {...otherProps}
         />
       );
     };
@@ -152,6 +169,7 @@ const DynamicForm = memo(
     };
 
     const {
+      setValue,
       watch,
       formState: { errors },
       handleSubmit: formSubmit,
