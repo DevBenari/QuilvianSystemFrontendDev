@@ -7,15 +7,16 @@ import { showAlert } from "@/components/features/alert/custom-alert";
 
 import { createKecamatan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
 import useWilayahData from "@/lib/hooks/useWilayahData";
+import { resetWilayahState } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 
 const KecamatanAddForm = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const {
     KabupatenKotaOptions,
-    loadingKabupatenKota,
+
     handleLoadMoreKabupatenKota,
-  } = useWilayahData();
+  } = useWilayahData({ kabupatenKota: true });
 
   const formFields = [
     {
@@ -47,11 +48,9 @@ const KecamatanAddForm = () => {
     try {
       // Tambahkan negaraId secara default saat submit
       await dispatch(createKecamatan(data)).unwrap();
+      dispatch(resetWilayahState());
       showAlert.success("Data berhasil disimpan", () => {
         router.push("/MasterData/master-wilayah/kecamatan/table-kecamatan");
-        setTimeout(() => {
-          window.location.reload(); // Full reload untuk memastikan Redux dan UI diperbarui
-        }, 100);
       });
     } catch (error) {
       console.error("Gagal menambahkan Kecamatan:", error);

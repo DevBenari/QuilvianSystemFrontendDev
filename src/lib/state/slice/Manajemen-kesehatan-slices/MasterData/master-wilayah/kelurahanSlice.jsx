@@ -89,17 +89,14 @@ export const createKelurahan = createAsyncThunk(
       const response = await InstanceAxios.post(`/Wilayah/Kelurahan`, data, {
         headers: getHeaders(),
       });
-
-      console.log("Response API (Fetch By ID):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Gagal menambahkan Kelurahan darah"
+        error.response?.data || "Gagal menambahkan Kelurahan "
       );
     }
   }
 );
-
 // 🔹 Update Kelurahan Darah berdasarkan ID
 export const updateKelurahan = createAsyncThunk(
   "Kelurahan/update",
@@ -153,34 +150,46 @@ const KelurahanSlice = createSlice({
     currentPage: 1,
     loading: false,
     error: null,
+    selectedKelurahan: null,
   },
-  reducers: {},
+  reducers: {
+    resetWilayahState: (state) => {
+      state.data = [];
+      state.loadedPages = [];
+      state.currentPage = 1;
+      state.totalPages = 1;
+      state.totalItems = 0;
+      state.loading = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      // ✅ Fetch Kelurahan hanya dengan pagination (CustomTableComponent)
+      // ✅ Fetch KelurahafetchKelurahan hanya dengan pagination (CustomTableComponent)
       .addCase(fetchKelurahan.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchKelurahan.fulfilled, (state, action) => {
-        if (!action.payload) return; // Skip if we already had the data
-
+        if (!action.payload) {
+          state.loading = false;
+          return;
+        }
         state.loading = false;
 
-        // Add new data without duplicates
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
-              (existingItem) => existingItem.kelurahanId === newItem.kelurahanId
+              (existingItem) => existingItem.provinsiId === newItem.provinsiId
             )
         );
 
         if (action.meta.arg.isInfiniteScroll) {
-          // Infinite scroll - append data
           state.data = [...state.data, ...newData];
-          state.loadedPages.push(action.payload.page);
+          if (!state.loadedPages.includes(action.payload.page)) {
+            state.loadedPages.push(action.payload.page);
+          }
         } else {
-          // Regular pagination - replace data
           state.data = action.payload.data;
         }
 
@@ -190,9 +199,9 @@ const KelurahanSlice = createSlice({
       })
       .addCase(fetchKelurahan.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Terjadi kesalahan";
+        state.data = [];
+        state.error = action.payload?.message || "Gagal mengambil data";
       })
-
       // ✅ Fetch Kelurahan dengan search & filter (CustomSearchFilter)
       .addCase(fetchKelurahanWithFilters.pending, (state) => {
         state.loading = true;
@@ -227,6 +236,7 @@ const KelurahanSlice = createSlice({
 
       // Tambah Kelurahan Darah
       .addCase(createKelurahan.fulfilled, (state, action) => {
+        state.loading = false;
         state.data.push(action.payload);
       })
 

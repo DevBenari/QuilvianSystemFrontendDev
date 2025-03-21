@@ -9,6 +9,7 @@ import {
   updateProvinsi,
   fetchProvinsiById,
   deleteProvinsi,
+  resetWilayahState,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 import useWilayahData from "@/lib/hooks/useWilayahData";
 
@@ -31,8 +32,9 @@ const ProvinsiEditForm = ({ params }) => {
     }
   }, [selectedProvinsi]);
 
-  const { NegaraOptions, loadingNegara, handleLoadMoreNegara } =
-    useWilayahData();
+  const { NegaraOptions, loadingNegara, handleLoadMoreNegara } = useWilayahData(
+    { negara: true }
+  );
 
   const formFields = [
     {
@@ -83,11 +85,10 @@ const ProvinsiEditForm = ({ params }) => {
       console.log("📢 Data yang dikirim ke API (PUT):", { id, data });
 
       await dispatch(updateProvinsi({ id, data })).unwrap();
+      dispatch(resetWilayahState());
+
       showAlert.success("Data Provinsi berhasil diperbarui!", () => {
         router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
       });
     } catch (error) {
       console.error("❌ Gagal memperbarui data Provinsi:", error);
@@ -99,11 +100,9 @@ const ProvinsiEditForm = ({ params }) => {
     showAlert.confirmDelete("Data Provinsi akan dihapus permanen", async () => {
       try {
         await dispatch(deleteProvinsi(dataProvinsi.provinsiId)).unwrap();
+        dispatch(resetWilayahState());
         showAlert.success("Data Provinsi berhasil dihapus!", () => {
           router.push("/MasterData/master-wilayah/provinsi/table-provinsi");
-          setTimeout(() => {
-            window.location.reload();
-          }, 200);
         });
       } catch (error) {
         console.error("❌ Gagal menghapus data Provinsi:", error);

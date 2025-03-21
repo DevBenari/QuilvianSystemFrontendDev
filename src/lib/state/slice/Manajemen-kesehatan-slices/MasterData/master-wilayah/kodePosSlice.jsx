@@ -1,19 +1,34 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { InstanceAxios } from "@/lib/axiosInstance/InstanceAxios";
 import { getHeaders } from "@/lib/headers/headers";
+import { createProvinsi } from "./provinsiSlice";
 
 // CRUD Thunks
 export const fetchKodePos = createAsyncThunk(
   "KodePos/fetchData",
-  async ({ page = 1, perPage = 10 }, { rejectWithValue }) => {
+  async (
+    { page = 1, perPage = 10, isInfiniteScroll = false },
+    { rejectWithValue, getState }
+  ) => {
     try {
-      const response = await InstanceAxios.get(`Wilayah/KodePos`, {
+      const currentState = getState().KodePos;
+      if (currentState.loadedPages.includes(page)) {
+        console.log("Data already loaded for page:", page);
+        return null;
+      }
+      const response = await InstanceAxios.get(`/Wilayah/KodePos`, {
         params: { page, perPage },
         headers: getHeaders(),
       });
 
-      return response.data; // Pastikan API mengembalikan struktur data yang benar
+      return {
+        data: response.data.data,
+        pagination: response.data.pagination,
+        page,
+        meta: { arg: { page, isInfiniteScroll } },
+      };
     } catch (error) {
+      console.error("Error fetching data:", error);
       return rejectWithValue(
         error.response?.data || "Terjadi kesalahan saat mengambil data"
       );
@@ -66,14 +81,14 @@ export const createKodePos = createAsyncThunk(
   "KodePos/create",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await InstanceAxios.post("Wilayah/KodePos", data, {
+      const response = await InstanceAxios.post(`/Wilayah/KodePos`, data, {
         headers: getHeaders(),
       });
       return response.data;
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Gagal menambahkan data Kode Pos";
-      return rejectWithValue(errorMessage);
+      return rejectWithValue(
+        error.response?.data || "Gagal menambahkan KodePos "
+      );
     }
   }
 );
@@ -115,12 +130,25 @@ const KodePosSlice = createSlice({
   name: "KodePos",
   initialState: {
     data: [],
-    selectedKodePos: null,
-    loading: false,
-    error: null,
+    loadedPages: [],
     totalItems: 0,
     totalPages: 1,
     currentPage: 1,
+    loading: false,
+    error: null,
+    selectedKodePos: null,
+  },
+
+  reducers: {
+    resetWilayahState: (state) => {
+      state.data = [];
+      state.loadedPages = [];
+      state.currentPage = 1;
+      state.totalPages = 1;
+      state.totalItems = 0;
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -129,19 +157,37 @@ const KodePosSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchKodePos.fulfilled, (state, action) => {
-        console.log("API Response Data:", action.payload);
+        if (!action.payload) {
+          state.loading = false;
+          return;
+        }
         state.loading = false;
-        state.data = action.payload.data || []; // Menyimpan daftar golongan darah
+
+        const newData = action.payload.data.filter(
+          (newItem) =>
+            !state.data.some(
+              (existingItem) => existingItem.provinsiId === newItem.provinsiId
+            )
+        );
+
+        if (action.meta.arg.isInfiniteScroll) {
+          state.data = [...state.data, ...newData];
+          if (!state.loadedPages.includes(action.payload.page)) {
+            state.loadedPages.push(action.payload.page);
+          }
+        } else {
+          state.data = action.payload.data;
+        }
+
         state.totalItems = action.payload.pagination?.totalRows || 0;
         state.totalPages = action.payload.pagination?.totalPages || 1;
-        state.currentPage = action.payload.pagination?.currentPage || 1;
+        state.currentPage = action.meta.arg.page;
       })
       .addCase(fetchKodePos.rejected, (state, action) => {
         state.loading = false;
-        state.data = []; // Set data menjadi kosong saat error 404
+        state.data = [];
         state.error = action.payload?.message || "Gagal mengambil data";
       })
-
       // ✅ Fetch KodePos dengan search & filter (CustomSearchFilter)
       .addCase(fetchKodePosWithFilters.pending, (state) => {
         state.loading = true;
@@ -171,11 +217,11 @@ const KodePosSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(createKodePos.fulfilled, (state, action) => {
-        if (Array.isArray(state.data)) {
-          state.data.push(action.payload);
-        }
+      .addCase(createProvinsi.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data.push(action.payload);
       })
+
       .addCase(updateKodePos.fulfilled, (state, action) => {
         const index = state.data.findIndex(
           (KodePos) => KodePos.kodePosId === action.payload.kodePosId

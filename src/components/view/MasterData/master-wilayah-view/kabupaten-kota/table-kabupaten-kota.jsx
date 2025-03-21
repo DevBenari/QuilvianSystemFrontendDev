@@ -10,8 +10,7 @@ import {
   fetchKabupatenKota,
   fetchKabupatenKotaWithFilters,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
-import { FaCity } from "react-icons/fa"; // Icon untuk Kabupaten/Kota
-import LoadingScreen from "@/components/features/loading/loadingScreen";
+import { FaCity } from "react-icons/fa";
 
 const TableDataKabupatenKota = () => {
   const methods = useForm();

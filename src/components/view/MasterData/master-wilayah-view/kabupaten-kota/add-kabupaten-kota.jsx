@@ -7,14 +7,16 @@ import { showAlert } from "@/components/features/alert/custom-alert";
 
 import { createKabupatenKota } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KabupatenKotaSlice";
 import useWilayahData from "@/lib/hooks/useWilayahData";
+import { resetWilayahState } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 
 const KabupatenKotaAddForm = () => {
   const router = useRouter();
 
   const dispatch = useDispatch();
 
-  const { ProvinsiOptions, loadingProvinsi, handleLoadMoreProvinsi } =
-    useWilayahData();
+  const { ProvinsiOptions, handleLoadMoreProvinsi } = useWilayahData({
+    provinsi: true,
+  });
 
   const formFields = [
     {
@@ -45,13 +47,11 @@ const KabupatenKotaAddForm = () => {
   const handleSubmit = async (data) => {
     try {
       await dispatch(createKabupatenKota(data)).unwrap();
+      dispatch(resetWilayahState());
       showAlert.success("Data berhasil disimpan", () => {
         router.push(
           "/MasterData/master-wilayah/kabupaten-kota/table-kabupaten-kota"
         );
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
       });
     } catch (error) {
       console.error("Gagal menambahkan Kabupaten Kota:", error);

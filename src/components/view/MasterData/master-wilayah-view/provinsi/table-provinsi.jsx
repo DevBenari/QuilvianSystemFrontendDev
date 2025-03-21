@@ -50,6 +50,7 @@ const TableDataProvinsi = () => {
         fetchFunction={fetchProvinsiWithFilters}
         setFilteredData={setFilteredData}
         showSearch={true}
+        loading={loading}
         // Table Component
         tableTitle="Tabel List Provinsi"
         data={filteredData}
@@ -59,6 +60,7 @@ const TableDataProvinsi = () => {
           { key: "createByName", label: "Dibuat Oleh" },
           { key: "kodeProvinsi", label: "Kode Provinsi" },
           { key: "namaProvinsi", label: "Nama Provinsi" },
+          { key: "namaNegara", label: "Nama Negara" },
         ]}
         basePath="/MasterData/master-wilayah/provinsi/edit-provinsi"
         slugConfig={{

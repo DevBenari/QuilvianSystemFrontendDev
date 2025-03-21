@@ -52,6 +52,7 @@ const TableDataKelurahan = () => {
         setFilteredData={setFilteredData}
         showSearch={true}
         // Table Component
+
         tableTitle="Tabel List Kelurahan"
         data={filteredData}
         loading={loading} // Mengirim loading ke CustomTableComponent

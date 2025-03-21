@@ -7,16 +7,17 @@ import { fetchKelurahan } from "../state/slice/Manajemen-kesehatan-slices/Master
 import { fetchNegara } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-informasi/negaraSlice";
 import { fetchKodePos } from "../state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kodePosSlice";
 
-// Custom hook untuk fetching data wilayah
 const useFetchWilayah = (sliceName, fetchAction) => {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
 
-  const { data, loading, totalPages, loadedPages } = useSelector(
-    (state) => state[sliceName]
-  );
+  const {
+    data = [],
+    loading = false,
+    totalPages = 1,
+    loadedPages = [],
+  } = useSelector((state) => state[sliceName] || {});
 
-  // Membungkus dispatch dengan useCallback untuk menghindari warning dependency
   const fetchData = useCallback(
     (params) => {
       dispatch(fetchAction(params));
@@ -25,7 +26,7 @@ const useFetchWilayah = (sliceName, fetchAction) => {
   );
 
   useEffect(() => {
-    if (!loadedPages.includes(1)) {
+    if (Array.isArray(loadedPages) && !loadedPages.includes(1)) {
       fetchData({ page: 1, perPage: 10, isInfiniteScroll: true });
     }
   }, [fetchData, loadedPages]);
@@ -34,113 +35,112 @@ const useFetchWilayah = (sliceName, fetchAction) => {
     if (page < totalPages && !loading && !loadedPages.includes(page + 1)) {
       const nextPage = page + 1;
       setPage(nextPage);
-      console.log(`🔄 Fetching page ${nextPage} for ${sliceName}...`);
       fetchData({
         page: nextPage,
         perPage: 10,
         isInfiniteScroll: true,
       });
     }
-  }, [fetchData, loading, loadedPages, page, sliceName, totalPages]);
+  }, [fetchData, loading, loadedPages, page, totalPages]);
 
   return { data, loading, handleLoadMore };
 };
 
-// Hook utama untuk mengelola data wilayah
-const useWilayahData = () => {
-  // Fetch Negara
+// 🔧 Modular useWilayahData
+const useWilayahData = (config = {}) => {
   const {
     data: NegaraData,
     loading: loadingNegara,
     handleLoadMore: handleLoadMoreNegara,
   } = useFetchWilayah("negara", fetchNegara);
 
-  // Fetch Provinsi
   const {
     data: ProvinsiData,
     loading: loadingProvinsi,
     handleLoadMore: handleLoadMoreProvinsi,
   } = useFetchWilayah("Provinsi", fetchProvinsi);
 
-  // Fetch Kabupaten/Kota
   const {
     data: KabupatenKotaData,
     loading: loadingKabupatenKota,
     handleLoadMore: handleLoadMoreKabupatenKota,
   } = useFetchWilayah("KabupatenKota", fetchKabupatenKota);
 
-  // Fetch Kecamatan
   const {
     data: KecamatanData,
     loading: loadingKecamatan,
     handleLoadMore: handleLoadMoreKecamatan,
   } = useFetchWilayah("Kecamatan", fetchKecamatan);
 
-  // Fetch Kelurahan
   const {
     data: KelurahanData,
     loading: loadingKelurahan,
     handleLoadMore: handleLoadMoreKelurahan,
   } = useFetchWilayah("Kelurahan", fetchKelurahan);
 
-  // Fetch KodePos
   const {
     data: KodePosData,
     loading: loadingKodePos,
     handleLoadMore: handleLoadMoreKodePos,
   } = useFetchWilayah("KodePos", fetchKodePos);
 
-  // Format data menjadi options
-  const ProvinsiOptions = ProvinsiData.map((item) => ({
-    label: item.namaProvinsi,
-    value: item.provinsiId,
-  }));
+  const result = {};
 
-  const KabupatenKotaOptions = KabupatenKotaData.map((item) => ({
-    label: item.namaKabupatenKota,
-    value: item.kabupatenKotaId,
-  }));
+  if (config.negara) {
+    result.NegaraOptions = NegaraData.map((item) => ({
+      label: item.namaNegara,
+      value: item.negaraId,
+    }));
+    result.loadingNegara = loadingNegara;
+    result.handleLoadMoreNegara = handleLoadMoreNegara;
+  }
 
-  const KecamatanOptions = KecamatanData.map((item) => ({
-    label: item.namaKecamatan,
-    value: item.kecamatanId,
-  }));
+  if (config.provinsi) {
+    result.ProvinsiOptions = ProvinsiData.map((item) => ({
+      label: item.namaProvinsi,
+      value: item.provinsiId,
+    }));
+    result.loadingProvinsi = loadingProvinsi;
+    result.handleLoadMoreProvinsi = handleLoadMoreProvinsi;
+  }
 
-  const KelurahanOptions = KelurahanData.map((item) => ({
-    label: item.namaKelurahan,
-    value: item.kelurahanId,
-  }));
+  if (config.kabupatenKota) {
+    result.KabupatenKotaOptions = KabupatenKotaData.map((item) => ({
+      label: item.namaKabupatenKota,
+      value: item.kabupatenKotaId,
+    }));
+    result.loadingKabupatenKota = loadingKabupatenKota;
+    result.handleLoadMoreKabupatenKota = handleLoadMoreKabupatenKota;
+  }
 
-  const KodePosOptions = KodePosData.map((item) => ({
-    label: item.namaKelurahan,
-    value: item.kodePosId,
-  }));
+  if (config.kecamatan) {
+    result.KecamatanOptions = KecamatanData.map((item) => ({
+      label: item.namaKecamatan,
+      value: item.kecamatanId,
+    }));
+    result.loadingKecamatan = loadingKecamatan;
+    result.handleLoadMoreKecamatan = handleLoadMoreKecamatan;
+  }
 
-  const NegaraOptions = NegaraData.map((item) => ({
-    label: item.namaNegara,
-    value: item.negaraId,
-  }));
+  if (config.kelurahan) {
+    result.KelurahanOptions = KelurahanData.map((item) => ({
+      label: item.namaKelurahan,
+      value: item.kelurahanId,
+    }));
+    result.loadingKelurahan = loadingKelurahan;
+    result.handleLoadMoreKelurahan = handleLoadMoreKelurahan;
+  }
 
-  return {
-    ProvinsiOptions,
-    KabupatenKotaOptions,
-    KecamatanOptions,
-    KelurahanOptions,
-    NegaraOptions,
-    KodePosOptions,
-    loadingNegara,
-    loadingProvinsi,
-    loadingKabupatenKota,
-    loadingKecamatan,
-    loadingKelurahan,
-    loadingKodePos,
-    handleLoadMoreNegara,
-    handleLoadMoreProvinsi,
-    handleLoadMoreKabupatenKota,
-    handleLoadMoreKecamatan,
-    handleLoadMoreKelurahan,
-    handleLoadMoreKodePos,
-  };
+  if (config.kodePos) {
+    result.KodePosOptions = KodePosData.map((item) => ({
+      label: item.namaKelurahan,
+      value: item.kodePosId,
+    }));
+    result.loadingKodePos = loadingKodePos;
+    result.handleLoadMoreKodePos = handleLoadMoreKodePos;
+  }
+
+  return result;
 };
 
 export default useWilayahData;

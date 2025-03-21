@@ -55,6 +55,7 @@ const TableDataKecamatan = () => {
         setFilteredData={setFilteredData}
         showSearch={true}
         // Table Component
+        loading={loading}
         tableTitle="Tabel List Kecamatan"
         data={filteredData}
         columns={[

@@ -6,12 +6,15 @@ import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicF
 import { showAlert } from "@/components/features/alert/custom-alert";
 import useWilayahData from "@/lib/hooks/useWilayahData";
 import { createKodePos } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kodePosSlice";
+import { resetWilayahState } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 const KodePosAddForm = () => {
   const router = useRouter();
 
   const dispatch = useDispatch();
 
-  const { KelurahanOptions, handleLoadMoreKelurahan } = useWilayahData();
+  const { KelurahanOptions, handleLoadMoreKelurahan } = useWilayahData({
+    kelurahan: true,
+  });
 
   const formFields = [
     {
@@ -42,6 +45,7 @@ const KodePosAddForm = () => {
   const handleSubmit = async (data) => {
     try {
       await dispatch(createKodePos(data)).unwrap();
+      dispatch(resetWilayahState());
       showAlert.success("Data berhasil disimpan", () => {
         router.push("/MasterData/master-wilayah/kode-pos/table-kode-pos");
       });
@@ -54,7 +58,7 @@ const KodePosAddForm = () => {
   return (
     <Fragment>
       <DynamicForm
-        title="Tambah Data Kode Pos Kota"
+        title="Tambah Data Kode Pos "
         formConfig={formFields}
         onSubmit={handleSubmit}
         backPath="/MasterData/master-wilayah/kode-pos/table-kode-pos"

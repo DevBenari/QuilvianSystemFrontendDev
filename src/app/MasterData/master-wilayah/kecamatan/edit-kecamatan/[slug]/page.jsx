@@ -12,6 +12,7 @@ import {
   updateKecamatan,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/KecamatanSlice";
 import useWilayahData from "@/lib/hooks/useWilayahData";
+import { resetWilayahState } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 
 const KecamatanEditForm = ({ params }) => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const KecamatanEditForm = ({ params }) => {
     KabupatenKotaOptions,
     loadingKabupatenKota,
     handleLoadMoreKabupatenKota,
-  } = useWilayahData();
+  } = useWilayahData({ kabupatenKota: true });
 
   const formFields = [
     {
@@ -93,11 +94,9 @@ const KecamatanEditForm = ({ params }) => {
       console.log("📢 Data yang dikirim ke API (PUT):", { id, data });
 
       await dispatch(updateKecamatan({ id, data })).unwrap();
+      dispatch(resetWilayahState());
       showAlert.success("Data Kecamatan berhasil diperbarui!", () => {
         router.push("/MasterData/master-wilayah/kecamatan/table-kecamatan");
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
       });
     } catch (error) {
       console.error("❌ Gagal memperbarui data Kecamatan:", error);
@@ -111,11 +110,9 @@ const KecamatanEditForm = ({ params }) => {
       async () => {
         try {
           await dispatch(deleteKecamatan(dataKecamatan.kecamatanId)).unwrap();
+          dispatch(resetWilayahState());
           showAlert.success("Data Kecamatan berhasil dihapus!", () => {
             router.push("/MasterData/master-wilayah/kecamatan/table-kecamatan");
-            setTimeout(() => {
-              window.location.reload();
-            }, 100);
           });
         } catch (error) {
           console.error("❌ Gagal menghapus data Kecamatan:", error);

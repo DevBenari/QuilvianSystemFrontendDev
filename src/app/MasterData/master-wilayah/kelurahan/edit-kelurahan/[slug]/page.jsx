@@ -12,6 +12,7 @@ import {
   fetchKelurahanById,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
 import useWilayahData from "@/lib/hooks/useWilayahData";
+import { resetWilayahState } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 
 const KelurahanEditForm = ({ params }) => {
   const router = useRouter();
@@ -33,8 +34,9 @@ const KelurahanEditForm = ({ params }) => {
     }
   }, [selectedKelurahan]);
 
-  const { KecamatanOptions, KecamatanLoading, handleLoadMoreKecamatan } =
-    useWilayahData();
+  const { KecamatanOptions, handleLoadMoreKecamatan } = useWilayahData({
+    kecamatan: true,
+  });
 
   const formFields = [
     {
@@ -49,7 +51,6 @@ const KelurahanEditForm = ({ params }) => {
           rules: { required: "Kecamatan is required" },
           colSize: 6,
           onMenuScrollToBottom: handleLoadMoreKecamatan,
-          isLoading: KecamatanLoading,
         },
         {
           type: "text",
@@ -84,11 +85,9 @@ const KelurahanEditForm = ({ params }) => {
       console.log("📢 Data yang dikirim ke API (PUT):", { id, data });
 
       await dispatch(updateKelurahan({ id, data })).unwrap();
+      dispatch(resetWilayahState());
       showAlert.success("Data Kelurahan berhasil diperbarui!", () => {
         router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
       });
     } catch (error) {
       console.error("❌ Gagal memperbarui data Kelurahan:", error);
@@ -102,11 +101,9 @@ const KelurahanEditForm = ({ params }) => {
       async () => {
         try {
           await dispatch(deleteKelurahan(dataKelurahan.kelurahanId)).unwrap();
+          dispatch(resetWilayahState());
           showAlert.success("Data Kelurahan berhasil dihapus!", () => {
             router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
-            setTimeout(() => {
-              window.location.reload();
-            }, 100);
           });
         } catch (error) {
           console.error("❌ Gagal menghapus data Kelurahan:", error);

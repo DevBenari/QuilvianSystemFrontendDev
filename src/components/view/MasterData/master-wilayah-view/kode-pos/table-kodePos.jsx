@@ -53,6 +53,7 @@ const TableDataKodePos = () => {
         setFilteredData={setFilteredData}
         showSearch={true}
         // Table Component
+
         tableTitle="Tabel List Kode Pos"
         data={filteredData}
         loading={loading} // Mengirim loading ke CustomTableComponent

@@ -6,14 +6,16 @@ import DynamicForm from "@/components/features/dynamic-form/dynamicForm/dynamicF
 import { showAlert } from "@/components/features/alert/custom-alert";
 import { createKelurahan } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kelurahanSlice";
 import useWilayahData from "@/lib/hooks/useWilayahData";
+import { resetWilayahState } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 
 const KelurahanAddForm = () => {
   const router = useRouter();
 
   const dispatch = useDispatch();
 
-  const { KecamatanOptions, KecamatanLoading, handleLoadMoreKecamatan } =
-    useWilayahData();
+  const { KecamatanOptions, handleLoadMoreKecamatan } = useWilayahData({
+    kecamatan: true,
+  });
 
   const formFields = [
     {
@@ -44,6 +46,7 @@ const KelurahanAddForm = () => {
   const handleSubmit = async (data) => {
     try {
       await dispatch(createKelurahan(data)).unwrap();
+      dispatch(resetWilayahState());
       showAlert.success("Data berhasil disimpan", () => {
         router.push("/MasterData/master-wilayah/kelurahan/table-kelurahan");
       });

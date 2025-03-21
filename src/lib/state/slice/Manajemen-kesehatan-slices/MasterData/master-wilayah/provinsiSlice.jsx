@@ -81,7 +81,7 @@ export const fetchProvinsiById = createAsyncThunk(
   }
 );
 
-// 🔹 Tambah Provinsi Darah
+// 🔹 Tambah Provinsi
 export const createProvinsi = createAsyncThunk(
   "Provinsi/create",
   async (data, { rejectWithValue }) => {
@@ -89,8 +89,6 @@ export const createProvinsi = createAsyncThunk(
       const response = await InstanceAxios.post(`/Wilayah/Provinsi`, data, {
         headers: getHeaders(),
       });
-
-      console.log("Response API (Fetch By ID):", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -100,7 +98,7 @@ export const createProvinsi = createAsyncThunk(
   }
 );
 
-// 🔹 Update Provinsi Darah berdasarkan ID
+// 🔹 Update Provinsi  berdasarkan ID
 export const updateProvinsi = createAsyncThunk(
   "Provinsi/update",
   async ({ id, data }, { rejectWithValue }) => {
@@ -150,7 +148,17 @@ const ProvinsiSlice = createSlice({
     error: null,
     selectedProvinsi: null,
   },
-  reducers: {},
+  reducers: {
+    resetWilayahState: (state) => {
+      state.data = [];
+      state.loadedPages = [];
+      state.currentPage = 1;
+      state.totalPages = 1;
+      state.totalItems = 0;
+      state.loading = false;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // ✅ Fetch Provinsi hanya dengan pagination (CustomTableComponent)
@@ -159,11 +167,12 @@ const ProvinsiSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProvinsi.fulfilled, (state, action) => {
-        if (!action.payload) return; // Skip if we already had the data
-
+        if (!action.payload) {
+          state.loading = false;
+          return;
+        }
         state.loading = false;
 
-        // Add new data without duplicates
         const newData = action.payload.data.filter(
           (newItem) =>
             !state.data.some(
@@ -172,11 +181,11 @@ const ProvinsiSlice = createSlice({
         );
 
         if (action.meta.arg.isInfiniteScroll) {
-          // Infinite scroll - append data
           state.data = [...state.data, ...newData];
-          state.loadedPages.push(action.payload.page);
+          if (!state.loadedPages.includes(action.payload.page)) {
+            state.loadedPages.push(action.payload.page);
+          }
         } else {
-          // Regular pagination - replace data
           state.data = action.payload.data;
         }
 
@@ -186,10 +195,9 @@ const ProvinsiSlice = createSlice({
       })
       .addCase(fetchProvinsi.rejected, (state, action) => {
         state.loading = false;
-        state.data = []; // Set data menjadi kosong saat error 404
+        state.data = [];
         state.error = action.payload?.message || "Gagal mengambil data";
       })
-
       // ✅ Fetch Provinsi dengan search & filter (CustomSearchFilter)
       .addCase(fetchProvinsiWithFilters.pending, (state) => {
         state.loading = true;
@@ -222,12 +230,13 @@ const ProvinsiSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Tambah Provinsi Darah
+      // Tambah Provinsi
       .addCase(createProvinsi.fulfilled, (state, action) => {
+        state.loading = false;
         state.data.push(action.payload);
       })
 
-      // Update Provinsi Darah
+      // Update Provinsi
       .addCase(updateProvinsi.fulfilled, (state, action) => {
         const index = state.data.findIndex(
           (Provinsi) => Provinsi.provinsiId === action.payload.provinsiId
@@ -237,7 +246,7 @@ const ProvinsiSlice = createSlice({
         }
       })
 
-      // Hapus Provinsi Darah
+      // Hapus Provinsi
       .addCase(deleteProvinsi.fulfilled, (state, action) => {
         state.data = state.data.filter(
           (Provinsi) => Provinsi.provinsiId !== action.payload
@@ -245,5 +254,7 @@ const ProvinsiSlice = createSlice({
       });
   },
 });
+
+export const { resetWilayahState } = ProvinsiSlice.actions;
 
 export default ProvinsiSlice.reducer;

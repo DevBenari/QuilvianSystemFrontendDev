@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, memo } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { extractIdFromSlug } from "@/utils/slug";
@@ -12,6 +12,7 @@ import {
   fetchKodePosById,
   updateKodePos,
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kodePosSlice";
+import { resetWilayahState } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/provinsiSlice";
 
 const KodePosEditForm = ({ params }) => {
   const router = useRouter();
@@ -33,7 +34,9 @@ const KodePosEditForm = ({ params }) => {
     }
   }, [selectedKodePos]);
 
-  const { KelurahanOptions, handleLoadMoreKelurahan } = useWilayahData();
+  const { KelurahanOptions, handleLoadMoreKelurahan } = useWilayahData({
+    kelurahan: true,
+  });
 
   const formFields = [
     {
@@ -82,11 +85,10 @@ const KodePosEditForm = ({ params }) => {
       console.log("📢 Data yang dikirim ke API (PUT):", { id, data });
 
       await dispatch(updateKodePos({ id, data })).unwrap();
+      dispatch(resetWilayahState());
+
       showAlert.success("Data KodePos berhasil diperbarui!", () => {
         router.push("/MasterData/master-wilayah/kode-pos/table-kode-pos");
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
       });
     } catch (error) {
       console.error("❌ Gagal memperbarui data KodePos:", error);
@@ -98,11 +100,10 @@ const KodePosEditForm = ({ params }) => {
     showAlert.confirmDelete("Data KodePos akan dihapus permanen", async () => {
       try {
         await dispatch(deleteKodePos(dataKodePos.kodePosId)).unwrap();
+        dispatch(resetWilayahState());
+
         showAlert.success("Data KodePos berhasil dihapus!", () => {
           router.push("/MasterData/master-wilayah/kode-pos/table-kode-pos");
-          setTimeout(() => {
-            window.location.reload();
-          }, 100);
         });
       } catch (error) {
         console.error("❌ Gagal menghapus data KodePos:", error);
