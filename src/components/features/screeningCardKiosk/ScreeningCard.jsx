@@ -189,7 +189,7 @@
           throw new Error("Silakan masukkan data pencarian");
         }
         
-        console.log("Searching for patient with filters:", filterParams);
+        // console.log("Searching for patient with filters:", filterParams);
         
         // Gunakan fetchPasienWithFilters untuk mencari data pasien
         const result = await dispatch(fetchPasienWithFilters(filterParams));

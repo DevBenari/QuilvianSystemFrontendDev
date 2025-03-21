@@ -59,8 +59,6 @@ export const fetchPasienWithFilters = createAsyncThunk(
   }
 );
 
-// Tambah pasien baru
-// Tambah pasien baru
 export const AddPasienSlice = createAsyncThunk(
   "pasien/addPasien",
   async (formData, { rejectWithValue }) => {
