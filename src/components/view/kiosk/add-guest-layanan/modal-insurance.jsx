@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import TextField from "@/components/ui/text-field";
@@ -11,7 +11,7 @@ import { createAsuransiPasien } from "@/lib/state/slice/Manajemen-kesehatan-slic
 const ModalInsurance = memo(
   ({ onOpen, onClose, onSubmit, pasienId, formConfig = [] }) => {
     const dispatch = useDispatch();
-    const { loading: asuransiLoading } = useSelector((state) => state.Asuransi);
+    const { data: asuransiList, loading: asuransiLoading, error: asuransiError } = useSelector((state) => state.Asuransi);
     const { loading: asuransiPasienLoading } = useSelector((state) => state.AsuransiPasien);
     
     // Initialize with pasienId
@@ -21,6 +21,9 @@ const ModalInsurance = memo(
         isPKS: true,
         pasienId: pasienId // Initialize with pasienId from props
     });
+
+    // Track fetch attempts to prevent infinite loops
+    const fetchAttempted = useRef(false);
 
     // Create defaultValues safely by checking if formConfig exists
     const defaultValues = React.useMemo(() => {
@@ -45,7 +48,7 @@ const ModalInsurance = memo(
       mode: "onSubmit",
     });
 
-    // Fetch insurance options from API
+    // Insurance options state
     const [insuranceOptions, setInsuranceOptions] = useState([]);
 
     // Update insuranceData when pasienId changes
@@ -54,38 +57,45 @@ const ModalInsurance = memo(
             ...prev,
             pasienId: pasienId
         }));
-        console.log("Patient ID updated in modal:", pasienId); // Debug log
     }, [pasienId]);
 
-    // Fetch insurance providers from API
+    // Process insurance data either from props or from API
     useEffect(() => {
-        const fetchInsuranceProviders = async () => {
-            try {
-                // Dispatch the action to fetch all insurance providers
-                const result = await dispatch(fetchAsuransi({ page: 1, perPage: 100 }));
-
-                if (result.payload && result.payload.data) {
-                    // Map API response to options format
-                    const options = result.payload.data.map(insurance => ({
-                        label: insurance.namaAsuransi,
-                        value: insurance.asuransiId,
-                        id: insurance.asuransiId
-                    }));
-
-                    // Add "Lainnya" option at the end
-                    options.push({ label: "Lainnya", value: "Lainnya" });
-
-                    setInsuranceOptions(options);
-                }
-            } catch (error) {
-                console.error("Error fetching insurance providers:", error);
-                // Fallback to empty list with just "Lainnya" option
+        if (fetchAttempted.current) return;
+        
+        const prepareInsuranceOptions = (data) => {
+            if (!data || !Array.isArray(data) || data.length === 0) {
                 setInsuranceOptions([{ label: "Lainnya", value: "Lainnya" }]);
+                return;
             }
+            
+            const options = data.map(insurance => ({
+                label: insurance.namaAsuransi,
+                value: insurance.asuransiId,
+                id: insurance.asuransiId
+            }));
+
+            // Add "Lainnya" option at the end
+            options.push({ label: "Lainnya", value: "Lainnya" });
+            setInsuranceOptions(options);
         };
 
-        fetchInsuranceProviders();
-    }, [dispatch]);
+        // Only fetch if we don't already have the data
+        if (asuransiList && asuransiList.length > 0) {
+            prepareInsuranceOptions(asuransiList);
+        } else if (!asuransiLoading && !asuransiError) {
+            // Mark that we've attempted to fetch
+            fetchAttempted.current = true;
+            // Dispatch once and don't retry on error
+            dispatch(fetchAsuransi({ page: 1, perPage: 100 })).catch(() => {
+                // Always provide the default option on error
+                setInsuranceOptions([{ label: "Lainnya", value: "Lainnya" }]);
+            });
+        } else if (asuransiError) {
+            // If there's already an error in the state, just use default options
+            setInsuranceOptions([{ label: "Lainnya", value: "Lainnya" }]);
+        }
+    }, [dispatch, asuransiList, asuransiLoading, asuransiError]);
 
     const [showCustomInput, setShowCustomInput] = useState(false);
 
@@ -107,20 +117,21 @@ const ModalInsurance = memo(
             isPKS: insuranceData.isPKS
         };
         
-        console.log("Submitting insurance data:", submitData); // Debug log
-        
         try {
-            // Dispatch createAsuransiPasien action to save the data
             const result = await dispatch(createAsuransiPasien(submitData));
             
             if (result.error) {
                 throw new Error(result.error.message || "Failed to save insurance data");
             }
             
+            // Get the data from the API response or use the submitted data
+            const savedData = result.payload?.data || submitData;
+            
             // Call the provided onSubmit callback with the saved data
             if (typeof onSubmit === 'function') {
-                onSubmit(result.payload?.data || submitData);
+                onSubmit(savedData);
             }
+            
             onClose(true);
         } catch (error) {
             console.error("Error saving insurance data:", error);
@@ -152,13 +163,23 @@ const ModalInsurance = memo(
                         </div>
                     </div>
                     
+                    {asuransiError && (
+                        <div className="alert alert-warning mb-3">
+                            <small>
+                                <i className="bi bi-exclamation-triangle me-2"></i>
+                                Gagal memuat daftar asuransi dari server. Anda tetap dapat menambahkan asuransi secara manual.
+                            </small>
+                        </div>
+                    )}
+                    
                     <div className="mb-3">
                         {!showCustomInput ? (
                             <SelectField
                                 name="namaAsuransi"
                                 label="Penyedia Asuransi"
                                 options={insuranceOptions}
-                                placeholder="Pilih penyedia asuransi"
+                                placeholder={isLoading ? "Memuat data asuransi..." : "Pilih penyedia asuransi"}
+                                isDisabled={isLoading}
                                 onChange={(selected) => {
                                     if (selected && selected.value) {
                                         if (selected.value === "Lainnya") {

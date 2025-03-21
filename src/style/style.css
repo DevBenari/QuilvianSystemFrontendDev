@@ -865,6 +865,7 @@ a:hover {
 .kiosk-logo {
   margin-bottom: 1px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 

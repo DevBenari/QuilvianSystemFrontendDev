@@ -1,332 +1,337 @@
-// hooks/useRegistration.js (Modified to handle doctor filtering by poli and insurance)
-import { useState, useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useDispatch } from "react-redux";
 import { useInsuranceManagement } from "@/lib/hooks/kiosk/useInsuranceHandler";
-import { usePaymentMethod } from "@/lib/hooks/kiosk/usePaymentMethod";
-import { useDoctorSelection } from "@/lib/hooks/kiosk/useDoctorSelection";
-import { useConfirmation } from "@/lib/hooks/kiosk/useConfirmation";
-import { useRegistrationSteps } from "@/lib/hooks/kiosk/useRegistrationStep";
-import { fetchDoctors } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/dokterPoli"; // Assuming you created this thunk
+import useDoctorFilter from "@/lib/hooks/useDoctorsFilter";
 
 /**
- * Main custom hook for handling registration functionality
- * Integrates all the smaller specific hooks and handles doctor filtering
+ * Custom hook untuk menangani alur pendaftaran pasien
  * 
- *
- * 
- */ const useRegistration = ({
+ * @param {Object} config - Opsi konfigurasi
+ * @param {Function} config.fetchDoctorsAction - Fungsi untuk fetch data dokter (deprecated)
+ * @param {Object} config.initialDoctorsData - Data awal dokter
+ * @param {string|null} config.pasienId - ID pasien
+ * @returns {Object} - State dan metode pendaftaran
+ */
+export default function useRegistration({
   fetchMasterDataAction,
-  fetchDoctorsAction = null,
+  fetchDoctorsAction,
   initialDoctorsData = {},
-  initialInsuranceList = [],
-  initialStep = 0
-}) => {
-  const formMethodsRef = useRef(null);
+  pasienId = null
+}) {
   const dispatch = useDispatch();
-  const { data:doctorsByPoli, loading: doctorsLoading, error: doctorsError } = useSelector(state => state.DokterPoliSlice);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [selectedPoli, setSelectedPoli] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("tunai");
+  const [internalPasienId, setInternalPasienId] = useState(pasienId);
+  const [selectedAsuransiId, setSelectedAsuransiId] = useState(null);
+  const formMethodsRef = useRef(null);
+  const initialSetupDone = useRef(false);
   
-  // Local state
-  const [serviceType, setServiceType] = useState("poli"); // "poli", "lab", "radiologi"
-  const [currentDoctorsData, setCurrentDoctorsData] = useState(initialDoctorsData);
-
-  // Integrate the smaller hooks
-  const { currentStep, setCurrentStep } = useRegistrationSteps({ initialStep });
-  
-  const { 
-    showInsuranceModal, 
-    insuranceList, 
-    nonPKSInsuranceSelected,
-    handleOpenModal,
-    handleCloseModal,
-    handleInsuranceSubmit,
-    getInsuranceFields,
-    setInsuranceList
-  } = useInsuranceManagement({ 
-    initialInsuranceList, 
-    formMethodsRef 
+  // Load insurance management with the patient ID
+  const insuranceManagement = useInsuranceManagement({
+    initialInsuranceList: [],
+    formMethodsRef,
+    pasienId: internalPasienId
   });
-  
-  const {
-    selectedPaymentMethod,
-    setSelectedPaymentMethod,
-    getPaymentMethodCards,
-    renderPaymentMethodSelection
-  } = usePaymentMethod();
-  
-  // Enhanced useDoctorSelection with more specific methods
-  const {
-    filteredDoctorsByInsurance,
-    updateDoctorsByInsurance,
-    renderDoctorSelection,
-    getDoctorSelectionCard,
-    isLoading: isDoctorsLoading,
-    error: doctorSelectionError,
-    getDoctorsByPoli
-  } = useDoctorSelection({ 
-    initialDoctorsData: currentDoctorsData,
-    fetchDoctorsAction: null // We'll handle fetching directly
-  });
-  
-  const { renderConfirmationSection } = useConfirmation();
 
-  // Save form methods for later use
-  const handleFormMethodReady = (methods) => {
+  // Use the doctor filter hook to handle filtering based on poli and asuransi
+  const doctorFilter = useDoctorFilter({
+    initialPoliId: selectedPoli,
+    initialAsuransiId: selectedAsuransiId,
+    paymentMethod
+  });
+
+  // Memoize updatePatientId to prevent recreation on each render
+  const updatePatientId = useCallback((newPasienId) => {
+    setInternalPasienId(newPasienId);
+  }, []);
+
+  // Initialize with pasienId from props
+  useEffect(() => {
+    if (pasienId && pasienId !== internalPasienId) {
+      updatePatientId(pasienId);
+    }
+  }, [pasienId, internalPasienId, updatePatientId]);
+
+  // Load master data on mount - only run once
+  useEffect(() => {
+    if (fetchMasterDataAction) {
+      dispatch(fetchMasterDataAction());
+    }
+  }, [dispatch, fetchMasterDataAction]);
+
+  // Handle form methods initialization
+  const handleFormMethodReady = useCallback((methods) => {
+    if (!methods) return;
+    
     formMethodsRef.current = methods;
-  };
-
-  // Reference for action creators
-  const actionRef = useRef(fetchMasterDataAction);
-
-  // Update action reference when it changes
-  useEffect(() => {
-    actionRef.current = fetchMasterDataAction;
-  }, [fetchMasterDataAction]);
-  
-  // Fetch master data when component mounts
-  useEffect(() => {
-    if (actionRef.current) {
-      dispatch(actionRef.current());
-    }
-  }, [dispatch]);
-
-  // Watch form values for filtering doctors
-  useEffect(() => {
-    if (formMethodsRef.current) {
-      const currentValues = formMethodsRef.current.getValues();
-      const currentServiceType = currentValues.serviceType || "poli";
-      const currentPoli = currentValues.selectedPoli;
-
-      // Update service type state
-      setServiceType(currentServiceType);
-
-      // Fetch doctors when poli changes
-      if (currentPoli && currentPoli !== "") {
-        dispatch(fetchDoctors({ poliId: currentPoli, serviceType: currentServiceType }));
-      }
-    }
-  }, [dispatch, formMethodsRef]);
-
-  // Update doctors data when redux store changes
-  useEffect(() => {
-    if (doctorsByPoli && Object.keys(doctorsByPoli).length > 0) {
-      setCurrentDoctorsData(doctorsByPoli);
-    }
-  }, [doctorsByPoli]);
-
-  // Filter doctors when insurance or payment method changes
-  useEffect(() => {
-    if (formMethodsRef.current) {
-      const currentValues = formMethodsRef.current.getValues();
-      const currentPoli = currentValues.selectedPoli;
-      
-      if (selectedPaymentMethod === "asuransi" && insuranceList.length > 0 && currentPoli) {
-        // Filter doctors by insurance
-        updateDoctorsByInsurance(insuranceList, doctorsByPoli);
-      } else if (selectedPaymentMethod === "tunai" && currentPoli) {
-        // Reset filters if paying with cash
-        updateDoctorsByInsurance([], doctorsByPoli);
-      }
-    }
-  }, [selectedPaymentMethod, insuranceList, doctorsByPoli, updateDoctorsByInsurance]);
-
-  // Combined handlers for insurance submission and doctor filtering
-  const handleCombinedInsuranceSubmit = (insuranceData) => {
-    const formattedInsurance = handleInsuranceSubmit(insuranceData);
     
-    // Update doctors based on the new insurance list
-    if (formMethodsRef.current) {
-      const currentValues = formMethodsRef.current.getValues();
-      const currentPoli = currentValues.selectedPoli;
-      
-      if (currentPoli) {
-        updateDoctorsByInsurance([...insuranceList, formattedInsurance], doctorsByPoli);
+    // Jika sudah disetup dan form values sudah ada, tidak perlu setup ulang watch
+    if (initialSetupDone.current) {
+      // Periksa nilai paymentMethod saat ini dalam form
+      const currentPaymentMethod = methods.getValues("paymentMethod");
+      if (currentPaymentMethod && currentPaymentMethod !== paymentMethod) {
+        setPaymentMethod(currentPaymentMethod);
       }
+      return;
     }
     
-    return formattedInsurance;
-  };
-
-  // Handle service type change
-  const handleServiceTypeChange = (type) => {
-    setServiceType(type);
-    if (formMethodsRef.current) {
-      formMethodsRef.current.setValue("serviceType", type);
-      formMethodsRef.current.setValue("selectedPoli", ""); // Reset poli selection
-      formMethodsRef.current.setValue("selectedDoctor", ""); // Reset doctor selection
-    }
-  };
-
-  // Manual fetch doctors by poli and service type
-  const fetchDoctorsByPoli = (poliId, type = serviceType) => {
-    dispatch(fetchDoctors({ poliId, serviceType: type }));
-  };
-
-  // Handle form submission
-  const handleSubmit = (data, onSuccess) => {
-    console.log("Form Data:", data);
-
-    // Additional processing if needed...
-    // E.g., map doctor ID to actual doctor data
-    if (data.selectedDoctor && data.selectedPoli) {
-      const selectedDoctors = getDoctorsByPoli(data.selectedPoli);
-      const doctorDetails = selectedDoctors.find(doc => doc.id === data.selectedDoctor);
-      if (doctorDetails) {
-        data.doctorDetails = doctorDetails;
-      }
-    }
-
-    // Add service type to submission data
-    data.serviceType = serviceType;
-
-    // Call onSuccess callback if provided
-    if (typeof onSuccess === 'function') {
-      onSuccess(data);
-    }
-  };
-
-  // Generate service type selection cards
-  const getServiceTypeCards = () => {
-    return {
-      name: "serviceType",
-      title: "Pilih Jenis Layanan",
-      description: "Silakan pilih jenis layanan yang Anda butuhkan:",
-      colSize: 4,
-      required: true,
-      rules: { required: "Silakan pilih jenis layanan" },
-      options: [
-        { value: "poli", label: "Poli", icon: "🏥" },
-        { value: "lab", label: "Laboratorium", icon: "🧪" },
-        { value: "radiologi", label: "Radiologi", icon: "🔬" }
-      ],
-      customRender: ({ methods }) => {
-        const currentServiceType = methods.watch("serviceType") || "poli";
+    // Watch untuk perubahan metode pembayaran
+    methods.watch("paymentMethod", (value) => {
+      if (value && value !== paymentMethod) {
+        setPaymentMethod(value);
         
-        return (
-          <>
-            <h5 className="mb-3">Pilih Jenis Layanan</h5>
-            <div className="row">
-              {["poli", "lab", "radiologi"].map((type) => {
-                const isSelected = currentServiceType === type;
-                const icons = { poli: "🏥", lab: "🧪", radiologi: "🔬" };
-                const labels = { poli: "Poli", lab: "Laboratorium", radiologi: "Radiologi" };
-                
-                return (
-                  <div className="col-12 col-md-4" key={type}>
-                    <div
-                      className={`card selection-card mb-3 cursor-pointer ${isSelected ? 'selected shadow-lg border-primary' : ''}`}
-                      onClick={() => {
-                        methods.setValue("serviceType", type);
-                        handleServiceTypeChange(type);
-                      }}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <div className="card-body text-center p-4">
-                        <div className="card-icon mb-3">{icons[type]}</div>
-                        <h5 className="card-title">{labels[type]}</h5>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        );
+        // Reset dokter yang dipilih ketika metode pembayaran berubah
+        methods.setValue("selectedDoctor", "");
+        setSelectedDoctor(null);
       }
-    };
-  };
+    });
+    
+    // Watch untuk selectedPoli changes
+    methods.watch("selectedPoli", (value) => {
+      if (value && value !== selectedPoli) {
+        setSelectedPoli(value);
+        // Update filter poli di doctorFilter
+        doctorFilter.updateSelectedPoli(value);
+        
+        // Reset selected doctor when poli changes
+        methods.setValue("selectedDoctor", "");
+        setSelectedDoctor(null);
+      }
+    });
+    
+    // Watch untuk selectedDoctor changes
+    methods.watch("selectedDoctor", (value) => {
+      if (value && value !== selectedDoctor) {
+        setSelectedDoctor(value);
+      }
+    });
+    
+    // Watch untuk asuransiPasien changes - hanya jika metode pembayaran adalah asuransi
+    methods.watch("asuransiPasien", (value) => {
+      if (value && paymentMethod === "asuransi" && value !== selectedAsuransiId) {
+        setSelectedAsuransiId(value);
+        // Update filter asuransi di doctorFilter
+        doctorFilter.updateSelectedAsuransi(value);
+        
+        // Reset selected doctor when asuransi changes
+        methods.setValue("selectedDoctor", "");
+        setSelectedDoctor(null);
+      }
+    });
+    
+    // Set the reference to prevent future re-setup
+    initialSetupDone.current = true;
 
-  // Enhanced doctor selection card with service type consideration
-  const getEnhancedDoctorSelectionCard = () => {
-    return {
+    // Cleanup function untuk unsubscribe watch
+    return () => {
+      methods.unregister(["paymentMethod", "selectedPoli", "selectedDoctor", "asuransiPasien"], { 
+        keepValue: true 
+      });
+    };
+  }, [paymentMethod, selectedPoli, selectedDoctor, selectedAsuransiId, doctorFilter]);
+
+  // Fungsi untuk mengubah metode pembayaran
+  const changePaymentMethod = useCallback((method) => {
+    setPaymentMethod(method);
+    
+    // Juga update form jika ada form methods
+    if (formMethodsRef.current) {
+      formMethodsRef.current.setValue("paymentMethod", method, { 
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true
+      });
+      
+      // Trigger manual untuk memastikan perubahan dideteksi
+      formMethodsRef.current.trigger("paymentMethod");
+      
+      // Reset selected doctor when payment method changes
+      formMethodsRef.current.setValue("selectedDoctor", "");
+      setSelectedDoctor(null);
+    }
+  }, []);
+
+  // Memoize payment method cards to prevent recreating on each render
+  const paymentMethodCards = useMemo(() => [
+    {
+      name: "paymentMethod",
+      type: "radio",
+      title: "Pilih Metode Pembayaran",
+      options: [
+        {
+          value: "tunai",
+          label: "Tunai",
+          description: "Pembayaran langsung di kasir"
+        },
+        {
+          value: "asuransi",
+          label: "Asuransi",
+          description: "Pembayaran menggunakan asuransi"
+        }
+      ]
+    }
+  ], []);
+
+  // Get payment method cards
+  const getPaymentMethodCards = useCallback(() => paymentMethodCards, [paymentMethodCards]);
+
+  // Get doctor selection card
+  const getDoctorSelectionCard = useCallback(() => {
+    // Menggunakan dokter yang telah difilter dari useDoctorFilter hook
+    const doctorOptions = doctorFilter.doctors.map(doctor => ({
+      value: doctor.id,
+      label: doctor.nama,
+      description: doctor.jadwal || "Jadwal tidak tersedia"
+    }));
+    
+    const doctorCard = {
       name: "selectedDoctor",
       title: "Pilih Dokter",
-      description: `Silakan pilih dokter ${serviceType === "poli" ? "poli" : serviceType === "lab" ? "laboratorium" : "radiologi"} yang tersedia:`,
-      colSize: 6,
-      required: true,
-      rules: { required: "Silakan pilih dokter" },
-      options: [], // Will be dynamically populated
-      customRender: ({ methods }) => {
-        const selectedPoli = methods.watch("selectedPoli");
-        const currentServiceType = methods.watch("serviceType") || serviceType;
-        
-        // No poli selected yet
-        if (!selectedPoli) {
-          return (
-            <div className="alert alert-warning">
-              Silakan pilih {currentServiceType === "poli" ? "poli" : currentServiceType === "lab" ? "jenis lab" : "jenis radiologi"} terlebih dahulu.
-            </div>
-          );
-        }
-        
-        // Show loading state
-        if (isDoctorsLoading || doctorsLoading) {
-          return (
-            <div className="text-center py-4">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-              <p className="mt-2">Mengambil data dokter...</p>
-            </div>
-          );
-        }
-        
-        // Show error state
-        if (doctorSelectionError || doctorsError) {
-          return (
-            <div className="alert alert-danger">
-              Terjadi kesalahan: {doctorSelectionError || doctorsError}. Silakan coba lagi nanti.
-            </div>
-          );
-        }
-        
-        return renderDoctorSelection(
-          methods, 
-          filteredDoctorsByInsurance, 
-          selectedPoli, 
-          selectedPaymentMethod, 
-          insuranceList
-        );
-      }
+      description: doctorFilter.loading 
+        ? "Memuat data dokter..." 
+        : (doctorOptions.length === 0 
+          ? "Tidak ada dokter yang tersedia untuk poli dan/atau asuransi yang dipilih" 
+          : "Pilih dokter yang tersedia pada poliklinik ini:"),
+      colSize: 3,
+      options: doctorOptions,
+      disabled: doctorFilter.loading || doctorOptions.length === 0
     };
-  };
+    
+    return doctorCard;
+  }, [doctorFilter.doctors, doctorFilter.loading]);
+
+  // Dapatkan field asuransi berdasarkan metode pembayaran
+  const getInsuranceFields = useCallback(() => {
+    return insuranceManagement.getInsuranceFields(paymentMethod);
+  }, [insuranceManagement, paymentMethod]);
+
+  // Effect untuk memperbarui formulir saat paymentMethod berubah
+  useEffect(() => {
+    // Jika form sudah siap, perbarui nilai paymentMethod
+    if (formMethodsRef.current) {
+      const currentValue = formMethodsRef.current.getValues("paymentMethod");
+      
+      // Hanya update jika nilai berbeda
+      if (currentValue !== paymentMethod) {
+        formMethodsRef.current.setValue("paymentMethod", paymentMethod, {
+          shouldValidate: true,
+          shouldDirty: true
+        });
+      }
+    }
+  }, [paymentMethod]);
+
+  // Handle form submission
+  const handleSubmit = useCallback((data, onSuccess) => {
+    // Tambahkan data dokter yang dipilih, termasuk informasi tentang poli dan asuransi
+    const selectedDoctorData = doctorFilter.doctors.find(doc => doc.id === data.selectedDoctor);
+    
+    const enhancedData = {
+      ...data,
+      dokterDetail: selectedDoctorData ? {
+        dokterId: selectedDoctorData.id,
+        namaDokter: selectedDoctorData.nama,
+        poliId: selectedDoctorData.poliId,
+        jadwal: selectedDoctorData.jadwal,
+        ...((paymentMethod === "asuransi") ? { asuransiId: selectedAsuransiId } : {})
+      } : null
+    };
+    
+    if (typeof onSuccess === 'function') {
+      onSuccess(enhancedData);
+    }
+  }, [doctorFilter.doctors, paymentMethod, selectedAsuransiId]);
+
+  // Memoize the render function to prevent recreation on each render
+  const renderConfirmationSection = useCallback((methods, doctors, poliMap, patientData) => {
+    const values = methods.getValues();
+    // Ambil dokter yang dipilih dari dokter yang sudah difilter
+    const doctor = doctorFilter.doctors.find(d => d.id === values.selectedDoctor);
+    const poliName = poliMap[values.selectedPoli] || values.selectedPoli;
+    const paymentInfo = values.paymentMethod === "asuransi" 
+      ? `Asuransi: ${values.asuransiPasien || "Tidak dipilih"} (${values.nomorAsuransi || "No nomor polis"})`
+      : "Tunai";
+    
+    return (
+      <div className="confirmation-section">
+        <div className="alert alert-info mb-4">
+          <p className="mb-0">
+            <strong>Perhatian:</strong> Harap periksa kembali informasi pendaftaran Anda sebelum melanjutkan.
+          </p>
+        </div> 
+        
+        <div className="card mb-3">
+          <div className="card-header bg-light">
+            <h5 className="mb-0">Informasi Pasien</h5>
+          </div>
+          <div className="card-body">
+            <div className="row">
+              <div className="col-md-6">
+                <p><strong>Nama:</strong> {values.namaLengkap}</p>
+                <p><strong>NIK:</strong> {values.noIdentitas}</p>
+                <p><strong>Tanggal Lahir:</strong> {values.tanggalLahir}</p>
+              </div>
+              <div className="col-md-6">
+                <p><strong>Jenis Kelamin:</strong> {values.jenisKelamin}</p>
+                <p><strong>No. Telepon:</strong> {values.noTelepon1}</p>
+                <p><strong>Email:</strong> {values.email}</p>
+              </div>
+              <div className="col-12">
+                <p><strong>Alamat:</strong> {values.alamatIndetitas}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="card mb-3">
+          <div className="card-header bg-light">
+            <h5 className="mb-0">Informasi Layanan</h5>
+          </div>
+          <div className="card-body">
+            <div className="row">
+              <div className="col-md-6">
+                <p><strong>Poliklinik:</strong> {poliName}</p>
+                <p><strong>Dokter:</strong> {doctor ? doctor.nama : "Tidak dipilih"}</p>
+              </div>
+              <div className="col-md-6">
+                <p><strong>Jadwal:</strong> {doctor ? doctor.jadwal : "Tidak tersedia"}</p>
+                <p><strong>Metode Pembayaran:</strong> {paymentInfo}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {patientData && (
+          <div className="alert alert-success">
+            <p className="mb-0">
+              <strong>Info:</strong> Anda melakukan pendaftaran sebagai pasien yang sudah terdaftar dengan No. RM: {patientData.noRekamMedis || 'N/A'}
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }, [doctorFilter.doctors]);
 
   return {
-    // State
-    showInsuranceModal,
-    insuranceList,
-    currentDoctorsData,
-    filteredDoctorsByInsurance,
-    nonPKSInsuranceSelected,
     currentStep,
-    selectedPaymentMethod,
-    serviceType,
     formMethodsRef,
-    isDoctorsLoading: isDoctorsLoading || doctorsLoading,
-    doctorsError: doctorSelectionError || doctorsError,
-
-    // Methods
-    handleOpenModal,
-    handleCloseModal,
+    doctors: doctorFilter.doctors,
+    selectedPoli,
+    selectedDoctor,
+    paymentMethod,
+    filteredDoctorsByInsurance: doctorFilter.doctors,
+    loadingDoctors: doctorFilter.loading,
     handleFormMethodReady,
-    handleInsuranceSubmit: handleCombinedInsuranceSubmit,
-    updateDoctorsByInsurance,
-    handleSubmit,
-    setCurrentStep,
-    setSelectedPaymentMethod,
-    setServiceType: handleServiceTypeChange,
-    getDoctorsByPoli,
-    fetchDoctorsByPoli,
-
-    // Utility functions
-    getServiceTypeCards,
-    getInsuranceFields: () => getInsuranceFields(selectedPaymentMethod),
     getPaymentMethodCards,
-    getDoctorSelectionCard: getEnhancedDoctorSelectionCard,
-    renderDoctorSelection: (methods, doctors, selectedPoli) => 
-      renderDoctorSelection(methods, doctors, selectedPoli, selectedPaymentMethod, insuranceList),
-    renderPaymentMethodSelection,
-    renderConfirmationSection
+    getInsuranceFields,
+    getDoctorSelectionCard,
+    handleSubmit,
+    renderConfirmationSection,
+    updatePatientId, // Export this function to be used by parent component
+    showInsuranceModal: insuranceManagement.showInsuranceModal,
+    handleCloseModal: insuranceManagement.handleCloseModal,
+    handleInsuranceSubmit: insuranceManagement.handleInsuranceSubmit
   };
-};
-
-export default useRegistration;
+}

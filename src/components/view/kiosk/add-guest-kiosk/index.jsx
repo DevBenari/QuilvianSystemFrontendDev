@@ -120,6 +120,14 @@
                         colSize: 6,
                     },
                     {
+                        type: "text",
+                        id: "noRekamMedisLama",
+                        name: "NoRekamMedisLama",
+                        label: "No Rekam Medis Lama",
+                        placeholder: "No Rekam Medis Lama",
+                        colSize: 6
+                    },
+                    {
                         type: "select",
                         id: "titlesId",
                         label: "Title",
@@ -222,9 +230,9 @@
                 [
                     {
                         type: "text",
-                        id: "noTelepon",
+                        id: "noTelepon1",
                         label: "No Telepon",
-                        name: "NoTelepon",
+                        name: "NoTelepon1",
                         placeholder: "No Telepon",
                         rules: { required: "No Telepon is required" },
                         colSize: 6
@@ -448,7 +456,7 @@
                 <Card className="m-4">
                     <Card.Body>
                         <div className="kiosk-logo mb-4 text-center">
-                            <Image src="/Images/pngwing-com.png" height="100" alt="logo" />
+                            <Image src="/Images/pngwing-com.png" height="100" className='text-center mx-auto' alt="logo" />
                             <h4 className="text-success mt-3">Data Pendaftaran Pasien Berhasil Disimpan</h4>
                             
                             {serviceResult && (

@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   fetchAsuransiPasienWithFilters,
   createAsuransiPasien,
   deleteAsuransiPasien
 } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
+import { fetchAsuransi } from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 
 /**
- * Custom hook for managing insurance-related functionality
+ * Custom hook untuk mengelola fungsionalitas terkait asuransi
  * 
- * @param {Object} config - Configuration options
- * @returns {Object} - Insurance state and methods
+ * @param {Object} config - Opsi konfigurasi
+ * @returns {Object} - State dan metode asuransi
  */
 export const useInsuranceManagement = ({
   initialInsuranceList = [],
@@ -18,136 +19,231 @@ export const useInsuranceManagement = ({
   pasienId = null
 }) => {
   const dispatch = useDispatch();
-  const { data: asuransiPasienList, loading } = useSelector(state => state.AsuransiPasien );
+  const { data: asuransiPasienList, loading: loadingPasienInsurance } = useSelector(state => state.AsuransiPasien);
+  const { data: masterAsuransiList, loading: loadingMasterAsuransi } = useSelector(state => state.Asuransi);
   
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
   const [insuranceList, setInsuranceList] = useState(initialInsuranceList);
   const [nonPKSInsuranceSelected, setNonPKSInsuranceSelected] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [fetchedInitialData, setFetchedInitialData] = useState(false);
+
+  // Fetch master asuransi data on component mount (for dropdown options)
+  useEffect(() => {
+    // Prevent duplicate fetches
+    if (!loadingMasterAsuransi && masterAsuransiList.length === 0) {
+      dispatch(fetchAsuransi({ page: 1, perPage: 100 }))
+        .catch(error => {
+          console.error("Error loading master insurance data:", error);
+        });
+    }
+  }, [dispatch, loadingMasterAsuransi, masterAsuransiList.length]);
 
   // Fetch asuransi pasien data when pasienId is available
   useEffect(() => {
-    if (pasienId) {
-      dispatch(fetchAsuransiPasienWithFilters(pasienId));
+    if (pasienId && !fetchedInitialData && !loadingPasienInsurance) {
+      setLoading(true);
+      setFetchedInitialData(true);
+      
+      dispatch(fetchAsuransiPasienWithFilters({ pasienId }))
+        .finally(() => {
+          setLoading(false);
+        });
     }
-  }, [dispatch, pasienId]);
+  }, [dispatch, pasienId, fetchedInitialData, loadingPasienInsurance]);
+
+  // Memoize the filtered list of asuransi pasien
+  const filteredAsuransiPasien = useMemo(() => {
+    if (!asuransiPasienList || !pasienId) return [];
+    return asuransiPasienList.filter(item => item.pasienId === pasienId);
+  }, [asuransiPasienList, pasienId]);
 
   // Update insuranceList when asuransiPasienList changes
   useEffect(() => {
-    if (asuransiPasienList && asuransiPasienList.length > 0) {
-      const formattedList = asuransiPasienList.map(item => ({
-        namaAsuransi: item.namaAsuransi,
-        noPolis: item.noPolis,
-        isPKS: true, // Assume all fetched insurances are PKS by default
-        asuransiId: item.asuransiId,
-        asuransiPasienId: item.id || item.pasienId // Make sure we're getting the correct ID
-      }));
-      
-      setInsuranceList(formattedList);
-      
-      // Auto-select the first insurance if available and form is provided
-      if (formattedList.length > 0 && formMethodsRef && formMethodsRef.current) {
-        const firstInsurance = formattedList[0];
-        formMethodsRef.current.setValue("nomorAsuransi", firstInsurance.noPolis);
-        formMethodsRef.current.setValue("asuransiPasien", firstInsurance.namaAsuransi);
-        formMethodsRef.current.trigger(["nomorAsuransi", "asuransiPasien"]);
-      }
+    if (!filteredAsuransiPasien.length) {
+      setInsuranceList(prev => prev.length > 0 ? prev : []);
+      return;
     }
-  }, [asuransiPasienList, formMethodsRef]);
+    
+    const formattedList = filteredAsuransiPasien.map(item => ({
+      namaAsuransi: item.namaAsuransi,
+      noPolis: item.noPolis,
+      isPKS: true,
+      asuransiId: item.asuransiId,
+      asuransiPasienId: item.asuransiPasienId || item.pasienId
+    }));
+
+    setInsuranceList(prev => {
+      if (JSON.stringify(prev) !== JSON.stringify(formattedList)) {
+        return formattedList;
+      }
+      return prev;
+    });
+  }, [filteredAsuransiPasien]);
+
+
+  const insuranceOptions = useMemo(() => {
+    // Menggunakan filteredAsuransiPasien untuk mendapatkan opsi asuransi pasien
+    const patientInsuranceOptions = filteredAsuransiPasien.map((item) => ({
+      label: `${item.namaAsuransi} - ${item.noPolis}`,
+      value: item.asuransiId,
+      isPKS: true,
+      pasienId: item.pasienId,
+    }));
+
+    return [...patientInsuranceOptions];
+  }, [filteredAsuransiPasien, masterAsuransiList]);
+
 
   // Modal handlers
-  const handleOpenModal = (e) => {
+  const handleOpenModal = useCallback((e) => {
     // Prevent form submission and event propagation
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     setShowInsuranceModal(true);
-  };
+  }, []);
 
-  const handleCloseModal = () => setShowInsuranceModal(false);
+  const handleCloseModal = useCallback(() => {
+    setShowInsuranceModal(false);
+  }, []);
 
-  // Handle insurance submission from modal
-  const handleInsuranceSubmit = (insuranceData) => {
+  // Handle insurance submission from modal - DIUBAH UNTUK MENDUKUNG REALTIME UPDATE
+  const handleInsuranceSubmit = useCallback((insuranceData) => {
     // Map API response format to component format
     const formattedInsurance = {
       namaAsuransi: insuranceData.namaAsuransi || insuranceData.namaAsuransi,
       noPolis: insuranceData.noPolis || insuranceData.noPolis,
       isPKS: insuranceData.IsPKS || insuranceData.isPKS,
-      asuransiId: insuranceData.asuransiId
+      asuransiId: insuranceData.asuransiId,
+      asuransiPasienId: insuranceData.id // Tambahkan ID asuransi pasien jika ada
     };
 
-    // Tambahkan ke state lokal jika di modal tidak menyimpan ke API
-    if (!pasienId) {
-      setInsuranceList((prevList) => [...prevList, formattedInsurance]);
-    }
+    // Tambahkan langsung ke local state
+    setInsuranceList((prevList) => {
+      // Cek jika asuransi dengan ID yang sama sudah ada
+      const exists = prevList.some(item => (
+        item.asuransiPasienId === formattedInsurance.asuransiPasienId
+      ));
 
-    // Periksa apakah asuransi non-PKS
+      if (exists) {
+        return prevList.map(item => 
+          item.asuransiPasienId === formattedInsurance.asuransiPasienId 
+            ? formattedInsurance 
+            : item
+        );
+      }
+      
+      return [...prevList, formattedInsurance];
+    });
+
+    // Check if non-PKS insurance
     if (!formattedInsurance.isPKS) {
       setNonPKSInsuranceSelected(true);
     }
 
-    // Update form values jika form reference tersedia
+    // Update form values if form reference is available
     if (formMethodsRef && formMethodsRef.current) {
       formMethodsRef.current.setValue("nomorAsuransi", formattedInsurance.noPolis);
-      formMethodsRef.current.setValue("asuransiPasien", formattedInsurance.namaAsuransi);
+      formMethodsRef.current.setValue("asuransiPasien", formattedInsurance.asuransiId || formattedInsurance.namaAsuransi);
       formMethodsRef.current.trigger(["nomorAsuransi", "asuransiPasien"]);
     }
 
     handleCloseModal();
+    
+    // Jika pasienId ada, refresh data dari server
+    if (pasienId) {
+      dispatch(fetchAsuransiPasienWithFilters({ pasienId }));
+    }
+
     return formattedInsurance;
-  };
+  }, [pasienId, formMethodsRef, handleCloseModal, dispatch]);
 
   // Handle insurance removal
-  const handleRemoveInsurance = async (index, insuranceItem) => {
-    // Jika pasienId dan asuransiPasienId tersedia, hapus dari API
+  const handleRemoveInsurance = useCallback(async (index, insuranceItem) => {
+    // If pasienId and asuransiPasienId are available, delete from API
     if (pasienId && insuranceItem.asuransiPasienId) {
       try {
         await dispatch(deleteAsuransiPasien(insuranceItem.asuransiPasienId));
+        // Update local state immediately
+        setInsuranceList(prevList => prevList.filter(item => item.asuransiPasienId !== insuranceItem.asuransiPasienId));
+        // Refetch after deletion
+        dispatch(fetchAsuransiPasienWithFilters({ pasienId }));
       } catch (error) {
         console.error("Failed to delete insurance:", error);
-        // Bisa tambahkan notifikasi error
       }
     } else {
-      // Jika tidak, hanya hapus dari state lokal
       setInsuranceList(prevList => prevList.filter((_, i) => i !== index));
     }
 
-    // Cek apakah masih ada asuransi non-PKS setelah penghapusan
-    const stillHasNonPKS = insuranceList
-      .filter((_, i) => i !== index)
-      .some(insurance => !insurance.isPKS);
+    // Check if there's still a non-PKS insurance after removal
+    setInsuranceList(prevList => {
+      const stillHasNonPKS = prevList
+        .filter(item => item.asuransiPasienId !== insuranceItem.asuransiPasienId)
+        .some(insurance => !insurance.isPKS);
+      
+      setNonPKSInsuranceSelected(stillHasNonPKS);
+      return prevList;
+    });
+  }, [dispatch, pasienId]);
 
-    setNonPKSInsuranceSelected(stillHasNonPKS);
-  };
-
-  // Create new insurance pasien
-  const createNewAsuransiPasien = async (data) => {
+  // Create new insurance pasien with optimistic update
+  const createNewAsuransiPasien = useCallback(async (data) => {
     if (!pasienId) return null;
 
-    try {
-      const formattedData = {
-        pasienId,
-        noPolis: data.noPolis,
-        asuransiId: data.asuransiId || "00000000-0000-0000-0000-000000000000",
-        userId: "system" // Bisa diganti dengan user ID aktif
-      };
+    // Format data for submission
+    const formattedData = {
+      pasienId,
+      noPolis: data.noPolis,
+      asuransiId: data.asuransiId || "00000000-0000-0000-0000-000000000000",
+      userId: "system" // Could be replaced with active user ID
+    };
 
+    // Create temporary local entry with optimistic ID
+    const tempId = `temp-${Date.now()}`;
+    const optimisticEntry = {
+      ...formattedData,
+      namaAsuransi: data.namaAsuransi || "Asuransi Baru",
+      asuransiPasienId: tempId,
+      isPKS: !!data.isPKS
+    };
+
+    // Add to list immediately for optimistic UI update
+    setInsuranceList(prev => [...prev, optimisticEntry]);
+
+    try {
       const result = await dispatch(createAsuransiPasien(formattedData));
-      return result.payload;
+      
+      if (result.payload) {
+        // Update local state with actual data from API
+        setInsuranceList(prev => prev.map(item => 
+          item.asuransiPasienId === tempId 
+            ? { ...result.payload, asuransiPasienId: result.payload.id }
+            : item
+        ));
+        
+        // Refetch to ensure we have the latest data
+        dispatch(fetchAsuransiPasienWithFilters({ pasienId }));
+        
+        return result.payload;
+      }
+      
+      return null;
     } catch (error) {
       console.error("Failed to create new insurance:", error);
+      
+      // Remove optimistic entry on error
+      setInsuranceList(prev => prev.filter(item => item.asuransiPasienId !== tempId));
+      
       return null;
     }
-  };
-
-  // Generate insurance form fields based on payment method
-  const getInsuranceFields = (selectedPaymentMethod) => {
-    // Transform asuransi data for dropdown options
-    const insuranceOptions = asuransiPasienList.map((item) => ({
-      label: `${item.namaAsuransi} - ${item.noPolis}`,
-      value: item.namaAsuransi,
-      isPKS: item.isPKS,
-    }));
+  }, [dispatch, pasienId]);
+  
+  // Perbaikan getInsuranceFields untuk menerima parameter paymentMethod dari parent
+  const getInsuranceFields = useCallback((selectedPaymentMethod) => {
+    const filteredOptions = insuranceOptions;
+    const paymentMethod = selectedPaymentMethod || "tunai";
     
     return [
       {
@@ -155,9 +251,13 @@ export const useInsuranceManagement = ({
         name: "asuransiPasien",
         label: "Asuransi yang digunakan pasien",
         type: "select",
-        options: insuranceOptions, // Use transformed insurance list data
+        options: filteredOptions.map(item => ({
+          value: item.value,
+          label: item.label 
+        })),
         colSize: 6,
-        hide: (watchValues) => selectedPaymentMethod !== "asuransi"
+        // Perbaikan di sini: gunakan paymentMethod yang diterima dari parameter
+        hide: () => paymentMethod !== "asuransi",
       },
       {
         id: "nomorAsuransi",
@@ -166,7 +266,8 @@ export const useInsuranceManagement = ({
         type: "text",
         colSize: 6,
         placeholder: "masukkan nomor asuransi",
-        hide: (watchValues) => selectedPaymentMethod !== "asuransi"
+        // Perbaikan di sini: gunakan paymentMethod yang diterima dari parameter
+        hide: () => paymentMethod !== "asuransi",
       },
       {
         id: "tambahAsuransi",
@@ -185,7 +286,8 @@ export const useInsuranceManagement = ({
         ),
         colSize: 6,
         className: "mt-2",
-        hide: (watchValues) => selectedPaymentMethod !== "asuransi"
+        // Perbaikan di sini: gunakan paymentMethod yang diterima dari parameter
+        hide: () => paymentMethod !== "asuransi",
       },
       {
         id: "daftarAsuransi",
@@ -194,6 +296,13 @@ export const useInsuranceManagement = ({
         type: "custom",
         customRender: ({ methods }) => {
           if (insuranceList.length === 0) {
+            if (loading) {
+              return (
+                <div className="alert alert-info mt-3">
+                  <p className="mb-0">Memuat data asuransi pasien...</p>
+                </div>
+              );
+            }
             return (
               <div className="alert alert-info mt-3">
                 <p className="mb-0">Pasien belum memiliki asuransi. Silakan tambahkan asuransi.</p>
@@ -206,7 +315,7 @@ export const useInsuranceManagement = ({
               <h6 className="mb-3">Daftar Asuransi Pasien:</h6>
               <ul className="list-group">
                 {insuranceList.map((insurance, index) => (
-                  <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                  <li key={insurance.asuransiPasienId} className="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                       <strong>{insurance.namaAsuransi}</strong>
                       <br />
@@ -229,7 +338,8 @@ export const useInsuranceManagement = ({
           );
         },
         colSize: 12,
-        hide: (watchValues) => selectedPaymentMethod !== "asuransi" || insuranceList.length === 0
+        // Perbaikan di sini: gunakan paymentMethod yang diterima dari parameter
+        hide: () => paymentMethod !== "asuransi" || (insuranceList.length === 0 && !loading),
       },
       {
         id: "nonPKSNotification",
@@ -237,7 +347,7 @@ export const useInsuranceManagement = ({
         label: "",
         type: "custom",
         customRender: ({ methods }) => {
-          const asuransiPasien = methods.watch("asuransiPasien");
+          const asuransiPasien = methods ? methods.watch("asuransiPasien") : null;
           const selectedInsurance = insuranceList.find(ins => ins.namaAsuransi === asuransiPasien);
 
           if (selectedInsurance && !selectedInsurance.isPKS) {
@@ -254,10 +364,16 @@ export const useInsuranceManagement = ({
           return null;
         },
         colSize: 12,
-        hide: (watchValues) => selectedPaymentMethod !== "asuransi"
+        // Perbaikan di sini: gunakan paymentMethod yang diterima dari parameter
+        hide: () => paymentMethod !== "asuransi",
       }
     ];
-  };
+  }, [insuranceOptions, insuranceList, loading, handleOpenModal, handleRemoveInsurance]);
+
+  // Compute loading state
+  const isLoading = useMemo(() => {
+    return loading || loadingPasienInsurance || loadingMasterAsuransi;
+  }, [loading, loadingPasienInsurance, loadingMasterAsuransi]);
 
   return {
     showInsuranceModal,
@@ -270,6 +386,6 @@ export const useInsuranceManagement = ({
     getInsuranceFields,
     setInsuranceList,
     createNewAsuransiPasien,
-    loading
+    loading: isLoading
   };
 };
