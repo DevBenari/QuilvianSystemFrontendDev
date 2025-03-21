@@ -29,6 +29,7 @@ import PersalinanSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/Master
 import AsuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiSlice";
 import AsuransiPasienSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-asuransi/asuransiPasienSlice";
 import kodePosSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-wilayah/kodePosSlice";
+import DokterAsuransiSlice from "@/lib/state/slice/Manajemen-kesehatan-slices/MasterData/master-dokter/DokterAsuransiSlice";
 
 const store = configureStore({
   reducer: {
@@ -75,6 +76,7 @@ const store = configureStore({
     DokterPoli: DokterPoli,
     DokterPoliSlice: DokterPoliSlice,
     JadwalPraktek: JadwalPraktekSlice,
+    DokterAsuransi: DokterAsuransiSlice,
 
     // Asuransi
     Asuransi: AsuransiSlice,

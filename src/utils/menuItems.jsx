@@ -160,6 +160,17 @@ export const menuItems = [
             ],
           },
           {
+            title: "Fasilitas",
+            key: "fasilitas",
+            icon: <RiFolderLine className="fs-4" />,
+            subItems: [
+              {
+                title: "Manajemen fasilitas",
+                href: "/MasterData/master-fasilitas/table-fasilitas",
+              },
+            ],
+          },
+          {
             title: "Master Poliklinik",
             key: "masterPoliklinik",
             icon: <RiFolderLine className="fs-4" />,
@@ -211,6 +222,10 @@ export const menuItems = [
                 title: "Data jabatan",
                 href: "/MasterData/master-informasi/jabatan/table-jabatan",
               },
+              {
+                title: "Data Suku",
+                href: "/MasterData/master-informasi/suku/table-suku",
+              },
             ],
           },
           {
@@ -230,6 +245,10 @@ export const menuItems = [
               {
                 title: "Jadwal Praktek Dokter",
                 href: "/MasterData/master-dokter/jadwal-praktek/table-jadwal-praktek",
+              },
+              {
+                title: "Dokter Asuransi",
+                href: "/MasterData/master-dokter/dokter-asuransi/table-dokter-asuransi",
               },
             ],
           },
